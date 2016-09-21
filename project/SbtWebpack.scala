@@ -21,50 +21,48 @@ object SbtWebpack extends AutoPlugin {
     Seq(
       npmDependencies := Map.empty,
 
-      bundle := {
-        val log = streams.value.log
-        val npmTarget = target.value / "npm"
-        val deps = npmDependencies.value
-        val fastOptJSOutput = fastOptJS.value.data // TODO support fullopt too
+      bundle := Def.taskDyn {
+        val stage = fastOptJS // TODO support fullopt too
+        Def.task {
+          val log = streams.value.log
+          val targetDir = (crossTarget in stage).value
+          val deps = npmDependencies.value
 
-        IO.createDirectory(npmTarget)
+          val stageOutput = stage.value.data
 
-        // Copy the output of Scala.js compilation
-        val scalaJsModuleFile = npmTarget / fastOptJSOutput.name
-        IO.copyFile(fastOptJSOutput, scalaJsModuleFile)
+          // Create a launcher (TODO remove as soon as they will disappear from Scala.js)
+          val mainFqp =
+            mainClass.value.getOrElse(sys.error("No main class detected"))
+              .split('.')
+              .map(p => s"""["${Utils.escapeJS(p)}"]""")
+              .mkString
+          val launcherContent =
+            s"""
+              |require("${Utils.escapeJS(stageOutput.absolutePath)}")$mainFqp().main();
+            """.stripMargin
+          val launcherFile = targetDir / "launcher.js"
+          IO.write(launcherFile, launcherContent)
 
-        // Create a launcher
-        val mainFqp =
-          mainClass.value.getOrElse(throw new IllegalStateException("No main class defined"))
-            .split('.')
-            .map(p => s"""["${Utils.escapeJS(p)}"]""")
-            .mkString
-        val launcherContent =
-          s"""
-            |require("${scalaJsModuleFile.absolutePath}")$mainFqp().main();
-          """.stripMargin
-        val launcherFile = npmTarget / "launcher.js"
-        IO.write(launcherFile, launcherContent)
-
-        // Create a package.json file
-        val depsJson =
-          (for ((name, version) <- deps) yield s""" "$name": "$version" """)
-            .mkString("{", ",", "}")
-        val packageJson =
-          s"""{
-              |  "dependencies": $depsJson,
-              |  "devDependencies": { "webpack": "1.13" },
-              |  "scripts": {
-              |    "bundle": "webpack ${launcherFile.absolutePath} app.js"
-              |  }
-              |}""".stripMargin
-        IO.write(npmTarget / "package.json", packageJson)
-        val process =
-          Process("npm install", npmTarget) #&&
-          Process("npm run bundle", npmTarget)
-        process.run(log).exitValue()
-        npmTarget
-      }
+          // Create a package.json file
+          val depsJson =
+            (for ((name, version) <- deps) yield s""" "$name": "$version" """)
+              .mkString("{", ",", "}")
+          val packageJson =
+            s"""{
+                |  "dependencies": $depsJson,
+                |  "devDependencies": { "webpack": "1.13" },
+                |  "scripts": {
+                |    "bundle": "webpack ${launcherFile.absolutePath} app.js"
+                |  }
+                |}""".stripMargin
+          IO.write(targetDir / "package.json", packageJson)
+          val process =
+            Process("npm update", targetDir) #&&
+            Process("npm run bundle", targetDir)
+          process.run(log).exitValue()
+          targetDir
+        }
+      }.value
     )
 
 }

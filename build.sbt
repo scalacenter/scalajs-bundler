@@ -1,4 +1,4 @@
-name := "scala-js-npm-deps"
+name := "scalajs-npm-dependencies-example"
 
 description := "Example project demonstrating how to use npm packages from Scala.js"
 
