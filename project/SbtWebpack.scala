@@ -13,6 +13,8 @@ object SbtWebpack extends AutoPlugin {
 
     val webpackVersion = settingKey[String]("Version of webpack to use")
 
+    val webpackConfigFile = settingKey[Option[File]]("Configuration file to use with Webpack")
+
     val bundle = taskKey[File]("Bundle the output of the fastOptJS task")
 
     val bundleOpt = taskKey[File]("Bundle the output of the fullOptJS task")
@@ -23,7 +25,8 @@ object SbtWebpack extends AutoPlugin {
   override lazy val projectSettings: Seq[Def.Setting[_]] =
     inConfig(Compile)(perConfigSettings) ++
     inConfig(Test)(perConfigSettings) ++ Seq(
-      webpackVersion := "1.13"
+      webpackVersion := "1.13",
+      webpackConfigFile := None
     )
 
   private val perConfigSettings: Seq[Def.Setting[_]] =
@@ -58,14 +61,36 @@ object SbtWebpack extends AutoPlugin {
 
       // Create a package.json file
       def toJsonObject(deps: Map[String, String]): String =
-        (for ((name, version) <- deps) yield s""" "$name": "$version" """)
-          .mkString("{", ",", "}")
+        (
+          for ((name, version) <- deps)
+          yield s""" "${Utils.escapeJS(name)}": "${Utils.escapeJS(version)}" """
+        ).mkString("{", ",", "}")
+
+      val bundleCommand =
+        (webpackConfigFile in stage).value match {
+          case Some(configFile) =>
+            val scalajsConfigFile = targetDir / "scalajs-webpack-config.js"
+            val scalajsConfigContent =
+              s"""module.exports = {
+                |  "entry": "${Utils.escapeJS(launcherFile.absolutePath)}",
+                |  "output": {
+                |    "path": "${Utils.escapeJS(targetDir.absolutePath)}",
+                |    "filename": "${Utils.escapeJS(bundleFile.name)}"
+                |  }
+                |}""".stripMargin
+            IO.write(scalajsConfigFile, scalajsConfigContent)
+            val configFileCopy = targetDir / configFile.name
+            IO.copyFile(configFile, configFileCopy)
+            s"webpack --config ${configFileCopy.absolutePath}"
+          case None => s"webpack ${launcherFile.absolutePath} ${bundleFile.absolutePath}"
+        }
+
       val packageJson =
         s"""{
             |  "dependencies": ${toJsonObject(npmDependencies.value)},
             |  "devDependencies": ${toJsonObject(npmDevDependencies.value)},
             |  "scripts": {
-            |    "bundle": "webpack ${launcherFile.absolutePath} ${bundleFile.absolutePath}"
+            |    "bundle": "${Utils.escapeJS(bundleCommand)}"
             |  }
             |}""".stripMargin
       IO.write(targetDir / "package.json", packageJson)
