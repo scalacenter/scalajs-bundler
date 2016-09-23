@@ -1,13 +1,7 @@
 var webpack = require('webpack');
-var scalajsConfig = require('./scalajs-webpack-config');
 
-module.exports = {
-  entry: scalajsConfig.entry,
-  output: {
-    path: scalajsConfig.output.path,
-    filename: scalajsConfig.output.filename
-  },
-  plugins: [
-    new webpack.optimize.UglifyJsPlugin()
-  ]
-};
+module.exports = require('./scalajs.webpack.config');
+
+module.exports.plugins = (module.exports.plugins || []).concat([
+  new webpack.optimize.UglifyJsPlugin()
+]);

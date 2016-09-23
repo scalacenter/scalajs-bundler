@@ -2,7 +2,7 @@ name := "scalajs-npm-dependencies-example"
 
 description := "Example project demonstrating how to use npm packages from Scala.js"
 
-enablePlugins(ScalaJSPlugin, SbtWebpack)
+enablePlugins(ScalaJSPlugin, ScalaJSBundler)
 
 scalaVersion := "2.11.8"
 
