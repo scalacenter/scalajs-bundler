@@ -1,15 +1,3 @@
-name := "scalajs-npm-dependencies-example"
+val `sbt-plugin` = project.in(file("sbt-plugin"))
 
-description := "Example project demonstrating how to use npm packages from Scala.js"
-
-enablePlugins(ScalaJSPlugin, ScalaJSBundler)
-
-scalaVersion := "2.11.8"
-
-libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "0.9.1"
-
-scalaJSModuleKind := ModuleKind.NodeJSModule
-
-npmDependencies in Compile += "snabbdom" -> "0.5.3"
-
-webpackConfigFile in fullOptJS := Some(baseDirectory.value / "prod.webpack.config.js")
+val `scalajs-bundler` = project.in(file(".")).aggregate(`sbt-plugin`)

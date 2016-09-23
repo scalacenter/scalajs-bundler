@@ -1,13 +1,19 @@
+package scalajsbundler
+
 import org.scalajs.core.ir.Utils
+import org.scalajs.core.tools.javascript.Trees
+import org.scalajs.sbtplugin.ScalaJSPlugin
+import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport.{fastOptJS, fullOptJS}
 import sbt._
 import sbt.Keys._
-import org.scalajs.sbtplugin.ScalaJSPlugin.AutoImport.{fastOptJS, fullOptJS}
-import org.scalajs.core.tools.javascript.Trees
 
-import scalajsbundler.JS
-import scalajsbundler.JS.syntax._
+import JS.syntax._
 
 object ScalaJSBundler extends AutoPlugin {
+
+  override lazy val requires = ScalaJSPlugin
+
+  override lazy val trigger = allRequirements
 
   object autoImport {
 
@@ -15,11 +21,11 @@ object ScalaJSBundler extends AutoPlugin {
 
     val npmDevDependencies = settingKey[Map[String, String]]("NPM dev dependencies (libraries that the build uses)")
 
-    val webpackVersion = settingKey[String]("Version of Webpack to use")
+    val webpackVersion = settingKey[String]("Version of webpack to use")
 
-    val webpackConfigFile = settingKey[Option[File]]("Configuration file to use with Webpack")
+    val webpackConfigFile = settingKey[Option[File]]("Configuration file to use with webpack")
 
-    val webpackSourceMap = settingKey[Boolean]("Whether to enable (or not) source-map in Webpack")
+    val webpackSourceMap = settingKey[Boolean]("Whether to enable (or not) source-map in webpack")
 
     val bundle = taskKey[File]("Bundle the output of the fastOptJS task")
 
@@ -54,17 +60,16 @@ object ScalaJSBundler extends AutoPlugin {
       val stageOutput = stage.value.data
 
       // Create a launcher (TODO remove as soon as they disappear from Scala.js)
-      val mainFqp =
-      mainClass.value.getOrElse(sys.error("No main class detected"))
-        .split('.')
-        .map(p => s"""["${Utils.escapeJS(p)}"]""")
-        .mkString
-      val launcherContent =
-        s"""
-           |require("${Utils.escapeJS(stageOutput.absolutePath)}")$mainFqp().main();
-            """.stripMargin
+      val launcherContent = {
+        val module = JS.ref("require")(JS.str(stageOutput.absolutePath))
+        val mainClassParts =
+          mainClass.value.getOrElse(sys.error("No main class detected")).split('.')
+        val mainClassRef =
+          mainClassParts.foldLeft[Trees.Tree](module) { (tree, part) => tree.bracket(part) }
+        (mainClassRef() `.` "main")()
+      }
       val launcherFile = targetDir / "launcher.js"
-      IO.write(launcherFile, launcherContent)
+      IO.write(launcherFile, launcherContent.show)
 
       val bundleFile = targetDir / (stageOutput.name.stripSuffix(".js") ++ "-bundle.js")
 

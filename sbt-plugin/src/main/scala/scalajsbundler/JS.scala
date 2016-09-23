@@ -30,12 +30,11 @@ object JS {
 
   object syntax {
 
-    implicit class RefSyntax(ref: VarRef) {
-      def `.` (ident: String): DotSelect = DotSelect(ref, Ident(ident))
-    }
-
     implicit class TreeSyntax(tree: Tree) {
+      def `.` (ident: String): DotSelect = DotSelect(tree, Ident(ident))
+      def bracket(ident: String): BracketSelect = BracketSelect(tree, str(ident))
       def := (rhs: Tree): Assign = Assign(tree, rhs)
+      def apply(args: Tree*): Apply = Apply(tree, args.to[List])
     }
 
   }
