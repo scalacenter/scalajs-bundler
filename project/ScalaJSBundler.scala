@@ -2,12 +2,12 @@ import org.scalajs.core.ir.Utils
 import sbt._
 import sbt.Keys._
 import org.scalajs.sbtplugin.ScalaJSPlugin.AutoImport.{fastOptJS, fullOptJS}
-import org.scalajs.core.tools.javascript.{Trees => JS}
-import org.scalajs.core.ir.Position
+import org.scalajs.core.tools.javascript.Trees
+
+import scalajsbundler.JS
+import scalajsbundler.JS.syntax._
 
 object ScalaJSBundler extends AutoPlugin {
-
-  implicit val scalajsPosition: Position = Position.NoPosition
 
   object autoImport {
 
@@ -71,24 +71,16 @@ object ScalaJSBundler extends AutoPlugin {
       // Create scalajs.webpack.config.js
       val scalajsConfigFile = targetDir / "scalajs.webpack.config.js"
       val scalajsConfigContent =
-        JS.Assign(
-          JS.DotSelect(JS.VarRef(JS.Ident("module")), JS.Ident("exports")),
-          JS.ObjectConstr(List(
-            JS.StringLiteral("entry") -> JS.StringLiteral(launcherFile.absolutePath),
-            JS.StringLiteral("output") -> JS.ObjectConstr(List(
-              JS.StringLiteral("path") -> JS.StringLiteral(targetDir.absolutePath),
-              JS.StringLiteral("filename") -> JS.StringLiteral(bundleFile.name)
-            ))
-          ))
+        JS.ref("module") `.` "exports" := JS.obj(
+          "entry" -> JS.str(launcherFile.absolutePath),
+          "output" -> JS.obj(
+            "path" -> JS.str(targetDir.absolutePath),
+            "filename" -> JS.str(bundleFile.name)
+          )
         )
       IO.write(scalajsConfigFile, scalajsConfigContent.show)
 
       // Create a package.json file
-      def toJsonObject(deps: Map[String, String]): JS.ObjectConstr =
-        JS.ObjectConstr(
-          deps.to[List].map { case (k, v) => (JS.StringLiteral(k), JS.StringLiteral(v)) }
-        )
-
       val bundleCommand =
         (webpackConfigFile in stage).value match {
           case Some(configFile) =>
@@ -99,15 +91,18 @@ object ScalaJSBundler extends AutoPlugin {
             s"webpack --config ${scalajsConfigFile.absolutePath}"
         }
 
+      def toJsonObject(deps: Map[String, String]): Trees.ObjectConstr =
+        JS.obj(deps.mapValues(JS.str).to[Seq]: _*)
+
       val packageJson =
-        JS.ObjectConstr(List(
-          JS.StringLiteral("dependencies") -> toJsonObject(npmDependencies.value),
-          JS.StringLiteral("devDependencies") -> toJsonObject(npmDevDependencies.value),
-          JS.StringLiteral("scripts") -> JS.ObjectConstr(List(
-            JS.StringLiteral("bundle") -> JS.StringLiteral(bundleCommand)
-          ))
-        ))
-      IO.write(targetDir / "package.json", scalajsbundler.JS.toJson(packageJson))
+        JS.obj(
+          "dependencies" -> toJsonObject(npmDependencies.value),
+          "devDependencies" -> toJsonObject(npmDevDependencies.value),
+          "scripts" -> JS.obj(
+            "bundle" -> JS.str(bundleCommand)
+          )
+        )
+      IO.write(targetDir / "package.json", JS.toJson(packageJson))
 
       val process =
         Process("npm update", targetDir) #&& Process("npm run bundle", targetDir)
