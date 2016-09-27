@@ -4,6 +4,8 @@ import scala.scalajs.js
 import scala.scalajs.js.JSApp
 import scala.scalajs.js.Dynamic.literal
 
+import snabbdom.{snabbdom, h, modules}
+
 import org.scalajs.dom.document
 
 object Main extends JSApp {
@@ -14,13 +16,13 @@ object Main extends JSApp {
 
     // Based on https://github.com/paldepind/snabbdom#inline-example
     val patch =
-      snabbdom.snabbdom.init(js.Array( // Init patch function with choosen modules
-        snabbdom.modules.`class`, // makes it easy to toggle classes
-        snabbdom.modules.props, // for setting properties on DOM elements
-        snabbdom.modules.style, // handles styling on elements with support for animations
-        snabbdom.modules.eventlisteners // attaches event listeners
+      snabbdom.init(js.Array( // Init patch function with choosen modules
+        modules.`class`, // makes it easy to toggle classes
+        modules.props, // for setting properties on DOM elements
+        modules.style, // handles styling on elements with support for animations
+        modules.eventlisteners // attaches event listeners
       ))
-    import snabbdom.h // helper function for creating vnodes
+
     val vnode = h("div#container.two.classes", literal(on = literal(click = someFn)), js.Array(
       h("span", literal(style = literal(fontWeight = "bold")), "This is bold": js.Any),
       " and this is just normal text",
