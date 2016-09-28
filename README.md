@@ -1,8 +1,9 @@
-scalajs-bundler
+sbt-scalajs-bundler
 ===============
 
-Module bundler for Scala.js projects that use NPM packages. Uses
-[npm](https://www.npmjs.com) and [webpack](https://webpack.github.io/) under the hood.
+Module bundler for Scala.js projects that use NPM packages.
+
+Uses [npm](https://www.npmjs.com) and [webpack](https://webpack.github.io/) under the hood.
 
 ## Getting Started
 

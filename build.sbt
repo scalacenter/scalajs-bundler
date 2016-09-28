@@ -1,6 +1,6 @@
 sbtPlugin := true
 
-name := "scalajs-bundler"
+name := "sbt-scalajs-bundler"
 
 organization := "ch.epfl.scala"
 
