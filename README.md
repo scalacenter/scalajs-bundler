@@ -27,10 +27,10 @@ Add dependencies to the npm packages your application requires, in your `build.s
 npmDependencies in Compile += "snabbdom" -> "0.5.3"
 ~~~
 
-Then, use the `bundle` sbt command to download the npm packages and bundle your Scala.js
+Then, use the `fastOptJS::webpack` sbt command to download the npm packages and bundle your Scala.js
 application into a JavaScript file executable by a Web browser.
 
-See complete examples in the [`examples`](examples) directory.
+See complete examples in the [`tests`](src/sbt-test/sbt-scalajs-bundler/).
 
 ## Reference
 
@@ -38,9 +38,7 @@ The plugin introduces the following tasks and settings.
 
 ### Tasks
 
-`bundle`: Bundles the output of `fastOptJS`.
-
-`bundleOpt`: Bundles the output of `fullOptJS`.
+`webpack`: Bundles the output of a Scala.js stage. Example: `> fastOptJS::webpack`.
 
 `npmUpdate`: Downloads NPM dependencies.
 
@@ -50,18 +48,17 @@ The plugin introduces the following tasks and settings.
 
 `npmDevDependencies`: list of the NPM packages (name and version) your build depends on.
 
-`webpackVersion`: version of webpack to use.
+`version in webpack`: version of webpack to use.
 
 `webpackConfigFile`: configuration file to use with webpack. By default, the plugin generates a
 configuration file, but you can supply your own file via this setting.
 
-`webpackSourceMap`: whether to enable (or not) source-map.
+`emitSourceMaps in webpack`: whether to enable (or not) source-map.
 
 ## TODO
 
 - source-map support
 - caching
-- logs
 - code splitting support
 
 ## License

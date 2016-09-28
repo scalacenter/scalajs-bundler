@@ -1,4 +1,5 @@
-> bundle
+$ pause
+> fastOptJS::webpack
 $ exists target/scala-2.11/static-fastopt-bundle.js
-> bundleOpt
+> fullOptJS::webpack
 $ exists target/scala-2.11/static-opt-bundle.js

@@ -2,7 +2,7 @@ package scalajsbundler
 
 import org.scalajs.core.tools.io.{FileVirtualJSFile, VirtualJSFile}
 import org.scalajs.core.tools.javascript.Trees
-import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport.{scalaJSLauncher, fastOptJS, fullOptJS, loadedJSEnv}
+import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport.{scalaJSLauncher, fastOptJS, fullOptJS, loadedJSEnv, emitSourceMaps}
 import sbt.Keys._
 import sbt._
 
@@ -17,11 +17,11 @@ object ScalaJSBundlerInternal {
   private val perConfigSettings: Seq[Def.Setting[_]] =
     Seq(
       npmDependencies := Map.empty,
-      npmDevDependencies := Map("webpack" -> webpackVersion.value),
-      webpackSourceMap in fullOptJS := false,
-      webpackSourceMap in fastOptJS := true,
-      bundle := Def.taskDyn(bundleTask(fastOptJS)).value,
-      bundleOpt := Def.taskDyn(bundleTask(fullOptJS)).value,
+      npmDevDependencies := Map("webpack" -> (version in webpack).value),
+      emitSourceMaps in (webpack in fullOptJS) := false,
+      emitSourceMaps in (webpack in fastOptJS) := true,
+      webpack in fastOptJS := Def.taskDyn(bundleTask(fastOptJS)).value,
+      webpack in fullOptJS := Def.taskDyn(bundleTask(fullOptJS)).value,
       npmUpdate in fastOptJS := Def.taskDyn(npmUpdateTask(fastOptJS)).value,
       npmUpdate in fullOptJS := Def.taskDyn(npmUpdateTask(fullOptJS)).value,
       scalaJSLauncher := Def.taskDyn(scalaJSLauncherTask(fastOptJS)).value,
@@ -37,7 +37,7 @@ object ScalaJSBundlerInternal {
 
   val projectSettings: Seq[Setting[_]] =
     Seq(
-      webpackVersion := "1.13",
+      version in webpack := "1.13",
       webpackConfigFile := None
     ) ++
     inConfig(Compile)(perConfigSettings) ++
