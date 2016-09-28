@@ -1,4 +1,4 @@
-name := "example-static"
+name := "static"
 
 enablePlugins(ScalaJSPlugin)
 

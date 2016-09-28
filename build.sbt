@@ -1,3 +1,17 @@
-val `sbt-plugin` = project.in(file("sbt-plugin"))
+sbtPlugin := true
 
-val `scalajs-bundler` = project.in(file(".")).aggregate(`sbt-plugin`)
+name := "scalajs-bundler"
+
+organization := "ch.epfl.scala"
+
+description := "Module bundler for Scala.js projects"
+
+version := "0.1-SNAPSHOT"
+
+addSbtPlugin("org.scala-js" % "sbt-scalajs" % "0.6.13-SNAPSHOT")
+
+ScriptedPlugin.scriptedSettings
+
+scriptedLaunchOpts += "-Dplugin.version=" + version.value
+
+scriptedBufferLog := false

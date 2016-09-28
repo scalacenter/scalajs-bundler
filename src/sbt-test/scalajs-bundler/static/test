@@ -1,0 +1,4 @@
+> bundle
+$ exists target/scala-2.11/static-fastopt-bundle.js
+> bundleOpt
+$ exists target/scala-2.11/static-opt-bundle.js

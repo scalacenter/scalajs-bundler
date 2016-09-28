@@ -1,4 +1,4 @@
-name := "example-browserless"
+name := "browserless"
 
 enablePlugins(ScalaJSPlugin)
 

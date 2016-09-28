@@ -136,8 +136,7 @@ object ScalaJSBundlerInternal {
       val bundleFile = writeBuildFilesTask(stage).value
 
       log.info("Updating NPM dependencies")
-      val process = Process("npm update", targetDir)
-      process.run(log).exitValue()
+      run("npm update", targetDir, log)
 
       bundleFile
     }
@@ -150,9 +149,14 @@ object ScalaJSBundlerInternal {
       val bundleFile = (npmUpdate in stage).value
 
       log.info("Bundling the application with its NPM dependencies")
-      val process = Process("npm run bundle", targetDir)
-      process.run(log).exitValue()
+      run("npm run bundle", targetDir, log)
 
       bundleFile
     }
+
+  def run(cmd: String, cwd: File, logger: Logger): Unit = {
+    val process = Process(cmd, cwd)
+    process !! logger
+    ()
+  }
 }
