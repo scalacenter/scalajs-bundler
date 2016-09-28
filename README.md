@@ -1,15 +1,17 @@
 scalajs-bundler
 ===============
 
-Module bundler for Scala.js projects that use npm packages. Uses
-[webpack](https://webpack.github.io/) under the hood.
+Module bundler for Scala.js projects that use NPM packages. Uses
+[npm](https://www.npmjs.com) and [webpack](https://webpack.github.io/) under the hood.
 
-## Usage
+## Getting Started
+
+You need to have [npm](https://docs.npmjs.com/getting-started/installing-node) installed on your system.
 
 Add the `scalajs-bundler` plugin to your Scala.js project, in your `project/plugins.sbt` file:
 
 ~~~ scala
-addSbtPlugin("ch.epfl.scala" % "scalajs-bundler" % "0.1")
+addSbtPlugin("ch.epfl.scala" % "scalajs-bundler" % <version>)
 ~~~
 
 Set the `scalaJSModuleKind` setting to `NodeJSModule`, in your `build.sbt` file:
@@ -21,7 +23,7 @@ scalaJSModuleKind := ModuleKind.NodeJSModule
 Add dependencies to the npm packages your application requires, in your `build.sbt` file:
 
 ~~~ scala
-npmDependencies += "snabbdom" -> "0.5.3"
+npmDependencies in Compile += "snabbdom" -> "0.5.3"
 ~~~
 
 Then, use the `bundle` sbt command to download the npm packages and bundle your Scala.js
@@ -39,11 +41,13 @@ The plugin introduces the following tasks and settings.
 
 `bundleOpt`: Bundles the output of `fullOptJS`.
 
+`npmUpdate`: Downloads NPM dependencies.
+
 ### Settings
 
-`npmDependencies`: list of the npm packages (name and version) your application depends on.
+`npmDependencies`: list of the NPM packages (name and version) your application depends on.
 
-`npmDevDependencies`: list of the npm packages (name and version) your build depends on.
+`npmDevDependencies`: list of the NPM packages (name and version) your build depends on.
 
 `webpackVersion`: version of webpack to use.
 
