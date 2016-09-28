@@ -7,7 +7,7 @@ scalaVersion := "2.11.8"
 // Tells Scala.js to produce a Node.js module
 scalaJSModuleKind := ModuleKind.NodeJSModule
 
-// Adds a dependency on the moment npm package
+// Adds a dependency on the node-uuid npm package
 npmDependencies in Compile += "node-uuid" -> "1.4.7"
 
 // Adds a dependency on scalatest

@@ -2,7 +2,7 @@ package scalajsbundler
 
 import org.scalajs.core.tools.io.{FileVirtualJSFile, VirtualJSFile}
 import org.scalajs.core.tools.javascript.Trees
-import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport.{scalaJSLauncher, fastOptJS, fullOptJS}
+import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport.{scalaJSLauncher, fastOptJS, fullOptJS, loadedJSEnv}
 import sbt.Keys._
 import sbt._
 
@@ -25,7 +25,14 @@ object ScalaJSBundlerInternal {
       npmUpdate in fastOptJS := Def.taskDyn(npmUpdateTask(fastOptJS)).value,
       npmUpdate in fullOptJS := Def.taskDyn(npmUpdateTask(fullOptJS)).value,
       scalaJSLauncher := Def.taskDyn(scalaJSLauncherTask(fastOptJS)).value,
-      scalaJSBundlerLauncher := Def.taskDyn(scalaJSBundlerLauncherTask(fastOptJS)).value
+      scalaJSBundlerLauncher := Def.taskDyn(scalaJSBundlerLauncherTask(fastOptJS)).value,
+      loadedJSEnv <<= loadedJSEnv.dependsOn(npmUpdate in fastOptJS)
+    )
+
+  val testSettings: Seq[Setting[_]] =
+    Seq(
+      npmDependencies ++= (npmDependencies in Compile).value,
+      npmDevDependencies ++= (npmDevDependencies in Compile).value
     )
 
   val projectSettings: Seq[Setting[_]] =
@@ -34,7 +41,7 @@ object ScalaJSBundlerInternal {
       webpackConfigFile := None
     ) ++
     inConfig(Compile)(perConfigSettings) ++
-    inConfig(Test)(perConfigSettings)
+    inConfig(Test)(perConfigSettings ++ testSettings)
 
   def writeBuildFilesTask(stage: TaskKey[Attributed[File]]): Def.Initialize[Task[File]] =
     Def.task {
@@ -114,9 +121,6 @@ object ScalaJSBundlerInternal {
     Def.task {
       val log = streams.value.log
 
-      // Be sure that the launcher’s dependencies have been downloaded
-      (npmUpdate in stage).value
-
       val (launcherFile, mainClassValue) = scalaJSBundlerLauncher.value
 
       Attributed[VirtualJSFile](FileVirtualJSFile(launcherFile))(
@@ -131,7 +135,7 @@ object ScalaJSBundlerInternal {
 
       val bundleFile = writeBuildFilesTask(stage).value
 
-      log.debug("Running 'npm update'")
+      log.info("Updating NPM dependencies")
       val process = Process("npm update", targetDir)
       process.run(log).exitValue()
 
@@ -145,7 +149,7 @@ object ScalaJSBundlerInternal {
 
       val bundleFile = (npmUpdate in stage).value
 
-      log.debug("Running 'npm run bundle'")
+      log.info("Bundling the application with its NPM dependencies")
       val process = Process("npm run bundle", targetDir)
       process.run(log).exitValue()
 

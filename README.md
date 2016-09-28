@@ -55,7 +55,6 @@ configuration file, but you can supply your own file via this setting.
 ## TODO
 
 - source-map support
-- `sbt test` support
 - caching
 - logs
 - code splitting support
