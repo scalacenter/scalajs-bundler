@@ -15,7 +15,7 @@ object ScalaJSBundler extends AutoPlugin {
 
     val npmDevDependencies = settingKey[Map[String, String]]("NPM dev dependencies (libraries that the build uses)")
 
-    val npmUpdate = taskKey[Seq[File]]("Fetch NPM dependencies")
+    val npmUpdate = taskKey[Unit]("Fetch NPM dependencies")
 
     val webpackConfigFile = settingKey[Option[File]]("Configuration file to use with webpack")
 
