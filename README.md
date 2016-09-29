@@ -1,5 +1,5 @@
-sbt-scalajs-bundler
-===============
+sbt-scalajs-bundler [![](https://index.scala-lang.org/scalacenter/sbt-scalajs-bundler/sbt-scalajs-bundler/latest.svg)](https://index.scala-lang.org/scalacenter/sbt-scalajs-bundler)
+==================
 
 Module bundler for Scala.js projects that use NPM packages.
 
@@ -48,6 +48,8 @@ The plugin introduces the following tasks and settings.
 
 `npmDevDependencies`: list of the NPM packages (name and version) your build depends on.
 
+`webpackEntries`: list of entry bundles to generate. By default it generates just one bundle for your main class.
+
 `version in webpack`: version of webpack to use.
 
 `webpackConfigFile`: configuration file to use with webpack. By default, the plugin generates a
@@ -59,7 +61,6 @@ configuration file, but you can supply your own file via this setting.
 
 - source-map support
 - caching
-- code splitting support
 
 ## License
 

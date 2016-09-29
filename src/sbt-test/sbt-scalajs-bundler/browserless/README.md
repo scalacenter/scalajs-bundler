@@ -1,4 +1,4 @@
-scalajs-bundler/browserless [![](https://index.scala-lang.org/scalacenter/sbt-scalajs-bundler/sbt-scalajs-bundler/latest.svg)](https://index.scala-lang.org/scalacenter/sbt-scalajs-bundler)
+scalajs-bundler/browserless
 ==========================
 
 An application that uses npm packages and
