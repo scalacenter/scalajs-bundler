@@ -60,7 +60,8 @@ configuration file, but you can supply your own file via this setting.
 ## TODO
 
 - source-map support
-- caching
+- transitive npmDeps
+- consider using webpack-dev-server
 
 ## License
 

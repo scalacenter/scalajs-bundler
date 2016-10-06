@@ -141,8 +141,19 @@ object ScalaJSBundlerInternal {
       val log = streams.value.log
       val targetDir = (crossTarget in stage).value
 
-      log.info("Updating NPM dependencies")
-      run("npm update", targetDir, log)
+      val cachedActionFunction =
+        FileFunction.cached(
+          streams.value.cacheDirectory / "npm-update",
+          inStyle = FilesInfo.hash
+        ) { _ =>
+          log.info("Updating NPM dependencies")
+          run("npm update", targetDir, log)
+          Set.empty
+        }
+
+      cachedActionFunction(Set(targetDir /  "package.json"))
+      ()
+
     }
 
   def webpackEntriesSetting(stage: TaskKey[Attributed[File]]): Def.Initialize[Task[Seq[(String, File)]]] =
@@ -158,11 +169,23 @@ object ScalaJSBundlerInternal {
     Def.task {
       val log = streams.value.log
       val targetDir = (crossTarget in stage).value
+      val configFiles = (scalaJSBundlerConfigFiles in stage).value
+      val entries = (webpackEntries in stage).value
 
-      log.info("Bundling the application with its NPM dependencies")
-      run("npm run bundle", targetDir, log)
+      val cachedActionFunction =
+        FileFunction.cached(
+          streams.value.cacheDirectory / s"${stage.key.label}-webpack",
+          inStyle = FilesInfo.hash
+        ) { in =>
+          log.info("Bundling the application with its NPM dependencies")
+          run("npm run bundle", targetDir, log)
 
-      (scalaJSBundlerConfigFiles in stage).value._3 // TODO Support custom webpack config file (the output may be overridden by users)
+          configFiles._3.to[Set] // TODO Support custom webpack config file (the output may be overridden by users)
+        }
+      cachedActionFunction(Set(
+        configFiles._1,
+        configFiles._2
+      ) ++ entries.map(_._2).to[Set] + stage.value.data).to[Seq] // Note: the entries should be enough, excepted that they currently are launchers, which do not change even if the scalajs stage output changes
     }
 
   def run(cmd: String, cwd: File, logger: Logger): Unit = {
