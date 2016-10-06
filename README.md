@@ -55,11 +55,11 @@ The plugin introduces the following tasks and settings.
 `webpackConfigFile`: configuration file to use with webpack. By default, the plugin generates a
 configuration file, but you can supply your own file via this setting.
 
-`emitSourceMaps in webpack`: whether to enable (or not) source-map.
+`emitSourceMaps in (webpack in <stage>)`: whether to enable (or not) source-map in the given stage (`fastOptJS` or `fullOptJS`).
 
 ## TODO
 
-- source-map support
+- sbt-web integration
 - transitive npmDeps
 - consider using webpack-dev-server
 

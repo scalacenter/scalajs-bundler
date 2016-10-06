@@ -16,8 +16,16 @@ object JS {
   def obj(fields: (String, Tree)*): ObjectConstr =
     ObjectConstr(fields.map { case (ident, value) => (str(ident), value) }.to[List])
 
+  /** Array literal */
+  def arr(elems: Tree*): ArrayConstr =
+    ArrayConstr(elems.to[List])
+
+  /** Variable reference */
   def ref(ident: String): VarRef =
     VarRef(Ident(ident))
+
+  def regex(value: String): Tree =
+    New(ref("RegExp"), List(str(value)))
 
   def toJson(obj: ObjectConstr): String = show(obj, isStat = false)
 

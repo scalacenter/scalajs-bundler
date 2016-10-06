@@ -2,7 +2,7 @@ package scalajsbundler
 
 import org.scalajs.core.tools.io.{FileVirtualJSFile, VirtualJSFile}
 import org.scalajs.core.tools.javascript.Trees
-import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport.{scalaJSLauncher, fastOptJS, fullOptJS, loadedJSEnv, emitSourceMaps}
+import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
 import sbt.Keys._
 import sbt._
 
@@ -35,6 +35,8 @@ object ScalaJSBundlerInternal {
       webpackEntries in fullOptJS := Def.taskDyn(webpackEntriesSetting(fullOptJS)).value,
       emitSourceMaps in (webpack in fullOptJS) := false,
       emitSourceMaps in (webpack in fastOptJS) := true,
+      relativeSourceMaps in fastOptJS := (emitSourceMaps in (webpack in fastOptJS)).value,
+      relativeSourceMaps in fullOptJS := (emitSourceMaps in (webpack in fullOptJS)).value,
       webpack in fastOptJS := Def.taskDyn(bundleTask(fastOptJS).dependsOn(npmUpdate in fastOptJS)).value,
       webpack in fullOptJS := Def.taskDyn(bundleTask(fullOptJS).dependsOn(npmUpdate in fullOptJS)).value
     )
@@ -61,7 +63,7 @@ object ScalaJSBundlerInternal {
       // Create scalajs.webpack.config.js
       val scalajsConfigFile = targetDir / "scalajs.webpack.config.js"
       val scalajsConfigContent =
-        JS.ref("module") `.` "exports" := JS.obj(
+        JS.ref("module") `.` "exports" := JS.obj(Seq(
           "entry" -> JS.obj((webpackEntries in stage).value.map { case (key, file) =>
             key -> JS.str(file.absolutePath) }: _*
           ),
@@ -69,7 +71,21 @@ object ScalaJSBundlerInternal {
             "path" -> JS.str(targetDir.absolutePath),
             "filename" -> JS.str("[name]-bundle.js")
           )
-        )
+        ) ++ (
+          if ((emitSourceMaps in (webpack in stage)).value) {
+            Seq(
+              "devtool" -> JS.str("source-map"),
+              "module" -> JS.obj(
+                "preLoaders" -> JS.arr(
+                  JS.obj(
+                    "test" -> JS.regex("\\.js$"),
+                    "loader" -> JS.str("source-map-loader")
+                  )
+                )
+              )
+            )
+          } else Nil
+        ): _*)
       log.debug("Writing 'scalajs.webpack.config.js'")
       IO.write(scalajsConfigFile, scalajsConfigContent.show)
 
@@ -88,10 +104,14 @@ object ScalaJSBundlerInternal {
           s"webpack --config ${scalajsConfigFile.absolutePath}"
       }
 
+      val devDependencies =
+        if ((emitSourceMaps in (webpack in stage)).value) npmDevDependencies.value + ("source-map-loader" -> "0.1.5")
+        else npmDevDependencies.value
+
       val packageJson =
         JS.obj(
           "dependencies" -> toJsonObject(npmDependencies.value),
-          "devDependencies" -> toJsonObject(npmDevDependencies.value),
+          "devDependencies" -> toJsonObject(devDependencies),
           "scripts" -> JS.obj(
             "bundle" -> JS.str(bundleCommand)
           )
