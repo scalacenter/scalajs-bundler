@@ -1,6 +1,6 @@
 val client =
   project.in(file("client"))
-    .enablePlugins(ScalaJSPlugin)
+    .enablePlugins(ScalaJSPlugin, ScalaJSWeb)
     .settings(
       scalaVersion := "2.11.8",
       scalaJSModuleKind := ModuleKind.NodeJSModule,
@@ -15,7 +15,8 @@ val server =
     .settings(
       scalaVersion := "2.11.8",
       libraryDependencies += "com.typesafe.play" %% "twirl-api" % "1.2.0",
-      // FIXME Integrate with sbt-web-scalajs instead?
+      scalaJSProjects := Seq(client),
+      pipelineStages in Assets := Seq(scalaJSPipeline),
       resourceGenerators in Assets += Def.task {
         val bundles = (webpack in (client, Compile, fastOptJS in (client, Compile))).value
         val resources =
