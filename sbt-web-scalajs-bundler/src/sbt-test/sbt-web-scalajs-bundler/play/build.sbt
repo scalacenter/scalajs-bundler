@@ -17,13 +17,6 @@ val server =
       libraryDependencies += "com.typesafe.play" %% "twirl-api" % "1.2.0",
       scalaJSProjects := Seq(client),
       pipelineStages in Assets := Seq(scalaJSPipeline),
-      resourceGenerators in Assets += Def.task {
-        val bundles = (webpack in (client, Compile, fastOptJS in (client, Compile))).value
-        val resources =
-          bundles.map(file => (file, (resourceManaged in Assets).value / file.name))
-        IO.copy(resources)
-        resources.map(_._2)
-      }.taskValue,
       pipelineStages := Seq(digest, gzip)
     )
 

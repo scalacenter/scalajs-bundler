@@ -59,7 +59,6 @@ configuration file, but you can supply your own file via this setting.
 
 ## TODO
 
-- sbt-web integration
 - transitive npmDeps
 - consider using webpack-dev-server
 
