@@ -11,11 +11,10 @@ class ExampleController extends Controller {
       Ok(
         html"""<!doctype html>
         <html>
-          <head>
-            <script src="$scriptUrl" defer></script>
-          </head>
+          <head></head>
           <body>
-            <h1>sbt-scalajs-bundler Play Example</h1>
+            <div>App is not loaded.</div>
+            <script src="$scriptUrl"></script>
           </body>
         </html>
       """

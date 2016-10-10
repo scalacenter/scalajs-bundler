@@ -6,4 +6,4 @@ addSbtPlugin("com.typesafe.sbt" % "sbt-gzip" % "1.0.0")
 
 addSbtPlugin("com.typesafe.sbt" % "sbt-digest" % "1.1.1")
 
-addSbtPlugin("ch.epfl.scala" % "sbt-web-scalajs-bundler" % Option(System.getProperty("plugin.version")).getOrElse(sys.error("'plugin.version' environment variable is not set")))
+addSbtPlugin("ch.epfl.scala" % "sbt-web-scalajs-bundler" % "0.1-SNAPSHOT")

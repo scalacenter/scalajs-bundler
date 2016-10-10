@@ -9,10 +9,10 @@ Uses [npm](https://www.npmjs.com) and [webpack](https://webpack.github.io/) unde
 
 You need to have [npm](https://docs.npmjs.com/getting-started/installing-node) installed on your system.
 
-Add the `scalajs-bundler` plugin to your Scala.js project, in your `project/plugins.sbt` file:
+Add the `sbt-scalajs-bundler` plugin to your Scala.js project, in your `project/plugins.sbt` file:
 
 ~~~ scala
-addSbtPlugin("ch.epfl.scala" % "scalajs-bundler" % <version>)
+addSbtPlugin("ch.epfl.scala" % "sbt-scalajs-bundler" % <version>)
 ~~~
 
 Set the `scalaJSModuleKind` setting to `NodeJSModule`, in your `build.sbt` file:
@@ -56,6 +56,17 @@ The plugin introduces the following tasks and settings.
 configuration file, but you can supply your own file via this setting.
 
 `emitSourceMaps in (webpack in <stage>)`: whether to enable (or not) source-map in the given stage (`fastOptJS` or `fullOptJS`).
+
+### Integration with sbt-web
+
+For sbt-web integration use the following sbt plugin instead of `sbt-scalajs-bundler`:
+
+~~~ scala
+addSbtPlugin("ch.epfl.scala" % "sbt-web-scalajs-bundler" % <version>)
+~~~
+
+This plugin is automatically triggered if the [`sbt-web-scalajs`](https://github.com/vmunier/sbt-web-scalajs) plugin
+is enabled. It then configures the `scalaJSPipeline` task to use the bundles.
 
 ## TODO
 

@@ -15,7 +15,7 @@ object Main extends JSApp {
     val view =
       h("p", "Hello, world!": js.Any)
 
-    patch(document.body, view)
+    patch(document.body.querySelector("div"), view)
   }
 
 }

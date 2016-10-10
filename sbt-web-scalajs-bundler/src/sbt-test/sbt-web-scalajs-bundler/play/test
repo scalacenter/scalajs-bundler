@@ -1,1 +1,11 @@
-> server/compile
+-$ exists client/target/scala-2.11/client-fastopt-bundle.js
+> server/scalaJSDev
+$ exists client/target/scala-2.11/client-fastopt-bundle.js
+
+-$ exists client/target/scala-2.11/client-opt-bundle.js
+> server/scalaJSProd
+$ exists client/target/scala-2.11/client-opt-bundle.js
+
+> clean
+> server/test
+> client/test

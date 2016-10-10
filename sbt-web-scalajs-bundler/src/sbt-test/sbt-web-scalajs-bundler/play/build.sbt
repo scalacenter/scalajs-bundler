@@ -5,7 +5,9 @@ val client =
       scalaVersion := "2.11.8",
       scalaJSModuleKind := ModuleKind.NodeJSModule,
       libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "0.9.1",
-      npmDependencies in Compile += "snabbdom" -> "0.5.3"
+      npmDependencies in Compile += "snabbdom" -> "0.5.3",
+      // TODO Remove when it becomes the default
+      scalaJSUseRhino := false
     )
 
 val server =
@@ -15,6 +17,7 @@ val server =
     .settings(
       scalaVersion := "2.11.8",
       libraryDependencies += "com.typesafe.play" %% "twirl-api" % "1.2.0",
+      libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "1.5.1" % Test,
       scalaJSProjects := Seq(client),
       pipelineStages in Assets := Seq(scalaJSPipeline),
       pipelineStages := Seq(digest, gzip)
