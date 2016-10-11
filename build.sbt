@@ -15,7 +15,7 @@ val `sbt-web-scalajs-bundler` =
       sbtPlugin := true,
       name := "sbt-web-scalajs-bundler",
       description := "Module bundler for Scala.js projects (integration with sbt-web-scalajs)",
-      addSbtPlugin("com.vmunier" % "sbt-web-scalajs" % "1.0.1")
+      addSbtPlugin("com.vmunier" % "sbt-web-scalajs" % "1.0.2")
     )
     .dependsOn(`sbt-scalajs-bundler`)
 
