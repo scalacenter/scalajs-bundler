@@ -3,11 +3,9 @@ val client =
     .enablePlugins(ScalaJSPlugin, ScalaJSWeb)
     .settings(
       scalaVersion := "2.11.8",
-      scalaJSModuleKind := ModuleKind.NodeJSModule,
+      scalaJSModuleKind := ModuleKind.CommonJSModule,
       libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "0.9.1",
-      npmDependencies in Compile += "snabbdom" -> "0.5.3",
-      // TODO Remove when it becomes the default
-      scalaJSUseRhino := false
+      npmDependencies in Compile += "snabbdom" -> "0.5.3"
     )
 
 val server =
