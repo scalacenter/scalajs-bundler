@@ -4,16 +4,16 @@ import org.scalajs.dom.{Element, Text}
 
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSImport
-import scala.scalajs.js.annotation.JSImport.Namespace
+import scala.scalajs.js.annotation.JSImport.Default
 import scala.scalajs.js.|
 
-@JSImport("snabbdom", Namespace)
+@JSImport("snabbdom", Default)
 @js.native
 object snabbdom extends js.Object {
   def init(modules: js.Array[js.Object]): js.Function2[VNode | Element, VNode, VNode] = js.native
 }
 
-@JSImport("snabbdom/h", Namespace)
+@JSImport("snabbdom/h", Default)
 @js.native
 object h extends js.Function3[String, js.UndefOr[js.Any], js.UndefOr[js.Any], VNode] {
   def apply(selector: String, b: js.UndefOr[js.Any] = js.undefined, c: js.UndefOr[js.Any] = js.undefined): VNode = js.native
