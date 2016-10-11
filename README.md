@@ -15,10 +15,10 @@ Add the `sbt-scalajs-bundler` plugin to your Scala.js project, in your `project/
 addSbtPlugin("ch.epfl.scala" % "sbt-scalajs-bundler" % <version>)
 ~~~
 
-Set the `scalaJSModuleKind` setting to `NodeJSModule`, in your `build.sbt` file:
+Set the `scalaJSModuleKind` setting to `CommonJSModule`, in your `build.sbt` file:
 
 ~~~ scala
-scalaJSModuleKind := ModuleKind.NodeJSModule
+scalaJSModuleKind := ModuleKind.CommonJSModule
 ~~~
 
 Add dependencies to the npm packages your application requires, in your `build.sbt` file:
@@ -30,7 +30,20 @@ npmDependencies in Compile += "snabbdom" -> "0.5.3"
 Then, use the `fastOptJS::webpack` sbt command to download the npm packages and bundle your Scala.js
 application into a JavaScript file executable by a Web browser.
 
-See complete examples in the [`tests`](src/sbt-test/sbt-scalajs-bundler/).
+See complete examples in the [`tests`](sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler/).
+
+## Integration with sbt-web
+
+For sbt-web integration use the following sbt plugin instead of `sbt-scalajs-bundler`:
+
+~~~ scala
+addSbtPlugin("ch.epfl.scala" % "sbt-web-scalajs-bundler" % <version>)
+~~~
+
+This plugin is automatically triggered if the [`sbt-web-scalajs`](https://github.com/vmunier/sbt-web-scalajs) plugin
+is enabled. It then configures the `scalaJSPipeline` task to use the bundles.
+
+You can see a complete example [here](sbt-web-scalajs-bundler/src/sbt-test/sbt-web-scalajs-bundler/play).
 
 ## Reference
 
@@ -56,17 +69,6 @@ The plugin introduces the following tasks and settings.
 configuration file, but you can supply your own file via this setting.
 
 `emitSourceMaps in (webpack in <stage>)`: whether to enable (or not) source-map in the given stage (`fastOptJS` or `fullOptJS`).
-
-### Integration with sbt-web
-
-For sbt-web integration use the following sbt plugin instead of `sbt-scalajs-bundler`:
-
-~~~ scala
-addSbtPlugin("ch.epfl.scala" % "sbt-web-scalajs-bundler" % <version>)
-~~~
-
-This plugin is automatically triggered if the [`sbt-web-scalajs`](https://github.com/vmunier/sbt-web-scalajs) plugin
-is enabled. It then configures the `scalaJSPipeline` task to use the bundles.
 
 ## TODO
 
