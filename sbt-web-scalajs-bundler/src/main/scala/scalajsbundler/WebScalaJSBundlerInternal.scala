@@ -19,13 +19,13 @@ object WebScalaJSBundlerInternal {
 
   def pipelineStage(sjsStage: TaskKey[Attributed[File]], self: TaskKey[Pipeline.Stage]): Def.Initialize[Task[Pipeline.Stage]] =
     Def.taskDyn {
-      val clients = scalaJSProjects.value.map(Project.projectToRef)
+      val projects = scalaJSProjects.value.map(Project.projectToRef)
       Def.task { mappings: Seq[PathMapping] =>
         val bundles: Seq[(File, String)] =
-          clients
-            .map { client =>
-              val task = webpack in(client, Compile, sjsStage in client)
-              val clientTarget = crossTarget in (client, sjsStage)
+          projects
+            .map { project =>
+              val task = webpack in(project, Compile, sjsStage in project)
+              val clientTarget = crossTarget in (project, sjsStage)
               (task, clientTarget).map((files, target) => files pair relativeTo(target))
             }
             .foldLeft(Def.task(Seq.empty[(File, String)]))((acc, bundleFiles) => Def.task(acc.value ++ bundleFiles.value))

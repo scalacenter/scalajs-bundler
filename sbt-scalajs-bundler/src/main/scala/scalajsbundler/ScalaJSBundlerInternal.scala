@@ -18,30 +18,29 @@ object ScalaJSBundlerInternal {
   // (scalajs.webpack.config.js, package.json, output files)
   val scalaJSBundlerConfigFiles = taskKey[(File, File, Seq[File])]("Writes the config files")
 
+  private def perScalaJSStageSettings(stage: TaskKey[Attributed[File]]): Seq[Def.Setting[_]] =
+    Seq(
+      scalaJSLauncher in stage := Def.taskDyn(scalaJSLauncherTask(stage)).value,
+      scalaJSBundlerLauncher in stage := Def.taskDyn(scalaJSBundlerLauncherTask(stage)).value,
+      scalaJSBundlerConfigFiles in stage := Def.taskDyn(scalaJSBundlerConfigFilesTask(stage)).value,
+      npmUpdate in stage := Def.taskDyn(npmUpdateTask(stage).dependsOn(scalaJSBundlerConfigFiles in stage)).value,
+      webpackEntries in stage := Def.taskDyn(webpackEntriesSetting(stage)).value,
+      relativeSourceMaps in stage := (emitSourceMaps in (webpack in stage)).value,
+      webpack in stage := Def.taskDyn(bundleTask(stage).dependsOn(npmUpdate in stage)).value
+    )
+
   private val perConfigSettings: Seq[Def.Setting[_]] =
     Seq(
-      scalaJSLauncher in fastOptJS := Def.taskDyn(scalaJSLauncherTask(fastOptJS)).value,
-      scalaJSLauncher in fullOptJS := Def.taskDyn(scalaJSLauncherTask(fullOptJS)).value,
-      scalaJSBundlerLauncher in fastOptJS := Def.taskDyn(scalaJSBundlerLauncherTask(fastOptJS)).value,
-      scalaJSBundlerLauncher in fullOptJS := Def.taskDyn(scalaJSBundlerLauncherTask(fullOptJS)).value,
-      scalaJSBundlerConfigFiles in fastOptJS := Def.taskDyn(scalaJSBundlerConfigFilesTask(fastOptJS)).value,
-      scalaJSBundlerConfigFiles in fullOptJS := Def.taskDyn(scalaJSBundlerConfigFilesTask(fullOptJS)).value,
       loadedJSEnv <<= loadedJSEnv.dependsOn(npmUpdate in fastOptJS),
       npmDependencies := Map.empty,
       npmDevDependencies := Map("webpack" -> (version in webpack).value),
-      npmUpdate in fastOptJS := Def.taskDyn(npmUpdateTask(fastOptJS).dependsOn(scalaJSBundlerConfigFiles in fastOptJS)).value,
-      npmUpdate in fullOptJS := Def.taskDyn(npmUpdateTask(fullOptJS).dependsOn(scalaJSBundlerConfigFiles in fullOptJS)).value,
-      webpackEntries in fastOptJS := Def.taskDyn(webpackEntriesSetting(fastOptJS)).value,
-      webpackEntries in fullOptJS := Def.taskDyn(webpackEntriesSetting(fullOptJS)).value,
       emitSourceMaps in (webpack in fullOptJS) := false,
-      emitSourceMaps in (webpack in fastOptJS) := true,
-      relativeSourceMaps in fastOptJS := (emitSourceMaps in (webpack in fastOptJS)).value,
-      relativeSourceMaps in fullOptJS := (emitSourceMaps in (webpack in fullOptJS)).value,
-      webpack in fastOptJS := Def.taskDyn(bundleTask(fastOptJS).dependsOn(npmUpdate in fastOptJS)).value,
-      webpack in fullOptJS := Def.taskDyn(bundleTask(fullOptJS).dependsOn(npmUpdate in fullOptJS)).value
-    )
+      emitSourceMaps in (webpack in fastOptJS) := true
+    ) ++
+    perScalaJSStageSettings(fastOptJS) ++
+    perScalaJSStageSettings(fullOptJS)
 
-  val testSettings: Seq[Setting[_]] =
+  private val testSettings: Seq[Setting[_]] =
     Seq(
       npmDependencies ++= (npmDependencies in Compile).value,
       npmDevDependencies ++= (npmDevDependencies in Compile).value
