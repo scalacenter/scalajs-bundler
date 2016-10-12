@@ -32,8 +32,8 @@ object ScalaJSBundlerInternal {
   private val perConfigSettings: Seq[Def.Setting[_]] =
     Seq(
       loadedJSEnv <<= loadedJSEnv.dependsOn(npmUpdate in fastOptJS),
-      npmDependencies := Map.empty,
-      npmDevDependencies := Map("webpack" -> (version in webpack).value),
+      npmDependencies := Seq.empty,
+      npmDevDependencies := Seq("webpack" -> (version in webpack).value),
       emitSourceMaps in (webpack in fullOptJS) := false,
       emitSourceMaps in (webpack in fastOptJS) := true
     ) ++
@@ -89,8 +89,8 @@ object ScalaJSBundlerInternal {
       IO.write(scalajsConfigFile, scalajsConfigContent.show)
 
 
-      def toJsonObject(deps: Map[String, String]): Trees.ObjectConstr =
-        JS.obj(deps.mapValues(JS.str).to[Seq]: _*)
+      def toJsonObject(deps: Seq[(String, String)]): Trees.ObjectConstr =
+        JS.obj(deps.map { case (n, v) => (n, JS.str(v)) }: _*)
 
       // Create a package.json file
       val bundleCommand =
@@ -104,7 +104,7 @@ object ScalaJSBundlerInternal {
       }
 
       val devDependencies =
-        if ((emitSourceMaps in (webpack in stage)).value) npmDevDependencies.value + ("source-map-loader" -> "0.1.5")
+        if ((emitSourceMaps in (webpack in stage)).value) npmDevDependencies.value :+ ("source-map-loader" -> "0.1.5")
         else npmDevDependencies.value
 
       val packageJson =

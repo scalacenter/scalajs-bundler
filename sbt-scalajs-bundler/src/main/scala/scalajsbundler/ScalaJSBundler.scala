@@ -11,9 +11,9 @@ object ScalaJSBundler extends AutoPlugin {
 
   object autoImport {
 
-    val npmDependencies = settingKey[Map[String, String]]("NPM dependencies (libraries that your program uses)")
+    val npmDependencies = settingKey[Seq[(String, String)]]("NPM dependencies (libraries that your program uses)")
 
-    val npmDevDependencies = settingKey[Map[String, String]]("NPM dev dependencies (libraries that the build uses)")
+    val npmDevDependencies = settingKey[Seq[(String, String)]]("NPM dev dependencies (libraries that the build uses)")
 
     val npmUpdate = taskKey[Unit]("Fetch NPM dependencies")
 
