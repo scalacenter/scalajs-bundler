@@ -33,9 +33,7 @@ object ScalaJSBundlerInternal {
     Seq(
       loadedJSEnv <<= loadedJSEnv.dependsOn(npmUpdate in fastOptJS),
       npmDependencies := Seq.empty,
-      npmDevDependencies := Seq("webpack" -> (version in webpack).value),
-      emitSourceMaps in (webpack in fullOptJS) := false,
-      emitSourceMaps in (webpack in fastOptJS) := true
+      npmDevDependencies := Seq("webpack" -> (version in webpack).value)
     ) ++
     perScalaJSStageSettings(fastOptJS) ++
     perScalaJSStageSettings(fullOptJS)
@@ -49,7 +47,9 @@ object ScalaJSBundlerInternal {
   val projectSettings: Seq[Setting[_]] =
     Seq(
       version in webpack := "1.13",
-      webpackConfigFile := None
+      webpackConfigFile := None,
+      emitSourceMaps in (webpack in fullOptJS) := (emitSourceMaps in fullOptJS).value,
+      emitSourceMaps in (webpack in fastOptJS) := (emitSourceMaps in fastOptJS).value
     ) ++
     inConfig(Compile)(perConfigSettings) ++
     inConfig(Test)(perConfigSettings ++ testSettings)
