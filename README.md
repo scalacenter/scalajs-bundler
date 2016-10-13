@@ -15,6 +15,8 @@ Add the `sbt-scalajs-bundler` plugin to your Scala.js project, in your `project/
 addSbtPlugin("ch.epfl.scala" % "sbt-scalajs-bundler" % <version>)
 ~~~
 
+> Note that the plugin requires Scala.js 0.6.13+.
+
 Set the `scalaJSModuleKind` setting to `CommonJSModule`, in your `build.sbt` file:
 
 ~~~ scala
@@ -69,11 +71,6 @@ The plugin introduces the following tasks and settings.
 configuration file, but you can supply your own file via this setting.
 
 `emitSourceMaps in (webpack in <stage>)`: whether to enable (or not) source-map in the given stage (`fastOptJS` or `fullOptJS`).
-
-## TODO
-
-- transitive npmDeps
-- consider using webpack-dev-server
 
 ## License
 

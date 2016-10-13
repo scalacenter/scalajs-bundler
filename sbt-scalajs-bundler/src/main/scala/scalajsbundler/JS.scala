@@ -16,6 +16,9 @@ object JS {
   def obj(fields: (String, Tree)*): ObjectConstr =
     ObjectConstr(fields.map { case (ident, value) => (str(ident), value) }.to[List])
 
+  def objStr(fields: Seq[(String, String)]): ObjectConstr =
+    obj(fields.map { case (k, v) => k -> JS.str(v) }: _*)
+
   /** Array literal */
   def arr(elems: Tree*): ArrayConstr =
     ArrayConstr(elems.to[List])
