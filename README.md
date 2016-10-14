@@ -70,7 +70,8 @@ The plugin introduces the following tasks and settings.
 `webpackConfigFile`: configuration file to use with webpack. By default, the plugin generates a
 configuration file, but you can supply your own file via this setting.
 
-`emitSourceMaps in (webpack in <stage>)`: whether to enable (or not) source-map in the given stage (`fastOptJS` or `fullOptJS`).
+`webpackEmitSourceMaps in (<configuration>, <stage>)`: whether to enable (or not) source-map in the given
+configuration (`Compile` or `Test`) and stage (`fastOptJS` or `fullOptJS`).
 
 ## License
 

@@ -15,17 +15,19 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
   // Exported keys
   object autoImport {
 
+    val npmUpdate = taskKey[Unit]("Fetch NPM dependencies")
+
     val npmDependencies = settingKey[Seq[(String, String)]]("NPM dependencies (libraries that your program uses)")
 
     val npmDevDependencies = settingKey[Seq[(String, String)]]("NPM dev dependencies (libraries that the build uses)")
 
-    val npmUpdate = taskKey[Unit]("Fetch NPM dependencies")
+    val webpack = taskKey[Seq[File]]("Bundle the output of a Scala.js stage using webpack")
 
     val webpackConfigFile = settingKey[Option[File]]("Configuration file to use with webpack")
 
     val webpackEntries = taskKey[Seq[(String, File)]]("Webpack entry bundles")
 
-    val webpack = taskKey[Seq[File]]("Bundle the output of a Scala.js stage using webpack")
+    val webpackEmitSourceMaps = settingKey[Boolean]("Whether webpack should emit source maps at all")
 
   }
 
@@ -144,7 +146,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
         (version in webpack).value,
         (webpackConfigFile in stage).value,
         (webpackEntries in stage).value,
-        (emitSourceMaps in (webpack in stage)).value,
+        (webpackEmitSourceMaps in stage).value,
         fullClasspath.value,
         npmDependencies.value,
         npmDevDependencies.value,
@@ -152,9 +154,9 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       )
     }.value,
 
-    emitSourceMaps in (webpack in stage) := true,
+    webpackEmitSourceMaps in stage := (emitSourceMaps in stage).value,
 
-    relativeSourceMaps in stage := (emitSourceMaps in (webpack in stage)).value
+    relativeSourceMaps in stage := (webpackEmitSourceMaps in stage).value
 
   )
 

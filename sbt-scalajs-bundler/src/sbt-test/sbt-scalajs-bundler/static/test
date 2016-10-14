@@ -1,24 +1,33 @@
--$ exists target/scala-2.11/static-fastopt-bundle.js
--$ exists target/scala-2.11/static-fastopt-bundle.js.map
+$ absent target/scala-2.11/static-fastopt-bundle.js target/scala-2.11/static-fastopt-bundle.js.map
 > fastOptJS::webpack
 $ exists target/scala-2.11/static-fastopt-bundle.js target/scala-2.11/static-fastopt-bundle.js.map
 > html index.html
 
--$ exists target/scala-2.11/static-opt-bundle.js
--$ exists target/scala-2.11/static-opt-bundle.js.map
+$ absent target/scala-2.11/static-opt-bundle.js target/scala-2.11/static-opt-bundle.js.map
 > fullOptJS::webpack
 $ exists target/scala-2.11/static-opt-bundle.js target/scala-2.11/static-opt-bundle.js.map
 > html index-prod.html
+> checkSize
 
 # Disabling source maps in Scala.js also disables it for scalajs-bundler
-#> clean
-#> set emitSourceMaps in fastOptJS := false
-#> fastOptJS::webpack
-#-$ exists target/scala-2.11/static-fastopt-bundle.js.map
 
-# emitSourceMaps can be defined just for the webpack task
 > clean
-> set emitSourceMaps in (webpack in fullOptJS) := false
+> set emitSourceMaps := false
+> fastOptJS::webpack
+$ absent target/scala-2.11/static-fastopt-bundle.js.map
+> fullOptJS::webpack
+$ absent target/scala-2.11/static-opt-bundle.js.map
+
+# webpackEmitSourceMaps controls source maps emission for the webpack task
+
+> clean
+> set emitSourceMaps := true
+> set webpackEmitSourceMaps in (Compile, fastOptJS) := false
+> fastOptJS::webpack
+$ exists target/scala-2.11/static-fastopt.js.map
+$ absent target/scala-2.11/static-fastopt-bundle.js.map
+
+> set webpackEmitSourceMaps in (Compile, fullOptJS) := false
 > fullOptJS::webpack
 $ exists target/scala-2.11/static-opt.js.map
--$ exists target/scala-2.11/static-opt-bundle.js.map
+$ absent target/scala-2.11/static-opt-bundle.js.map
