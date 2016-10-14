@@ -28,3 +28,7 @@ InputKey[Unit]("html") := {
     client.close()
   }
 }
+
+TaskKey[Unit]("checkSize") := {
+  assert(IO.readBytes((webpack in (Compile, fullOptJS)).value.head).length == 19551)
+}
