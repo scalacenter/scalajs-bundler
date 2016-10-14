@@ -36,7 +36,7 @@ object JS {
     val writer = new java.io.StringWriter
     val printer = new Printers.JSTreePrinter(writer)
     printer.printTree(tree, isStat)
-    writer.toString()
+    writer.toString
   }
 
   object syntax {

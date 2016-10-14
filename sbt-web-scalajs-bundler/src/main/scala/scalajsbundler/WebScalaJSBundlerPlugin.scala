@@ -5,14 +5,22 @@ import sbt.Keys._
 import com.typesafe.sbt.web.PathMapping
 import com.typesafe.sbt.web.pipeline.Pipeline
 
-import ScalaJSBundler.autoImport._
+import ScalaJSBundlerPlugin.autoImport._
 import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
 import webscalajs.WebScalaJS
 import webscalajs.WebScalaJS.autoImport._
 
-object WebScalaJSBundlerInternal {
+/**
+  * If WebScalaJS is enabled, tweak the pipelineStage so that the bundle is produced
+  * as an sbt-web asset.
+  */
+object WebScalaJSBundlerPlugin extends AutoPlugin {
 
-  val projectSettings = Seq(
+  override lazy val requires = WebScalaJS /*&& ScalaJSBundlerPlugin*/
+
+  override lazy val trigger = allRequirements
+
+  override lazy val projectSettings = Seq(
     scalaJSDev := pipelineStage(fastOptJS in Compile, scalaJSDev).value,
     scalaJSProd := pipelineStage(fullOptJS in Compile, scalaJSProd).value
   )
@@ -36,7 +44,9 @@ object WebScalaJSBundlerInternal {
     }
 
   def filterMappings(mappings: Seq[PathMapping], include: FileFilter, exclude: FileFilter) =
-    for ((file, path) <- mappings if include.accept(file) && !exclude.accept(file))
-    yield file -> path
+    for {
+      (file, path) <- mappings
+      if include.accept(file) && !exclude.accept(file)
+    } yield file -> path
 
 }

@@ -8,13 +8,13 @@ import sbt._
   * @param packageJson package.json
   * @param output Expected output files from Webpack
   */
-case class ScalaJSBundlerConfigFiles(
+case class ConfigFiles(
   webpackConfig: File,
   packageJson: File,
   output: Seq[File]
 )
 
-object ScalaJSBundlerConfigFiles {
+object ConfigFiles {
 
   import JS.syntax._
 
@@ -29,7 +29,7 @@ object ScalaJSBundlerConfigFiles {
     npmDependencies: Seq[(String, String)],
     npmDevDependencies: Seq[(String, String)],
     currentConfiguration: Configuration
-  ): ScalaJSBundlerConfigFiles = {
+  ): ConfigFiles = {
       // Create scalajs.webpack.config.js
       val scalajsConfigFile = targetDir / "scalajs.webpack.config.js"
       val scalajsConfigContent =
@@ -100,7 +100,7 @@ object ScalaJSBundlerConfigFiles {
       val outputFiles =
         webpackEntries.map { case (key, _) => targetDir / s"$key-bundle.js" }
 
-    ScalaJSBundlerConfigFiles(scalajsConfigFile, packageJsonFile, outputFiles)
+    ConfigFiles(scalajsConfigFile, packageJsonFile, outputFiles)
   }
 
 }
