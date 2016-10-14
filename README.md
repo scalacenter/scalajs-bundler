@@ -75,4 +75,4 @@ configuration (`Compile` or `Test`) and stage (`fastOptJS` or `fullOptJS`).
 
 ## License
 
-This content is released under the [MIT License](http://opensource.org/licenses/mit-license.php).
+This content is released under the [BSD 3-Clause License](http://opensource.org/licenses/BSD-3-Clause).
