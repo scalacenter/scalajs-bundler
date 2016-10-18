@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html class="no-js" lang="eng" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Getting started</title>
+    <link rel="stylesheet" href="_theme/css/foundation.min.css">
+    <link rel="stylesheet" href="_theme/css/app.css">
+     <link rel="stylesheet" href="_theme/css/highlight.js/styles/github-gist.css"> 
+  </head>
+  <body>
+    <div class="expanded row">
+      <div class="small-12 medium-12 large-12 columns align-self-top">
+        <div class="row">
+          
+          <header class="large-12 columns align-self-top a_header">
+            <div class="row">
+              <div class="large-12 columns a_limited top-bar">
+                <div class="top-bar-left">
+                  <p>scalajs-bundler</p>
+
+                </div>
+                <div class="top-bar-right align-right row">
+                  
+                  
+                    <form action="site-search.html" method="get" class="align-right a_search">
+                      <input name="q" type="search"  placeholder="Search
+" >
+                      <button><img alt="&#1F50D;" src="_theme/images/images/search.svg" /></button>
+                    </form>
+                  
+                </div>
+              </div>
+            </div>
+          </header>
+          
+          <div class="small-12 medium-12 large-12 columns align-self-top a_limited a_main">
+            <div class="row">
+              
+              <main class="columns large-order-2 sections" id="_sections">
+                <h1 id="getting-started" class="a_section" data-magellan-target="getting-started">Getting started<a class="a_hlink" href="#getting-started"></a></h1>
+<h2 id="basic-setup" class="a_section" data-magellan-target="basic-setup">Basic setup<a class="a_hlink" href="#basic-setup"></a></h2>
+<p>You need to have <a href="https://docs.npmjs.com/getting-started/installing-node">npm</a> installed on your
+system.</p>
+<p>Add the <code class="hljs">sbt-scalajs-bundler</code> plugin to your Scala.js project, in your <code class="hljs">project/plugins.sbt</code> file:</p>
+<div class="row">
+<pre class="hljs small-expand columns a_xscroll"><code class="language-scala">addSbtPlugin(<span class="hljs-string">"ch.epfl.scala"</span> % <span class="hljs-string">"sbt-scalajs-bundler"</span> % <span class="hljs-string">"0.1"</span>)
+</code></pre>
+</div>
+<blockquote>
+<p>Note that the plugin requires Scala.js 0.6.13+.</p>
+</blockquote>
+<p>Set the <code class="hljs">scalaJSModuleKind</code> setting to <code class="hljs">CommonJSModule</code>, in your <code class="hljs">build.sbt</code> file:</p>
+<div class="row">
+<pre class="hljs small-expand columns a_xscroll"><code class="language-scala">scalaJSModuleKind := <span class="hljs-type">ModuleKind</span>.<span class="hljs-type">CommonJSModule</span>
+</code></pre>
+</div>
+<p>Add dependencies to the npm packages your application requires, in your <code class="hljs">build.sbt</code> file, e.g.:</p>
+<div class="row">
+<pre class="hljs small-expand columns a_xscroll"><code class="language-scala">npmDependencies in <span class="hljs-type">Compile</span> += <span class="hljs-string">"snabbdom"</span> -&gt; <span class="hljs-string">"0.5.3"</span>
+</code></pre>
+</div>
+<p>Then, use the <code class="hljs">fastOptJS::webpack</code> sbt command to download the npm packages and bundle your Scala.js
+application into a JavaScript file executable by a Web browser.</p>
+<p>See complete examples in the <a href="https://github.com/scalacenter/scalajs-bundler/tree/master/sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler"><code class="hljs">tests</code></a>.</p>
+<h2 id="sbt-web" class="a_section" data-magellan-target="sbt-web">Integrating with sbt-web<a class="a_hlink" href="#sbt-web"></a></h2>
+<p>For sbt-web integration use the <code class="hljs">sbt-web-scalajs-bundler</code> plugin instead of <code class="hljs">sbt-scalajs-bundler</code>:</p>
+<div class="row">
+<pre class="hljs small-expand columns a_xscroll"><code class="language-scala">addSbtPlugin(<span class="hljs-string">"ch.epfl.scala"</span> % <span class="hljs-string">"sbt-web-scalajs-bundler"</span> % <span class="hljs-string">"0.1"</span>)
+</code></pre>
+</div>
+<p>You also need to setup the <a href="https://github.com/vmunier/sbt-web-scalajs"><code class="hljs">sbt-web-scalajs</code></a> plugins
+as described in their documentation.</p>
+<p>The <code class="hljs">sbt-web-scalajs-bundler</code> plugin automatically configures the <code class="hljs">scalaJSPipeline</code> task to use
+the bundles rather than the output of the Scala.js compilation.</p>
+<p>The other steps are the same as in the basic setup.</p>
+<p>You can see a complete example <a href="https://github.com/scalacenter/scalajs-bundler/tree/master/sbt-web-scalajs-bundler/src/sbt-test/sbt-web-scalajs-bundler/play">here</a>.</p>
+
+              </main>
+              
+              
+                <div data-sticky-container class="small-12 medium-12 large-2 large-order-1 columns a_sitenav_container">
+                  <nav class="a_sitenav" data-sticky data-sticky-on="large" data-anchor="_sections">
+                    
+                  <ul>
+                     
+  <li >
+    
+      <a href="index.html">Introduction</a>
+    
+    
+  </li>
+  
+  <li >
+    
+      <a href="motivation.html">Motivation</a>
+    
+    
+  </li>
+  
+  <li  class="a_thispage" >
+    
+      <a href="getting-started.html">Getting started</a>
+    
+    
+  </li>
+  
+  <li >
+    
+      <a href="cookbook.html">Cookbook</a>
+    
+    
+  </li>
+  
+  <li >
+    
+      <a href="reference.html">Reference</a>
+    
+    
+  </li>
+  
+  <li >
+    
+      <a href="issues.html">Known issues</a>
+    
+    
+  </li>
+ 
+                  </ul>
+                  </nav>
+                </div>
+              
+              
+              
+                <div class="small-12 medium-12 large-2 large-order-3 columns a_show-for-xlarge" data-sticky-container>
+                  <nav class="a_pagenav" data-sticky data-sticky-on="large" data-anchor="_sections">
+                     <header><p>On This Page</p>
+</header> 
+                    <ul class="vertical menu" data-magellan>
+                       
+  <li>
+    
+       <a href="#getting-started">Getting started</a> 
+    
+    
+      <ul class="vertical menu">  
+  <li>
+    
+       <a href="#basic-setup">Basic setup</a> 
+    
+    
+  </li>
+  
+  <li>
+    
+       <a href="#sbt-web">Integrating with sbt-web</a> 
+    
+    
+  </li>
+  </ul>
+    
+  </li>
+ 
+                    </ul>
+                  </nav>
+                </div>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer class="small-12 medium-12 large-12 columns align-self-bottom a_footer">
+        <div class="row">
+          <div class="small-12 medium-12 large-12 columns top-bar">
+            <div class="top-bar-left">
+              
+            </div>
+            <div class="top-bar-right">
+              <p>Generated with <a href="https://github.com/szeiger/ornate">Ornate</a>.</p>
+
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+    <script src="_theme/js/jquery.min.js"></script>
+    <script src="_theme/js/what-input.min.js"></script>
+    <script src="_theme/js/foundation.min.js"></script>
+    
+    <script src="_theme/js/app.js"></script>
+    
+  </body>
+</html>

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html class="no-js" lang="eng" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reference</title>
+    <link rel="stylesheet" href="_theme/css/foundation.min.css">
+    <link rel="stylesheet" href="_theme/css/app.css">
+     <link rel="stylesheet" href="_theme/css/highlight.js/styles/github-gist.css"> 
+  </head>
+  <body>
+    <div class="expanded row">
+      <div class="small-12 medium-12 large-12 columns align-self-top">
+        <div class="row">
+          
+          <header class="large-12 columns align-self-top a_header">
+            <div class="row">
+              <div class="large-12 columns a_limited top-bar">
+                <div class="top-bar-left">
+                  <p>scalajs-bundler</p>
+
+                </div>
+                <div class="top-bar-right align-right row">
+                  
+                  
+                    <form action="site-search.html" method="get" class="align-right a_search">
+                      <input name="q" type="search"  placeholder="Search
+" >
+                      <button><img alt="&#1F50D;" src="_theme/images/images/search.svg" /></button>
+                    </form>
+                  
+                </div>
+              </div>
+            </div>
+          </header>
+          
+          <div class="small-12 medium-12 large-12 columns align-self-top a_limited a_main">
+            <div class="row">
+              
+              <main class="columns large-order-2 sections" id="_sections">
+                <h1 id="reference" class="a_section" data-magellan-target="reference">Reference<a class="a_hlink" href="#reference"></a></h1>
+<p>The plugin introduces the following tasks and settings.</p>
+<h2 id="tasks" class="a_section" data-magellan-target="tasks">Tasks<a class="a_hlink" href="#tasks"></a></h2>
+<p><code class="hljs">webpack</code>: Bundles the output of a Scala.js stage. For instance, to bundle the
+output of <code class="hljs">fastOptJS</code>, run the following sbt task: <code class="hljs">fastOptJS::webpack</code>.</p>
+<p><code class="hljs">npmUpdate</code>: Downloads NPM dependencies. This task is also scoped to a Scala.js stage.</p>
+<h2 id="settings" class="a_section" data-magellan-target="settings">Settings<a class="a_hlink" href="#settings"></a></h2>
+<p><code class="hljs">npmDependencies</code>: list of the NPM packages (name and version) your application depends on.
+You can use <a href="https://docs.npmjs.com/misc/semver">semver</a> versions. Example of use:</p>
+<div class="row">
+<pre class="hljs small-expand columns a_xscroll"><code class="language-scala">npmDependencies in <span class="hljs-type">Compile</span> += <span class="hljs-string">"node-uuid"</span> -&gt; <span class="hljs-string">"~1.4.7"</span>
+</code></pre>
+</div>
+<p><code class="hljs">npmDevDependencies</code>: list of the NPM packages (name and version) your build depends on.</p>
+<p><code class="hljs">webpackEntries</code>: list of entry bundles to generate. By default it generates just one bundle
+for your main class.</p>
+<p><code class="hljs">version in webpack</code>: version of webpack to use. Example of use:</p>
+<div class="row">
+<pre class="hljs small-expand columns a_xscroll"><code class="language-scala">version in webpack := <span class="hljs-string">"2.1.0-beta.25"</span>
+</code></pre>
+</div>
+<p><code class="hljs">webpackConfigFile</code>: configuration file to use with webpack. By default, the plugin generates a
+configuration file, but you can supply your own file via this setting. Example of use:</p>
+<div class="row">
+<pre class="hljs small-expand columns a_xscroll"><code class="language-scala">webpackConfigFile in fullOptJS := <span class="hljs-type">Some</span>(baseDirectory.value / <span class="hljs-string">"my.prod.webpack.config.js"</span>)
+</code></pre>
+</div>
+<p>You can find more insights on how to write a custom configuration file in the <a href="cookbook.html#custom-config">cookbook</a>.</p>
+<p><code class="hljs">webpackEmitSourceMaps in (&lt;configuration&gt;, &lt;stage&gt;)</code>: whether to enable (or not) source-map in
+the given configuration (<code class="hljs">Compile</code> or <code class="hljs">Test</code>) and stage (<code class="hljs">fastOptJS</code> or <code class="hljs">fullOptJS</code>). Example
+of use:</p>
+<div class="row">
+<pre class="hljs small-expand columns a_xscroll"><code class="language-scala">webpackEmitSourceMaps in (<span class="hljs-type">Compile</span>, fullOptJS) := <span class="hljs-literal">false</span>
+</code></pre>
+</div>
+<p>Note that, by default, this setting has the same value as <code class="hljs">emitSourceMaps</code>, so, to globally
+disable source maps you can just configure the <code class="hljs">emitSourceMaps</code> setting:</p>
+<div class="row">
+<pre class="hljs small-expand columns a_xscroll"><code class="language-scala">emitSourceMaps := <span class="hljs-literal">false</span>
+</code></pre>
+</div>
+
+              </main>
+              
+              
+                <div data-sticky-container class="small-12 medium-12 large-2 large-order-1 columns a_sitenav_container">
+                  <nav class="a_sitenav" data-sticky data-sticky-on="large" data-anchor="_sections">
+                    
+                  <ul>
+                     
+  <li >
+    
+      <a href="index.html">Introduction</a>
+    
+    
+  </li>
+  
+  <li >
+    
+      <a href="motivation.html">Motivation</a>
+    
+    
+  </li>
+  
+  <li >
+    
+      <a href="getting-started.html">Getting started</a>
+    
+    
+  </li>
+  
+  <li >
+    
+      <a href="cookbook.html">Cookbook</a>
+    
+    
+  </li>
+  
+  <li  class="a_thispage" >
+    
+      <a href="reference.html">Reference</a>
+    
+    
+  </li>
+  
+  <li >
+    
+      <a href="issues.html">Known issues</a>
+    
+    
+  </li>
+ 
+                  </ul>
+                  </nav>
+                </div>
+              
+              
+              
+                <div class="small-12 medium-12 large-2 large-order-3 columns a_show-for-xlarge" data-sticky-container>
+                  <nav class="a_pagenav" data-sticky data-sticky-on="large" data-anchor="_sections">
+                     <header><p>On This Page</p>
+</header> 
+                    <ul class="vertical menu" data-magellan>
+                       
+  <li>
+    
+       <a href="#reference">Reference</a> 
+    
+    
+      <ul class="vertical menu">  
+  <li>
+    
+       <a href="#tasks">Tasks</a> 
+    
+    
+  </li>
+  
+  <li>
+    
+       <a href="#settings">Settings</a> 
+    
+    
+  </li>
+  </ul>
+    
+  </li>
+ 
+                    </ul>
+                  </nav>
+                </div>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer class="small-12 medium-12 large-12 columns align-self-bottom a_footer">
+        <div class="row">
+          <div class="small-12 medium-12 large-12 columns top-bar">
+            <div class="top-bar-left">
+              
+            </div>
+            <div class="top-bar-right">
+              <p>Generated with <a href="https://github.com/szeiger/ornate">Ornate</a>.</p>
+
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+    <script src="_theme/js/jquery.min.js"></script>
+    <script src="_theme/js/what-input.min.js"></script>
+    <script src="_theme/js/foundation.min.js"></script>
+    
+    <script src="_theme/js/app.js"></script>
+    
+  </body>
+</html>
