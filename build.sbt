@@ -19,20 +19,35 @@ val `sbt-web-scalajs-bundler` =
     )
     .dependsOn(`sbt-scalajs-bundler`)
 
+val ornateTarget = Def.setting(target.value / "ornate")
+
+val doc =
+  project.in(file("doc"))
+    .enablePlugins(SiteScaladocPlugin, OrnatePlugin)
+    .settings(noPublishSettings ++ ghpages.settings: _*)
+    .settings(
+      scalaVersion := "2.11.8",
+      resolvers += Resolver.bintrayRepo("szeiger", "maven"), // https://github.com/szeiger/ornate/issues/4
+      git.remoteRepo := "git@github.com:scalacenter/scalajs-bundler.git",
+      ornateTargetDir := Some(ornateTarget.value),
+      siteSourceDirectory := ornateTarget.value,
+      previewSite := previewSite.dependsOn(ornate).value
+    )
+
 import ReleaseTransformations._
 import xerial.sbt.Sonatype.SonatypeCommand
 
 val `scalajs-bundler` =
   project.in(file("."))
-    .settings(ScriptedPlugin.scriptedSettings: _*)
+    .settings(ScriptedPlugin.scriptedSettings ++ noPublishSettings: _*)
     .settings(
-      publishArtifact := false,
       releaseProcess := Seq[ReleaseStep](
         checkSnapshotDependencies,
         inquireVersions,
         runClean,
         runTest,
         releaseStepInputTask(scripted),
+        releaseStepTask(ornate in doc),
         setReleaseVersion,
         commitReleaseVersion,
         tagRelease,
@@ -40,12 +55,13 @@ val `scalajs-bundler` =
         setNextVersion,
         commitNextVersion,
         releaseStepCommand(SonatypeCommand.sonatypeReleaseAll),
-        pushChanges
+        pushChanges,
+        releaseStepTask(GhPagesKeys.pushSite in doc)
       ),
       scriptedLaunchOpts += "-Dplugin.version=" + version.value,
       scriptedBufferLog := false
     )
-    .aggregate(`sbt-scalajs-bundler`, `sbt-web-scalajs-bundler`)
+    .aggregate(`sbt-scalajs-bundler`, `sbt-web-scalajs-bundler`, doc)
 
 lazy val commonSettings =
   ScriptedPlugin.scriptedSettings ++ Seq(
@@ -80,4 +96,11 @@ lazy val commonSettings =
     ),
     scriptedLaunchOpts += "-Dplugin.version=" + version.value,
     scriptedBufferLog := false
+  )
+
+lazy val noPublishSettings =
+  Seq(
+    publishArtifact := false,
+    publish := (),
+    publishLocal := ()
   )

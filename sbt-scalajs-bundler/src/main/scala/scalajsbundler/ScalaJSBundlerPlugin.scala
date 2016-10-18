@@ -45,7 +45,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
 
     webpackConfigFile := None,
 
-    (products in Compile) <<= (products in Compile).dependsOn(scalaJSBundlerManifest),
+    (products in Compile) := (products in Compile).dependsOn(scalaJSBundlerManifest).value,
 
     scalaJSBundlerManifest := Def.task {
       NpmDependencies.writeManifest(
@@ -65,7 +65,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
 
   private lazy val perConfigSettings: Seq[Def.Setting[_]] =
     Seq(
-      loadedJSEnv <<= loadedJSEnv.dependsOn(npmUpdate in fastOptJS),
+      loadedJSEnv := loadedJSEnv.dependsOn(npmUpdate in fastOptJS).value,
       npmDependencies := Seq.empty,
       npmDevDependencies := Seq.empty
     ) ++
