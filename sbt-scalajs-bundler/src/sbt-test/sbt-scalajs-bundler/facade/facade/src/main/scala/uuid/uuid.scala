@@ -2,11 +2,11 @@ package uuid
 
 import scala.annotation.meta.field
 import scala.scalajs.js
-import scala.scalajs.js.annotation.JSImport.Default
+import scala.scalajs.js.annotation.JSImport.Namespace
 import scala.scalajs.js.annotation.{JSExport, JSImport}
 import scala.scalajs.js.|
 
-@JSImport("node-uuid/uuid", Default)
+@JSImport("node-uuid/uuid", Namespace)
 @js.native
 object uuid extends UUID
 
