@@ -31,6 +31,7 @@ val doc =
       git.remoteRepo := "git@github.com:scalacenter/scalajs-bundler.git",
       ornateTargetDir := Some(ornateTarget.value),
       siteSourceDirectory := ornateTarget.value,
+      includeFilter in makeSite := AllPassFilter,
       makeSite := makeSite.dependsOn(ornate).value
     )
 
