@@ -23,7 +23,7 @@ val ornateTarget = Def.setting(target.value / "ornate")
 
 val doc =
   project.in(file("doc"))
-    .enablePlugins(SiteScaladocPlugin, OrnatePlugin)
+    .enablePlugins(OrnatePlugin)
     .settings(noPublishSettings ++ ghpages.settings: _*)
     .settings(
       scalaVersion := "2.11.8",
@@ -47,12 +47,14 @@ val `scalajs-bundler` =
         inquireVersions,
         runClean,
         runTest,
-        releaseStepInputTask(scripted),
+        releaseStepInputTask(scripted in `sbt-scalajs-bundler`),
+        releaseStepInputTask(scripted in `sbt-web-scalajs-bundler`),
         releaseStepTask(ornate in doc),
         setReleaseVersion,
         commitReleaseVersion,
         tagRelease,
-        releaseStepTask(PgpKeys.publishSigned),
+        releaseStepTask(PgpKeys.publishSigned in `sbt-scalajs-bundler`),
+        releaseStepTask(PgpKeys.publishSigned in `sbt-web-scalajs-bundler`),
         setNextVersion,
         commitNextVersion,
         releaseStepCommand(SonatypeCommand.sonatypeReleaseAll),
@@ -87,12 +89,12 @@ lazy val commonSettings =
           <url>http://julien.richard-foy.fr</url>
         </developer>
       </developers>,
-    homepage := Some(url(s"https://github.com/scalacenter/sbt-scalajs-bundler")),
+    homepage := Some(url(s"https://github.com/scalacenter/scalajs-bundler")),
     licenses := Seq("MIT License" -> url("http://opensource.org/licenses/mit-license.php")),
     scmInfo := Some(
       ScmInfo(
-        url("https://github.com/scalacenter/sbt-scalajs-bundler"),
-        "scm:git:git@github.com:scalacenter/sbt-scalajs-bundler.git"
+        url("https://github.com/scalacenter/scalajs-bundler"),
+        "scm:git:git@github.com:scalacenter/scalajs-bundler.git"
       )
     ),
     scriptedLaunchOpts += "-Dplugin.version=" + version.value,
