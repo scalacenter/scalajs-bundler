@@ -31,7 +31,7 @@ val doc =
       git.remoteRepo := "git@github.com:scalacenter/scalajs-bundler.git",
       ornateTargetDir := Some(ornateTarget.value),
       siteSourceDirectory := ornateTarget.value,
-      previewSite := previewSite.dependsOn(ornate).value
+      makeSite := makeSite.dependsOn(ornate).value
     )
 
 import ReleaseTransformations._
