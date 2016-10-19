@@ -15,7 +15,8 @@ the npm registry. So, WebJars users have to explicitly publish these npm package
 This is just a matter of filling and submitting a form with the name and version of the package, 
 but, still, this is one extra step.
 
-Second, transitive dependencies are lost when an npm package is re-published as a .jar package.
+Second, the tool that re-publishes npm packages as .jar packages does not keep track of
+[transitive dependencies](https://github.com/webjars/webjars/issues/1186).
 It means that when your program depends on a library `foo` that itself depends on a library `bar`,
 then you have to explicitly convert both and depend on both in your program. This situation
 might turn into a dependency management hell.
