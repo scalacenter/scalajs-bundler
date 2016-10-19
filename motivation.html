@@ -51,7 +51,8 @@ they depend on JVM libraries. However, WebJars have limitations.</p>
 the npm registry. So, WebJars users have to explicitly publish these npm packages as .jar packages.
 This is just a matter of filling and submitting a form with the name and version of the package,
 but, still, this is one extra step.</p>
-<p>Second, transitive dependencies are lost when an npm package is re-published as a .jar package.
+<p>Second, the tool that re-publishes npm packages as .jar packages does not keep track of
+<a href="https://github.com/webjars/webjars/issues/1186">transitive dependencies</a>.
 It means that when your program depends on a library <code class="hljs">foo</code> that itself depends on a library <code class="hljs">bar</code>,
 then you have to explicitly convert both and depend on both in your program. This situation
 might turn into a dependency management hell.</p>
