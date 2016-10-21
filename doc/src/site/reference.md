@@ -25,7 +25,7 @@ npmDependencies in Test += "jasmine" -> "2.5.2"
 
 > {.note}
 > Your facades need to use
-> [`JSImport`](https://www.scala-js.org/doc/interoperability/facade-types.html#a-nameimporta-imports-from-other-javascript-modules)
+> [`@JSImport`](https://www.scala-js.org/doc/interoperability/facade-types.html#a-nameimporta-imports-from-other-javascript-modules)
 > in order to work with the npm modules.
 
 The two remaining sections describe the sbt tasks and settings provided by the plugin.
