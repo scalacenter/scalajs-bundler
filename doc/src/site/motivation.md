@@ -27,7 +27,7 @@ Another solution consists in having two build systems: one for the Scala world a
 the npm world. At some point, the npm build writes files consumed by the Scala application.
 
 Typically, the npm build defines npm dependencies and bundles them into a single .js
-file suitable for Web browser consumption and that the Scala.js program can depend
+file suitable for web browser consumption and that the Scala.js program can depend
 on (e.g. using `jsDependencies`).
 
 This approach works well and allows developers to use whatever tools they want to process
@@ -42,4 +42,4 @@ relationship between the two builds.
 scalajs-bundler aims to provide an integrated solution to work with npm packages from
 Scala.js projects. It lets developers define their npm dependencies from within their sbt build,
 fetches them (using npm itself), and bundles them with the output of the Scala.js compilation.
-The result is a single .js file suitable for Web browser consumption.
+The result is a single .js file suitable for web browser consumption.

@@ -11,6 +11,7 @@ Add the `sbt-scalajs-bundler` plugin to your Scala.js project, in your `project/
 addSbtPlugin("ch.epfl.scala" % "sbt-scalajs-bundler" % "{{version}}")
 ~~~
 
+> {.note}
 > Note that the plugin requires Scala.js 0.6.13+.
 
 Set the `scalaJSModuleKind` setting to `CommonJSModule`, in your `build.sbt` file:
@@ -26,7 +27,7 @@ npmDependencies in Compile += "snabbdom" -> "0.5.3"
 ~~~
 
 Then, use the `fastOptJS::webpack` sbt command to download the npm packages and bundle your Scala.js
-application into a JavaScript file executable by a Web browser.
+application into a JavaScript file executable by a web browser.
 
 See complete examples in the [`tests`](https://github.com/scalacenter/scalajs-bundler/tree/master/sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler).
 
