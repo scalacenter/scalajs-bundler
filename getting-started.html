@@ -48,7 +48,7 @@ system.</p>
 <pre class="hljs small-expand columns a_xscroll"><code class="language-scala">addSbtPlugin(<span class="hljs-string">"ch.epfl.scala"</span> % <span class="hljs-string">"sbt-scalajs-bundler"</span> % <span class="hljs-string">"0.1"</span>)
 </code></pre>
 </div>
-<blockquote>
+<blockquote class="note">
 <p>Note that the plugin requires Scala.js 0.6.13+.</p>
 </blockquote>
 <p>Set the <code class="hljs">scalaJSModuleKind</code> setting to <code class="hljs">CommonJSModule</code>, in your <code class="hljs">build.sbt</code> file:</p>
@@ -62,7 +62,7 @@ system.</p>
 </code></pre>
 </div>
 <p>Then, use the <code class="hljs">fastOptJS::webpack</code> sbt command to download the npm packages and bundle your Scala.js
-application into a JavaScript file executable by a Web browser.</p>
+application into a JavaScript file executable by a web browser.</p>
 <p>See complete examples in the <a href="https://github.com/scalacenter/scalajs-bundler/tree/master/sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler"><code class="hljs">tests</code></a>.</p>
 <h2 id="sbt-web" class="a_section" data-magellan-target="sbt-web">Integrating with sbt-web<a class="a_hlink" href="#sbt-web"></a></h2>
 <p>For sbt-web integration use the <code class="hljs">sbt-web-scalajs-bundler</code> plugin instead of <code class="hljs">sbt-scalajs-bundler</code>:</p>

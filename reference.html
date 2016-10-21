@@ -40,18 +40,38 @@
               
               <main class="columns large-order-2 sections" id="_sections">
                 <h1 id="reference" class="a_section" data-magellan-target="reference">Reference<a class="a_hlink" href="#reference"></a></h1>
-<p>The plugin introduces the following tasks and settings.</p>
+<p>The sbt plugin is automatically enabled on projects where <code class="hljs">ScalaJSPlugin</code> is enabled. It configures the
+execution environment so that npm packages are fetched (by running the <code class="hljs">npm update</code> command in the project’s
+target directory) before the project is <code class="hljs">run</code> or <code class="hljs">test</code>ed.</p>
+<p>It is also possible to bundle the application and its dependencies into a single .js file by using
+the <code class="hljs">webpack</code> task scoped to a Scala.js stage (<code class="hljs">fastOptJS</code> or <code class="hljs">fullOptJS</code>):</p>
+<div class="row">
+<pre class="hljs small-expand columns a_xscroll"><code class="language-markdown"><span class="hljs-quote">&gt; fastOptJS::webpack</span>
+</code></pre>
+</div>
+<p>To define the npm packages your project depends on, use the <code class="hljs">npmDependencies</code> key:</p>
+<div class="row">
+<pre class="hljs small-expand columns a_xscroll"><code class="language-scala">npmDependencies in <span class="hljs-type">Compile</span> += <span class="hljs-string">"node-uuid"</span> -&gt; <span class="hljs-string">"~1.4.7"</span>
+</code></pre>
+</div>
+<p>You can also scope dependencies to <code class="hljs">Test</code>:</p>
+<div class="row">
+<pre class="hljs small-expand columns a_xscroll"><code class="language-scala">npmDependencies in <span class="hljs-type">Test</span> += <span class="hljs-string">"jasmine"</span> -&gt; <span class="hljs-string">"2.5.2"</span>
+</code></pre>
+</div>
+<blockquote class="note">
+<p>Your facades need to use
+<a href="https://www.scala-js.org/doc/interoperability/facade-types.html#a-nameimporta-imports-from-other-javascript-modules"><code class="hljs">@JSImport</code></a>
+in order to work with the npm modules.</p>
+</blockquote>
+<p>The two remaining sections describe the sbt tasks and settings provided by the plugin.</p>
 <h2 id="tasks" class="a_section" data-magellan-target="tasks">Tasks<a class="a_hlink" href="#tasks"></a></h2>
 <p><code class="hljs">webpack</code>: Bundles the output of a Scala.js stage. For instance, to bundle the
 output of <code class="hljs">fastOptJS</code>, run the following sbt task: <code class="hljs">fastOptJS::webpack</code>.</p>
 <p><code class="hljs">npmUpdate</code>: Downloads NPM dependencies. This task is also scoped to a Scala.js stage.</p>
 <h2 id="settings" class="a_section" data-magellan-target="settings">Settings<a class="a_hlink" href="#settings"></a></h2>
 <p><code class="hljs">npmDependencies</code>: list of the NPM packages (name and version) your application depends on.
-You can use <a href="https://docs.npmjs.com/misc/semver">semver</a> versions. Example of use:</p>
-<div class="row">
-<pre class="hljs small-expand columns a_xscroll"><code class="language-scala">npmDependencies in <span class="hljs-type">Compile</span> += <span class="hljs-string">"node-uuid"</span> -&gt; <span class="hljs-string">"~1.4.7"</span>
-</code></pre>
-</div>
+You can use <a href="https://docs.npmjs.com/misc/semver">semver</a> versions.</p>
 <p><code class="hljs">npmDevDependencies</code>: list of the NPM packages (name and version) your build depends on.</p>
 <p><code class="hljs">webpackEntries</code>: list of entry bundles to generate. By default it generates just one bundle
 for your main class.</p>

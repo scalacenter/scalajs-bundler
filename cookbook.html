@@ -40,6 +40,15 @@
               
               <main class="columns large-order-2 sections" id="_sections">
                 <h1 id="cookbook" class="a_section" data-magellan-target="cookbook">Cookbook<a class="a_hlink" href="#cookbook"></a></h1>
+<ul>
+<li><a href="cookbook.html#cookbook">Cookbook</a>
+<ul>
+<li><a href="cookbook.html#custom-config">How to use a custom webpack configuration file?</a></li>
+<li><a href="cookbook.html#facade">How to publish a facade for an npm module?</a></li>
+<li><a href="cookbook.html#performance">How to improve the performance of the bundling process?</a></li>
+</ul>
+</li>
+</ul>
 <h2 id="custom-config" class="a_section" data-magellan-target="custom-config">How to use a custom webpack configuration file?<a class="a_hlink" href="#custom-config"></a></h2>
 <p>First, configure the <code class="hljs">webpackConfigFile</code> setting to refer to your configuration file:</p>
 <div class="row">
@@ -70,6 +79,35 @@ its configuration file, and where all the npm dependencies have been downloaded 
 also <code class="hljs">require</code> these dependencies).</p>
 <p>You can find a working example of custom configuration file
 <a href="https://github.com/scalacenter/scalajs-bundler/blob/master/sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler/static/prod.webpack.config.js">here</a>.</p>
+<h2 id="facade" class="a_section" data-magellan-target="facade">How to publish a facade for an npm module?<a class="a_hlink" href="#facade"></a></h2>
+<p>Create a Scala.js project for the facade and add the <code class="hljs">sbt-scalajs-bundler</code> plugin to it.</p>
+<p>Add a dependency on the npm package you are interested in:</p>
+<div class="row">
+<pre class="hljs small-expand columns a_xscroll"><code class="language-scala">npmDependencies in <span class="hljs-type">Compile</span> += <span class="hljs-string">"foo"</span> -&gt; <span class="hljs-string">"1.0"</span>
+</code></pre>
+</div>
+<p>Define facade interfaces for the npm modules you are interested in, as explained in the Scala.js
+<a href="https://www.scala-js.org/doc/interoperability/facade-types.html">documentation</a>. Be sure to add the
+<a href="https://www.scala-js.org/doc/interoperability/facade-types.html#a-nameimporta-imports-from-other-javascript-modules"><code class="hljs">@JSImport</code></a>
+annotation on the modules:</p>
+<div class="row">
+<pre class="hljs small-expand columns a_xscroll"><code class="language-scala"><span class="hljs-keyword">import</span> scala.scalajs.js
+<span class="hljs-keyword">import</span> <span class="hljs-keyword">import</span> scala.scalajs.js.annotation.<span class="hljs-type">JSImport</span>
+
+<span class="hljs-meta">@JSImport</span>(<span class="hljs-string">"foo"</span>, <span class="hljs-type">JSImport</span>.<span class="hljs-type">Namespace</span>)
+<span class="hljs-meta">@js</span>.native
+<span class="hljs-class"><span class="hljs-keyword">object</span> <span class="hljs-title">foo</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">js</span>.<span class="hljs-title">Object</span> </span>{
+  <span class="hljs-comment">// here write the type signature of the fields exported by the `foo` module</span>
+}
+</code></pre>
+</div>
+<p>Then you can publish your Scala.js project as usual.</p>
+<p>Finally, to use the facade from another Scala.js project, this one needs to add a dependency on the facade, but it also
+has to include the <code class="hljs">sbt-scalajs-bundler</code> plugin.</p>
+<blockquote class="warning">
+<p>If the project that uses the facade does not include the <code class="hljs">sbt-scalajs-bundler</code> plugin, the npm dependencies
+of the facade will not be resolved.</p>
+</blockquote>
 <h2 id="performance" class="a_section" data-magellan-target="performance">How to improve the performance of the bundling process?<a class="a_hlink" href="#performance"></a></h2>
 <p>As reported <a href="https://github.com/scalacenter/scalajs-bundler/issues/1#issuecomment-254153548">here</a>,
 webpack might have pain to bundle your application, if this one is big (the <code class="hljs">fastOptJS</code> output of
@@ -148,6 +186,13 @@ the fastest configuration is to bundle the output of <code class="hljs">fastOptJ
   <li>
     
        <a href="#custom-config">How to use a custom webpack configuration file?</a> 
+    
+    
+  </li>
+  
+  <li>
+    
+       <a href="#facade">How to publish a facade for an npm module?</a> 
     
     
   </li>
