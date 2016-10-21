@@ -1,5 +1,7 @@
 # Cookbook
 
+![](toctree:local=true,mergeFirst=true)
+
 ## How to use a custom webpack configuration file? {#custom-config}
 
 First, configure the `webpackConfigFile` setting to refer to your configuration file:
@@ -36,6 +38,41 @@ also `require` these dependencies).
 
 You can find a working example of custom configuration file
 [here](https://github.com/scalacenter/scalajs-bundler/blob/master/sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler/static/prod.webpack.config.js).
+
+## How to publish a facade for an npm module? {#facade}
+
+Create a Scala.js project for the facade and add the `sbt-scalajs-bundler` plugin to it.
+
+Add a dependency on the npm package you are interested in:
+
+~~~ scala
+npmDependencies in Compile += "foo" -> "1.0"
+~~~
+
+Define facade interfaces for the npm modules you are interested in, as explained in the Scala.js
+[documentation](https://www.scala-js.org/doc/interoperability/facade-types.html). Be sure to add the
+[`@JSImport`](https://www.scala-js.org/doc/interoperability/facade-types.html#a-nameimporta-imports-from-other-javascript-modules)
+annotation on the modules:
+
+~~~ scala
+import scala.scalajs.js
+import import scala.scalajs.js.annotation.JSImport
+
+@JSImport("foo", JSImport.Namespace)
+@js.native
+object foo extends js.Object {
+  // here write the type signature of the fields exported by the `foo` module
+}
+~~~
+
+Then you can publish your Scala.js project as usual.
+
+Finally, to use the facade from another Scala.js project, this one needs to add a dependency on the facade, but it also
+has to include the `sbt-scalajs-bundler` plugin.
+
+> {.warning}
+> If the project that uses the facade does not include the `sbt-scalajs-bundler` plugin, the npm dependencies
+> of the facade will not be resolved.
 
 ## How to improve the performance of the bundling process? {#performance}
 

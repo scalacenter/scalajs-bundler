@@ -1,6 +1,34 @@
 # Reference
 
-The plugin introduces the following tasks and settings.
+The sbt plugin is automatically enabled on projects where `ScalaJSPlugin` is enabled. It configures the
+execution environment so that npm packages are fetched (by running the `npm update` command in the project’s
+target directory) before the project is `run` or `test`ed.
+
+It is also possible to bundle the application and its dependencies into a single .js file by using
+the `webpack` task scoped to a Scala.js stage (`fastOptJS` or `fullOptJS`):
+
+~~~
+> fastOptJS::webpack
+~~~
+
+To define the npm packages your project depends on, use the `npmDependencies` key:
+
+~~~ scala
+npmDependencies in Compile += "node-uuid" -> "~1.4.7"
+~~~
+
+You can also scope dependencies to `Test`:
+
+~~~ scala
+npmDependencies in Test += "jasmine" -> "2.5.2"
+~~~
+
+> {.note}
+> Your facades need to use
+> [`@JSImport`](https://www.scala-js.org/doc/interoperability/facade-types.html#a-nameimporta-imports-from-other-javascript-modules)
+> in order to work with the npm modules.
+
+The two remaining sections describe the sbt tasks and settings provided by the plugin.
 
 ## Tasks {#tasks}
 
@@ -12,11 +40,7 @@ output of `fastOptJS`, run the following sbt task: `fastOptJS::webpack`.
 ## Settings {#settings}
 
 `npmDependencies`: list of the NPM packages (name and version) your application depends on.
-You can use [semver](https://docs.npmjs.com/misc/semver) versions. Example of use:
-
-~~~ scala
-npmDependencies in Compile += "node-uuid" -> "~1.4.7"
-~~~
+You can use [semver](https://docs.npmjs.com/misc/semver) versions.
 
 `npmDevDependencies`: list of the NPM packages (name and version) your build depends on.
 
