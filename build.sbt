@@ -42,6 +42,7 @@ val `scalajs-bundler` =
   project.in(file("."))
     .settings(ScriptedPlugin.scriptedSettings ++ noPublishSettings: _*)
     .settings(
+      sbtPlugin := true,
       releaseProcess := Seq[ReleaseStep](
         checkSnapshotDependencies,
         inquireVersions,

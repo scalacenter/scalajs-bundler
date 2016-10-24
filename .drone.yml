@@ -1,0 +1,10 @@
+build:
+  image: julienrf/docker-scala-sbt-git
+  commands:
+    - sbt clean test scripted
+
+cache:
+  mount:
+    - .git
+    - /drone/.ivy2
+    - /drone/.sbt
