@@ -47,7 +47,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
 
     (products in Compile) := (products in Compile).dependsOn(scalaJSBundlerManifest).value,
 
-    scalaJSBundlerManifest := Def.task {
+    scalaJSBundlerManifest :=
       NpmDependencies.writeManifest(
         NpmDependencies(
           (npmDependencies in Compile).value.to[List],
@@ -57,7 +57,6 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
         ),
         (classDirectory in Compile).value
       )
-    }.value
 
   ) ++
     inConfig(Compile)(perConfigSettings) ++
@@ -117,29 +116,28 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       ()
     }.dependsOn(scalaJSBundlerConfigFiles in stage).value,
 
-    webpackEntries in stage := Def.task {
+    webpackEntries in stage := {
       val launcherFile = (scalaJSBundlerLauncher in stage).value.file
       val stageFile = stage.value.data
       val name = stageFile.name.stripSuffix(".js")
       Seq(name -> launcherFile)
-    }.value,
+    },
 
-    scalaJSLauncher in stage := Def.task {
+    scalaJSLauncher in stage := {
       val launcher = (scalaJSBundlerLauncher in stage).value
       Attributed[VirtualJSFile](FileVirtualJSFile(launcher.file))(
         AttributeMap.empty.put(name.key, launcher.mainClass)
       )
-    }.value,
+    },
 
-    scalaJSBundlerLauncher in stage := Def.task {
+    scalaJSBundlerLauncher in stage :=
       Launcher.write(
         (crossTarget in stage).value,
         stage.value.data,
         (mainClass in (scalaJSLauncher in stage)).value.getOrElse("No main class detected")
-      )
-    }.value,
+      ),
 
-    scalaJSBundlerConfigFiles in stage := Def.task {
+    scalaJSBundlerConfigFiles in stage :=
       ConfigFiles.writeConfigFiles(
         streams.value.log,
         (crossTarget in stage).value,
@@ -151,8 +149,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
         npmDependencies.value,
         npmDevDependencies.value,
         configuration.value
-      )
-    }.value,
+      ),
 
     webpackEmitSourceMaps in stage := (emitSourceMaps in stage).value,
 
