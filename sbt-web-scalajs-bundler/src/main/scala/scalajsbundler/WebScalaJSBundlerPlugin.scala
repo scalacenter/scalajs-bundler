@@ -32,7 +32,7 @@ object WebScalaJSBundlerPlugin extends AutoPlugin {
         val bundles: Seq[(File, String)] =
           projects
             .map { project =>
-              val task = webpack in(project, Compile, sjsStage in project)
+              val task = webpack in (project, Compile, sjsStage in project)
               val clientTarget = crossTarget in (project, sjsStage)
               (task, clientTarget).map((files, target) => files pair relativeTo(target))
             }

@@ -3,8 +3,8 @@ package scalajsbundler
 import org.scalajs.core.tools.io.{FileVirtualJSFile, VirtualJSFile}
 import org.scalajs.sbtplugin.ScalaJSPlugin
 import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
-import sbt._
 import sbt.Keys._
+import sbt._
 
 object ScalaJSBundlerPlugin extends AutoPlugin {
 
@@ -28,6 +28,8 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
     val webpackEntries = taskKey[Seq[(String, File)]]("Webpack entry bundles")
 
     val webpackEmitSourceMaps = settingKey[Boolean]("Whether webpack should emit source maps at all")
+
+    val enableReloadWorkflow = settingKey[Boolean]("Whether to enable the reload workflow for fastOptJS")
 
   }
 
@@ -56,7 +58,9 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
           (npmDevDependencies in Test).value.to[List]
         ),
         (classDirectory in Compile).value
-      )
+      ),
+
+    enableReloadWorkflow := true
 
   ) ++
     inConfig(Compile)(perConfigSettings) ++
@@ -69,7 +73,14 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       npmDevDependencies := Seq.empty
     ) ++
     perScalaJSStageSettings(fastOptJS) ++
-    perScalaJSStageSettings(fullOptJS)
+    perScalaJSStageSettings(fullOptJS) ++
+    Seq(
+      webpack in fullOptJS := webpackTask(fullOptJS).value,
+      webpack in fastOptJS := Def.taskDyn {
+        if (enableReloadWorkflow.value) ReloadWorkflowTasks.webpackTask(fastOptJS)
+        else webpackTask(fastOptJS)
+      }.value
+    )
 
   private lazy val testSettings: Seq[Setting[_]] =
     Seq(
@@ -78,26 +89,6 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
     )
 
   private def perScalaJSStageSettings(stage: TaskKey[Attributed[File]]): Seq[Def.Setting[_]] = Seq(
-
-    webpack in stage := Def.task {
-      val log = streams.value.log
-      val targetDir = (crossTarget in stage).value
-      val configFiles = (scalaJSBundlerConfigFiles in stage).value
-      val entries = (webpackEntries in stage).value
-
-      val cachedActionFunction =
-        FileFunction.cached(
-          streams.value.cacheDirectory / s"${stage.key.label}-webpack",
-          inStyle = FilesInfo.hash
-        ) { in =>
-          Commands.bundle(targetDir, log)
-          configFiles.output.to[Set] // TODO Support custom webpack config file (the output may be overridden by users)
-        }
-      cachedActionFunction(Set(
-        configFiles.webpackConfig,
-        configFiles.packageJson
-      ) ++ entries.map(_._2).to[Set] + stage.value.data).to[Seq] // Note: the entries should be enough, excepted that they currently are launchers, which do not change even if the scalajs stage output changes
-    }.dependsOn(npmUpdate in stage).value,
 
     npmUpdate in stage := Def.task {
       val log = streams.value.log
@@ -156,5 +147,26 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
     relativeSourceMaps in stage := (webpackEmitSourceMaps in stage).value
 
   )
+
+  def webpackTask(stage: TaskKey[Attributed[File]]): Def.Initialize[Task[Seq[File]]] =
+    Def.task {
+      val log = streams.value.log
+      val targetDir = (crossTarget in stage).value
+      val configFiles = (scalaJSBundlerConfigFiles in stage).value
+      val entries = (webpackEntries in stage).value
+
+      val cachedActionFunction =
+        FileFunction.cached(
+          streams.value.cacheDirectory / s"${stage.key.label}-webpack",
+          inStyle = FilesInfo.hash
+        ) { in =>
+          Commands.bundle(targetDir, log)
+          configFiles.output.to[Set] // TODO Support custom webpack config file (the output may be overridden by users)
+        }
+      cachedActionFunction(Set(
+        configFiles.webpackConfig,
+        configFiles.packageJson
+      ) ++ entries.map(_._2).to[Set] + stage.value.data).to[Seq] // Note: the entries should be enough, excepted that they currently are launchers, which do not change even if the scalajs stage output changes
+    }.dependsOn(npmUpdate in stage)
 
 }

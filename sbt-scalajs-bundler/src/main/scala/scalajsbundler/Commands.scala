@@ -24,9 +24,9 @@ object Commands {
     run("npm run bundle", cwd, log)
   }
 
-  def run(cmd: String, cwd: File, logger: Logger): Unit = {
+  def run(cmd: String, cwd: File, errorLogger: Logger): Unit = {
     val process = Process(cmd, cwd)
-    process !! logger // FIXME Also redirect the standard output of the process to the logger
+    process !! errorLogger // FIXME Also redirect the standard output of the process to the logger
     ()
   }
 

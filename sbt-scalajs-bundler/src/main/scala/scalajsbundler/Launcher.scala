@@ -26,16 +26,25 @@ object Launcher {
 
     val launcherContent = {
       val module = JS.ref("require")(JS.str(sjsStageOutput.absolutePath))
-      val mainClassRef =
-        mainClass
-          .split('.')
-          .foldLeft[Trees.Tree](module) { (tree, part) => tree.bracket(part) }
-      (mainClassRef() `.` "main")()
+      callEntryPoint(mainClass, module)
     }
     val launcherFile = targetDir / "launcher.js" // TODO Use different names according to the sjsStages
     IO.write(launcherFile, launcherContent.show)
 
     Launcher(launcherFile, mainClass)
+  }
+
+  /**
+    * @param mainClass Main class name
+    * @param module Module exporting the entry point
+    * @return A JavaScript program that calls the main method of the main class
+    */
+  def callEntryPoint(mainClass: String, module: Trees.Tree): Trees.Tree = {
+    val mainClassRef =
+      mainClass
+        .split('.')
+        .foldLeft[Trees.Tree](module)((tree, part) => tree.bracket(part))
+    (mainClassRef() `.` "main")()
   }
 
 }
