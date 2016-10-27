@@ -25,13 +25,15 @@ object ReloadWorkflow {
   /**
     * @return A file that contains the concatenation of the dependencies bundle and the output of the Scala.js compilation
     * @param bundledDependencies Pre-bundled dependencies
-    * @param loaderAndLauncher `require` implementation and entry point launcher
+    * @param loader `require` implementation
+    * @param launcher Entry point launcher
     * @param sjsOutput Output of Scala.js
     * @param targetDir Target directory (where to write the bundle)
     */
   def writeFakeBundle(
     bundledDependencies: File,
-    loaderAndLauncher: LoaderAndLauncher,
+    loader: File,
+    launcher: File,
     sjsOutput: File,
     targetDir: File
   ): File = {
@@ -39,73 +41,79 @@ object ReloadWorkflow {
     val bundle = targetDir / s"$moduleName-bundle.js" // Because scalajs.webpack.config.js defines the output as "[name]-bundle.js"
     IO.copyFile(bundledDependencies, bundle)
     IO.append(bundle, "\n")
-    IO.append(bundle, IO.readBytes(loaderAndLauncher.loader)) // shims `require`
+    IO.append(bundle, IO.readBytes(loader)) // shims `require`
     IO.append(bundle, ";\n")
     IO.append(bundle, IO.readBytes(sjsOutput))
     IO.append(bundle, "\n")
-    IO.append(bundle, IO.readBytes(loaderAndLauncher.launcher))
+    IO.append(bundle, IO.readBytes(launcher))
     bundle
   }
 
   /**
-    * @return The written loader (faking a `require` implementation) and launcher files
-    * @param mainClass Application entry point
-    * @param targetDir Target directory
+    * @return The written loader file (faking a `require` implementation)
+    * @param loader File to write the loader to
+    * @param logger Logger
     */
-  def writeLoaderAndLauncher(mainClass: String, targetDir: File): LoaderAndLauncher = {
-    val depsLoader = targetDir / "scalajsbundler-deps-loader.js"
+  def writeLoader(loader: File, logger: Logger): Unit = {
+    logger.info("Writing the module loader file")
     val window = JS.ref("window")
     val depsLoaderContent =
       JS.block(
         (window `.` "require") := JS.fun(name => window.bracket((JS.str(modulePrefix) `.` "concat")(name))),
         (window `.` "exports") := JS.obj()
       )
-    IO.write(depsLoader, depsLoaderContent.show)
+    IO.write(loader, depsLoaderContent.show)
+    ()
+  }
 
-    val launcher = targetDir / "scalajsbundler-launcher.js"
+  /**
+    * @return The written launcher file (calling the application entry point)
+    * @param mainClass Application entry point
+    * @param launcher File to write the launcher to
+    * @param logger Logger
+    */
+  def writeLauncher(mainClass: String, launcher: File, logger: Logger): Unit = {
+    logger.info("Writing the launcher file")
+    val window = JS.ref("window")
     val launcherContent = Launcher.callEntryPoint(mainClass, window `.` "exports")
     IO.write(launcher, launcherContent.show)
-
-    LoaderAndLauncher(depsLoader, launcher)
+    ()
   }
 
   /**
     * @return The imported dependencies of the Scala.js project, bundled into a single file, and exported to the
     *         global namespace
-    * @param linker Scala.js linker
-    * @param irFiles Scala.js IR files
-    * @param outputMode Scala.js output mode
-    * @param emitSourceMaps Whether emitSourceMaps is enabled
-    * @param targetDir Target directory (also the directory where we expect node_modules to be present)
+    * @param imports Imported module names
+    * @param workingDir Directory where node_modules are present
+    * @param entryPoint File to write the bundle entry point to
+    * @param bundleFile File to write the bundle to
     * @param logger Logger
     */
   def bundleDependencies(
-    linker: ClearableLinker,
-    irFiles: Seq[VirtualScalaJSIRFile],
-    outputMode: OutputMode,
-    emitSourceMaps: Boolean,
-    targetDir: File,
+    imports: Seq[String],
+    workingDir: File,
+    entryPoint: File,
+    bundleFile: File,
     logger: Logger
-  ): File = {
-    val imports = findImportedModules(linker, irFiles, outputMode, emitSourceMaps, logger)
+  ): Unit = {
+    logger.info("Pre-bundling dependencies")
+
     val depsFileContent =
       JS.block(
         imports.map { moduleName =>
           JS.ref("global").bracket(s"$modulePrefix$moduleName") := JS.ref("require")(JS.str(moduleName))
         }: _*
       )
-    val dependenciesCjsFile = targetDir / "scalajsbundler-deps-cjs.js"
-    IO.write(dependenciesCjsFile, depsFileContent.show)
+    IO.write(entryPoint, depsFileContent.show)
 
-    val dependenciesFile = targetDir / "scalajsbundler-deps.js"
-    val webpackBin = targetDir / "node_modules" / "webpack" / "bin" / "webpack"
+    val webpackBin = workingDir / "node_modules" / "webpack" / "bin" / "webpack"
     Commands.run(
-      s"node ${webpackBin.absolutePath} ${dependenciesCjsFile.absolutePath} ${dependenciesFile.absolutePath}",
-      targetDir,
+      s"node ${webpackBin.absolutePath} ${entryPoint.absolutePath} ${bundleFile.absolutePath}",
+      workingDir,
       logger
     )
 
-    dependenciesFile
+    ()
   }
 
   /**
@@ -136,7 +144,5 @@ object ReloadWorkflow {
 
   // Prefix to use to export/import pre-bundled modules to/from the global namespace
   val modulePrefix = "__scalajsbundler__"
-
-  case class LoaderAndLauncher(loader: File, launcher: File)
 
 }
