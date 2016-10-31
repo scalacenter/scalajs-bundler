@@ -1,8 +1,9 @@
 # Reference
 
-The sbt plugin is automatically enabled on projects where `ScalaJSPlugin` is enabled. It configures the
-execution environment so that npm packages are fetched (by running the `npm update` command in the project’s
-target directory) before the project is `run` or `test`ed.
+The `ScalaJSBundlerPlugin` sbt plugin automatically enables `ScalaJSPlugin` on the project. It configures
+the kind of output of the project to be `ModuleKind.CommonJSModule`. Finally, it also configures its
+execution environment so that npm packages are fetched (by running the `npm update` command in the
+project’s target directory) before the project is `run` or `test`ed.
 
 It is also possible to bundle the application and its dependencies into a single .js file by using
 the `webpack` task scoped to a Scala.js stage (`fastOptJS` or `fullOptJS`):

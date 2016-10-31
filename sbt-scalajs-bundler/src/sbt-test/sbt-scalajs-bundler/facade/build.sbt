@@ -4,17 +4,16 @@ val `facade-project` =
 
 lazy val usage =
   project.in(file("usage"))
-    .enablePlugins(ScalaJSPlugin)
+    .enablePlugins(ScalaJSBundlerPlugin)
     .settings(commonSettings: _*)
     .settings(
-      scalaJSModuleKind := ModuleKind.CommonJSModule,
       libraryDependencies += "org.scalatest" %%% "scalatest" % "3.0.0" % Test
     )
     .dependsOn(facade)
 
 lazy val facade =
   project.in(file("facade"))
-    .enablePlugins(ScalaJSPlugin)
+    .enablePlugins(ScalaJSBundlerPlugin)
     .settings(commonSettings: _*)
     .settings(
       npmDependencies in Compile += "node-uuid" -> "1.4.7"

@@ -1,16 +1,15 @@
 val client =
   project.in(file("client"))
-    .enablePlugins(ScalaJSPlugin, ScalaJSWeb)
+    .enablePlugins(ScalaJSBundlerPlugin, ScalaJSWeb)
     .settings(
       scalaVersion := "2.11.8",
-      scalaJSModuleKind := ModuleKind.CommonJSModule,
       libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "0.9.1",
       npmDependencies in Compile += "snabbdom" -> "0.5.3"
     )
 
 val server =
   project.in(file("server"))
-    .enablePlugins(PlayScala)
+    .enablePlugins(PlayScala, WebScalaJSBundlerPlugin)
     .disablePlugins(PlayLayoutPlugin)
     .settings(
       scalaVersion := "2.11.8",

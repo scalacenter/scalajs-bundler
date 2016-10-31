@@ -10,8 +10,6 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
 
   override lazy val requires = ScalaJSPlugin
 
-  override lazy val trigger = allRequirements
-
   // Exported keys
   object autoImport {
 
@@ -42,6 +40,8 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
   import autoImport._
 
   override lazy val projectSettings: Seq[Def.Setting[_]] = Seq(
+
+    scalaJSModuleKind := ModuleKind.CommonJSModule,
 
     version in webpack := "1.13",
 

@@ -16,9 +16,7 @@ import webscalajs.WebScalaJS.autoImport._
   */
 object WebScalaJSBundlerPlugin extends AutoPlugin {
 
-  override lazy val requires = WebScalaJS /*&& ScalaJSBundlerPlugin*/
-
-  override lazy val trigger = allRequirements
+  override lazy val requires = WebScalaJS
 
   override lazy val projectSettings = Seq(
     scalaJSDev := pipelineStage(fastOptJS in Compile, scalaJSDev).value,

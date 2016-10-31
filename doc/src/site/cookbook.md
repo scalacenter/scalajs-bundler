@@ -41,7 +41,11 @@ You can find a working example of custom configuration file
 
 ## How to publish a facade for an npm module? {#facade}
 
-Create a Scala.js project for the facade and add the `sbt-scalajs-bundler` plugin to it.
+Create a project for the facade and enable the `ScalaJSBundlerPlugin` plugin on its `build.sbt`:
+
+~~~ scala
+enablePlugins(ScalaJSBundlerPlugin)
+~~~
 
 Add a dependency on the npm package you are interested in:
 
@@ -71,5 +75,5 @@ Finally, to use the facade from another Scala.js project, this one needs to add 
 has to include the `sbt-scalajs-bundler` plugin.
 
 > {.warning}
-> If the project that uses the facade does not include the `sbt-scalajs-bundler` plugin, the npm dependencies
-> of the facade will not be resolved.
+> Projects that **use** the facade also have to enable the `ScalaJSBundlerPlugin` plugin,
+> otherwise the dependencies of the facade will not be resolved.
