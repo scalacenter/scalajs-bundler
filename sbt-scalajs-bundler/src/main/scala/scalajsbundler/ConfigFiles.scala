@@ -81,7 +81,7 @@ object ConfigFiles {
           if (currentConfiguration == Compile) npmManifestDependencies.compileDevDependencies
           else npmManifestDependencies.testDevDependencies
         ) ++ (
-          if (emitSourceMaps) npmDevDependencies :+ ("source-map-loader" -> "0.1.5")
+          if (emitSourceMaps) npmDevDependencies ++ Seq("source-map-loader" -> "0.1.5", "concat-with-sourcemaps" -> "1.0.4")
           else npmDevDependencies
         )
 

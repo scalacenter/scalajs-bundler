@@ -39,7 +39,13 @@ object WebScalaJSBundlerPlugin extends AutoPlugin {
             .foldLeft(Def.task(Seq.empty[(File, String)]))((acc, bundleFiles) => Def.task(acc.value ++ bundleFiles.value))
             .value
         val filtered = filterMappings(mappings, (includeFilter in self).value, (excludeFilter in self).value)
-        filtered ++ bundles ++ WebScalaJS.sourcemapScalaFiles(sjsStage).value
+        val bundlesWithSourceMaps =
+          bundles.flatMap { case (file, path) =>
+            val sourceMapFile = file.getParentFile / (file.name ++ ".map")
+            val sourceMapPath = path ++ ".map"
+            Seq(file -> path, sourceMapFile -> sourceMapPath)
+          }
+        filtered ++ bundlesWithSourceMaps ++ WebScalaJS.sourcemapScalaFiles(sjsStage).value
       }
     }
 

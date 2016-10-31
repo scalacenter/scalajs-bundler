@@ -24,28 +24,61 @@ object ReloadWorkflow {
 
   /**
     * @return A file that contains the concatenation of the dependencies bundle and the output of the Scala.js compilation
+    * @param emitSourceMaps Whether to emit source maps at all
     * @param bundledDependencies Pre-bundled dependencies
     * @param loader `require` implementation
     * @param launcher Entry point launcher
     * @param sjsOutput Output of Scala.js
+    * @param workingDir NPM working directory
     * @param targetDir Target directory (where to write the bundle)
     */
   def writeFakeBundle(
+    emitSourceMaps: Boolean,
     bundledDependencies: File,
     loader: File,
     launcher: File,
     sjsOutput: File,
-    targetDir: File
+    workingDir: File,
+    targetDir: File,
+    logger: Logger
   ): File = {
     val moduleName = sjsOutput.name.stripSuffix(".js")
     val bundle = targetDir / s"$moduleName-bundle.js" // Because scalajs.webpack.config.js defines the output as "[name]-bundle.js"
-    IO.copyFile(bundledDependencies, bundle)
-    IO.append(bundle, "\n")
-    IO.append(bundle, IO.readBytes(loader)) // shims `require`
-    IO.append(bundle, ";\n")
-    IO.append(bundle, IO.readBytes(sjsOutput))
-    IO.append(bundle, "\n")
-    IO.append(bundle, IO.readBytes(launcher))
+    if (emitSourceMaps) {
+      logger.info("Bundling dependencies with source maps")
+      val concatContent =
+        JS.let(
+          JS.ref("require")(JS.str("concat-with-sourcemaps")),
+          JS.ref("require")(JS.str("fs"))
+        ) { (Concat, fs) =>
+          JS.let(JS.`new`(Concat, JS.bool(true), JS.str(bundle.name), JS.str(";\n"))) { concat =>
+            JS.block(
+              (concat `.` "add")(JS.str(bundledDependencies.absolutePath), (fs `.` "readFileSync")(JS.str(bundledDependencies.absolutePath))),
+              (concat `.` "add")(JS.str(loader.absolutePath), (fs `.` "readFileSync")(JS.str(loader.absolutePath))),
+              (concat `.` "add")(JS.str(sjsOutput.absolutePath), (fs `.` "readFileSync")(JS.str(sjsOutput.absolutePath)), (fs `.` "readFileSync")(JS.str(sjsOutput.absolutePath ++ ".map"), JS.str("utf-8"))),
+              (concat `.` "add")(JS.str(launcher.absolutePath), (fs `.` "readFileSync")(JS.str(launcher.absolutePath))),
+              JS.let(JS.`new`(JS.ref("Buffer"), JS.str(s"\n//# sourceMappingURL=${bundle.name ++ ".map"}\n"))) { endBuffer =>
+                JS.let((JS.ref("Buffer") `.` "concat")(JS.arr(concat `.` "content", endBuffer))) { result =>
+                  (fs `.` "writeFileSync")(JS.str(bundle.absolutePath), result)
+                }
+              },
+              (fs `.` "writeFileSync")(JS.str(bundle.absolutePath ++ ".map"), concat `.` "sourceMap")
+            )
+          }
+        }
+      val concatFile = targetDir / "scalajsbundler-concat.js"
+      IO.write(concatFile, concatContent.show)
+      Commands.run(s"node ${concatFile.absolutePath}", workingDir, logger)
+    } else {
+      logger.info("Bundling dependencies")
+      IO.copyFile(bundledDependencies, bundle)
+      IO.append(bundle, "\n")
+      IO.append(bundle, IO.readBytes(loader)) // shims `require`
+      IO.append(bundle, ";\n")
+      IO.append(bundle, IO.readBytes(sjsOutput))
+      IO.append(bundle, "\n")
+      IO.append(bundle, IO.readBytes(launcher))
+    }
     bundle
   }
 

@@ -11,13 +11,17 @@ object ReloadWorkflowTasks {
 
   def webpackTask(stage: TaskKey[Attributed[File]]): Def.Initialize[Task[Seq[File]]] =
     Def.task {
+      val targetDir = (crossTarget in stage).value
       Seq(
         ReloadWorkflow.writeFakeBundle(
+          (webpackEmitSourceMaps in stage).value,
           bundleDependenciesTask(stage).value,
           writeLoaderTask(stage).value,
           writeLauncherTask(stage).value,
           stage.value.data,
-          (crossTarget in stage).value
+          targetDir,
+          targetDir,
+          streams.value.log
         )
       )
     }
@@ -33,7 +37,7 @@ object ReloadWorkflowTasks {
           ScalaJSPluginInternal.scalaJSLinker.value,
           scalaJSIR.value.data,
           scalaJSOutputMode.value,
-          emitSourceMaps.value,
+          (emitSourceMaps in stage).value,
           logger
         )
       cached(
