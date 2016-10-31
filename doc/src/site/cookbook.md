@@ -73,11 +73,3 @@ has to include the `sbt-scalajs-bundler` plugin.
 > {.warning}
 > If the project that uses the facade does not include the `sbt-scalajs-bundler` plugin, the npm dependencies
 > of the facade will not be resolved.
-
-## How to improve the performance of the bundling process? {#performance}
-
-As reported [here](https://github.com/scalacenter/scalajs-bundler/issues/1#issuecomment-254153548),
-webpack might have pain to bundle your application, if this one is big (the `fastOptJS` output of
-a 5k SLOC application can weigh more than 4MB). To our knowledge,
-the fastest configuration is to bundle the output of `fastOptJS` with
-[disabled source maps](reference.md).

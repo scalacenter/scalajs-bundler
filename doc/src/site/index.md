@@ -7,5 +7,5 @@ scalajs-bundler uses [npm](https://www.npmjs.com) and [webpack](https://webpack.
 
 Last stable version is ![](config:version).
 
-[Get started](getting-started.md) now, [contribute](https://github.com/scalacenter/scalajs-bundler), or [get
+[**Get started**](getting-started.md), [contribute](https://github.com/scalacenter/scalajs-bundler), or [get
 in touch](https://gitter.im/scalacenter/scalajs-bundler)!

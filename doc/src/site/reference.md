@@ -44,6 +44,12 @@ You can use [semver](https://docs.npmjs.com/misc/semver) versions.
 
 `npmDevDependencies`: list of the NPM packages (name and version) your build depends on.
 
+`enableReloadWorkflow`: whether to enable the “reload workflow” for `webpack in fastOptJS`.
+When enabled, dependencies are pre-bundled so that the output of `fastOptJS` can directly
+be executed by a web browser without being further processed by a bundling system. This
+reduces the delays when live-reloading the application on source modifications. Defaults
+to `true`.
+
 `webpackEntries`: list of entry bundles to generate. By default it generates just one bundle
 for your main class.
 
