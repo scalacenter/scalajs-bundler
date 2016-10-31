@@ -1,11 +1,8 @@
 name := "static"
 
-enablePlugins(ScalaJSPlugin)
+enablePlugins(ScalaJSBundlerPlugin)
 
 scalaVersion := "2.11.8"
-
-// Tells Scala.js to produce a Node.js module
-scalaJSModuleKind := ModuleKind.CommonJSModule
 
 // Adds a dependency on the Scala facade for the DOM API
 libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "0.9.1"
@@ -30,5 +27,5 @@ InputKey[Unit]("html") := {
 }
 
 TaskKey[Unit]("checkSize") := {
-  assert(IO.readBytes((webpack in (Compile, fullOptJS)).value.head).length == 19431)
+  assert(IO.readBytes((webpack in (Compile, fullOptJS)).value.head).length == 19425)
 }

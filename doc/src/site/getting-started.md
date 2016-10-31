@@ -14,10 +14,10 @@ addSbtPlugin("ch.epfl.scala" % "sbt-scalajs-bundler" % "{{version}}")
 > {.note}
 > Note that the plugin requires Scala.js 0.6.13+.
 
-Set the `scalaJSModuleKind` setting to `CommonJSModule`, in your `build.sbt` file:
+Enable the `ScalaJSBundlerPlugin`, in your `build.sbt` file:
 
 ~~~ scala
-scalaJSModuleKind := ModuleKind.CommonJSModule
+enablePlugins(ScalaJSBundlerPlugin)
 ~~~
 
 Add dependencies to the npm packages your application requires, in your `build.sbt` file, e.g.:
@@ -29,7 +29,7 @@ npmDependencies in Compile += "snabbdom" -> "0.5.3"
 Then, use the `fastOptJS::webpack` sbt command to download the npm packages and bundle your Scala.js
 application into a JavaScript file executable by a web browser.
 
-See complete examples in the [`tests`](https://github.com/scalacenter/scalajs-bundler/tree/master/sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler).
+See complete examples in the [tests](https://github.com/scalacenter/scalajs-bundler/tree/master/sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler).
 
 ## Integrating with sbt-web {#sbt-web}
 
@@ -39,12 +39,16 @@ For sbt-web integration use the `sbt-web-scalajs-bundler` plugin instead of `sbt
 addSbtPlugin("ch.epfl.scala" % "sbt-web-scalajs-bundler" % "{{version}}")
 ~~~
 
-You also need to setup the [`sbt-web-scalajs`](https://github.com/vmunier/sbt-web-scalajs) plugins
-as described in their documentation.
+Then, enable the `WebScalaJSBundlerPlugin` on the project that uses sbt-web:
 
-The `sbt-web-scalajs-bundler` plugin automatically configures the `scalaJSPipeline` task to use
+~~~ scala
+enablePlugins(WebScalaJSBundlerPlugin)
+~~~
+
+You also need to setup the `ScalaJSBundlerPlugin` on the Scala.js project, as described in the preceding section, and
+the `sbt-web-scalajs` plugins as described in [their documentation](https://github.com/vmunier/sbt-web-scalajs).
+
+The `WebScalaJSBundlerPlugin` plugin automatically configures the `scalaJSPipeline` task to use
 the bundles rather than the output of the Scala.js compilation.
-
-The other steps are the same as in the basic setup.
 
 You can see a complete example [here](https://github.com/scalacenter/scalajs-bundler/tree/master/sbt-web-scalajs-bundler/src/sbt-test/sbt-web-scalajs-bundler/play).
