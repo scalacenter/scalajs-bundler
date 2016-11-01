@@ -29,6 +29,10 @@ npmDependencies in Test += "jasmine" -> "2.5.2"
 > [`@JSImport`](https://www.scala-js.org/doc/interoperability/facade-types.html#a-nameimporta-imports-from-other-javascript-modules)
 > in order to work with the npm modules.
 
+Last but not least, the `.js` files that are in your classpath are automatically copied to the
+working directory of the `node` command. This means that you can also `@JSImport` these modules from
+your Scala facades.
+
 The two remaining sections describe the sbt tasks and settings provided by the plugin.
 
 ## Tasks {#tasks}
