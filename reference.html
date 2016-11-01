@@ -40,9 +40,10 @@
               
               <main class="columns large-order-2 sections" id="_sections">
                 <h1 id="reference" class="a_section" data-magellan-target="reference">Reference<a class="a_hlink" href="#reference"></a></h1>
-<p>The sbt plugin is automatically enabled on projects where <code class="hljs">ScalaJSPlugin</code> is enabled. It configures the
-execution environment so that npm packages are fetched (by running the <code class="hljs">npm update</code> command in the project’s
-target directory) before the project is <code class="hljs">run</code> or <code class="hljs">test</code>ed.</p>
+<p>The <code class="hljs">ScalaJSBundlerPlugin</code> sbt plugin automatically enables <code class="hljs">ScalaJSPlugin</code> on the project. It configures
+the kind of output of the project to be <code class="hljs">ModuleKind.CommonJSModule</code>. Finally, it also configures its
+execution environment so that npm packages are fetched (by running the <code class="hljs">npm update</code> command in the
+project’s target directory) before the project is <code class="hljs">run</code> or <code class="hljs">test</code>ed.</p>
 <p>It is also possible to bundle the application and its dependencies into a single .js file by using
 the <code class="hljs">webpack</code> task scoped to a Scala.js stage (<code class="hljs">fastOptJS</code> or <code class="hljs">fullOptJS</code>):</p>
 <div class="row">
@@ -64,6 +65,9 @@ the <code class="hljs">webpack</code> task scoped to a Scala.js stage (<code cla
 <a href="https://www.scala-js.org/doc/interoperability/facade-types.html#a-nameimporta-imports-from-other-javascript-modules"><code class="hljs">@JSImport</code></a>
 in order to work with the npm modules.</p>
 </blockquote>
+<p>Last but not least, the <code class="hljs">.js</code> files that are in your classpath are automatically copied to the
+working directory of the <code class="hljs">node</code> command. This means that you can also <code class="hljs">@JSImport</code> these modules from
+your Scala facades.</p>
 <p>The two remaining sections describe the sbt tasks and settings provided by the plugin.</p>
 <h2 id="tasks" class="a_section" data-magellan-target="tasks">Tasks<a class="a_hlink" href="#tasks"></a></h2>
 <p><code class="hljs">webpack</code>: Bundles the output of a Scala.js stage. For instance, to bundle the
@@ -73,6 +77,11 @@ output of <code class="hljs">fastOptJS</code>, run the following sbt task: <code
 <p><code class="hljs">npmDependencies</code>: list of the NPM packages (name and version) your application depends on.
 You can use <a href="https://docs.npmjs.com/misc/semver">semver</a> versions.</p>
 <p><code class="hljs">npmDevDependencies</code>: list of the NPM packages (name and version) your build depends on.</p>
+<p><code class="hljs">enableReloadWorkflow</code>: whether to enable the “reload workflow” for <code class="hljs">webpack in fastOptJS</code>.
+When enabled, dependencies are pre-bundled so that the output of <code class="hljs">fastOptJS</code> can directly
+be executed by a web browser without being further processed by a bundling system. This
+reduces the delays when live-reloading the application on source modifications. Defaults
+to <code class="hljs">true</code>.</p>
 <p><code class="hljs">webpackEntries</code>: list of entry bundles to generate. By default it generates just one bundle
 for your main class.</p>
 <p><code class="hljs">version in webpack</code>: version of webpack to use. Example of use:</p>
@@ -146,7 +155,7 @@ disable source maps you can just configure the <code class="hljs">emitSourceMaps
   
   <li >
     
-      <a href="issues.html">Known issues</a>
+      <a href="changelog.html">Changelog</a>
     
     
   </li>

@@ -45,15 +45,15 @@
 system.</p>
 <p>Add the <code class="hljs">sbt-scalajs-bundler</code> plugin to your Scala.js project, in your <code class="hljs">project/plugins.sbt</code> file:</p>
 <div class="row">
-<pre class="hljs small-expand columns a_xscroll"><code class="language-scala">addSbtPlugin(<span class="hljs-string">"ch.epfl.scala"</span> % <span class="hljs-string">"sbt-scalajs-bundler"</span> % <span class="hljs-string">"0.1"</span>)
+<pre class="hljs small-expand columns a_xscroll"><code class="language-scala">addSbtPlugin(<span class="hljs-string">"ch.epfl.scala"</span> % <span class="hljs-string">"sbt-scalajs-bundler"</span> % <span class="hljs-string">"0.2"</span>)
 </code></pre>
 </div>
 <blockquote class="note">
 <p>Note that the plugin requires Scala.js 0.6.13+.</p>
 </blockquote>
-<p>Set the <code class="hljs">scalaJSModuleKind</code> setting to <code class="hljs">CommonJSModule</code>, in your <code class="hljs">build.sbt</code> file:</p>
+<p>Enable the <code class="hljs">ScalaJSBundlerPlugin</code>, in your <code class="hljs">build.sbt</code> file:</p>
 <div class="row">
-<pre class="hljs small-expand columns a_xscroll"><code class="language-scala">scalaJSModuleKind := <span class="hljs-type">ModuleKind</span>.<span class="hljs-type">CommonJSModule</span>
+<pre class="hljs small-expand columns a_xscroll"><code class="language-scala">enablePlugins(<span class="hljs-type">ScalaJSBundlerPlugin</span>)
 </code></pre>
 </div>
 <p>Add dependencies to the npm packages your application requires, in your <code class="hljs">build.sbt</code> file, e.g.:</p>
@@ -63,18 +63,22 @@ system.</p>
 </div>
 <p>Then, use the <code class="hljs">fastOptJS::webpack</code> sbt command to download the npm packages and bundle your Scala.js
 application into a JavaScript file executable by a web browser.</p>
-<p>See complete examples in the <a href="https://github.com/scalacenter/scalajs-bundler/tree/master/sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler"><code class="hljs">tests</code></a>.</p>
+<p>See complete examples in the <a href="https://github.com/scalacenter/scalajs-bundler/tree/master/sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler">tests</a>.</p>
 <h2 id="sbt-web" class="a_section" data-magellan-target="sbt-web">Integrating with sbt-web<a class="a_hlink" href="#sbt-web"></a></h2>
 <p>For sbt-web integration use the <code class="hljs">sbt-web-scalajs-bundler</code> plugin instead of <code class="hljs">sbt-scalajs-bundler</code>:</p>
 <div class="row">
-<pre class="hljs small-expand columns a_xscroll"><code class="language-scala">addSbtPlugin(<span class="hljs-string">"ch.epfl.scala"</span> % <span class="hljs-string">"sbt-web-scalajs-bundler"</span> % <span class="hljs-string">"0.1"</span>)
+<pre class="hljs small-expand columns a_xscroll"><code class="language-scala">addSbtPlugin(<span class="hljs-string">"ch.epfl.scala"</span> % <span class="hljs-string">"sbt-web-scalajs-bundler"</span> % <span class="hljs-string">"0.2"</span>)
 </code></pre>
 </div>
-<p>You also need to setup the <a href="https://github.com/vmunier/sbt-web-scalajs"><code class="hljs">sbt-web-scalajs</code></a> plugins
-as described in their documentation.</p>
-<p>The <code class="hljs">sbt-web-scalajs-bundler</code> plugin automatically configures the <code class="hljs">scalaJSPipeline</code> task to use
+<p>Then, enable the <code class="hljs">WebScalaJSBundlerPlugin</code> on the project that uses sbt-web:</p>
+<div class="row">
+<pre class="hljs small-expand columns a_xscroll"><code class="language-scala">enablePlugins(<span class="hljs-type">WebScalaJSBundlerPlugin</span>)
+</code></pre>
+</div>
+<p>You also need to setup the <code class="hljs">ScalaJSBundlerPlugin</code> on the Scala.js project, as described in the preceding section, and
+the <code class="hljs">sbt-web-scalajs</code> plugins as described in <a href="https://github.com/vmunier/sbt-web-scalajs">their documentation</a>.</p>
+<p>The <code class="hljs">WebScalaJSBundlerPlugin</code> plugin automatically configures the <code class="hljs">scalaJSPipeline</code> task to use
 the bundles rather than the output of the Scala.js compilation.</p>
-<p>The other steps are the same as in the basic setup.</p>
 <p>You can see a complete example <a href="https://github.com/scalacenter/scalajs-bundler/tree/master/sbt-web-scalajs-bundler/src/sbt-test/sbt-web-scalajs-bundler/play">here</a>.</p>
 
               </main>
@@ -122,7 +126,7 @@ the bundles rather than the output of the Scala.js compilation.</p>
   
   <li >
     
-      <a href="issues.html">Known issues</a>
+      <a href="changelog.html">Changelog</a>
     
     
   </li>

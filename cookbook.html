@@ -45,7 +45,6 @@
 <ul>
 <li><a href="cookbook.html#custom-config">How to use a custom webpack configuration file?</a></li>
 <li><a href="cookbook.html#facade">How to publish a facade for an npm module?</a></li>
-<li><a href="cookbook.html#performance">How to improve the performance of the bundling process?</a></li>
 </ul>
 </li>
 </ul>
@@ -80,7 +79,11 @@ also <code class="hljs">require</code> these dependencies).</p>
 <p>You can find a working example of custom configuration file
 <a href="https://github.com/scalacenter/scalajs-bundler/blob/master/sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler/static/prod.webpack.config.js">here</a>.</p>
 <h2 id="facade" class="a_section" data-magellan-target="facade">How to publish a facade for an npm module?<a class="a_hlink" href="#facade"></a></h2>
-<p>Create a Scala.js project for the facade and add the <code class="hljs">sbt-scalajs-bundler</code> plugin to it.</p>
+<p>Create a project for the facade and enable the <code class="hljs">ScalaJSBundlerPlugin</code> plugin on its <code class="hljs">build.sbt</code>:</p>
+<div class="row">
+<pre class="hljs small-expand columns a_xscroll"><code class="language-scala">enablePlugins(<span class="hljs-type">ScalaJSBundlerPlugin</span>)
+</code></pre>
+</div>
 <p>Add a dependency on the npm package you are interested in:</p>
 <div class="row">
 <pre class="hljs small-expand columns a_xscroll"><code class="language-scala">npmDependencies in <span class="hljs-type">Compile</span> += <span class="hljs-string">"foo"</span> -&gt; <span class="hljs-string">"1.0"</span>
@@ -105,15 +108,9 @@ annotation on the modules:</p>
 <p>Finally, to use the facade from another Scala.js project, this one needs to add a dependency on the facade, but it also
 has to include the <code class="hljs">sbt-scalajs-bundler</code> plugin.</p>
 <blockquote class="warning">
-<p>If the project that uses the facade does not include the <code class="hljs">sbt-scalajs-bundler</code> plugin, the npm dependencies
-of the facade will not be resolved.</p>
+<p>Projects that <strong>use</strong> the facade also have to enable the <code class="hljs">ScalaJSBundlerPlugin</code> plugin,
+otherwise the dependencies of the facade will not be resolved.</p>
 </blockquote>
-<h2 id="performance" class="a_section" data-magellan-target="performance">How to improve the performance of the bundling process?<a class="a_hlink" href="#performance"></a></h2>
-<p>As reported <a href="https://github.com/scalacenter/scalajs-bundler/issues/1#issuecomment-254153548">here</a>,
-webpack might have pain to bundle your application, if this one is big (the <code class="hljs">fastOptJS</code> output of
-a 5k SLOC application can weigh more than 4MB). To our knowledge,
-the fastest configuration is to bundle the output of <code class="hljs">fastOptJS</code> with
-<a href="reference.html">disabled source maps</a>.</p>
 
               </main>
               
@@ -160,7 +157,7 @@ the fastest configuration is to bundle the output of <code class="hljs">fastOptJ
   
   <li >
     
-      <a href="issues.html">Known issues</a>
+      <a href="changelog.html">Changelog</a>
     
     
   </li>
@@ -193,13 +190,6 @@ the fastest configuration is to bundle the output of <code class="hljs">fastOptJ
   <li>
     
        <a href="#facade">How to publish a facade for an npm module?</a> 
-    
-    
-  </li>
-  
-  <li>
-    
-       <a href="#performance">How to improve the performance of the bundling process?</a> 
     
     
   </li>

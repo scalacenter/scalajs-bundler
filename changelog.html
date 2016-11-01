@@ -4,10 +4,10 @@
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Known issues</title>
+    <title>Changelog</title>
     <link rel="stylesheet" href="_theme/css/foundation.min.css">
     <link rel="stylesheet" href="_theme/css/app.css">
-    
+     <link rel="stylesheet" href="_theme/css/highlight.js/styles/github-gist.css"> 
   </head>
   <body>
     <div class="expanded row">
@@ -39,12 +39,22 @@
             <div class="row">
               
               <main class="columns large-order-2 sections" id="_sections">
-                <h1 id="known-issues" class="a_section" data-magellan-target="known-issues">Known issues<a class="a_hlink" href="#known-issues"></a></h1>
-<h2 id="bundling-time" class="a_section" data-magellan-target="bundling-time">Bundling time<a class="a_hlink" href="#bundling-time"></a></h2>
-<p>Bundling time for large applications can be long. See the numbers
-<a href="https://github.com/scalacenter/scalajs-bundler/issues/1#issuecomment-254153548">here</a>.</p>
-<p>We are working on solutions to this problem. In the meanwhile, you can
-follow <a href="cookbook.html#performance">this advice</a>.</p>
+                <h1 id="changelog" class="a_section" data-magellan-target="changelog">Changelog<a class="a_hlink" href="#changelog"></a></h1>
+<h2 id="version-0.2" class="a_section" data-magellan-target="version-0.2">Version 0.2<a class="a_hlink" href="#version-0.2"></a></h2>
+<blockquote>
+<p>2016 November 1</p>
+</blockquote>
+<ul>
+<li><a href="https://github.com/scalacenter/scalajs-bundler/pull/14">#14</a>: Improved documentation ;</li>
+<li><a href="https://github.com/scalacenter/scalajs-bundler/pull/17">#17</a>: Faster live-reloading workflow
+(<code class="hljs">fastOptJS::webpack</code> is ~10x faster) ;</li>
+<li><a href="https://github.com/scalacenter/scalajs-bundler/issues/18">#18</a>: <code class="hljs">ScalaJSBundlerPlugin</code> is not
+anymore automatically triggered: you have to manually enable it on your projects.
+<code class="hljs">scalaJSModuleKind</code> is automatically set to <code class="hljs">ModuleKind.CommonJSModule</code> when <code class="hljs">ScalaJSBundlerPlugin</code>
+is enabled, so you don’t anymore have to set it in your build ;</li>
+<li><a href="https://github.com/scalacenter/scalajs-bundler/pull/20">#20</a>: JavaScript files that are on
+the classpath can be <code class="hljs">@JSImport</code>ed by your Scala facades.</li>
+</ul>
 
               </main>
               
@@ -91,7 +101,7 @@ follow <a href="cookbook.html#performance">this advice</a>.</p>
   
   <li  class="a_thispage" >
     
-      <a href="issues.html">Known issues</a>
+      <a href="changelog.html">Changelog</a>
     
     
   </li>
@@ -110,13 +120,13 @@ follow <a href="cookbook.html#performance">this advice</a>.</p>
                        
   <li>
     
-       <a href="#known-issues">Known issues</a> 
+       <a href="#changelog">Changelog</a> 
     
     
       <ul class="vertical menu">  
   <li>
     
-       <a href="#bundling-time">Bundling time</a> 
+       <a href="#version-0.2">Version 0.2</a> 
     
     
   </li>
