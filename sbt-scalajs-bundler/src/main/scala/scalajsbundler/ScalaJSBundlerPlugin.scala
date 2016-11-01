@@ -93,6 +93,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
     npmUpdate in stage := Def.task {
       val log = streams.value.log
       val targetDir = (crossTarget in stage).value
+      val jsResources = scalaJSNativeLibraries.value.data
 
       val cachedActionFunction =
         FileFunction.cached(
@@ -100,6 +101,9 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
           inStyle = FilesInfo.hash
         ) { _ =>
           Commands.npmUpdate(targetDir, log)
+          jsResources.foreach { resource =>
+            IO.write(targetDir / resource.relativePath, resource.content)
+          }
           Set.empty
         }
 
