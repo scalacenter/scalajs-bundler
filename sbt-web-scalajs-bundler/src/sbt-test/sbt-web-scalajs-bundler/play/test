@@ -9,3 +9,5 @@ $ exists client/target/scala-2.11/client-opt-bundle.js
 > clean
 > server/test
 > client/test
+
+> server/stage
