@@ -3,6 +3,10 @@ package scalajsbundler
 import sbt._
 
 object Commands {
+  private val npm = sys.props("os.name").toLowerCase match {
+    case os if os.contains("win") ⇒ "cmd /c npm"
+    case _ ⇒ "npm"
+  }
 
   /**
     * Runs the `npm update` command
@@ -11,7 +15,7 @@ object Commands {
     */
   def npmUpdate(cwd: File, log: Logger): Unit = {
     log.info("Updating NPM dependencies")
-    run("npm update", cwd, log)
+    run(s"$npm update", cwd, log)
   }
 
   /**
@@ -21,7 +25,7 @@ object Commands {
     */
   def bundle(cwd: File, log: Logger): Unit = {
     log.info("Bundling the application with its NPM dependencies")
-    run("npm run bundle", cwd, log)
+    run(s"$npm run bundle", cwd, log)
   }
 
   def run(cmd: String, cwd: File, errorLogger: Logger): Unit = {
