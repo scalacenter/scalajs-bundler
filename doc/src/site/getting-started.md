@@ -26,6 +26,12 @@ Add dependencies to the npm packages your application requires, in your `build.s
 npmDependencies in Compile += "snabbdom" -> "0.5.3"
 ~~~
 
+> {.note}
+> You will most probably want to write a Scala.js facade for your module. You can get some help in the Scala.js
+> [documentation](https://www.scala-js.org/doc/interoperability/facade-types.html#a-nameimporta-imports-from-other-javascript-modules),
+> or have a look at
+> [this example](https://github.com/scalacenter/scalajs-bundler/blob/master/sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler/browserless/src/main/scala/uuid/uuid.scala).
+
 Then, use the `fastOptJS::webpack` sbt command to download the npm packages and bundle your Scala.js
 application into a JavaScript file executable by a web browser.
 
