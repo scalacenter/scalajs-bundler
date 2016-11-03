@@ -62,9 +62,9 @@ system.</p>
 </code></pre>
 </div>
 <blockquote class="note">
-<p>You will most probably want to write a Scala.js facade for your module. You can get some help in the Scala.js
-<a href="https://www.scala-js.org/doc/interoperability/facade-types.html#a-nameimporta-imports-from-other-javascript-modules">documentation</a>,
-or have a look at
+<p>You will most probably want to write a <a href="https://www.scala-js.org/doc/interoperability/facade-types.html">Scala.js facade</a>
+for your module. You can find information on how to do that in the
+<a href="cookbook.html#facade">cookbook</a>, or draw inspiration from
 <a href="https://github.com/scalacenter/scalajs-bundler/blob/master/sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler/browserless/src/main/scala/uuid/uuid.scala">this example</a>.</p>
 </blockquote>
 <p>Then, use the <code class="hljs">fastOptJS::webpack</code> sbt command to download the npm packages and bundle your Scala.js
