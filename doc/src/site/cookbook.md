@@ -39,24 +39,30 @@ also `require` these dependencies).
 You can find a working example of custom configuration file
 [here](https://github.com/scalacenter/scalajs-bundler/blob/master/sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler/static/prod.webpack.config.js).
 
-## How to publish a facade for an npm module? {#facade}
+## How to use npm modules from Scala code? {#facade}
 
-Create a project for the facade and enable the `ScalaJSBundlerPlugin` plugin on its `build.sbt`:
+Once you have [added npm dependencies](getting-started.md) to the packages you are interested
+in, you have to *import* them from your code to effectively use them.
 
-~~~ scala
-enablePlugins(ScalaJSBundlerPlugin)
+The recommended way to do that is to:
+
+1. Write a [Scala.js](https://www.scala-js.org/doc/interoperability/facade-types.html)
+  facade annotated with
+  [`@JSImport`](https://www.scala-js.org/doc/interoperability/facade-types.html#a-nameimporta-imports-from-other-javascript-modules) ;
+2. Refer to this facade from your code.
+
+Let’s illustrate this with an example. Say that you want to write a facade for the following
+npm module:
+
+~~~ javascript tab="foo.js (CommonJS)"
+exports.bar = function (i) { return i + 1 };
 ~~~
 
-Add a dependency on the npm package you are interested in:
-
-~~~ scala
-npmDependencies in Compile += "foo" -> "1.0"
+~~~ javascript tab="foo.js (ES6)"
+export const bar = i => i + 1;
 ~~~
 
-Define facade interfaces for the npm modules you are interested in, as explained in the Scala.js
-[documentation](https://www.scala-js.org/doc/interoperability/facade-types.html). Be sure to add the
-[`@JSImport`](https://www.scala-js.org/doc/interoperability/facade-types.html#a-nameimporta-imports-from-other-javascript-modules)
-annotation on the modules:
+The corresponding Scala.js facade looks like the following:
 
 ~~~ scala
 import scala.scalajs.js
@@ -65,14 +71,49 @@ import import scala.scalajs.js.annotation.JSImport
 @JSImport("foo", JSImport.Namespace)
 @js.native
 object foo extends js.Object {
-  // here write the type signature of the fields exported by the `foo` module
+  def bar(i: Int): Int = js.native
 }
 ~~~
 
-Then you can publish your Scala.js project as usual.
+There are several points worth highlighting:
 
-Finally, to use the facade from another Scala.js project, this one needs to add a dependency on the facade, but it also
-has to include the `sbt-scalajs-bundler` plugin.
+- The first parameter of the `@JSImport` annotation is the npm module path. This is
+  the value you would pass to the
+  [Nodejs `require`](https://nodejs.org/docs/latest/api/modules.html#modules_all_together)
+  function ;
+- The second parameter of `@JSImport` is the name of the imported member, or like in our
+  case, `JSImport.Namespace`, to import the whole module instead of just one particular
+  member ;
+- The facade is concrete. It can either be a Scala `object` or a `class` ;
+- The facade has a
+  [“JS native” type](https://www.scala-js.org/doc/interoperability/facade-types.html).
+
+> {.note}
+> Other styles of facades (importing a member in particular, importing functions and classes,
+> importing local JavaScript files, etc.) can be found in
+> [these tests](https://github.com/scalacenter/scalajs-bundler/blob/master/sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler/facade-examples).
+
+Finally, in your Scala code, just refer to the `foo` object:
+
+~~~ scala
+object Main extends JSApp {
+  def main(): Unit = {
+    println(foo.bar(42))
+  }
+}
+~~~
+
+## How to publish a facade for an npm module? {#publish}
+
+Create a project for the facade and enable the `ScalaJSBundlerPlugin` as described
+[here](getting-started.md).
+
+Implement the facade as explained in the [above section](cookbook.md#facade).
+
+Publish the Scala.js project [as usual](http://www.scala-sbt.org/1.0/docs/Publishing.html).
+
+Finally, to use the facade from another Scala.js project, this one needs both to add a
+dependency on the facade and to enable the `ScalaJSBundlerPlugin` plugin.
 
 > {.warning}
 > Projects that **use** the facade also have to enable the `ScalaJSBundlerPlugin` plugin,
