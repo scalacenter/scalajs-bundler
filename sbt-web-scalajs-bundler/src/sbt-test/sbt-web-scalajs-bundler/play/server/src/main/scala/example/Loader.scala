@@ -3,6 +3,7 @@ package example
 import controllers.Assets
 import play.api.ApplicationLoader.Context
 import play.api.{ApplicationLoader, BuiltInComponentsFromContext}
+import router.Routes
 
 class Loader extends ApplicationLoader {
   def load(context: Context) = new ExampleComponents(context).application
