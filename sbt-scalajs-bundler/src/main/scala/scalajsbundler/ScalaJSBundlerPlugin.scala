@@ -170,7 +170,9 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       cachedActionFunction(Set(
         configFiles.webpackConfig,
         configFiles.packageJson
-      ) ++ entries.map(_._2).to[Set] + stage.value.data).to[Seq] // Note: the entries should be enough, excepted that they currently are launchers, which do not change even if the scalajs stage output changes
+      ) ++
+        (webpackConfigFile in stage).value.map(Set(_)).getOrElse(Set.empty) ++
+        entries.map(_._2).to[Set] + stage.value.data).to[Seq] // Note: the entries should be enough, excepted that they currently are launchers, which do not change even if the scalajs stage output changes
     }.dependsOn(npmUpdate in stage)
 
 }
