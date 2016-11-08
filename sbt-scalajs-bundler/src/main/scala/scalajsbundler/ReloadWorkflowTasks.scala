@@ -69,7 +69,7 @@ object ReloadWorkflowTasks {
   def writeLauncherTask(stage: TaskKey[Attributed[File]]): Def.Initialize[Task[File]] =
     Def.task {
       val entryPoint =
-        (mainClass in (scalaJSLauncher in stage)).value.getOrElse("No main class detected")
+        (mainClass in (scalaJSLauncher in stage)).value.getOrElse(sys.error("No main class detected"))
       val targetDir = (crossTarget in stage).value
       val launcherFile = targetDir / s"scalajsbundler-${stage.key.label}-launcher.js"
       cached(

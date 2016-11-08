@@ -129,7 +129,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       Launcher.write(
         (crossTarget in stage).value,
         stage.value.data,
-        (mainClass in (scalaJSLauncher in stage)).value.getOrElse("No main class detected")
+        (mainClass in (scalaJSLauncher in stage)).value.getOrElse(sys.error("No main class detected"))
       ),
 
     scalaJSBundlerConfigFiles in stage :=
