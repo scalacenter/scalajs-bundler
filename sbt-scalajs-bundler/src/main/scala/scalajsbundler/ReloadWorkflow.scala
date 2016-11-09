@@ -29,7 +29,7 @@ object ReloadWorkflow {
     * @param loader `require` implementation
     * @param launcher Entry point launcher
     * @param sjsOutput Output of Scala.js
-    * @param workingDir NPM working directory
+    * @param workingDir Nodejs working directory
     * @param targetDir Target directory (where to write the bundle)
     */
   def writeFakeBundle(
@@ -43,7 +43,7 @@ object ReloadWorkflow {
     logger: Logger
   ): File = {
     val moduleName = sjsOutput.name.stripSuffix(".js")
-    val bundle = targetDir / s"$moduleName-bundle.js" // Because scalajs.webpack.config.js defines the output as "[name]-bundle.js"
+    val bundle = targetDir / Webpack.bundleName(moduleName)
     if (emitSourceMaps) {
       logger.info("Bundling dependencies with source maps")
       val concatContent =
@@ -139,12 +139,7 @@ object ReloadWorkflow {
       )
     IO.write(entryPoint, depsFileContent.show)
 
-    val webpackBin = workingDir / "node_modules" / "webpack" / "bin" / "webpack"
-    Commands.run(
-      s"node ${webpackBin.absolutePath} ${entryPoint.absolutePath} ${bundleFile.absolutePath}",
-      workingDir,
-      logger
-    )
+    Webpack.run(entryPoint.absolutePath, bundleFile.absolutePath)(workingDir, logger)
 
     ()
   }
