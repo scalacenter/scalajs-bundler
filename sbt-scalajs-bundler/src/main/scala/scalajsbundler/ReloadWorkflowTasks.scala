@@ -2,9 +2,11 @@ package scalajsbundler
 
 import org.scalajs.sbtplugin.ScalaJSPlugin.AutoImport._
 import org.scalajs.sbtplugin.ScalaJSPluginInternal
+import org.scalajs.sbtplugin.ScalaJSPluginInternal.usesScalaJSLinkerTag
 import sbt.Keys._
 import sbt._
 import ScalaJSBundlerPlugin.autoImport._
+import Caching.cached
 
 /** Sbt tasks related to the reload workflow */
 object ReloadWorkflowTasks {
@@ -27,34 +29,36 @@ object ReloadWorkflowTasks {
     }
 
   def bundleDependenciesTask(stage: TaskKey[Attributed[File]]): Def.Initialize[Task[File]] =
-    Def.task {
-      val targetDir = (crossTarget in stage).value
-      val logger = streams.value.log
-      val entryPointFile = targetDir / "scalajsbundler-entry-point.js"
-      val bundleFile = targetDir / "scalajsbundler-deps.js" // Don’t need to differentiate between stages because the dependencies should not be different between fastOptJS and fullOptJS
-      val importedModules =
-        ReloadWorkflow.findImportedModules(
-          ScalaJSPluginInternal.scalaJSLinker.value,
-          scalaJSIR.value.data,
-          scalaJSOutputMode.value,
-          (emitSourceMaps in stage).value,
-          logger
-        )
-      cached(
-        bundleFile,
-        importedModules.##.toString,
-        streams.value.cacheDirectory / "scalajsbundler-bundle"
-      ) { () =>
-        ReloadWorkflow.bundleDependencies(
-          importedModules,
-          targetDir,
-          entryPointFile,
+    Def.taskDyn {
+      Def.task {
+        val targetDir = (crossTarget in stage).value
+        val logger = streams.value.log
+        val entryPointFile = targetDir / "scalajsbundler-entry-point.js"
+        val bundleFile = targetDir / "scalajsbundler-deps.js" // Don’t need to differentiate between stages because the dependencies should not be different between fastOptJS and fullOptJS
+        val importedModules =
+          ReloadWorkflow.findImportedModules(
+            ScalaJSPluginInternal.scalaJSLinker.value,
+            scalaJSIR.value.data,
+            scalaJSOutputMode.value,
+            (emitSourceMaps in stage).value,
+            logger
+          )
+        cached(
           bundleFile,
-          streams.value.log
-        )
-      }
-      bundleFile
-    }.dependsOn(npmUpdate in stage)
+          importedModules.##.toString,
+          streams.value.cacheDirectory / "scalajsbundler-bundle"
+        ) { () =>
+          ReloadWorkflow.bundleDependencies(
+            importedModules,
+            targetDir,
+            entryPointFile,
+            bundleFile,
+            streams.value.log
+          )
+        }
+        bundleFile
+      }.dependsOn(npmUpdate in stage).tag((usesScalaJSLinkerTag in stage).value)
+    }
 
   def writeLoaderTask(stage: TaskKey[Attributed[File]]): Def.Initialize[Task[File]] =
     Def.task {
@@ -69,7 +73,7 @@ object ReloadWorkflowTasks {
   def writeLauncherTask(stage: TaskKey[Attributed[File]]): Def.Initialize[Task[File]] =
     Def.task {
       val entryPoint =
-        (mainClass in (scalaJSLauncher in stage)).value.getOrElse("No main class detected")
+        (mainClass in (scalaJSLauncher in stage)).value.getOrElse(sys.error("No main class detected"))
       val targetDir = (crossTarget in stage).value
       val launcherFile = targetDir / s"scalajsbundler-${stage.key.label}-launcher.js"
       cached(
@@ -81,18 +85,5 @@ object ReloadWorkflowTasks {
       }
       launcherFile
     }
-
-  def cached(
-    fileToWrite: File,
-    hash: String,
-    cache: File
-  )(
-    write: () => Unit
-  ): Unit = {
-    if (!fileToWrite.exists() || (cache.exists() && IO.read(cache) != hash)) {
-      write()
-      IO.write(cache, hash)
-    }
-  }
 
 }
