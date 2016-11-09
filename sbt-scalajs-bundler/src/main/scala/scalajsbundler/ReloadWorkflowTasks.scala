@@ -6,6 +6,7 @@ import org.scalajs.sbtplugin.ScalaJSPluginInternal.usesScalaJSLinkerTag
 import sbt.Keys._
 import sbt._
 import ScalaJSBundlerPlugin.autoImport._
+import Caching.cached
 
 /** Sbt tasks related to the reload workflow */
 object ReloadWorkflowTasks {
@@ -84,18 +85,5 @@ object ReloadWorkflowTasks {
       }
       launcherFile
     }
-
-  def cached(
-    fileToWrite: File,
-    hash: String,
-    cache: File
-  )(
-    write: () => Unit
-  ): Unit = {
-    if (!fileToWrite.exists() || (cache.exists() && IO.read(cache) != hash)) {
-      write()
-      IO.write(cache, hash)
-    }
-  }
 
 }

@@ -9,7 +9,7 @@ object PackageJson {
     * required to do the bundling.
     *
     * @param log Logger
-    * @param targetDir Directory to write the package.json file into
+    * @param targetFile File to write into
     * @param npmDependencies NPM dependencies
     * @param npmDevDependencies NPM devDependencies
     * @param fullClasspath Classpath (used to look for dependencies of Scala.js libraries this project depends on)
@@ -18,13 +18,13 @@ object PackageJson {
     */
   def write(
     log: Logger,
-    targetDir: File,
+    targetFile: File,
     npmDependencies: Seq[(String, String)],
     npmDevDependencies: Seq[(String, String)],
     fullClasspath: Seq[Attributed[File]],
     currentConfiguration: Configuration,
     webpackVersion: String
-  ): File = {
+  ): Unit = {
     val npmManifestDependencies = NpmDependencies.collectFromClasspath(fullClasspath)
     val dependencies =
       npmDependencies ++ (
@@ -47,10 +47,8 @@ object PackageJson {
         "devDependencies" -> JS.objStr(devDependencies)
       )
     log.debug("Writing 'package.json'")
-    val packageJsonFile = targetDir / "package.json"
-    IO.write(packageJsonFile, JS.toJson(packageJson))
-
-    packageJsonFile
+    IO.write(targetFile, JS.toJson(packageJson))
+    ()
   }
 
 }

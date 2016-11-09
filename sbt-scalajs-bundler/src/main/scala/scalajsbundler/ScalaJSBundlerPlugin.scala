@@ -157,17 +157,28 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       val log = streams.value.log
       val targetDir = (crossTarget in stage).value
       val webpackVersion = (version in webpack).value
+      val currentConfiguration = configuration.value
 
-      // TODO Caching
-      PackageJson.write(
-        log,
-        targetDir,
-        npmDependencies.value,
-        npmDevDependencies.value,
-        fullClasspath.value,
-        configuration.value,
-        webpackVersion
-      )
+      val packageJsonFile = targetDir / "package.json"
+
+      Caching.cached(
+        packageJsonFile,
+        currentConfiguration.name,
+        streams.value.cacheDirectory / "scalajsbundler-package-json"
+      ) { () =>
+        PackageJson.write(
+          log,
+          packageJsonFile,
+          npmDependencies.value,
+          npmDevDependencies.value,
+          fullClasspath.value,
+          configuration.value,
+          webpackVersion
+        )
+        ()
+      }
+
+      packageJsonFile
     }
 
   def webpackTask(stage: TaskKey[Attributed[File]]): Def.Initialize[Task[Seq[File]]] =
