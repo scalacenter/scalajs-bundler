@@ -4,16 +4,19 @@ enablePlugins(ScalaJSBundlerPlugin)
 
 scalaVersion := "2.11.8"
 
-// Adds a dependency on the Scala facade for the DOM API
 libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "0.9.1"
 
-// Adds a dependency on the snabbdom npm package
 npmDependencies in Compile += "snabbdom" -> "0.5.3"
 
-// Uses a different Webpack configuration file for production
+// Use a different Webpack configuration file for production
 webpackConfigFile in fullOptJS := Some(baseDirectory.value / "prod.webpack.config.js")
 
-// Checks that a HTML can be loaded (and that its JavaScript can be executed) without errors
+libraryDependencies += "org.scalatest" %%% "scalatest" % "3.0.0" % Test
+
+// Execute the tests in browser-like environment
+requiresDOM in Test := true
+
+// Check that a HTML can be loaded (and that its JavaScript can be executed) without errors
 InputKey[Unit]("html") := {
   import complete.DefaultParsers._
   val page = (Space ~> StringBasic).parsed

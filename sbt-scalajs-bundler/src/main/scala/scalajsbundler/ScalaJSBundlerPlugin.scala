@@ -3,6 +3,7 @@ package scalajsbundler
 import org.scalajs.core.tools.io.{FileVirtualJSFile, VirtualJSFile}
 import org.scalajs.sbtplugin.ScalaJSPlugin
 import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
+import org.scalajs.sbtplugin.ScalaJSPluginInternal.scalaJSRequestsDOM
 import sbt.Keys._
 import sbt._
 
@@ -130,6 +131,19 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
         AttributeMap.empty.put(name.key, launcher.mainClass)
       )
     },
+
+    scalaJSLinkedFile in stage := Def.taskDyn {
+      // If the program requires the DOM it will be loaded by jsdom, which is unable
+      // to load CommonJS modules. We solve this problem by supplying the bundle instead.
+      if ((scalaJSRequestsDOM in stage).value) Def.task {
+        (webpack in stage).value match {
+          case Seq(single) => FileVirtualJSFile(single): VirtualJSFile
+          case _ => sys.error("You can not run more than one bundle")
+        }
+      } else Def.task {
+        (scalaJSLinkedFile in stage).value
+      }
+    }.value,
 
     scalaJSBundlerLauncher in stage :=
       Launcher.write(
