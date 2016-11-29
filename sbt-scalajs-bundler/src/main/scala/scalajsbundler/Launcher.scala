@@ -2,10 +2,6 @@ package scalajsbundler
 
 import sbt._
 
-import org.scalajs.core.tools.javascript.Trees
-
-import JS.syntax._
-
 /**
   * @param file File that contains the launcher
   * @param mainClass JSMain class fully qualified name
@@ -39,12 +35,12 @@ object Launcher {
     * @param module Module exporting the entry point
     * @return A JavaScript program that calls the main method of the main class
     */
-  def callEntryPoint(mainClass: String, module: Trees.Tree): Trees.Tree = {
+  def callEntryPoint(mainClass: String, module: JS): JS = {
     val mainClassRef =
       mainClass
         .split('.')
-        .foldLeft[Trees.Tree](module)((tree, part) => tree.bracket(part))
-    (mainClassRef() `.` "main")()
+        .foldLeft(module)((tree, part) => tree.bracket(part))
+    mainClassRef.apply().dot("main").apply()
   }
 
 }

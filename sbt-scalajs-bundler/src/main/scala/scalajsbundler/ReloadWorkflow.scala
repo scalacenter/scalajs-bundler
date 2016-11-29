@@ -8,8 +8,6 @@ import org.scalajs.sbtplugin.Loggers
 import org.scalajs.sbtplugin.ScalaJSPlugin.AutoImport._
 import sbt._
 
-import JS.syntax._
-
 /**
   * Faster workflow when a developer changes the source code and then reloads the application.
   *
@@ -53,16 +51,16 @@ object ReloadWorkflow {
         ) { (Concat, fs) =>
           JS.let(JS.`new`(Concat, JS.bool(true), JS.str(bundle.name), JS.str(";\n"))) { concat =>
             JS.block(
-              (concat `.` "add")(JS.str(bundledDependencies.absolutePath), (fs `.` "readFileSync")(JS.str(bundledDependencies.absolutePath))),
-              (concat `.` "add")(JS.str(loader.absolutePath), (fs `.` "readFileSync")(JS.str(loader.absolutePath))),
-              (concat `.` "add")(JS.str(sjsOutput.absolutePath), (fs `.` "readFileSync")(JS.str(sjsOutput.absolutePath)), (fs `.` "readFileSync")(JS.str(sjsOutput.absolutePath ++ ".map"), JS.str("utf-8"))),
-              (concat `.` "add")(JS.str(launcher.absolutePath), (fs `.` "readFileSync")(JS.str(launcher.absolutePath))),
+              concat.dot("add").apply(JS.str(bundledDependencies.absolutePath), fs.dot("readFileSync").apply(JS.str(bundledDependencies.absolutePath))),
+              concat.dot("add").apply(JS.str(loader.absolutePath), fs.dot("readFileSync").apply(JS.str(loader.absolutePath))),
+              concat.dot("add").apply(JS.str(sjsOutput.absolutePath), fs.dot("readFileSync").apply(JS.str(sjsOutput.absolutePath)), fs.dot("readFileSync").apply(JS.str(sjsOutput.absolutePath ++ ".map"), JS.str("utf-8"))),
+              concat.dot("add").apply(JS.str(launcher.absolutePath), fs.dot("readFileSync").apply(JS.str(launcher.absolutePath))),
               JS.let(JS.`new`(JS.ref("Buffer"), JS.str(s"\n//# sourceMappingURL=${bundle.name ++ ".map"}\n"))) { endBuffer =>
-                JS.let((JS.ref("Buffer") `.` "concat")(JS.arr(concat `.` "content", endBuffer))) { result =>
-                  (fs `.` "writeFileSync")(JS.str(bundle.absolutePath), result)
+                JS.let(JS.ref("Buffer").dot("concat").apply(JS.arr(concat.dot("content"), endBuffer))) { result =>
+                  fs.dot("writeFileSync").apply(JS.str(bundle.absolutePath), result)
                 }
               },
-              (fs `.` "writeFileSync")(JS.str(bundle.absolutePath ++ ".map"), concat `.` "sourceMap")
+              fs.dot("writeFileSync").apply(JS.str(bundle.absolutePath ++ ".map"), concat.dot("sourceMap"))
             )
           }
         }
@@ -92,8 +90,8 @@ object ReloadWorkflow {
     val window = JS.ref("window")
     val depsLoaderContent =
       JS.block(
-        (window `.` "require") := JS.fun(name => window.bracket((JS.str(modulePrefix) `.` "concat")(name))),
-        (window `.` "exports") := JS.obj()
+        window.dot("require").assign(JS.fun(name => window.bracket(JS.str(modulePrefix).dot("concat").apply(name)))),
+        window.dot("exports").assign(JS.obj())
       )
     IO.write(loader, depsLoaderContent.show)
     ()
@@ -108,7 +106,7 @@ object ReloadWorkflow {
   def writeLauncher(mainClass: String, launcher: File, logger: Logger): Unit = {
     logger.info("Writing the launcher file")
     val window = JS.ref("window")
-    val launcherContent = Launcher.callEntryPoint(mainClass, window `.` "exports")
+    val launcherContent = Launcher.callEntryPoint(mainClass, window.dot("exports"))
     IO.write(launcher, launcherContent.show)
     ()
   }
@@ -134,7 +132,7 @@ object ReloadWorkflow {
     val depsFileContent =
       JS.block(
         imports.map { moduleName =>
-          JS.ref("global").bracket(s"$modulePrefix$moduleName") := JS.ref("require")(JS.str(moduleName))
+          JS.ref("global").bracket(s"$modulePrefix$moduleName").assign(JS.ref("require").apply(JS.str(moduleName)))
         }: _*
       )
     IO.write(entryPoint, depsFileContent.show)
