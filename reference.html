@@ -40,6 +40,7 @@
               
               <main class="columns large-order-2 sections" id="_sections">
                 <h1 id="reference" class="a_section" data-magellan-target="reference">Reference<a class="a_hlink" href="#reference"></a></h1>
+<h2 id="plugin-overview" class="a_section" data-magellan-target="plugin-overview">Plugin Overview<a class="a_hlink" href="#plugin-overview"></a></h2>
 <p>The <code class="hljs">ScalaJSBundlerPlugin</code> sbt plugin automatically enables <code class="hljs">ScalaJSPlugin</code> on the project. It configures
 the kind of output of the project to be <code class="hljs">ModuleKind.CommonJSModule</code>. Finally, it also configures its
 execution environment so that npm packages are fetched (by running the <code class="hljs">npm update</code> command in the
@@ -50,6 +51,10 @@ the <code class="hljs">webpack</code> task scoped to a Scala.js stage (<code cla
 <pre class="hljs small-expand columns a_xscroll"><code class="language-markdown"><span class="hljs-quote">&gt; fastOptJS::webpack</span>
 </code></pre>
 </div>
+<p>The bundling process produces a single file that automatically calls the application entry
+point, so there is no need for an
+<a href="http://www.scala-js.org/doc/project/building.html#writing-launcher-code">additional launcher</a>.</p>
+<h2 id="javascript-dependencies" class="a_section" data-magellan-target="javascript-dependencies">JavaScript Dependencies<a class="a_hlink" href="#javascript-dependencies"></a></h2>
 <p>To define the npm packages your project depends on, use the <code class="hljs">npmDependencies</code> key:</p>
 <div class="row">
 <pre class="hljs small-expand columns a_xscroll"><code class="language-scala">npmDependencies in <span class="hljs-type">Compile</span> += <span class="hljs-string">"node-uuid"</span> -&gt; <span class="hljs-string">"~1.4.7"</span>
@@ -61,17 +66,30 @@ the <code class="hljs">webpack</code> task scoped to a Scala.js stage (<code cla
 </code></pre>
 </div>
 <blockquote class="note">
-<p>Your facades need to use
+<p>Your facades must use
 <a href="https://www.scala-js.org/doc/interoperability/facade-types.html#a-nameimporta-imports-from-other-javascript-modules"><code class="hljs">@JSImport</code></a>
 in order to work with the npm modules.</p>
 </blockquote>
 <p>Last but not least, the <code class="hljs">.js</code> files that are in your classpath are automatically copied to the
 working directory of the <code class="hljs">node</code> command. This means that you can also <code class="hljs">@JSImport</code> these modules from
 your Scala facades.</p>
-<p>The two remaining sections describe the sbt tasks and settings provided by the plugin.</p>
+<h2 id="jsdom-support-for-tests" class="a_section" data-magellan-target="jsdom-support-for-tests">jsdom Support for Tests<a class="a_hlink" href="#jsdom-support-for-tests"></a></h2>
+<p>If your tests require the DOM to be executed, add the following line to your build:</p>
+<div class="row">
+<pre class="hljs small-expand columns a_xscroll"><code class="language-scala">requiresDOM in <span class="hljs-type">Test</span> := <span class="hljs-literal">true</span>
+</code></pre>
+</div>
+<p>Then, <code class="hljs">ScalaJSBundlerPlugin</code> will automatically download jsdom and bundle the tests before
+their execution so that they can be loaded by jsdom.</p>
+<p>You can find an example of project requiring the DOM for its tests
+<a href="https://github.com/scalacenter/scalajs-bundler/blob/master/sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler/static/">here</a>.</p>
 <h2 id="tasks" class="a_section" data-magellan-target="tasks">Tasks<a class="a_hlink" href="#tasks"></a></h2>
 <p><code class="hljs">webpack</code>: Bundles the output of a Scala.js stage. For instance, to bundle the
-output of <code class="hljs">fastOptJS</code>, run the following sbt task: <code class="hljs">fastOptJS::webpack</code>.</p>
+output of <code class="hljs">fastOptJS</code>, run the following task from the sbt shell: <code class="hljs">fastOptJS::webpack</code>.
+Note that to refer to this task from a build definition it must be scoped by the
+current configuration, Scala.js stage and project: <code class="hljs">webpack in (Compile, fastOptJS)</code>
+(or <code class="hljs">webpack in (projectRef, Compile, fastOptJS in projectRef)</code> to explicitly scope
+it to another project that the project which is being applied settings).</p>
 <p><code class="hljs">npmUpdate</code>: Downloads NPM dependencies. This task is also scoped to a Scala.js stage.</p>
 <h2 id="settings" class="a_section" data-magellan-target="settings">Settings<a class="a_hlink" href="#settings"></a></h2>
 <p><code class="hljs">npmDependencies</code>: list of the NPM packages (name and version) your application depends on.
@@ -178,6 +196,27 @@ disable source maps you can just configure the <code class="hljs">emitSourceMaps
     
     
       <ul class="vertical menu">  
+  <li>
+    
+       <a href="#plugin-overview">Plugin Overview</a> 
+    
+    
+  </li>
+  
+  <li>
+    
+       <a href="#javascript-dependencies">JavaScript Dependencies</a> 
+    
+    
+  </li>
+  
+  <li>
+    
+       <a href="#jsdom-support-for-tests">jsdom Support for Tests</a> 
+    
+    
+  </li>
+  
   <li>
     
        <a href="#tasks">Tasks</a> 
