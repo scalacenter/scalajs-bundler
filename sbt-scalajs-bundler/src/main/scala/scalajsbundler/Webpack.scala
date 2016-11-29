@@ -10,7 +10,7 @@ object Webpack {
     * Writes the webpack configuration file
     *
     * @param emitSourceMaps Whether source maps is enabled at all
-    * @param webpackEntries Module entries
+    * @param webpackEntries Module entries (name, file.js)
     * @param targetDir Directory to write the file into
     * @param log Logger
     * @return The written file

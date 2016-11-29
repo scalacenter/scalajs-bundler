@@ -23,7 +23,9 @@ class SomeTest extends FreeSpec {
 
       patch(container, vnode)
 
-      assert(document.body.firstChild.nodeName == "H1")
+      val patchedNode = document.body.lastChild
+      assert(patchedNode.nodeName == "H1")
+      assert(patchedNode.textContent == "It works")
 
     }
   }
