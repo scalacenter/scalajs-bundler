@@ -1,8 +1,14 @@
 package scalajsbundler
 
 import org.scalajs.core.tools.io.{FileVirtualJSFile, VirtualJSFile}
-import org.scalajs.sbtplugin.ScalaJSPlugin
+import org.scalajs.core.tools.jsdep.ResolvedJSDependency
+import org.scalajs.core.tools.linker.backend.ModuleKind
+import org.scalajs.jsenv.ComJSEnv
+import org.scalajs.sbtplugin.Loggers.sbtLogger2ToolsLogger
+import org.scalajs.sbtplugin.{FrameworkDetectorWrapper, ScalaJSPlugin}
 import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
+import org.scalajs.sbtplugin.ScalaJSPluginInternal.{scalaJSEnsureUnforked, scalaJSModuleIdentifier, scalaJSRequestsDOM}
+import org.scalajs.testadapter.ScalaJSFramework
 import sbt.Keys._
 import sbt._
 
@@ -49,6 +55,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
 
     webpackConfigFile := None,
 
+    // Include the manifest in the produced artifact
     (products in Compile) := (products in Compile).dependsOn(scalaJSBundlerManifest).value,
 
     scalaJSBundlerManifest :=
@@ -70,24 +77,90 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
 
   private lazy val perConfigSettings: Seq[Def.Setting[_]] =
     Seq(
-      loadedJSEnv := loadedJSEnv.dependsOn(npmUpdate in fastOptJS).value,
       npmDependencies := Seq.empty,
-      npmDevDependencies := Seq.empty
-    ) ++
-    perScalaJSStageSettings(fastOptJS) ++
-    perScalaJSStageSettings(fullOptJS) ++
-    Seq(
+
+      npmDevDependencies := Seq.empty,
+
       webpack in fullOptJS := webpackTask(fullOptJS).value,
+
       webpack in fastOptJS := Def.taskDyn {
         if (enableReloadWorkflow.value) ReloadWorkflowTasks.webpackTask(fastOptJS)
         else webpackTask(fastOptJS)
-      }.value
-    )
+      }.value,
+
+      // Override Scala.js’ loadedJSEnv to first run `npm update`
+      loadedJSEnv := loadedJSEnv.dependsOn(npmUpdate in fastOptJS).value
+    ) ++
+    perScalaJSStageSettings(fastOptJS) ++
+    perScalaJSStageSettings(fullOptJS)
 
   private lazy val testSettings: Seq[Setting[_]] =
     Seq(
       npmDependencies ++= (npmDependencies in Compile).value,
-      npmDevDependencies ++= (npmDevDependencies in Compile).value
+
+      npmDevDependencies ++= (npmDevDependencies in Compile).value,
+
+      // Override Scala.js setting, which does not support the combination of jsdom and CommonJS module output kind
+      loadedTestFrameworks := Def.task {
+        // use assert to prevent warning about pure expr in stat pos
+        assert(scalaJSEnsureUnforked.value)
+
+        val console = scalaJSConsole.value
+        val toolsLogger = sbtLogger2ToolsLogger(streams.value.log)
+        val frameworks = testFrameworks.value
+        val sjsOutput = fastOptJS.value.data
+
+        val env =
+          jsEnv.?.value.map {
+            case comJSEnv: ComJSEnv => comJSEnv.loadLibs(Seq(ResolvedJSDependency.minimal(FileVirtualJSFile(sjsOutput))))
+            case other => sys.error(s"You need a ComJSEnv to test (found ${other.name})")
+          }.getOrElse {
+            Def.taskDyn[ComJSEnv] {
+              val sjsOutput = fastOptJS.value.data
+              // If jsdom is going to be used, then we should bundle the test module into a file that exports the tests to the global namespace
+              if ((scalaJSRequestsDOM in fastOptJS).value) Def.task {
+                val logger = streams.value.log
+                val targetDir = (crossTarget in fastOptJS).value
+                val sjsOutputName = sjsOutput.name.stripSuffix(".js")
+                val bundle = targetDir / s"$sjsOutputName-bundle.js"
+
+                val writeTestBundleFunction =
+                  FileFunction.cached(
+                    streams.value.cacheDirectory / "test-loader",
+                    inStyle = FilesInfo.hash
+                  ) { _ =>
+                    logger.info("Writing and bundling the test loader")
+                    val loader = targetDir / s"$sjsOutputName-loader.js"
+                    JsDomTestEntries.writeLoader(sjsOutput, loader)
+                    Webpack.run(loader.absolutePath, bundle.absolutePath)(targetDir, logger)
+                    Set.empty
+                  }
+                writeTestBundleFunction(Set(sjsOutput))
+                val file = FileVirtualJSFile(bundle)
+
+                val jsdomDir = installJsdom.value
+                new JSDOMNodeJSEnv(jsdomDir).loadLibs(Seq(ResolvedJSDependency.minimal(file)))
+              } else Def.task {
+                NodeJSEnv().value.loadLibs(Seq(ResolvedJSDependency.minimal(FileVirtualJSFile(sjsOutput))))
+              }
+            }.value
+          }
+
+        // Pretend that we are not using a CommonJS module if jsdom is involved, otherwise that
+        // would be incompatible with the way jsdom loads scripts
+        val (moduleKind, moduleIdentifier) =
+          if ((scalaJSRequestsDOM in fastOptJS).value) (ModuleKind.NoModule, None)
+          else (scalaJSModuleKind.value, scalaJSModuleIdentifier.value)
+
+        val detector =
+          new FrameworkDetectorWrapper(env, moduleKind, moduleIdentifier).wrapped
+
+        detector.detect(frameworks, toolsLogger).map { case (tf, frameworkName) =>
+          val framework =
+            new ScalaJSFramework(frameworkName, env, moduleKind, moduleIdentifier, toolsLogger, console)
+          (tf, framework)
+        }
+      }.dependsOn(npmUpdate in fastOptJS).value
     )
 
   private def perScalaJSStageSettings(stage: TaskKey[Attributed[File]]): Seq[Def.Setting[_]] = Seq(
@@ -104,7 +177,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
           inStyle = FilesInfo.hash
         ) { _ =>
           log.info("Updating NPM dependencies")
-          Commands.npmUpdate(targetDir, log)
+          Npm.run("update")(targetDir, log)
           jsResources.foreach { resource =>
             IO.write(targetDir / resource.relativePath, resource.content)
           }
@@ -124,6 +197,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       Seq(name -> launcherFile)
     },
 
+    // Override Scala.js’ scalaJSLauncher to add support for CommonJSModule
     scalaJSLauncher in stage := {
       val launcher = (scalaJSBundlerLauncher in stage).value
       Attributed[VirtualJSFile](FileVirtualJSFile(launcher.file))(
@@ -148,6 +222,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
 
     webpackEmitSourceMaps in stage := (emitSourceMaps in stage).value,
 
+    // Override Scala.js’ relativeSourceMaps in case we have to emit source maps in the webpack task, because it does not work with absolute source maps
     relativeSourceMaps in stage := (webpackEmitSourceMaps in stage).value
 
   )
@@ -210,5 +285,18 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
         (webpackConfigFile in stage).value.map(Set(_)).getOrElse(Set.empty) ++
         entries.map(_._2).to[Set] + stage.value.data).to[Seq] // Note: the entries should be enough, excepted that they currently are launchers, which do not change even if the scalajs stage output changes
     }.dependsOn(npmUpdate in stage)
+
+  /** @return Installation directory */
+  lazy val installJsdom: Def.Initialize[Task[File]] =
+    Def.task {
+      val installDir = target.value / "scalajs-bundler-jsdom"
+      val log = streams.value.log
+      if (!installDir.exists()) {
+        log.info(s"Installing jsdom in ${installDir.absolutePath}")
+        IO.createDirectory(installDir)
+        Npm.run("install", "jsdom")(installDir, log)
+      }
+      installDir
+    }
 
 }
