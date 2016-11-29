@@ -4,8 +4,6 @@ import sbt._
 
 object Webpack {
 
-  import JS.syntax._
-
   /**
     * Writes the webpack configuration file
     *
@@ -24,7 +22,7 @@ object Webpack {
     // Create scalajs.webpack.config.js
     val webpackConfigFile = targetDir / "scalajs.webpack.config.js" // TODO discriminate filename according to sjs stage
     val webpackConfigContent =
-      JS.ref("module") `.` "exports" := JS.obj(Seq(
+      JS.ref("module").dot("exports").assign(JS.obj(Seq(
         "entry" -> JS.obj(webpackEntries.map { case (key, file) =>
           key -> JS.str(file.absolutePath) }: _*
         ),
@@ -46,7 +44,7 @@ object Webpack {
             )
           )
         } else Nil
-        ): _*)
+        ): _*))
     log.debug("Writing 'scalajs.webpack.config.js'")
     IO.write(webpackConfigFile, webpackConfigContent.show)
 

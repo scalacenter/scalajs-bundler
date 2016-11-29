@@ -1,7 +1,6 @@
 package scalajsbundler
 
 import sbt._
-import JS.syntax._
 
 object JsDomTestEntries {
 
@@ -19,8 +18,8 @@ object JsDomTestEntries {
       JS.let(
         require.apply(JS.str(sjsOutput.absolutePath))
       ) { tests =>
-        ((Object `.` "keys").apply(tests) `.` "forEach").apply(JS.fun { key =>
-          window.bracket(key) := tests.bracket(key) // Export all properties of the Scala.js module to the global namespace
+        Object.dot("keys").apply(tests).dot("forEach").apply(JS.fun { key =>
+          window.bracket(key).assign(tests.bracket(key)) // Export all properties of the Scala.js module to the global namespace
         })
       }
 
