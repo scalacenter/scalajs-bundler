@@ -1,5 +1,7 @@
 # Reference
 
+## Plugin Overview
+
 The `ScalaJSBundlerPlugin` sbt plugin automatically enables `ScalaJSPlugin` on the project. It configures
 the kind of output of the project to be `ModuleKind.CommonJSModule`. Finally, it also configures its
 execution environment so that npm packages are fetched (by running the `npm update` command in the
@@ -15,6 +17,8 @@ the `webpack` task scoped to a Scala.js stage (`fastOptJS` or `fullOptJS`):
 The bundling process produces a single file that automatically calls the application entry
 point, so there is no need for an
 [additional launcher](http://www.scala-js.org/doc/project/building.html#writing-launcher-code).
+
+## JavaScript Dependencies
 
 To define the npm packages your project depends on, use the `npmDependencies` key:
 
@@ -37,7 +41,19 @@ Last but not least, the `.js` files that are in your classpath are automatically
 working directory of the `node` command. This means that you can also `@JSImport` these modules from
 your Scala facades.
 
-The two remaining sections describe the sbt tasks and settings provided by the plugin.
+## jsdom Support for Tests
+
+If your tests require the DOM to be executed, add the following line to your build:
+
+~~~ scala
+requiresDOM in Test := true
+~~~
+
+Then, `ScalaJSBundlerPlugin` will automatically download jsdom and bundle the tests before
+their execution so that they can be loaded by jsdom.
+
+You can find an example of project requiring the DOM for its tests
+[here](https://github.com/scalacenter/scalajs-bundler/blob/master/sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler/static/).
 
 ## Tasks {#tasks}
 
