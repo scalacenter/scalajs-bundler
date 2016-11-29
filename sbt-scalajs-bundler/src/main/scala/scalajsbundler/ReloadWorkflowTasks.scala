@@ -6,6 +6,7 @@ import org.scalajs.sbtplugin.ScalaJSPluginInternal.usesScalaJSLinkerTag
 import sbt.Keys._
 import sbt._
 import ScalaJSBundlerPlugin.autoImport._
+import ScalaJSBundlerPlugin.ensureModuleKindIsCommonJSModule
 import Caching.cached
 
 /** Sbt tasks related to the reload workflow */
@@ -13,6 +14,7 @@ object ReloadWorkflowTasks {
 
   def webpackTask(stage: TaskKey[Attributed[File]]): Def.Initialize[Task[Seq[File]]] =
     Def.task {
+      assert(ensureModuleKindIsCommonJSModule.value)
       val targetDir = (crossTarget in stage).value
       Seq(
         ReloadWorkflow.writeFakeBundle(

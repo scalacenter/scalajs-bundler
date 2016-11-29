@@ -45,6 +45,13 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
 
   val scalaJSBundlerManifest = taskKey[File]("Writes the NPM_DEPENDENCIES file")
 
+  val ensureModuleKindIsCommonJSModule =
+    SettingKey[Boolean](
+      "ensureModuleKindIsCommonJSModule",
+      "Checks that scalaJSModuleKind is set to CommonJSModule",
+      KeyRanks.Invisible
+    )
+
   import autoImport._
 
   override lazy val projectSettings: Seq[Def.Setting[_]] = Seq(
@@ -69,7 +76,12 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
         (classDirectory in Compile).value
       ),
 
-    enableReloadWorkflow := true
+    enableReloadWorkflow := true,
+
+    ensureModuleKindIsCommonJSModule := {
+      if (scalaJSModuleKind.value == ModuleKind.CommonJSModule) true
+      else sys.error(s"scalaJSModuleKind must be set to ModuleKind.CommonJSModule in projects where ScalaJSBundler plugin is enabled")
+    }
 
   ) ++
     inConfig(Compile)(perConfigSettings) ++
@@ -116,6 +128,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
             case other => sys.error(s"You need a ComJSEnv to test (found ${other.name})")
           }.getOrElse {
             Def.taskDyn[ComJSEnv] {
+              assert(ensureModuleKindIsCommonJSModule.value)
               val sjsOutput = fastOptJS.value.data
               // If jsdom is going to be used, then we should bundle the test module into a file that exports the tests to the global namespace
               if ((scalaJSRequestsDOM in fastOptJS).value) Def.task {
@@ -258,6 +271,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
 
   def webpackTask(stage: TaskKey[Attributed[File]]): Def.Initialize[Task[Seq[File]]] =
     Def.task {
+      assert(ensureModuleKindIsCommonJSModule.value)
       val log = streams.value.log
       val targetDir = (crossTarget in stage).value
       val generatedWebpackConfigFile = (scalaJSBundlerWebpackConfig in stage).value
