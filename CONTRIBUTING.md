@@ -20,6 +20,12 @@ $ sbt package
 $ sbt scripted
 ~~~
 
+## Preview the documentation
+
+~~~ sh
+$ sbt doc/previewSite
+~~~
+
 ## General recommendations
 
 Test and document each added feature.

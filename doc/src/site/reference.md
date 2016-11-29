@@ -12,6 +12,10 @@ the `webpack` task scoped to a Scala.js stage (`fastOptJS` or `fullOptJS`):
 > fastOptJS::webpack
 ~~~
 
+The bundling process produces a single file that automatically calls the application entry
+point, so there is no need for an
+[additional launcher](http://www.scala-js.org/doc/project/building.html#writing-launcher-code).
+
 To define the npm packages your project depends on, use the `npmDependencies` key:
 
 ~~~ scala
@@ -25,7 +29,7 @@ npmDependencies in Test += "jasmine" -> "2.5.2"
 ~~~
 
 > {.note}
-> Your facades need to use
+> Your facades must use
 > [`@JSImport`](https://www.scala-js.org/doc/interoperability/facade-types.html#a-nameimporta-imports-from-other-javascript-modules)
 > in order to work with the npm modules.
 
@@ -38,7 +42,11 @@ The two remaining sections describe the sbt tasks and settings provided by the p
 ## Tasks {#tasks}
 
 `webpack`: Bundles the output of a Scala.js stage. For instance, to bundle the
-output of `fastOptJS`, run the following sbt task: `fastOptJS::webpack`.
+output of `fastOptJS`, run the following task from the sbt shell: `fastOptJS::webpack`.
+Note that to refer to this task from a build definition it must be scoped by the
+current configuration, Scala.js stage and project: `webpack in (Compile, fastOptJS)`
+(or `webpack in (projectRef, Compile, fastOptJS in projectRef)` to explicitly scope
+it to another project that the project which is being applied settings).
 
 `npmUpdate`: Downloads NPM dependencies. This task is also scoped to a Scala.js stage.
 
