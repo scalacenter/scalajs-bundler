@@ -71,6 +71,7 @@ class JSDOMNodeJSEnv(
            |    },
            |    scripts: [${scriptsStringPath.mkString(", ")}],
            |    onload: function (window) {
+           |      jsdom.changeURL(window, "http://localhost");
            |      for (var k in window) {
            |        if (windowKeys.indexOf(k) == -1)
            |          global[k] = window[k];
