@@ -1,5 +1,14 @@
 # Changelog
 
+## Version 0.3.1
+
+> 2016 December 2
+
+- [#51](https://github.com/scalacenter/scalajs-bundler/pull/51): Support history API within jsdom.
+
+You can find the complete list of commits since the last release
+[here](https://github.com/scalacenter/scalajs-bundler/compare/v0.3.0...v0.3.1).
+
 ## Version 0.3.0
 
 > 2016 November 29
