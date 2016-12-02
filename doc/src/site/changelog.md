@@ -15,7 +15,7 @@ section on how to write a facade with `@JSImport` (see it [here](cookbook.md#fac
   to be different from `CommonJSModule` on projects where `ScalaJSBundler` plugin is enabled.
 
 You can find the complete list of commits since the last release
-[here](https://github.com/scalacenter/scalajs-bundler/compare/v0.2.1...v0.3).
+[here](https://github.com/scalacenter/scalajs-bundler/compare/v0.2.1...v0.3.0).
 
 ## Version 0.2.1
 
