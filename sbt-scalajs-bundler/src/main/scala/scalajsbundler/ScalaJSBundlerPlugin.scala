@@ -195,7 +195,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
           Set.empty
         }
 
-      cachedActionFunction(Set(packageJsonFile))
+      cachedActionFunction(Set(packageJsonFile) ++ jsResources.collect { case f: FileVirtualJSFile => f.file }.to[Set])
       ()
     }.value,
 
