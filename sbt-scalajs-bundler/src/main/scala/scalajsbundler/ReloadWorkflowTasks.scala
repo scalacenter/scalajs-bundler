@@ -12,14 +12,14 @@ import Caching.cached
 /** Sbt tasks related to the reload workflow */
 object ReloadWorkflowTasks {
 
-  def webpackTask(stage: TaskKey[Attributed[File]]): Def.Initialize[Task[Seq[File]]] =
+  def webpackTask(config: Configuration, stage: TaskKey[Attributed[File]]): Def.Initialize[Task[Seq[File]]] =
     Def.task {
       assert(ensureModuleKindIsCommonJSModule.value)
       val targetDir = (crossTarget in stage).value
       Seq(
         ReloadWorkflow.writeFakeBundle(
           (webpackEmitSourceMaps in stage).value,
-          bundleDependenciesTask(stage).value,
+          bundleDependenciesTask(config, stage).value,
           writeLoaderTask(stage).value,
           writeLauncherTask(stage).value,
           stage.value.data,
@@ -30,7 +30,7 @@ object ReloadWorkflowTasks {
       )
     }
 
-  def bundleDependenciesTask(stage: TaskKey[Attributed[File]]): Def.Initialize[Task[File]] =
+  def bundleDependenciesTask(config: Configuration, stage: TaskKey[Attributed[File]]): Def.Initialize[Task[File]] =
     Def.taskDyn {
       Def.task {
         val targetDir = (crossTarget in stage).value
@@ -39,7 +39,7 @@ object ReloadWorkflowTasks {
         val bundleFile = targetDir / "scalajsbundler-deps.js" // Don’t need to differentiate between stages because the dependencies should not be different between fastOptJS and fullOptJS
         val importedModules =
           ReloadWorkflow.findImportedModules(
-            ScalaJSPluginInternal.scalaJSLinker.value,
+            (ScalaJSPluginInternal.scalaJSLinker in (config, stage)).value,
             scalaJSIR.value.data,
             scalaJSOutputMode.value,
             (emitSourceMaps in stage).value,
@@ -59,7 +59,7 @@ object ReloadWorkflowTasks {
           )
         }
         bundleFile
-      }.dependsOn(npmUpdate in stage).tag((usesScalaJSLinkerTag in stage).value)
+      }.dependsOn(npmUpdate in stage).tag((usesScalaJSLinkerTag in (config, stage)).value)
     }
 
   def writeLoaderTask(stage: TaskKey[Attributed[File]]): Def.Initialize[Task[File]] =

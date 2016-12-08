@@ -94,7 +94,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       webpack in fullOptJS := webpackTask(fullOptJS).value,
 
       webpack in fastOptJS := Def.taskDyn {
-        if (enableReloadWorkflow.value) ReloadWorkflowTasks.webpackTask(fastOptJS)
+        if (enableReloadWorkflow.value) ReloadWorkflowTasks.webpackTask(configuration.value, fastOptJS)
         else webpackTask(fastOptJS)
       }.value,
 
