@@ -10,23 +10,40 @@ import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
 import webscalajs.WebScalaJS
 import webscalajs.WebScalaJS.autoImport._
 
+import scala.collection.immutable.Nil
+
 /**
   * If WebScalaJS is enabled, tweak the pipelineStage so that the bundle is produced
   * as an sbt-web asset.
   */
 object WebScalaJSBundlerPlugin extends AutoPlugin {
 
+  object autoImport {
+
+    /** @see [[scalajsbundler.NpmAssets$.ofProject NpmAssets.ofProject]] */
+    val npmAssets: TaskKey[Seq[PathMapping]] = taskKey[Seq[PathMapping]]("Assets (resources that are not CommonJS modules) imported from the NPM packages")
+
+    val NpmAssets = scalajsbundler.NpmAssets
+
+  }
+
+  import autoImport._
+
   override lazy val requires = WebScalaJS
 
   override lazy val projectSettings = Seq(
     scalaJSDev := pipelineStage(fastOptJS in Compile, scalaJSDev).value,
-    scalaJSProd := pipelineStage(fullOptJS in Compile, scalaJSProd).value
+    scalaJSProd := pipelineStage(fullOptJS in Compile, scalaJSProd).value,
+    npmAssets := Nil
   )
 
   def pipelineStage(sjsStage: TaskKey[Attributed[File]], self: TaskKey[Pipeline.Stage]): Def.Initialize[Task[Pipeline.Stage]] =
     Def.taskDyn {
       val projects = scalaJSProjects.value.map(Project.projectToRef)
+      val npmAssetsMappings = npmAssets.value
       Def.task { mappings: Seq[PathMapping] =>
+        val filtered = filterMappings(mappings, (includeFilter in self).value, (excludeFilter in self).value)
+
         // ((file, relative-path), sourceMapsEnabled)
         val bundles: Seq[((File, String), Boolean)] =
           projects
@@ -38,7 +55,7 @@ object WebScalaJSBundlerPlugin extends AutoPlugin {
             }
             .foldLeft(Def.task(Seq.empty[((File, String), Boolean)]))((acc, bundleFiles) => Def.task(acc.value ++ bundleFiles.value))
             .value
-        val filtered = filterMappings(mappings, (includeFilter in self).value, (excludeFilter in self).value)
+
         val bundlesWithSourceMaps =
           bundles.flatMap { case ((file, path), sourceMapsEnabled) =>
             if (sourceMapsEnabled) {
@@ -47,11 +64,12 @@ object WebScalaJSBundlerPlugin extends AutoPlugin {
               Seq(file -> path, sourceMapFile -> sourceMapPath)
             } else Seq(file -> path)
           }
-        filtered ++ bundlesWithSourceMaps ++ WebScalaJS.sourcemapScalaFiles(sjsStage).value
+
+        filtered ++ bundlesWithSourceMaps ++ WebScalaJS.sourcemapScalaFiles(sjsStage).value ++ npmAssetsMappings
       }
     }
 
-  def filterMappings(mappings: Seq[PathMapping], include: FileFilter, exclude: FileFilter) =
+  def filterMappings(mappings: Seq[PathMapping], include: FileFilter, exclude: FileFilter): Seq[PathMapping] =
     for {
       (file, path) <- mappings
       if include.accept(file) && !exclude.accept(file)
