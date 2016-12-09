@@ -32,6 +32,8 @@ object ReloadWorkflowTasks {
 
   def bundleDependenciesTask(config: Configuration, stage: TaskKey[Attributed[File]]): Def.Initialize[Task[File]] =
     Def.taskDyn {
+      val linker = (ScalaJSPluginInternal.scalaJSLinker in (config, stage)).value
+      val linkerTag = (usesScalaJSLinkerTag in (config, stage)).value
       Def.task {
         val targetDir = (crossTarget in stage).value
         val logger = streams.value.log
@@ -39,7 +41,7 @@ object ReloadWorkflowTasks {
         val bundleFile = targetDir / "scalajsbundler-deps.js" // Don’t need to differentiate between stages because the dependencies should not be different between fastOptJS and fullOptJS
         val importedModules =
           ReloadWorkflow.findImportedModules(
-            (ScalaJSPluginInternal.scalaJSLinker in (config, stage)).value,
+            linker,
             scalaJSIR.value.data,
             scalaJSOutputMode.value,
             (emitSourceMaps in stage).value,
@@ -59,7 +61,7 @@ object ReloadWorkflowTasks {
           )
         }
         bundleFile
-      }.dependsOn(npmUpdate in stage).tag((usesScalaJSLinkerTag in (config, stage)).value)
+      }.tag(linkerTag).dependsOn(npmUpdate in stage)
     }
 
   def writeLoaderTask(stage: TaskKey[Attributed[File]]): Def.Initialize[Task[File]] =
