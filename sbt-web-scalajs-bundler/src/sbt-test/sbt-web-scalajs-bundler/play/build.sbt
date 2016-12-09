@@ -4,7 +4,10 @@ val client =
     .settings(
       scalaVersion := "2.11.8",
       libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "0.9.1",
-      npmDependencies in Compile += "snabbdom" -> "0.5.3"
+      npmDependencies in Compile ++= Seq(
+        "snabbdom" -> "0.5.3",
+        "font-awesome" -> "4.7.0"
+      )
     )
 
 val server =
@@ -17,7 +20,8 @@ val server =
       libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "1.5.1" % Test,
       scalaJSProjects := Seq(client),
       pipelineStages in Assets := Seq(scalaJSPipeline),
-      pipelineStages := Seq(digest, gzip)
+      pipelineStages := Seq(digest, gzip),
+      npmAssets ++= NpmAssets.ofProject(client) { modules => (modules / "font-awesome").*** }.value
     )
 
 val play =

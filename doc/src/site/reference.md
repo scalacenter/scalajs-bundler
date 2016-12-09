@@ -1,6 +1,6 @@
 # Reference
 
-## Plugin Overview
+## `ScalaJSBundlerPlugin`
 
 The `ScalaJSBundlerPlugin` sbt plugin automatically enables `ScalaJSPlugin` on the project. It configures
 the kind of output of the project to be `ModuleKind.CommonJSModule`. Finally, it also configures its
@@ -18,7 +18,7 @@ The bundling process produces a single file that automatically calls the applica
 point, so there is no need for an
 [additional launcher](http://www.scala-js.org/doc/project/building.html#writing-launcher-code).
 
-## JavaScript Dependencies
+### JavaScript Dependencies {#npm-dependencies}
 
 To define the npm packages your project depends on, use the `npmDependencies` key:
 
@@ -39,11 +39,12 @@ npmDependencies in Test += "jasmine" -> "2.5.2"
 
 Last but not least, the `.js` files that are in your classpath are automatically copied to the
 working directory of the `node` command. This means that you can also `@JSImport` these modules from
-your Scala facades.
+your Scala facades (you can see an example
+[here](https://github.com/scalacenter/scalajs-bundler/blob/master/sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler/js-resources/src/main/scala/example/MyModule.scala#L6)).
 
-## jsdom Support for Tests
+### jsdom Support for Tests {#jsdom}
 
-If your tests require the DOM to be executed, add the following line to your build:
+If your tests execution environment require the DOM, add the following line to your build:
 
 ~~~ scala
 requiresDOM in Test := true
@@ -55,7 +56,7 @@ their execution so that they can be loaded by jsdom.
 You can find an example of project requiring the DOM for its tests
 [here](https://github.com/scalacenter/scalajs-bundler/blob/master/sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler/static/).
 
-## Tasks {#tasks}
+### Tasks {#tasks}
 
 `webpack`: Bundles the output of a Scala.js stage. For instance, to bundle the
 output of `fastOptJS`, run the following task from the sbt shell: `fastOptJS::webpack`.
@@ -66,7 +67,7 @@ it to another project that the project which is being applied settings).
 
 `npmUpdate`: Downloads NPM dependencies. This task is also scoped to a Scala.js stage.
 
-## Settings {#settings}
+### Settings {#settings}
 
 `npmDependencies`: list of the NPM packages (name and version) your application depends on.
 You can use [semver](https://docs.npmjs.com/misc/semver) versions.
@@ -111,3 +112,32 @@ disable source maps you can just configure the `emitSourceMaps` setting:
 ~~~ scala
 emitSourceMaps := false
 ~~~
+
+## `WebScalaJSBundlerPlugin`
+
+The `WebScalaJSBundlerPlugin` provides integration with [sbt-web-scalajs](https://github.com/vmunier/sbt-web-scalajs).
+Enable this plugin on JVM projects that need to use .js artifacts produced by Scala.js projects (ie in places
+where you used to enable `WebScalaJS`).
+
+The plugin tunes the `scalaJSPipeline` to use the bundles produced by webpack rather than the direct
+output of the Scala.js compilation.
+
+### Importing Assets from NPM Packages {#npm-assets}
+
+Some NPM packages also contain static assets (e.g. fonts, stylesheets, images, etc.). You can make them available
+as sbt-web assets as follows:
+
+~~~ scala
+npmAssets ++= NpmAssets.ofProject(client) { nodeModules =>
+  (nodeModules / "font-awesome").***
+}.value
+~~~
+
+Where `client` is the identifier of an sbt project that uses the `ScalaJSBundlerPlugin`. The above configuration
+makes all the files within the `font-awesome` package available as sbt-web assets.
+These assets keep their path prefix relative to the `node_modules` directory: for instance the asset path of the
+`css/font-awesome.min.css` resource is `font-awesome/css/font-awesome.min.css`.
+
+### Settings {#web-settings}
+
+`npmAssets` Sequence of `PathMapping`s to include to sbt-web’s assets.
