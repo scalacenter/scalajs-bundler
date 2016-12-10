@@ -2,7 +2,12 @@ package scalajsbundler
 
 import sbt._
 
-trait ExternalCommand {
+/**
+  * Attempts to smoothen platform-specific differences when invoking commands.
+  *
+  * @param name Name of the command to run
+  */
+class ExternalCommand(name: String) {
 
   /**
     * Runs the command `cmd`
@@ -13,21 +18,14 @@ trait ExternalCommand {
   def run(args: String*)(workingDir: File, logger: Logger): Unit =
     Commands.run((cmd +: args).mkString(" "), workingDir, logger)
 
-  protected def cmd: String
+  val cmd =
+    sys.props("os.name").toLowerCase match {
+      case os if os.contains("win") => s"cmd /c $name"
+      case _ => name
+    }
 
 }
 
-object Npm extends ExternalCommand {
+object Npm extends ExternalCommand("npm")
 
-  protected lazy val cmd = sys.props("os.name").toLowerCase match {
-    case os if os.contains("win") ⇒ "cmd /c npm"
-    case _ ⇒ "npm"
-  }
-}
-
-object Yarn extends ExternalCommand {
-
-  protected lazy val cmd = "yarn"
-
-}
-
+object Yarn extends ExternalCommand("yarn")
