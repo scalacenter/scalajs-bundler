@@ -67,7 +67,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
 
     scalaJSModuleKind := ModuleKind.CommonJSModule,
 
-    version in webpack := "1.13",
+    version in webpack := "1.14",
 
     webpackConfigFile := None,
 
