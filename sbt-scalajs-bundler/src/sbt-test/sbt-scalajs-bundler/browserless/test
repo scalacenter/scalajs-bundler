@@ -1,3 +1,8 @@
 > run
 > clean
 > test
+> set useYarn := true
+> clean
+> run
+> clean
+> test

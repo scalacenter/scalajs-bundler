@@ -43,6 +43,9 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
     val enableReloadWorkflow: SettingKey[Boolean] =
       settingKey[Boolean]("Whether to enable the reload workflow for fastOptJS")
 
+    val useYarn: SettingKey[Boolean] =
+      settingKey[Boolean]("Whether to use yarn for updates")
+
   }
 
   private val scalaJSBundlerPackageJson =
@@ -75,6 +78,8 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
     (products in Compile) := (products in Compile).dependsOn(scalaJSBundlerManifest).value,
 
     enableReloadWorkflow := true,
+
+    useYarn := false,
 
     ensureModuleKindIsCommonJSModule := {
       if (scalaJSModuleKind.value == ModuleKind.CommonJSModule) true
@@ -176,7 +181,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
 
   private def perScalaJSStageSettings(stage: TaskKey[Attributed[File]]): Seq[Def.Setting[_]] = Seq(
 
-    npmUpdate in stage := Def.task {
+    npmUpdate in stage := {
       val log = streams.value.log
       val targetDir = (crossTarget in stage).value
       val jsResources = scalaJSNativeLibraries.value.data
@@ -188,7 +193,11 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
           inStyle = FilesInfo.hash
         ) { _ =>
           log.info("Updating NPM dependencies")
-          Npm.run("update")(targetDir, log)
+          if (useYarn.value) {
+            Yarn.run("install")(targetDir, log)
+          } else {
+            Npm.run("update")(targetDir, log)
+          }
           jsResources.foreach { resource =>
             IO.write(targetDir / resource.relativePath, resource.content)
           }
@@ -197,7 +206,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
 
       cachedActionFunction(Set(packageJsonFile) ++ jsResources.collect { case f: FileVirtualJSFile => f.file }.to[Set])
       ()
-    }.value,
+    },
 
     scalaJSBundlerPackageJson in stage := packageJsonTask(stage).value,
 
