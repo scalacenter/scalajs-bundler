@@ -65,7 +65,9 @@ current configuration, Scala.js stage and project: `webpack in (Compile, fastOpt
 (or `webpack in (projectRef, Compile, fastOptJS in projectRef)` to explicitly scope
 it to another project that the project which is being applied settings).
 
-`npmUpdate`: Downloads NPM dependencies. This task is also scoped to a Scala.js stage.
+`npmUpdate`: Downloads NPM dependencies. This task is scoped by an sbt `Configuration`
+(either `Compile` or `Test`): according to this configuration the directory in
+which the dependencies are downloaded is not the same.
 
 ### Settings {#settings}
 

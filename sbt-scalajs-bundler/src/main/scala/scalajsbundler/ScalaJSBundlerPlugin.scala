@@ -5,7 +5,7 @@ import org.scalajs.core.tools.jsdep.ResolvedJSDependency
 import org.scalajs.core.tools.linker.backend.ModuleKind
 import org.scalajs.jsenv.ComJSEnv
 import org.scalajs.sbtplugin.Loggers.sbtLogger2ToolsLogger
-import org.scalajs.sbtplugin.{FrameworkDetectorWrapper, ScalaJSPlugin}
+import org.scalajs.sbtplugin.{FrameworkDetectorWrapper, ScalaJSPlugin, ScalaJSPluginInternal, Stage}
 import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
 import org.scalajs.sbtplugin.ScalaJSPluginInternal.{scalaJSEnsureUnforked, scalaJSModuleIdentifier, scalaJSRequestsDOM}
 import org.scalajs.testadapter.ScalaJSFramework
@@ -19,8 +19,24 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
   // Exported keys
   object autoImport {
 
-    val npmUpdate: TaskKey[Unit] =
-      taskKey[Unit]("Fetch NPM dependencies")
+    /**
+      * Fetches NPM dependencies. Returns the directory in which the `npm install` command has been run.
+      *
+      * The plugin uses different directories according to the configuration (`Compile` or `Test`). Thus,
+      * this setting is scoped by a `Configuration`.
+      *
+      * Typically, if you want to define a task that uses the downloaded NPM packages you should
+      * specify the `Configuration` you are interested in:
+      *
+      * {{{
+      *   myCustomTask := {
+      *     val npmDirectory = (npmUpdate in Compile).value
+      *     doSomething(npmDirectory / "node_modules" / "some-package")
+      *   }
+      * }}}
+      */
+    val npmUpdate: TaskKey[File] =
+      taskKey[File]("Fetch NPM dependencies")
 
     val npmDependencies: SettingKey[Seq[(String, String)]] =
       settingKey[Seq[(String, String)]]("NPM dependencies (libraries that your program uses)")
@@ -103,11 +119,54 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
         else webpackTask(fastOptJS)
       }.value,
 
+      npmUpdate := {
+        val log = streams.value.log
+        val targetDir = (crossTarget in npmUpdate).value
+        val jsResources = scalaJSNativeLibraries.value.data
+        val packageJsonFile = scalaJSBundlerPackageJson.value
+
+        val cachedActionFunction =
+          FileFunction.cached(
+            streams.value.cacheDirectory / "scalajsbundler-npm-update",
+            inStyle = FilesInfo.hash
+          ) { _ =>
+            log.info("Updating NPM dependencies")
+            if (useYarn.value) {
+              Yarn.run("install")(targetDir, log)
+            } else {
+              Npm.run("update")(targetDir, log)
+            }
+            jsResources.foreach { resource =>
+              IO.write(targetDir / resource.relativePath, resource.content)
+            }
+            Set.empty
+          }
+
+        cachedActionFunction(Set(packageJsonFile) ++ jsResources.collect { case f: FileVirtualJSFile => f.file }.to[Set])
+
+        targetDir
+      },
+
+      scalaJSBundlerPackageJson :=
+        PackageJsonTasks.writePackageJson(
+          (crossTarget in npmUpdate).value,
+          npmDependencies.value,
+          npmDevDependencies.value,
+          fullClasspath.value,
+          configuration.value,
+          (version in webpack).value,
+          streams.value
+        ),
+
+      crossTarget in npmUpdate := {
+        crossTarget.value / "scalajs-bundler" / (if (configuration.value == Compile) "main" else "test")
+      },
+
       // Override Scala.js’ loadedJSEnv to first run `npm update`
-      loadedJSEnv := loadedJSEnv.dependsOn(npmUpdate in fastOptJS).value
+      loadedJSEnv := loadedJSEnv.dependsOn(npmUpdate).value
     ) ++
-    perScalaJSStageSettings(fastOptJS) ++
-    perScalaJSStageSettings(fullOptJS)
+    perScalaJSStageSettings(Stage.FastOpt) ++
+    perScalaJSStageSettings(Stage.FullOpt)
 
   private lazy val testSettings: Seq[Setting[_]] =
     Seq(
@@ -136,7 +195,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
               // If jsdom is going to be used, then we should bundle the test module into a file that exports the tests to the global namespace
               if ((scalaJSRequestsDOM in fastOptJS).value) Def.task {
                 val logger = streams.value.log
-                val targetDir = (crossTarget in fastOptJS).value
+                val targetDir = npmUpdate.value
                 val sjsOutputName = sjsOutput.name.stripSuffix(".js")
                 val bundle = targetDir / s"$sjsOutputName-bundle.js"
 
@@ -176,114 +235,64 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
             new ScalaJSFramework(frameworkName, env, moduleKind, moduleIdentifier, toolsLogger, console)
           (tf, framework)
         }
-      }.dependsOn(npmUpdate in fastOptJS).value
+      }.dependsOn(npmUpdate).value
     )
 
-  private def perScalaJSStageSettings(stage: TaskKey[Attributed[File]]): Seq[Def.Setting[_]] = Seq(
+  private def perScalaJSStageSettings(stage: Stage): Seq[Def.Setting[_]] = {
 
-    npmUpdate in stage := {
-      val log = streams.value.log
-      val targetDir = (crossTarget in stage).value
-      val jsResources = scalaJSNativeLibraries.value.data
-      val packageJsonFile = (scalaJSBundlerPackageJson in stage).value
+    val stageTask = ScalaJSPluginInternal.stageKeys(stage)
 
-      val cachedActionFunction =
-        FileFunction.cached(
-          streams.value.cacheDirectory / "npm-update",
-          inStyle = FilesInfo.hash
-        ) { _ =>
-          log.info("Updating NPM dependencies")
-          if (useYarn.value) {
-            Yarn.run("install")(targetDir, log)
-          } else {
-            Npm.run("update")(targetDir, log)
-          }
-          jsResources.foreach { resource =>
-            IO.write(targetDir / resource.relativePath, resource.content)
-          }
-          Set.empty
-        }
+    Seq(
+      // Ask Scala.js to output its result in our target directory
+      crossTarget in stageTask := (crossTarget in npmUpdate).value,
 
-      cachedActionFunction(Set(packageJsonFile) ++ jsResources.collect { case f: FileVirtualJSFile => f.file }.to[Set])
-      ()
-    },
-
-    scalaJSBundlerPackageJson in stage := packageJsonTask(stage).value,
-
-    webpackEntries in stage := {
-      val launcherFile = (scalaJSBundlerLauncher in stage).value.file
-      val stageFile = stage.value.data
-      val name = stageFile.name.stripSuffix(".js")
-      Seq(name -> launcherFile)
-    },
-
-    // Override Scala.js’ scalaJSLauncher to add support for CommonJSModule
-    scalaJSLauncher in stage := {
-      val launcher = (scalaJSBundlerLauncher in stage).value
-      Attributed[VirtualJSFile](FileVirtualJSFile(launcher.file))(
-        AttributeMap.empty.put(name.key, launcher.mainClass)
-      )
-    },
-
-    scalaJSBundlerLauncher in stage :=
-      Launcher.write(
-        (crossTarget in stage).value,
-        stage.value.data,
-        (mainClass in (scalaJSLauncher in stage)).value.getOrElse(sys.error("No main class detected"))
-      ),
-
-    scalaJSBundlerWebpackConfig in stage :=
-      Webpack.writeConfigFile(
-        (webpackEmitSourceMaps in stage).value,
-        (webpackEntries in stage).value,
-        (crossTarget in stage).value,
-        streams.value.log
-      ),
-
-    webpackEmitSourceMaps in stage := (emitSourceMaps in stage).value,
-
-    // Override Scala.js’ relativeSourceMaps in case we have to emit source maps in the webpack task, because it does not work with absolute source maps
-    relativeSourceMaps in stage := (webpackEmitSourceMaps in stage).value
-
-  )
-
-  def packageJsonTask(stage: TaskKey[Attributed[File]]): Def.Initialize[Task[File]] =
-    Def.task {
-      val log = streams.value.log
-      val targetDir = (crossTarget in stage).value
-      val webpackVersion = (version in webpack).value
-      val currentConfiguration = configuration.value
-
-      val packageJsonFile = targetDir / "package.json"
-
-      Caching.cached(
-        packageJsonFile,
-        currentConfiguration.name,
-        streams.value.cacheDirectory / "scalajsbundler-package-json"
-      ) { () =>
-        PackageJson.write(
-          log,
-          packageJsonFile,
-          npmDependencies.value,
-          npmDevDependencies.value,
-          fullClasspath.value,
-          configuration.value,
-          webpackVersion
+      // Override Scala.js’ scalaJSLauncher to add support for CommonJSModule
+      scalaJSLauncher in stageTask := {
+        val launcher = (scalaJSBundlerLauncher in stageTask).value
+        Attributed[VirtualJSFile](FileVirtualJSFile(launcher.file))(
+          AttributeMap.empty.put(name.key, launcher.mainClass)
         )
-        ()
-      }
+      },
 
-      packageJsonFile
-    }
+      // Override Scala.js’ relativeSourceMaps in case we have to emit source maps in the webpack task, because it does not work with absolute source maps
+      relativeSourceMaps in stageTask := (webpackEmitSourceMaps in stageTask).value,
+
+      webpackEntries in stageTask := {
+        val launcherFile = (scalaJSBundlerLauncher in stageTask).value.file
+        val stageFile = stageTask.value.data
+        val name = stageFile.name.stripSuffix(".js")
+        Seq(name -> launcherFile)
+      },
+
+      scalaJSBundlerLauncher in stageTask :=
+        Launcher.write(
+          (crossTarget in npmUpdate).value,
+          stageTask.value,
+          stage,
+          (mainClass in (scalaJSLauncher in stageTask)).value.getOrElse(sys.error("No main class detected"))
+        ),
+
+      scalaJSBundlerWebpackConfig in stageTask :=
+        Webpack.writeConfigFile(
+          (webpackEmitSourceMaps in stageTask).value,
+          (webpackEntries in stageTask).value,
+          (crossTarget in npmUpdate).value,
+          streams.value.log
+        ),
+
+      webpackEmitSourceMaps in stageTask := (emitSourceMaps in stageTask).value
+
+    )
+  }
 
   def webpackTask(stage: TaskKey[Attributed[File]]): Def.Initialize[Task[Seq[File]]] =
     Def.task {
       assert(ensureModuleKindIsCommonJSModule.value)
       val log = streams.value.log
-      val targetDir = (crossTarget in stage).value
+      val targetDir = npmUpdate.value
       val generatedWebpackConfigFile = (scalaJSBundlerWebpackConfig in stage).value
       val customWebpackConfigFile = (webpackConfigFile in stage).value
-      val packageJsonFile = (scalaJSBundlerPackageJson in stage).value
+      val packageJsonFile = scalaJSBundlerPackageJson.value
       val entries = (webpackEntries in stage).value
 
       val cachedActionFunction =
@@ -305,7 +314,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       ) ++
         (webpackConfigFile in stage).value.map(Set(_)).getOrElse(Set.empty) ++
         entries.map(_._2).to[Set] + stage.value.data).to[Seq] // Note: the entries should be enough, excepted that they currently are launchers, which do not change even if the scalajs stage output changes
-    }.dependsOn(npmUpdate in stage)
+    }
 
   /** @return Installation directory */
   lazy val installJsdom: Def.Initialize[Task[File]] =
