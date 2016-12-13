@@ -1,4 +1,4 @@
-name := "static2"
+name := "static"
 
 enablePlugins(ScalaJSBundlerPlugin)
 
@@ -32,5 +32,5 @@ InputKey[Unit]("html") := {
 }
 
 TaskKey[Unit]("checkSize") := {
-  assert(IO.readBytes((webpack in (Compile, fullOptJS)).value.head).length == 19849)
+  assert(IO.readBytes((webpack in (Compile, fullOptJS)).value.head).length == 19848)
 }
