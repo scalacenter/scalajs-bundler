@@ -276,7 +276,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
         Webpack.writeConfigFile(
           (webpackEmitSourceMaps in stageTask).value,
           (webpackEntries in stageTask).value,
-          (crossTarget in npmUpdate).value,
+          npmUpdate.value,
           streams.value.log
         ),
 
