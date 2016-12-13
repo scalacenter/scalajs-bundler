@@ -32,17 +32,35 @@ object Webpack {
         )
       ) ++ (
         if (emitSourceMaps) {
-          Seq(
-            "devtool" -> JS.str("source-map"),
-            "module" -> JS.obj(
-              "preLoaders" -> JS.arr(
-                JS.obj(
-                  "test" -> JS.regex("\\.js$"),
-                  "loader" -> JS.str("source-map-loader")
+          val webpackNpmPackage = NpmPackage.getForModule(targetDir, "webpack")
+          webpackNpmPackage.flatMap(_.major) match {
+            case Some(1) =>
+              Seq(
+                "devtool" -> JS.str("source-map"),
+                "module" -> JS.obj(
+                  "preLoaders" -> JS.arr(
+                    JS.obj(
+                      "test" -> JS.regex("\\.js$"),
+                      "loader" -> JS.str("source-map-loader")
+                    )
+                  )
                 )
               )
-            )
-          )
+            case Some(2) =>
+              Seq(
+                "devtool" -> JS.str("source-map"),
+                "module" -> JS.obj(
+                  "rules" -> JS.arr(
+                    JS.obj(
+                      "test" -> JS.regex("\\.js$"),
+                      "enforce" -> JS.str("pre"),
+                      "loader" -> JS.str("source-map-loader")
+                    )
+                  )
+                )
+              )
+            case _ => sys.error("Unsupported webpack version")
+          }
         } else Nil
         ): _*))
     log.debug("Writing 'scalajs.webpack.config.js'")
