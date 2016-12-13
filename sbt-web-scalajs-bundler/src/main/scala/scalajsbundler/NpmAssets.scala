@@ -21,8 +21,8 @@ object NpmAssets {
     */
   def ofProject(project: ProjectReference)(assets: File => PathFinder): Def.Initialize[Task[Seq[PathMapping]]] =
     Def.task {
-      val nodeModules = (crossTarget in project).value / "node_modules" // HACK should be (npmUpdate in project).value
+      val nodeModules = (npmUpdate in (project, Compile)).value / "node_modules"
       assets(nodeModules).pair(relativeTo(nodeModules))
-    }.dependsOn(npmUpdate in (project, Compile, fastOptJS))
+    }
 
 }

@@ -1,5 +1,6 @@
 package scalajsbundler
 
+import org.scalajs.sbtplugin.Stage
 import sbt._
 
 /**
@@ -11,20 +12,37 @@ case class Launcher(
   mainClass: String
 )
 
-// TODO Remove when launchers are not anymore necessary
 object Launcher {
 
+  /**
+    * Generates a launcher for the Scala.js output.
+    *
+    * @param targetDir The npm directory
+    * @param sjsOutput Output of Scala.js
+    * @param sjsStage Scala.js stage (FastOpt or FullOpt)
+    * @param mainClass Main class name
+    * @return The written file and the main class name
+    */
+  // TODO Caching
   def write(
     targetDir: File,
-    sjsStageOutput: File,
+    sjsOutput: Attributed[File],
+    sjsStage: Stage,
     mainClass: String
   ): Launcher = {
 
     val launcherContent = {
-      val module = JS.ref("require")(JS.str(sjsStageOutput.absolutePath))
+      val module = JS.ref("require")(JS.str(sjsOutput.data.absolutePath))
       callEntryPoint(mainClass, module)
     }
-    val launcherFile = targetDir / "launcher.js" // TODO Use different names according to the sjsStages
+
+    val stagePart =
+      sjsStage match {
+        case Stage.FastOpt => "fastopt"
+        case Stage.FullOpt => "opt"
+      }
+
+    val launcherFile = targetDir / s"$stagePart-launcher.js"
     IO.write(launcherFile, launcherContent.show)
 
     Launcher(launcherFile, mainClass)

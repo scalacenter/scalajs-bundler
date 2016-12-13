@@ -1,11 +1,12 @@
-$ absent target/scala-2.11/static-fastopt-bundle.js target/scala-2.11/static-fastopt-bundle.js.map
+> set enableReloadWorkflow := false
+$ absent target/scala-2.11/scalajs-bundler/main/static-fastopt-bundle.js target/scala-2.11/scalajs-bundler/main/static-fastopt-bundle.js.map
 > fastOptJS::webpack
-$ exists target/scala-2.11/static-fastopt-bundle.js target/scala-2.11/static-fastopt-bundle.js.map
+$ exists target/scala-2.11/scalajs-bundler/main/static-fastopt-bundle.js target/scala-2.11/scalajs-bundler/main/static-fastopt-bundle.js.map
 > html index.html
 
-$ absent target/scala-2.11/static-opt-bundle.js target/scala-2.11/static-opt-bundle.js.map
+$ absent target/scala-2.11/scalajs-bundler/main/static-opt-bundle.js target/scala-2.11/scalajs-bundler/main/static-opt-bundle.js.map
 > fullOptJS::webpack
-$ exists target/scala-2.11/static-opt-bundle.js target/scala-2.11/static-opt-bundle.js.map
+$ exists target/scala-2.11/scalajs-bundler/main/static-opt-bundle.js target/scala-2.11/scalajs-bundler/main/static-opt-bundle.js.map
 > html index-prod.html
 > checkSize
 
@@ -14,9 +15,9 @@ $ exists target/scala-2.11/static-opt-bundle.js target/scala-2.11/static-opt-bun
 > clean
 > set emitSourceMaps := false
 > fastOptJS::webpack
-$ absent target/scala-2.11/static-fastopt-bundle.js.map
+$ absent target/scala-2.11/scalajs-bundler/main/static-fastopt-bundle.js.map
 > fullOptJS::webpack
-$ absent target/scala-2.11/static-opt-bundle.js.map
+$ absent target/scala-2.11/scalajs-bundler/main/static-opt-bundle.js.map
 
 # webpackEmitSourceMaps controls source maps emission for the webpack task
 
@@ -24,12 +25,12 @@ $ absent target/scala-2.11/static-opt-bundle.js.map
 > set emitSourceMaps := true
 > set webpackEmitSourceMaps in (Compile, fastOptJS) := false
 > fastOptJS::webpack
-$ exists target/scala-2.11/static-fastopt.js.map
-$ absent target/scala-2.11/static-fastopt-bundle.js.map
+$ exists target/scala-2.11/scalajs-bundler/main/static-fastopt.js.map
+$ absent target/scala-2.11/scalajs-bundler/main/static-fastopt-bundle.js.map
 
 > set webpackEmitSourceMaps in (Compile, fullOptJS) := false
 > fullOptJS::webpack
-$ exists target/scala-2.11/static-opt.js.map
-$ absent target/scala-2.11/static-opt-bundle.js.map
+$ exists target/scala-2.11/scalajs-bundler/main/static-opt.js.map
+$ absent target/scala-2.11/scalajs-bundler/main/static-opt-bundle.js.map
 
 > test
