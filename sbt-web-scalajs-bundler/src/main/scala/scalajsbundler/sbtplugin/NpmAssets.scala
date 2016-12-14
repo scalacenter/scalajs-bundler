@@ -1,11 +1,9 @@
-package scalajsbundler
+package scalajsbundler.sbtplugin
 
 import com.typesafe.sbt.web.PathMapping
-import org.scalajs.sbtplugin.ScalaJSPlugin.AutoImport.fastOptJS
-import sbt.Keys.crossTarget
 import sbt._
 
-import scalajsbundler.ScalaJSBundlerPlugin.autoImport.npmUpdate
+import scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.autoImport.npmUpdate
 
 object NpmAssets {
 

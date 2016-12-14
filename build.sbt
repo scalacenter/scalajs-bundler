@@ -1,3 +1,6 @@
+import sbtunidoc.Plugin.ScalaUnidoc
+import sbtunidoc.Plugin.UnidocKeys.unidoc
+
 val `sbt-scalajs-bundler` =
   project.in(file("sbt-scalajs-bundler"))
     .settings(commonSettings: _*)
@@ -19,24 +22,44 @@ val `sbt-web-scalajs-bundler` =
     )
     .dependsOn(`sbt-scalajs-bundler`)
 
+// Dummy project that exists just for the purpose of aggregating the two sbt
+// plugins. I can not do that in the `doc` project below because the
+// scalaVersion is not compatible.
+val apiDoc =
+  project.in(file("api-doc"))
+    .settings(noPublishSettings ++ unidocSettings: _*)
+    .settings(
+      scalacOptions in (ScalaUnidoc, unidoc) ++= Seq(
+        "-groups",
+        "-doc-source-url", s"https://github.com/scalacenter/scalajs-bundler/blob/v${version.value}€{FILE_PATH}.scala",
+        "-sourcepath", (baseDirectory in ThisBuild).value.absolutePath
+      )
+    )
+    .aggregate(`sbt-scalajs-bundler`, `sbt-web-scalajs-bundler`)
+
 val ornateTarget = Def.setting(target.value / "ornate")
 
-val doc =
-  project.in(file("doc"))
+val manual =
+  project.in(file("manual"))
     .enablePlugins(OrnatePlugin)
     .settings(noPublishSettings ++ ghpages.settings: _*)
     .settings(
       scalaVersion := "2.11.8",
-      resolvers += Resolver.bintrayRepo("szeiger", "maven"), // https://github.com/szeiger/ornate/issues/4
       git.remoteRepo := "git@github.com:scalacenter/scalajs-bundler.git",
+      ornateSourceDir := Some(sourceDirectory.value / "ornate"),
       ornateTargetDir := Some(ornateTarget.value),
-      siteSourceDirectory := ornateTarget.value,
-      includeFilter in makeSite := AllPassFilter,
-      makeSite := makeSite.dependsOn(ornate).value
+      siteSubdirName in ornate := "",
+      addMappingsToSiteDir(mappings in ornate, siteSubdirName in ornate),
+      mappings in ornate := {
+        val _ = ornate.value
+        val output = ornateTarget.value
+        output ** AllPassFilter --- output pair relativeTo(output)
+      },
+      siteSubdirName in packageDoc := "api/latest",
+      addMappingsToSiteDir(mappings in ScalaUnidoc in packageDoc in apiDoc, siteSubdirName in packageDoc)
     )
 
 import ReleaseTransformations._
-import xerial.sbt.Sonatype.SonatypeCommand
 
 val `scalajs-bundler` =
   project.in(file("."))
@@ -50,7 +73,7 @@ val `scalajs-bundler` =
         runTest,
         releaseStepInputTask(scripted in `sbt-scalajs-bundler`),
         releaseStepInputTask(scripted in `sbt-web-scalajs-bundler`),
-        releaseStepTask(ornate in doc),
+        releaseStepTask(ornate in manual),
         setReleaseVersion,
         commitReleaseVersion,
         tagRelease,
@@ -58,14 +81,13 @@ val `scalajs-bundler` =
         releaseStepTask(PgpKeys.publishSigned in `sbt-web-scalajs-bundler`),
         setNextVersion,
         commitNextVersion,
-        releaseStepCommand(SonatypeCommand.sonatypeReleaseAll),
         pushChanges,
-        releaseStepTask(GhPagesKeys.pushSite in doc)
+        releaseStepTask(GhPagesKeys.pushSite in manual)
       ),
       scriptedLaunchOpts += "-Dplugin.version=" + version.value,
       scriptedBufferLog := false
     )
-    .aggregate(`sbt-scalajs-bundler`, `sbt-web-scalajs-bundler`, doc)
+    .aggregate(`sbt-scalajs-bundler`, `sbt-web-scalajs-bundler`, manual, apiDoc)
 
 lazy val commonSettings =
   ScriptedPlugin.scriptedSettings ++ Seq(
