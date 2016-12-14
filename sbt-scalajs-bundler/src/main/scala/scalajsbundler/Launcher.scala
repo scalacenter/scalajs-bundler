@@ -3,6 +3,8 @@ package scalajsbundler
 import org.scalajs.sbtplugin.Stage
 import sbt._
 
+import scalajsbundler.util.JS
+
 /**
   * @param file File that contains the launcher
   * @param mainClass JSMain class fully qualified name

@@ -1,4 +1,4 @@
-package scalajsbundler
+package scalajsbundler.util
 
 import sbt._
 

@@ -6,24 +6,30 @@ Contributing
 - `sbt-scalajs-bundler/` The scalajs-bundler sbt plugin
 - `sbt-web-scalajs-bundler/` sbt plugin for integrating scalajs-bundler and
 [sbt-web-scalajs](https://github.com/vmunier/sbt-web-scalajs)
-- `doc/` Sources of the documentation
+- `manual/` Sources of the documentation
 
-## Building
+## Build the project
 
 ~~~ sh
 $ sbt package
 ~~~
 
-## Running the tests
+## Run the tests
 
 ~~~ sh
 $ sbt scripted
 ~~~
 
+## Publish locally
+
+~~~ sh
+$ sbt publishLocal
+~~~
+
 ## Preview the documentation
 
 ~~~ sh
-$ sbt doc/previewSite
+$ sbt manual/previewSite
 ~~~
 
 ## General recommendations
