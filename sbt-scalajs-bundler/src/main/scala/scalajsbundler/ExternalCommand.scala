@@ -2,6 +2,8 @@ package scalajsbundler
 
 import sbt._
 
+import scalajsbundler.util.Commands
+
 /**
   * Attempts to smoothen platform-specific differences when invoking commands.
   *

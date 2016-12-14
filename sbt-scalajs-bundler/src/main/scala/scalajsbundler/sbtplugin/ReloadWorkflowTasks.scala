@@ -1,13 +1,15 @@
-package scalajsbundler
+package scalajsbundler.sbtplugin
 
 import org.scalajs.sbtplugin.ScalaJSPlugin.AutoImport._
 import org.scalajs.sbtplugin.ScalaJSPluginInternal
 import org.scalajs.sbtplugin.ScalaJSPluginInternal.usesScalaJSLinkerTag
 import sbt.Keys._
 import sbt._
-import ScalaJSBundlerPlugin.autoImport._
-import ScalaJSBundlerPlugin.ensureModuleKindIsCommonJSModule
-import Caching.cached
+
+import scalajsbundler.ReloadWorkflow
+import scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.autoImport._
+import scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.ensureModuleKindIsCommonJSModule
+import scalajsbundler.util.Caching.cached
 
 /** Sbt tasks related to the reload workflow */
 object ReloadWorkflowTasks {

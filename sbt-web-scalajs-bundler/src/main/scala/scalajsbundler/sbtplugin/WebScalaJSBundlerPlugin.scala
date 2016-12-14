@@ -1,29 +1,40 @@
-package scalajsbundler
+package scalajsbundler.sbtplugin
 
-import sbt._
-import sbt.Keys._
 import com.typesafe.sbt.web.PathMapping
 import com.typesafe.sbt.web.pipeline.Pipeline
-
-import ScalaJSBundlerPlugin.autoImport._
 import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
+import sbt.Keys._
+import sbt._
 import webscalajs.WebScalaJS
 import webscalajs.WebScalaJS.autoImport._
 
 import scala.collection.immutable.Nil
+import scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.autoImport._
 
 /**
-  * If WebScalaJS is enabled, tweak the pipelineStage so that the bundle is produced
+  * If WebScalaJS is enabled, tweaks the pipelineStage so that the bundle is produced
   * as an sbt-web asset.
+  *
+  * = Tasks and Settings =
+  *
+  * See the [[WebScalaJSBundlerPlugin$.autoimport autoImport]] member.
   */
 object WebScalaJSBundlerPlugin extends AutoPlugin {
 
+  /**
+    * @groupname settings Settings
+    */
   object autoImport {
 
-    /** @see [[scalajsbundler.NpmAssets$.ofProject NpmAssets.ofProject]] */
+    /**
+      * Sequence of PathMapping’s to include to sbt-web’s assets.
+      *
+      * @see [[scalajsbundler.sbtplugin.NpmAssets$.ofProject NpmAssets.ofProject]]
+      * @group settings
+      */
     val npmAssets: TaskKey[Seq[PathMapping]] = taskKey[Seq[PathMapping]]("Assets (resources that are not CommonJS modules) imported from the NPM packages")
 
-    val NpmAssets = scalajsbundler.NpmAssets
+    val NpmAssets = scalajsbundler.sbtplugin.NpmAssets
 
   }
 

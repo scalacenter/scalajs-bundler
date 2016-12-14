@@ -1,4 +1,4 @@
-package scalajsbundler
+package scalajsbundler.util
 
 import java.util.concurrent.atomic.AtomicInteger
 

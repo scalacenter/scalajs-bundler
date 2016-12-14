@@ -2,6 +2,8 @@ package scalajsbundler
 
 import sbt._
 
+import scalajsbundler.util.JS
+
 object PackageJson {
 
   /**

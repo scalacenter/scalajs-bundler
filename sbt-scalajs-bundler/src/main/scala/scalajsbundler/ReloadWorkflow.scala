@@ -8,6 +8,8 @@ import org.scalajs.sbtplugin.Loggers
 import org.scalajs.sbtplugin.ScalaJSPlugin.AutoImport._
 import sbt._
 
+import scalajsbundler.util.{Commands, JS}
+
 /**
   * Faster workflow when a developer changes the source code and then reloads the application.
   *

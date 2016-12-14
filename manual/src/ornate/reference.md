@@ -56,64 +56,21 @@ their execution so that they can be loaded by jsdom.
 You can find an example of project requiring the DOM for its tests
 [here](https://github.com/scalacenter/scalajs-bundler/blob/master/sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler/static/).
 
-### Tasks {#tasks}
+### Yarn {#yarn}
 
-`webpack`: Bundles the output of a Scala.js stage. For instance, to bundle the
-output of `fastOptJS`, run the following task from the sbt shell: `fastOptJS::webpack`.
-Note that to refer to this task from a build definition it must be scoped by the
-current configuration, Scala.js stage and project: `webpack in (Compile, fastOptJS)`
-(or `webpack in (projectRef, Compile, fastOptJS in projectRef)` to explicitly scope
-it to another project that the project which is being applied settings).
-
-`npmUpdate`: Downloads NPM dependencies. This task is scoped by an sbt `Configuration`
-(either `Compile` or `Test`): according to this configuration the directory in
-which the dependencies are downloaded is not the same.
-
-### Settings {#settings}
-
-`npmDependencies`: list of the NPM packages (name and version) your application depends on.
-You can use [semver](https://docs.npmjs.com/misc/semver) versions.
-
-`npmDevDependencies`: list of the NPM packages (name and version) your build depends on.
-
-`enableReloadWorkflow`: whether to enable the “reload workflow” for `webpack in fastOptJS`.
-When enabled, dependencies are pre-bundled so that the output of `fastOptJS` can directly
-be executed by a web browser without being further processed by a bundling system. This
-reduces the delays when live-reloading the application on source modifications. Defaults
-to `true`.
-
-`webpackEntries`: list of entry bundles to generate. By default it generates just one bundle
-for your main class.
-
-`version in webpack`: version of webpack to use. Example of use:
+By default, `npm` is used to fetch the dependencies but you can use [Yarn](https://yarnpkg.com/) by setting the
+`useYarn` key to `true`:
 
 ~~~ scala
-version in webpack := "2.1.0-beta.25"
+useYarn := true
 ~~~
 
-`webpackConfigFile`: configuration file to use with webpack. By default, the plugin generates a
-configuration file, but you can supply your own file via this setting. Example of use:
+The `yarn` command must be available in the host platform.
 
-~~~ scala
-webpackConfigFile in fullOptJS := Some(baseDirectory.value / "my.prod.webpack.config.js")
-~~~
+### Tasks and Settings {#tasks-and-settings}
 
-You can find more insights on how to write a custom configuration file in the [cookbook](cookbook.md#custom-config).
-
-`webpackEmitSourceMaps in (<configuration>, <stage>)`: whether to enable (or not) source-map in
-the given configuration (`Compile` or `Test`) and stage (`fastOptJS` or `fullOptJS`). Example
-of use:
-
-~~~ scala
-webpackEmitSourceMaps in (Compile, fullOptJS) := false
-~~~
-
-Note that, by default, this setting has the same value as `emitSourceMaps`, so, to globally
-disable source maps you can just configure the `emitSourceMaps` setting:
-
-~~~ scala
-emitSourceMaps := false
-~~~
+The tasks and settings that control the plugin are documented in the API documentation
+of the [ScalaJSBundlerPlugin](api:scalajsbundler.sbtplugin.ScalaJSBundlerPlugin$).
 
 ## `WebScalaJSBundlerPlugin`
 
@@ -140,6 +97,7 @@ makes all the files within the `font-awesome` package available as sbt-web asset
 These assets keep their path prefix relative to the `node_modules` directory: for instance the asset path of the
 `css/font-awesome.min.css` resource is `font-awesome/css/font-awesome.min.css`.
 
-### Settings {#web-settings}
+### Tasks and Settings {#web-tasks-and-settings}
 
-`npmAssets` Sequence of `PathMapping`s to include to sbt-web’s assets.
+The tasks and settings that control the plugin are documented in the API documentation
+of the [WebScalaJSBundlerPlugin](api:scalajsbundler.sbtplugin.WebScalaJSBundlerPlugin$).

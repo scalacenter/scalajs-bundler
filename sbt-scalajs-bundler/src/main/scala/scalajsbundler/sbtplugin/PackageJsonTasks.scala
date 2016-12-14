@@ -1,6 +1,9 @@
-package scalajsbundler
+package scalajsbundler.sbtplugin
 
 import sbt._
+
+import scalajsbundler.PackageJson
+import scalajsbundler.util.Caching
 
 object PackageJsonTasks {
 

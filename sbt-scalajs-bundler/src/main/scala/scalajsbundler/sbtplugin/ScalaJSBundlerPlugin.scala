@@ -1,22 +1,60 @@
-package scalajsbundler
+package scalajsbundler.sbtplugin
 
 import org.scalajs.core.tools.io.{FileVirtualJSFile, VirtualJSFile}
 import org.scalajs.core.tools.jsdep.ResolvedJSDependency
 import org.scalajs.core.tools.linker.backend.ModuleKind
 import org.scalajs.jsenv.ComJSEnv
 import org.scalajs.sbtplugin.Loggers.sbtLogger2ToolsLogger
-import org.scalajs.sbtplugin.{FrameworkDetectorWrapper, ScalaJSPlugin, ScalaJSPluginInternal, Stage}
 import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
 import org.scalajs.sbtplugin.ScalaJSPluginInternal.{scalaJSEnsureUnforked, scalaJSModuleIdentifier, scalaJSRequestsDOM}
+import org.scalajs.sbtplugin.{FrameworkDetectorWrapper, ScalaJSPlugin, ScalaJSPluginInternal, Stage}
 import org.scalajs.testadapter.ScalaJSFramework
 import sbt.Keys._
 import sbt._
 
+import scalajsbundler._
+
+/**
+  * This plugin enables `ScalaJSPlugin` and sets the `scalaJSModuleKind` to `CommonJSModule`. It also makes it
+  * possible to define dependencies to NPM packages and provides tasks to fetch them or to bundle the application
+  * with its dependencies.
+  *
+  * = Tasks and Settings =
+  *
+  * The [[ScalaJSBundlerPlugin$.autoImport autoImport]] member documents the keys provided by this plugin. Besides these keys, the
+  * following existing keys also control the plugin:
+  *
+  * == `version in webpack` ==
+  *
+  * Version of webpack to use. Example:
+  *
+  * {{{
+  *   version in webpack := "2.1.0-beta.25"
+  * }}}
+  *
+  * == `crossTarget in npmUpdate` ==
+  *
+  * The directory in which NPM dependencies will be fetched, and where all the .js files
+  * will be generated. The directory is different according to the current `Configuration`
+  * (either `Compile` or `Test`).
+  *
+  * Defaults to `crossTarget.value / "scalajs-bundler" / "main"` for `Compile` and
+  * `crossTarget.value / "scalajs-bundler" / "test"` for `Test`.
+  *
+  * == `scalaJSLauncher` ==
+  *
+  * The launcher for Scala.js’ stage output (e.g. `scalaJSLauncher in fastOptJS`).
+  * The launcher runs the “main” of the application.
+  */
 object ScalaJSBundlerPlugin extends AutoPlugin {
 
   override lazy val requires = ScalaJSPlugin
 
   // Exported keys
+  /**
+    * @groupname tasks Tasks
+    * @groupname settings Settings
+    */
   object autoImport {
 
     /**
@@ -34,31 +72,140 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       *     doSomething(npmDirectory / "node_modules" / "some-package")
       *   }
       * }}}
+      *
+      * The task returns the directory in which the dependencies have been fetched (the directory
+      * that contains the `node_modules` directory).
+      *
+      * @group tasks
       */
     val npmUpdate: TaskKey[File] =
       taskKey[File]("Fetch NPM dependencies")
 
+    /**
+      * List of the NPM packages (name and version) your application depends on.
+      * You can use [semver](https://docs.npmjs.com/misc/semver) versions:
+      *
+      * {{{
+      *   npmDependencies in Compile += "uuid" -> "~3.0.0"
+      * }}}
+      *
+      * Note that this key must be scoped by a `Configuration` (either `Compile` or `Test`).
+      *
+      * @group settings
+      */
     val npmDependencies: SettingKey[Seq[(String, String)]] =
       settingKey[Seq[(String, String)]]("NPM dependencies (libraries that your program uses)")
 
+    /** @group settings */
     val npmDevDependencies: SettingKey[Seq[(String, String)]] =
       settingKey[Seq[(String, String)]]("NPM dev dependencies (libraries that the build uses)")
 
+    /**
+      * Bundles the output of a Scala.js stage.
+      *
+      * This task must be scoped by a Scala.js stage (either `fastOptJS` or `fullOptJS`) and
+      * a `Configuration` (either `Compile` or `Test`).
+      *
+      * For instance, to bundle the output of `fastOptJS`, run the following task from the sbt shell:
+      *
+      * {{{
+      *   fastOptJS::webpack
+      * }}}
+      *
+      * Or, in an sbt build definition:
+      *
+      * {{{
+      *   webpack in (Compile, fastOptJS)
+      * }}}
+      *
+      * Note that to scope the task to a different project than the “current” sbt project, you
+      * have to write the following:
+      *
+      * {{{
+      *   webpack in (projectRef, Compile, fastOptJS in projectRef)
+      * }}}
+      *
+      * The task returns the produced bundles.
+      *
+      * @group tasks
+      */
     val webpack: TaskKey[Seq[File]] =
       taskKey[Seq[File]]("Bundle the output of a Scala.js stage using webpack")
 
+    /**
+      * configuration file to use with webpack. By default, the plugin generates a
+      * configuration file, but you can supply your own file via this setting. Example of use:
+      *
+      * {{{
+      *   webpackConfigFile in fullOptJS := Some(baseDirectory.value / "my.prod.webpack.config.js")
+      * }}}
+      *
+      * You can find more insights on how to write a custom configuration file in the
+      * [[http://scalacenter.github.io/scalajs-bundler/cookbook.html#custom-config cookbook]].
+      *
+      * @group settings
+      */
     val webpackConfigFile: SettingKey[Option[File]] =
       settingKey[Option[File]]("Configuration file to use with webpack")
 
+    /**
+      * List of entry bundles to generate. By default it generates just one bundle
+      * for your main class.
+      *
+      * @group tasks
+      */
     val webpackEntries: TaskKey[Seq[(String, File)]] =
       taskKey[Seq[(String, File)]]("Webpack entry bundles")
 
+    /**
+      * whether to enable (or not) source-map in
+      * a given configuration (`Compile` or `Test`) and stage (`fastOptJS` or `fullOptJS`). Example
+      * of use:
+      *
+      * {{{
+      *   webpackEmitSourceMaps in (Compile, fullOptJS) := false
+      * }}}
+      *
+      * Note that, by default, this setting takes the same value as the Scala.js’ `emitSourceMaps`
+      * setting, so, to globally disable source maps you can just configure the `emitSourceMaps`
+      * setting:
+      *
+      * {{{
+      *   emitSourceMaps := false
+      * }}}
+      *
+      * @group settings
+      */
     val webpackEmitSourceMaps: SettingKey[Boolean] =
       settingKey[Boolean]("Whether webpack should emit source maps at all")
 
+    /**
+      * whether to enable the “reload workflow” for `webpack in fastOptJS`.
+      *
+      * When enabled, dependencies are pre-bundled so that the output of `fastOptJS` can directly
+      * be executed by a web browser without being further processed by a bundling system. This
+      * reduces the delays when live-reloading the application on source modifications. Defaults
+      * to `true`.
+      *
+      * Note that the “reload workflow” does '''not''' use the custom webpack configuration file,
+      * if any.
+      *
+      * @group settings
+      */
     val enableReloadWorkflow: SettingKey[Boolean] =
       settingKey[Boolean]("Whether to enable the reload workflow for fastOptJS")
 
+    /**
+      * Whether to use [[https://yarnpkg.com/ Yarn]] to fetch dependencies instead
+      * of `npm`. Yarn has a caching mechanism that makes the process faster.
+      *
+      * If set to `true`, it requires the `yarn` command to be available in the
+      * host platform.
+      *
+      * Defaults to `false`.
+      *
+      * @group settings
+      */
     val useYarn: SettingKey[Boolean] =
       settingKey[Boolean]("Whether to use yarn for updates")
 
@@ -69,9 +216,6 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
 
   private val scalaJSBundlerWebpackConfig =
     TaskKey[File]("scalaJSBundlerWebpackConfig", "Write the webpack configuration file", KeyRanks.Invisible)
-
-  private val scalaJSBundlerLauncher =
-    TaskKey[Launcher]("scalaJSBundlerLauncher", "Launcher generated by scalajs-bundler", KeyRanks.Invisible)
 
   private[scalajsbundler] val ensureModuleKindIsCommonJSModule =
     SettingKey[Boolean](
@@ -248,7 +392,13 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
 
       // Override Scala.js’ scalaJSLauncher to add support for CommonJSModule
       scalaJSLauncher in stageTask := {
-        val launcher = (scalaJSBundlerLauncher in stageTask).value
+        val launcher =
+          Launcher.write(
+            (crossTarget in npmUpdate).value,
+            stageTask.value,
+            stage,
+            (mainClass in (scalaJSLauncher in stageTask)).value.getOrElse(sys.error("No main class detected"))
+          )
         Attributed[VirtualJSFile](FileVirtualJSFile(launcher.file))(
           AttributeMap.empty.put(name.key, launcher.mainClass)
         )
@@ -258,19 +408,15 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       relativeSourceMaps in stageTask := (webpackEmitSourceMaps in stageTask).value,
 
       webpackEntries in stageTask := {
-        val launcherFile = (scalaJSBundlerLauncher in stageTask).value.file
+        val launcherFile =
+          (scalaJSLauncher in stageTask).value.data match {
+            case f: FileVirtualJSFile => f.file
+            case _ => sys.error("Unable to find the launcher (real) file")
+          }
         val stageFile = stageTask.value.data
         val name = stageFile.name.stripSuffix(".js")
         Seq(name -> launcherFile)
       },
-
-      scalaJSBundlerLauncher in stageTask :=
-        Launcher.write(
-          (crossTarget in npmUpdate).value,
-          stageTask.value,
-          stage,
-          (mainClass in (scalaJSLauncher in stageTask)).value.getOrElse(sys.error("No main class detected"))
-        ),
 
       scalaJSBundlerWebpackConfig in stageTask :=
         Webpack.writeConfigFile(
@@ -316,7 +462,11 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
         entries.map(_._2).to[Set] + stage.value.data).to[Seq] // Note: the entries should be enough, excepted that they currently are launchers, which do not change even if the scalajs stage output changes
     }
 
-  /** @return Installation directory */
+  /**
+    * Locally installs jsdom.
+    *
+    * @return Installation directory
+    */
   lazy val installJsdom: Def.Initialize[Task[File]] =
     Def.task {
       val installDir = target.value / "scalajs-bundler-jsdom"
@@ -329,6 +479,9 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       installDir
     }
 
+  /**
+    * Writes the scalajs-bundler manifest file.
+    */
   lazy val scalaJSBundlerManifest: Def.Initialize[Task[File]] =
     Def.task {
       NpmDependencies.writeManifest(
