@@ -43,10 +43,19 @@ object PackageJson {
         "source-map-loader" -> "0.1.5" // Used by webpack when emitSourceMaps is enabled
       )
 
+    def filtered(deps: Seq[(String, String)]) =
+      deps
+        .groupBy { case (name, version) => name }
+        .mapValues(_.map(_._2).distinct)
+        .foldRight(List.empty[(String, String)]) { case ((name, versions), result) =>
+          assert(versions.size == 1, s"Different versions of '$name' are required: $versions")
+          (name -> versions.head) :: result
+        }
+
     val packageJson =
       JS.obj(
-        "dependencies" -> JS.objStr(dependencies),
-        "devDependencies" -> JS.objStr(devDependencies)
+        "dependencies" -> JS.objStr(filtered(dependencies)),
+        "devDependencies" -> JS.objStr(filtered(devDependencies))
       )
     log.debug("Writing 'package.json'")
     IO.write(targetFile, JS.toJson(packageJson))
