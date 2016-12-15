@@ -5,9 +5,10 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reference</title>
-    <link rel="stylesheet" href="_theme/css/foundation.min.css">
-    <link rel="stylesheet" href="_theme/css/app.css">
-     <link rel="stylesheet" href="_theme/css/highlight.js/styles/github-gist.css"> 
+    <link rel="stylesheet" href="theme/css/foundation.min.css">
+    <link rel="stylesheet" href="theme/css/app.css">
+     <link rel="stylesheet" href="theme/highlight.js/styles/github-gist.css"> 
+    
   </head>
   <body>
     <div class="expanded row">
@@ -27,7 +28,7 @@
                     <form action="site-search.html" method="get" class="align-right a_search">
                       <input name="q" type="search"  placeholder="Search
 " >
-                      <button><img alt="&#1F50D;" src="_theme/images/images/search.svg" /></button>
+                      <button><img alt="&#1F50D;" src="theme/images/search.svg" /></button>
                     </form>
                   
                 </div>
@@ -39,32 +40,33 @@
             <div class="row">
               
               <main class="columns large-order-2 sections" id="_sections">
+                
                 <h1 id="reference" class="a_section" data-magellan-target="reference">Reference<a class="a_hlink" href="#reference"></a></h1>
-<h2 id="plugin-overview" class="a_section" data-magellan-target="plugin-overview">Plugin Overview<a class="a_hlink" href="#plugin-overview"></a></h2>
+<h2 id="scalajsbundlerplugin" class="a_section" data-magellan-target="scalajsbundlerplugin"><code class="hljs">ScalaJSBundlerPlugin</code><a class="a_hlink" href="#scalajsbundlerplugin"></a></h2>
 <p>The <code class="hljs">ScalaJSBundlerPlugin</code> sbt plugin automatically enables <code class="hljs">ScalaJSPlugin</code> on the project. It configures
 the kind of output of the project to be <code class="hljs">ModuleKind.CommonJSModule</code>. Finally, it also configures its
 execution environment so that npm packages are fetched (by running the <code class="hljs">npm update</code> command in the
 project’s target directory) before the project is <code class="hljs">run</code> or <code class="hljs">test</code>ed.</p>
 <p>It is also possible to bundle the application and its dependencies into a single .js file by using
 the <code class="hljs">webpack</code> task scoped to a Scala.js stage (<code class="hljs">fastOptJS</code> or <code class="hljs">fullOptJS</code>):</p>
-<div class="row">
-<pre class="hljs small-expand columns a_xscroll"><code class="language-markdown"><span class="hljs-quote">&gt; fastOptJS::webpack</span>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-markdown"><span class="hljs-quote">&gt; fastOptJS::webpack</span>
 </code></pre>
-</div>
+</div></div>
 <p>The bundling process produces a single file that automatically calls the application entry
 point, so there is no need for an
 <a href="http://www.scala-js.org/doc/project/building.html#writing-launcher-code">additional launcher</a>.</p>
-<h2 id="javascript-dependencies" class="a_section" data-magellan-target="javascript-dependencies">JavaScript Dependencies<a class="a_hlink" href="#javascript-dependencies"></a></h2>
+<h3 id="npm-dependencies" class="a_section" data-magellan-target="npm-dependencies">JavaScript Dependencies<a class="a_hlink" href="#npm-dependencies"></a></h3>
 <p>To define the npm packages your project depends on, use the <code class="hljs">npmDependencies</code> key:</p>
-<div class="row">
-<pre class="hljs small-expand columns a_xscroll"><code class="language-scala">npmDependencies in <span class="hljs-type">Compile</span> += <span class="hljs-string">"node-uuid"</span> -&gt; <span class="hljs-string">"~1.4.7"</span>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala">npmDependencies in <span class="hljs-type">Compile</span> += <span class="hljs-string">"node-uuid"</span> -&gt; <span class="hljs-string">"~1.4.7"</span>
 </code></pre>
-</div>
+</div></div>
 <p>You can also scope dependencies to <code class="hljs">Test</code>:</p>
-<div class="row">
-<pre class="hljs small-expand columns a_xscroll"><code class="language-scala">npmDependencies in <span class="hljs-type">Test</span> += <span class="hljs-string">"jasmine"</span> -&gt; <span class="hljs-string">"2.5.2"</span>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala">npmDependencies in <span class="hljs-type">Test</span> += <span class="hljs-string">"jasmine"</span> -&gt; <span class="hljs-string">"2.5.2"</span>
 </code></pre>
-</div>
+</div></div>
 <blockquote class="note">
 <p>Your facades must use
 <a href="https://www.scala-js.org/doc/interoperability/facade-types.html#a-nameimporta-imports-from-other-javascript-modules"><code class="hljs">@JSImport</code></a>
@@ -72,61 +74,57 @@ in order to work with the npm modules.</p>
 </blockquote>
 <p>Last but not least, the <code class="hljs">.js</code> files that are in your classpath are automatically copied to the
 working directory of the <code class="hljs">node</code> command. This means that you can also <code class="hljs">@JSImport</code> these modules from
-your Scala facades.</p>
-<h2 id="jsdom-support-for-tests" class="a_section" data-magellan-target="jsdom-support-for-tests">jsdom Support for Tests<a class="a_hlink" href="#jsdom-support-for-tests"></a></h2>
-<p>If your tests require the DOM to be executed, add the following line to your build:</p>
-<div class="row">
-<pre class="hljs small-expand columns a_xscroll"><code class="language-scala">requiresDOM in <span class="hljs-type">Test</span> := <span class="hljs-literal">true</span>
+your Scala facades (you can see an example
+<a href="https://github.com/scalacenter/scalajs-bundler/blob/master/sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler/js-resources/src/main/scala/example/MyModule.scala#L6">here</a>).</p>
+<h3 id="jsdom" class="a_section" data-magellan-target="jsdom">jsdom Support for Tests<a class="a_hlink" href="#jsdom"></a></h3>
+<p>If your tests execution environment require the DOM, add the following line to your build:</p>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala">requiresDOM in <span class="hljs-type">Test</span> := <span class="hljs-literal">true</span>
 </code></pre>
-</div>
+</div></div>
 <p>Then, <code class="hljs">ScalaJSBundlerPlugin</code> will automatically download jsdom and bundle the tests before
 their execution so that they can be loaded by jsdom.</p>
 <p>You can find an example of project requiring the DOM for its tests
 <a href="https://github.com/scalacenter/scalajs-bundler/blob/master/sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler/static/">here</a>.</p>
-<h2 id="tasks" class="a_section" data-magellan-target="tasks">Tasks<a class="a_hlink" href="#tasks"></a></h2>
-<p><code class="hljs">webpack</code>: Bundles the output of a Scala.js stage. For instance, to bundle the
-output of <code class="hljs">fastOptJS</code>, run the following task from the sbt shell: <code class="hljs">fastOptJS::webpack</code>.
-Note that to refer to this task from a build definition it must be scoped by the
-current configuration, Scala.js stage and project: <code class="hljs">webpack in (Compile, fastOptJS)</code>
-(or <code class="hljs">webpack in (projectRef, Compile, fastOptJS in projectRef)</code> to explicitly scope
-it to another project that the project which is being applied settings).</p>
-<p><code class="hljs">npmUpdate</code>: Downloads NPM dependencies. This task is also scoped to a Scala.js stage.</p>
-<h2 id="settings" class="a_section" data-magellan-target="settings">Settings<a class="a_hlink" href="#settings"></a></h2>
-<p><code class="hljs">npmDependencies</code>: list of the NPM packages (name and version) your application depends on.
-You can use <a href="https://docs.npmjs.com/misc/semver">semver</a> versions.</p>
-<p><code class="hljs">npmDevDependencies</code>: list of the NPM packages (name and version) your build depends on.</p>
-<p><code class="hljs">enableReloadWorkflow</code>: whether to enable the “reload workflow” for <code class="hljs">webpack in fastOptJS</code>.
-When enabled, dependencies are pre-bundled so that the output of <code class="hljs">fastOptJS</code> can directly
-be executed by a web browser without being further processed by a bundling system. This
-reduces the delays when live-reloading the application on source modifications. Defaults
-to <code class="hljs">true</code>.</p>
-<p><code class="hljs">webpackEntries</code>: list of entry bundles to generate. By default it generates just one bundle
-for your main class.</p>
-<p><code class="hljs">version in webpack</code>: version of webpack to use. Example of use:</p>
-<div class="row">
-<pre class="hljs small-expand columns a_xscroll"><code class="language-scala">version in webpack := <span class="hljs-string">"2.1.0-beta.25"</span>
+<h3 id="yarn" class="a_section" data-magellan-target="yarn">Yarn<a class="a_hlink" href="#yarn"></a></h3>
+<p>By default, <code class="hljs">npm</code> is used to fetch the dependencies but you can use <a href="https://yarnpkg.com/">Yarn</a> by setting the
+<code class="hljs">useYarn</code> key to <code class="hljs">true</code>:</p>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala">useYarn := <span class="hljs-literal">true</span>
 </code></pre>
-</div>
-<p><code class="hljs">webpackConfigFile</code>: configuration file to use with webpack. By default, the plugin generates a
-configuration file, but you can supply your own file via this setting. Example of use:</p>
-<div class="row">
-<pre class="hljs small-expand columns a_xscroll"><code class="language-scala">webpackConfigFile in fullOptJS := <span class="hljs-type">Some</span>(baseDirectory.value / <span class="hljs-string">"my.prod.webpack.config.js"</span>)
+</div></div>
+<p>The <code class="hljs">yarn</code> command must be available in the host platform.</p>
+<h3 id="tasks-and-settings" class="a_section" data-magellan-target="tasks-and-settings">Tasks and Settings<a class="a_hlink" href="#tasks-and-settings"></a></h3>
+<p>The tasks and settings that control the plugin are documented in the API documentation
+of the <a href="api/latest/index.html#scalajsbundler.sbtplugin.ScalaJSBundlerPlugin$">ScalaJSBundlerPlugin</a>.</p>
+<h2 id="webscalajsbundlerplugin" class="a_section" data-magellan-target="webscalajsbundlerplugin"><code class="hljs">WebScalaJSBundlerPlugin</code><a class="a_hlink" href="#webscalajsbundlerplugin"></a></h2>
+<p>The <code class="hljs">WebScalaJSBundlerPlugin</code> provides integration with <a href="https://github.com/vmunier/sbt-web-scalajs">sbt-web-scalajs</a>.
+Enable this plugin on JVM projects that need to use .js artifacts produced by Scala.js projects (ie in places
+where you used to enable <code class="hljs">WebScalaJS</code>).</p>
+<p>The plugin tunes the <code class="hljs">scalaJSPipeline</code> to use the bundles produced by webpack rather than the direct
+output of the Scala.js compilation.</p>
+<blockquote class="note">
+<p>The <a href="https://github.com/vmunier/scalajs-scripts">scalajs-scripts</a> will <strong>not</strong> work anymore because they
+try to include the output of Scala.js instead of the output of the bundling process. You can see
+<a href="https://github.com/scalacenter/scalajs-bundler/blob/master/sbt-web-scalajs-bundler/src/sbt-test/sbt-web-scalajs-bundler/play/server/src/main/scala/example/ExampleController.scala#L25-L30">here</a>
+how to include the correct .js file.</p>
+</blockquote>
+<h3 id="npm-assets" class="a_section" data-magellan-target="npm-assets">Importing Assets from NPM Packages<a class="a_hlink" href="#npm-assets"></a></h3>
+<p>Some NPM packages also contain static assets (e.g. fonts, stylesheets, images, etc.). You can make them available
+as sbt-web assets as follows:</p>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala">npmAssets ++= <span class="hljs-type">NpmAssets</span>.ofProject(client) { nodeModules =&gt;
+  (nodeModules / <span class="hljs-string">"font-awesome"</span>).***
+}.value
 </code></pre>
-</div>
-<p>You can find more insights on how to write a custom configuration file in the <a href="cookbook.html#custom-config">cookbook</a>.</p>
-<p><code class="hljs">webpackEmitSourceMaps in (&lt;configuration&gt;, &lt;stage&gt;)</code>: whether to enable (or not) source-map in
-the given configuration (<code class="hljs">Compile</code> or <code class="hljs">Test</code>) and stage (<code class="hljs">fastOptJS</code> or <code class="hljs">fullOptJS</code>). Example
-of use:</p>
-<div class="row">
-<pre class="hljs small-expand columns a_xscroll"><code class="language-scala">webpackEmitSourceMaps in (<span class="hljs-type">Compile</span>, fullOptJS) := <span class="hljs-literal">false</span>
-</code></pre>
-</div>
-<p>Note that, by default, this setting has the same value as <code class="hljs">emitSourceMaps</code>, so, to globally
-disable source maps you can just configure the <code class="hljs">emitSourceMaps</code> setting:</p>
-<div class="row">
-<pre class="hljs small-expand columns a_xscroll"><code class="language-scala">emitSourceMaps := <span class="hljs-literal">false</span>
-</code></pre>
-</div>
+</div></div>
+<p>Where <code class="hljs">client</code> is the identifier of an sbt project that uses the <code class="hljs">ScalaJSBundlerPlugin</code>. The above configuration
+makes all the files within the <code class="hljs">font-awesome</code> package available as sbt-web assets.
+These assets keep their path prefix relative to the <code class="hljs">node_modules</code> directory: for instance the asset path of the
+<code class="hljs">css/font-awesome.min.css</code> resource is <code class="hljs">font-awesome/css/font-awesome.min.css</code>.</p>
+<h3 id="web-tasks-and-settings" class="a_section" data-magellan-target="web-tasks-and-settings">Tasks and Settings<a class="a_hlink" href="#web-tasks-and-settings"></a></h3>
+<p>The tasks and settings that control the plugin are documented in the API documentation
+of the <a href="api/latest/index.html#scalajsbundler.sbtplugin.WebScalaJSBundlerPlugin$">WebScalaJSBundlerPlugin</a>.</p>
 
               </main>
               
@@ -198,36 +196,61 @@ disable source maps you can just configure the <code class="hljs">emitSourceMaps
       <ul class="vertical menu">  
   <li>
     
-       <a href="#plugin-overview">Plugin Overview</a> 
+       <a href="#scalajsbundlerplugin">ScalaJSBundlerPlugin</a> 
+    
+    
+      <ul class="vertical menu">  
+  <li>
+    
+       <a href="#npm-dependencies">JavaScript Dependencies</a> 
     
     
   </li>
   
   <li>
     
-       <a href="#javascript-dependencies">JavaScript Dependencies</a> 
+       <a href="#jsdom">jsdom Support for Tests</a> 
     
     
   </li>
   
   <li>
     
-       <a href="#jsdom-support-for-tests">jsdom Support for Tests</a> 
+       <a href="#yarn">Yarn</a> 
     
     
   </li>
   
   <li>
     
-       <a href="#tasks">Tasks</a> 
+       <a href="#tasks-and-settings">Tasks and Settings</a> 
+    
+    
+  </li>
+  </ul>
+    
+  </li>
+  
+  <li>
+    
+       <a href="#webscalajsbundlerplugin">WebScalaJSBundlerPlugin</a> 
+    
+    
+      <ul class="vertical menu">  
+  <li>
+    
+       <a href="#npm-assets">Importing Assets from NPM Packages</a> 
     
     
   </li>
   
   <li>
     
-       <a href="#settings">Settings</a> 
+       <a href="#web-tasks-and-settings">Tasks and Settings</a> 
     
+    
+  </li>
+  </ul>
     
   </li>
   </ul>
@@ -257,11 +280,11 @@ disable source maps you can just configure the <code class="hljs">emitSourceMaps
         </div>
       </footer>
     </div>
-    <script src="_theme/js/jquery.min.js"></script>
-    <script src="_theme/js/what-input.min.js"></script>
-    <script src="_theme/js/foundation.min.js"></script>
+    <script src="theme/js/jquery.min.js"></script>
+    <script src="theme/js/what-input.min.js"></script>
+    <script src="theme/js/foundation.min.js"></script>
     
-    <script src="_theme/js/app.js"></script>
+    <script src="theme/js/app.js"></script>
     
   </body>
 </html>

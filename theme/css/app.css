@@ -1,0 +1,514 @@
+body {
+  background: white;
+  color: black;
+  font-family: "Source Sans Pro", "Segoe UI", "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+}
+
+body > div {
+  height: 100%;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Source Sans Pro", "Segoe UI", "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+  color: #444;
+}
+
+.top-bar {
+  background: inherit;
+}
+
+.top-bar p {
+  margin: 0;
+}
+
+.top-bar-right {
+  text-align: right;
+  padding-right: 0.9375rem;
+}
+
+input::-webkit-input-placeholder, textarea::-webkit-input-placeholder {
+  color: #999;
+}
+
+input::-moz-placeholder, textarea::-moz-placeholder {
+  color: #999;
+}
+
+input:-ms-input-placeholder, textarea:-ms-input-placeholder {
+  color: #999;
+}
+
+input::placeholder, textarea::placeholder {
+  color: #999;
+}
+
+blockquote {
+  margin: 1rem 0;
+  padding: 0.8rem 1rem;
+  background-color: #f8f8f8;
+  border-left: 0.2rem solid #cacaca;
+}
+
+blockquote, blockquote p {
+  line-height: 1.6;
+  color: black;
+}
+
+blockquote :last-child {
+  margin-bottom: 0;
+}
+
+blockquote.note {
+  border-left-color: rgb(228,217,113);
+  background-color: rgba(228,217,113,0.2);
+}
+
+blockquote.warning {
+  border-left-color: rgb(255,117,0);
+  background-color: rgba(255,117,0,0.2);
+}
+
+hr {
+  border-bottom: 0.2rem solid #cacaca;
+}
+
+a, a:hover, a:active, a:visited {
+  color: rgb(0,120,215);
+}
+
+a:hover, a:active {
+  text-decoration: underline;
+}
+
+/********** Top bar search **********/
+
+.top-bar-right .a_search {
+  position: relative;
+}
+
+.top-bar-right .a_search input, .top-bar-right .a_search button {
+  border-radius: 0 !important;
+  margin: 0;
+  background-color: #ddd;
+}
+
+.top-bar-right .a_search input {
+  border: 0 !important;
+  box-shadow: none;
+  height: 34px;
+  width: 15em;
+  padding-left: 8px;
+  padding-right: 46px;
+  max-width: none;
+  /*transition: box-shadow .5s,width .5s !important;*/
+}
+
+.top-bar-right .a_search input:focus {
+  /*width: 20em;*/
+  background-color: white;
+  box-shadow: 0 0 5px #cacaca;
+}
+
+.top-bar-right .a_search button {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  height: 34px;
+  padding: 0;
+  width: 34px;
+  color: #444 !important;
+  background: transparent !important;
+}
+
+.top-bar-right .a_search button img {
+  width: 16px;
+  height: 16px;
+}
+
+/********** Search page **********/
+
+main .a_search {
+  position: relative;
+  margin-bottom: 2em;
+}
+
+main .a_search input, main .a_search button {
+  border-radius: 0 !important;
+}
+
+main .a_search input {
+  border: 1px solid #c0c0c0;
+  box-shadow: none;
+  height: 40px;
+  width: 100%;
+  padding-left: 8px;
+  padding-right: 46px;
+}
+
+main .a_search input:focus {
+  border: 1px solid rgb(0,120,215);
+  box-shadow: none;
+}
+
+main .a_search button {
+  position: absolute;
+  top: 1px;
+  right: 1px;
+  height: 38px;
+  padding: 0;
+  width: 38px;
+  background-color: rgb(0,120,215);
+  color: #ffffff;
+}
+
+main .a_search button:hover, main .a_search button:focus {
+  background-color: rgb(0,100,180) !important;
+  color: #ffffff;
+}
+
+main .a_search button img {
+  width: 16px;
+  height: 16px;
+}
+
+main .a_search button:hover, main .a_search button:focus {
+  background-color: #fefefe;
+  color: #444;
+}
+
+.a_searchresults > li > a {
+  font-weight: bold;
+}
+
+/********** highlight.js and tabs customization **********/
+
+pre, code, kbd, samp {
+  font-family: "Droid Sans Mono","Source Code Pro",Menlo,Monaco,Consolas,"DejaVu Sans Mono",Inconsolata,monospace;
+  border: 0;
+  color: black;
+  background-color: #f8f8f8;
+  font-size: 90%;
+}
+
+code.hljs {
+  display: inline;
+  padding: 0 0.2rem;
+  overflow: visible;
+}
+
+pre code, pre.hljs code {
+  background-color: inherit;
+  color: inherit;
+  border: 0;
+  padding: 0;
+  font-size: 100%;
+}
+
+pre, pre.hljs, code.hljs {
+  /* Override hljs background color: */
+  background-color: #f8f8f8;
+}
+
+blockquote pre, blockquote pre.hljs, blockquote code.hljs, h1 code.hljs, h2 code.hljs, h3 code.hljs, h4 code.hljs, h5 code.hljs, h6 code.hljs {
+  background-color: white;
+}
+
+pre, pre.hljs {
+  margin: 0 1rem 1rem 1rem;
+  padding: 0.5rem 1rem;
+  line-height: 1.5;
+  border: 1px solid #ddd;
+}
+
+.a_codeblock {
+  padding: 0;
+  position: relative;
+}
+
+.a_codeblock .a_sourcelink {
+  position: absolute;
+  top: 0.5rem;
+  right: 1.5rem;
+  border: 1px solid #ddd;
+  padding: 0.1rem 0.5rem;
+  visibility: hidden;
+  background-color: white;
+}
+
+.a_codeblock:hover .a_sourcelink {
+  visibility: visible;
+}
+
+.a_xscroll {
+  width: 0;
+  overflow-x: auto;
+}
+
+.tabs-panel {
+  padding: 0;
+}
+
+.tabs, .tabs-content {
+  border-color: #ddd;
+}
+
+.tabs-title {
+  border-right: 1px solid #ddd;
+}
+
+.tabs-content {
+  margin-bottom: 1em;
+}
+
+.tabs-panel pre, .tabs-panel pre.hljs {
+  margin-bottom: 0;
+  border: 0;
+}
+
+.tabs-title a {
+  padding: 0.75rem 1.5rem;
+  font-size: 100%;
+  font-weight: normal;
+  color: inherit;
+}
+
+.tabs-title.is-active a {
+  font-weight: 600;
+  background-color: #f8f8f8;
+  text-decoration: none !important;
+}
+
+/********** Custom style classes **********/
+
+@media screen and (max-width: 68.9375em) {
+  .a_show-for-xlarge {
+    display: none !important;
+  }
+}
+
+img.emoji {
+  width: 1.4rem;
+  height: 1.4rem;
+}
+
+.a_limited {
+  max-width: 82.5rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.a_header, .a_footer {
+  background-color: #444;
+  color: white;
+}
+
+.a_header a, .a_footer a {
+  color: inherit !important;
+  text-decoration: underline !important;
+}
+
+.a_header {
+  margin-bottom: 1rem;
+}
+
+.a_header .top-bar {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  font-size: 1.25rem;
+}
+
+.a_main {
+  margin-top: 1em;
+}
+
+.a_footer {
+  padding: 2rem 1rem;
+}
+
+.a_footer .top-bar-left {
+  padding-left: 3rem;
+}
+
+.a_footer .top-bar-right {
+  padding-right: 3rem;
+}
+
+.a_hlink {
+  visibility: hidden;
+  float: right;
+  padding-left: 1rem;
+  text-decoration: none !important;
+}
+
+.a_hlink::after {
+  content: '\00a0§\00a0';
+  color: #999;
+  font-size: 75%;
+  font-weight: 600;
+}
+
+.a_section:hover, .a_section:hover .a_hlink {
+  visibility: visible;
+}
+
+.a_table {
+  margin: 1rem;
+  margin-top: 0;
+  padding: 0;
+}
+
+.a_table table {
+  margin: 0;
+  width: auto;
+}
+
+.a_table table th, .a_table table td {
+  border: 1px solid #ddd;
+}
+
+.a_table table th {
+  color: #444;
+}
+
+.a_sitenav {
+  width: 100%;
+}
+
+.a_sitenav header, .a_pagenav header {
+  margin-bottom: 0.8rem;
+  font-size: 1.2rem;
+  color: #444;
+}
+
+.a_sitenav a, .a_sitenav span {
+  color: black;
+  display: inline;
+  border-right: 0.2rem solid #eee;
+  display: block;
+  overflow-x: hidden;
+  padding-top: 0.2rem;
+  padding-bottom: 0.2rem;
+}
+
+.a_sitenav > ul li.a_thispage > a, .a_sitenav > ul li.a_thispage > span {
+  border-right-color: rgb(0,120,215);
+  background-color: rgba(0,120,215,0.15);
+}
+
+.a_sitenav li {
+  display: block;
+  padding: 0;
+}
+
+.a_sitenav > ul > li {
+  padding-right: 1rem;
+}
+
+.a_sitenav ul, .a_pagenav ul {
+  display: block;
+  margin: 0;
+  line-height: 1.3rem;
+}
+
+.a_sitenav > .menu > li > ul > li > ul {
+  padding: 0;
+}
+
+.a_pagenav {
+  padding-bottom: 3rem;
+}
+
+.a_pagenav header {
+  margin-left: 1rem;
+}
+
+.a_pagenav a {
+  color: black;
+  border-left: 0.2rem solid white;
+}
+
+.a_sitenav > ul > li a {
+  padding: 0.2rem 1rem;
+}
+
+.a_pagenav > ul >li a {
+  padding: 0.35rem 1rem;
+}
+
+.a_sitenav > ul > li > ul > li > a, .a_pagenav > ul > li > ul > li > a {
+  padding-left: 1.5rem;
+}
+
+.a_sitenav > ul > li > ul > li > ul > li > a, .a_pagenav > ul > li > ul > li > ul > li > a {
+  padding-left: 2rem;
+}
+
+.a_sitenav > ul > li > ul > li > ul > li > ul > li > a, .a_pagenav > ul > li > ul > li > ul > li > ul > li > a {
+  padding-left: 2.5rem;
+}
+
+.a_sitenav > ul > li > ul > li > ul > li > ul > li > ul > li > a, .a_pagenav > ul > li > ul > li > ul > li > ul > li > ul > li > a {
+  padding-left: 3rem;
+}
+
+.a_sitenav > ul > li > ul > li > ul > li > ul > li > ul > li > ul > li > a, .a_pagenav > ul > li > ul > li > ul > li > ul > li > ul > li > ul > li > a {
+  padding-left: 3.5rem;
+}
+
+.a_sitenav > ul > li > ul > li > ul > li > ul > li > ul > li > ul > li > ul > li > a, .a_pagenav > ul > li > ul > li > ul > li > ul > li > ul > li > ul > li > ul > li > a {
+  padding-left: 3.5rem;
+}
+
+.a_pagenav [data-magellan] a {
+  color: black;
+  border-left: 0.2rem solid #eee;
+}
+
+.a_pagenav [data-magellan] a.active, [data-magellan] a.active:focus {
+  border-left-color: rgb(0,120,215);
+  background-color: rgba(0,120,215,0.15);
+}
+
+#_sections {
+  margin-bottom: 3rem;
+}
+
+@media screen and (max-width: 63.9375em) {
+  .a_sitenav {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+  .a_sitenav_container {
+    border-top: 0.15rem solid #ddd;
+    background-color: #f2f2f2;
+  }
+  .a_sitenav a, .a_sitenav span {
+    overflow-x: visible;
+    border-right: 0;
+  }
+}
+
+@media screen and (min-width: 64em) {
+  #_sections {
+    margin-left: 2em;
+    margin-right: 1em;
+  }
+  .a_sitenav {
+    padding-right: 0;
+    padding-bottom: 1rem;
+  }
+}
+
+/********** MathJax customization **********/
+
+#MathJax_Message {
+  height: auto;
+}
+
+.MathJax_Preview {
+  color: #999;
+}
+
+div.MathJax_Preview {
+  margin: 1rem 0;
+}

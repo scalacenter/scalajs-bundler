@@ -5,8 +5,9 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Search</title>
-    <link rel="stylesheet" href="_theme/css/foundation.min.css">
-    <link rel="stylesheet" href="_theme/css/app.css">
+    <link rel="stylesheet" href="theme/css/foundation.min.css">
+    <link rel="stylesheet" href="theme/css/app.css">
+    
     
   </head>
   <body>
@@ -27,7 +28,7 @@
                     <form action="site-search.html" method="get" class="align-right a_search">
                       <input name="q" type="search"  placeholder="Search
 " >
-                      <button><img alt="&#1F50D;" src="_theme/images/images/search.svg" /></button>
+                      <button><img alt="&#1F50D;" src="theme/images/search.svg" /></button>
                     </form>
                   
                 </div>
@@ -40,19 +41,22 @@
               
               <main class="columns large-order-2 sections" id="_sections">
                 
+                
   <h1 id="search" class="a_section" data-magellan-target="search">Search<a class="a_hlink" href="#search"></a></h1>
 <p>From here you can search all pages. Enter the search terms below and click the search button. Note that the search function will search for a combination of <em>all</em> search terms.</p>
 
 
-   <noscript> <blockquote class="warning">
-<p>This feature requires JavaScript. Please enable JavaScript in your browser.</p>
+   
+     <noscript> <blockquote class="warning">
+<p>This page requires JavaScript. Please enable JavaScript in your browser.</p>
 </blockquote>
  </noscript> 
+  
 
   <div id="_main_search" style="display: none">
     <form action="site-search.html" method="get" class="a_search">
       <input id="_q" name="q" type="search"  placeholder="" >
-      <button class="button"><img alt="&#1F50D;" src="_theme/images/images/search-white.svg" /></button>
+      <button class="button"><img alt="&#1F50D;" src="theme/images/search-white.svg" /></button>
     </form>
     <div id="_res" style="display: none">
       <p id="_rescount" ></p>
@@ -136,14 +140,14 @@
         </div>
       </footer>
     </div>
-    <script src="_theme/js/jquery.min.js"></script>
-    <script src="_theme/js/what-input.min.js"></script>
-    <script src="_theme/js/foundation.min.js"></script>
+    <script src="theme/js/jquery.min.js"></script>
+    <script src="theme/js/what-input.min.js"></script>
+    <script src="theme/js/foundation.min.js"></script>
     
-    <script src="_theme/js/app.js"></script>
+    <script src="theme/js/app.js"></script>
     
    <script src="search-index.js"></script> 
-  <script src="_theme/js/elasticlunr/elasticlunr.min.js"></script>
+  <script src="theme/js/elasticlunr.min.js"></script>
   <script type="text/javascript" />
     $("#_main_search").css("display", "block");
     var searchCount0 = "No matching pages found.",
@@ -171,7 +175,7 @@
       if(query !== "") {
         res = index.search(query, { fields: { t: {boost: 2}, k: {boost: 2}, b: {boost: 1} }, bool: "AND" });
         count = res.length;
-        for(var i=0; i<count; i++) {
+        for(var i=0; i < count; i++) {
           var data = indexData[parseInt(res[i].ref)]
           var li = document.createElement("li");
           var a = document.createElement("a");
