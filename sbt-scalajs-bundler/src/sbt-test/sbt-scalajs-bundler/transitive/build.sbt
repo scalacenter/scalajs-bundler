@@ -1,28 +1,44 @@
 val sub1 =
-  project.in(file("sub1"))
-    .enablePlugins(ScalaJSBundlerPlugin)
+  proj("sub1")
     .settings(
-      scalaVersion := "2.11.8",
       npmDependencies in Compile += "react" -> "15.4.1"
     )
 
 val sub2 =
-  project.in(file("sub2"))
-    .enablePlugins(ScalaJSBundlerPlugin)
+  proj("sub2")
     .settings(
-      scalaVersion := "2.11.8",
       npmDependencies in Compile += "react" -> "15.4.1"
+    )
+
+val sub3 =
+  proj("sub3")
+    .settings(
+      npmDependencies in Compile += "react" -> "15.3.2"
     )
 
 val checkPackageJson = taskKey[Unit]("Check that the package.json file does not contain duplicate entries for the 'react' dependency")
 
-val root =
-  project.in(file("."))
-    .enablePlugins(ScalaJSBundlerPlugin)
+val noConflicts =
+  proj("no-conflicts")
     .settings(
-      scalaVersion := "2.11.8",
       checkPackageJson := {
         val json = IO.read((npmUpdate in Compile).value / "package.json")
         assert(json.split("\n").count(_.containsSlice("react")) == 1, json)
       }
     ).dependsOn(sub1, sub2)
+
+val conflict =
+  proj("conflict")
+    .dependsOn(sub1, sub3)
+
+val resolution =
+  proj("resolution")
+    .dependsOn(sub1, sub3)
+    .settings(
+      npmResolutions in Compile := Map("react" -> "15.4.1")
+    )
+
+def proj(id: String): Project =
+  Project(id, file(id))
+    .enablePlugins(ScalaJSBundlerPlugin)
+    .settings(scalaVersion := "2.11.8")
