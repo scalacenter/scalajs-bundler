@@ -1,5 +1,20 @@
 # Changelog
 
+## Version 0.4.0
+
+> 2016 December 15
+
+- [#53](https://github.com/scalacenter/scalajs-bundler/pull/53): Fix cache invalidation when .js resources change ;
+- [#54](https://github.com/scalacenter/scalajs-bundler/pull/54): Add support for importing assets from NPM packages ;
+- [#56](https://github.com/scalacenter/scalajs-bundler/pull/56): Add [Yarn](https://yarnpkg.com/) support ;
+- [#65](https://github.com/scalacenter/scalajs-bundler/pull/65): Use distinct target directories for `npmUpdate in Compile` and `npmUpdate in Test` ;
+- [#69](https://github.com/scalacenter/scalajs-bundler/pull/69): Publish the API documentation ;
+- [#70](https://github.com/scalacenter/scalajs-bundler/pull/70): Ensure that there is no duplicates in NPM dependencies ;
+- [#71](https://github.com/scalacenter/scalajs-bundler/pull/71): Add a resolution mechanism for conflicting dependencies.
+
+You can find the complete list of commits since the last release
+[here](https://github.com/scalacenter/scalajs-bundler/compare/v0.3.1...v0.4.0).
+
 ## Version 0.3.1
 
 > 2016 December 2
