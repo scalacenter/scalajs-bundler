@@ -101,6 +101,27 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       settingKey[Seq[(String, String)]]("NPM dev dependencies (libraries that the build uses)")
 
     /**
+      * Map of NPM packages (name -> version) to use in case transitive NPM dependencies
+      * refer to a same package but with different version numbers. In such a
+      * case, this setting defines which version should be used for the conflicting
+      * package. Example:
+      *
+      * {{{
+      *   npmResolutions in Compile := Map("react" -> "15.4.1")
+      * }}}
+      *
+      * If several Scala.js projects depend on different versions of `react`, the version `15.4.1`
+      * will be picked. But if all the projects depend on the same version of `react`, the version
+      * given in `npmResolutions` will be ignored.
+      *
+      * Note that this key must be scoped by a `Configuration` (either `Compile` or `Test`).
+      *
+      * @group settings
+      */
+    val npmResolutions: SettingKey[Map[String, String]] =
+      settingKey[Map[String, String]]("NPM dependencies resolutions in case of conflict")
+
+    /**
       * Bundles the output of a Scala.js stage.
       *
       * This task must be scoped by a Scala.js stage (either `fastOptJS` or `fullOptJS`) and
@@ -256,6 +277,8 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
 
       npmDevDependencies := Seq.empty,
 
+      npmResolutions := Map.empty,
+
       webpack in fullOptJS := webpackTask(fullOptJS).value,
 
       webpack in fastOptJS := Def.taskDyn {
@@ -296,6 +319,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
           (crossTarget in npmUpdate).value,
           npmDependencies.value,
           npmDevDependencies.value,
+          npmResolutions.value,
           fullClasspath.value,
           configuration.value,
           (version in webpack).value,

@@ -1,1 +1,4 @@
-> root/checkPackageJson
+> no-conflicts/npmUpdate
+> no-conflicts/checkPackageJson
+-> conflict/npmUpdate
+> resolution/npmUpdate
