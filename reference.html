@@ -70,7 +70,8 @@ point, so there is no need for an
 <blockquote class="note">
 <p>Your facades must use
 <a href="https://www.scala-js.org/doc/interoperability/facade-types.html#a-nameimporta-imports-from-other-javascript-modules"><code class="hljs">@JSImport</code></a>
-in order to work with the npm modules.</p>
+in order to work with the npm modules, otherwise you will need some additional configuration, as explained
+<a href="cookbook.html#global-namespace">here</a>.</p>
 </blockquote>
 <p>Last but not least, the <code class="hljs">.js</code> files that are in your classpath are automatically copied to the
 working directory of the <code class="hljs">node</code> command. This means that you can also <code class="hljs">@JSImport</code> these modules from
@@ -155,16 +156,16 @@ of the <a href="api/latest/index.html#scalajsbundler.sbtplugin.WebScalaJSBundler
     
   </li>
   
-  <li >
+  <li  class="a_thispage" >
     
-      <a href="cookbook.html">Cookbook</a>
+      <a href="reference.html">Reference</a>
     
     
   </li>
   
-  <li  class="a_thispage" >
+  <li >
     
-      <a href="reference.html">Reference</a>
+      <a href="cookbook.html">Cookbook</a>
     
     
   </li>
