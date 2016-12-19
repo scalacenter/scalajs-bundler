@@ -118,3 +118,22 @@ dependency on the facade and to enable the `ScalaJSBundlerPlugin` plugin.
 > {.warning}
 > Projects that **use** the facade also have to enable the `ScalaJSBundlerPlugin` plugin,
 > otherwise the dependencies of the facade will not be resolved.
+
+## How to use an existing facade assuming the JS library to be exposed to the global namespace? {#global-namespace}
+
+Webpack is able to expose modules to the global namespace by using a custom loader:
+[expose-loader](https://github.com/webpack/expose-loader). Thus, you can write a custom webpack configuration
+file that uses this loader to expose the required modules to the global namespace. Typically, this file
+will look like this:
+
+~~~ javascript src=../../../sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler/global-namespace/webpack.config.js
+~~~
+
+Also, tweak your `build.sbt` to add the corresponding NPM dependencies and to use the
+custom webpack configuration file: 
+
+~~~ scala src=../../../sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler/global-namespace/build.sbt#relevant-settings
+~~~
+
+You can find a fully working example
+[here](https://github.com/scalacenter/scalajs-bundler/blob/master/sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler/global-namespace).
