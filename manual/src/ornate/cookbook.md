@@ -36,6 +36,10 @@ file will be copied into the internal target directory, where the scalajs-bundle
 its configuration file, and where all the npm dependencies have been downloaded (so you can
 also `require` these dependencies).
 
+> {.note}
+> By default the setting `enableReloadWorkflow` is true which causes `fastOptJS::webpack`
+> to **not** use webpack and therefore the custom configuration file is ignored.
+
 You can find a working example of custom configuration file
 [here](https://github.com/scalacenter/scalajs-bundler/blob/master/sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler/static/prod.webpack.config.js).
 
