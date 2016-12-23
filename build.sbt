@@ -8,7 +8,7 @@ val `sbt-scalajs-bundler` =
       sbtPlugin := true,
       name := "sbt-scalajs-bundler",
       description := "Module bundler for Scala.js projects",
-      addSbtPlugin("org.scala-js" % "sbt-scalajs" % "0.6.13")
+      addSbtPlugin("org.scala-js" % "sbt-scalajs" % "0.6.14")
     )
 
 val `sbt-web-scalajs-bundler` =
