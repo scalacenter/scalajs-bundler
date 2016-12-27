@@ -206,7 +206,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       * When enabled, dependencies are pre-bundled so that the output of `fastOptJS` can directly
       * be executed by a web browser without being further processed by a bundling system. This
       * reduces the delays when live-reloading the application on source modifications. Defaults
-      * to `true`.
+      * to `false`.
       *
       * Note that the “reload workflow” does '''not''' use the custom webpack configuration file,
       * if any.
@@ -258,7 +258,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
     // Include the manifest in the produced artifact
     (products in Compile) := (products in Compile).dependsOn(scalaJSBundlerManifest).value,
 
-    enableReloadWorkflow := true,
+    enableReloadWorkflow := false,
 
     useYarn := false,
 
