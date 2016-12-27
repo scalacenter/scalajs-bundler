@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 0.5.0
+
+> 2016 December 27
+
+- [#81](https://github.com/scalacenter/scalajs-bundler/pull/81): Set default value of the setting `enableReloadWorkflow` to false ;
+
 ## Version 0.4.0
 
 > 2016 December 15

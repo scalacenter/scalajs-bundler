@@ -22,8 +22,6 @@ npmDevDependencies in Compile += "expose-loader" -> "0.7.1"
 // as expected by the scalajs-react facade
 webpackConfigFile := Some(baseDirectory.value / "webpack.config.js")
 
-// Needed to make scalajs-bundler actually use the custom config file in fastOptJS
-enableReloadWorkflow := false
 //#relevant-settings
 
 // (Used by tests only) checks that a HTML can be loaded (and that its JavaScript can be executed) without errors

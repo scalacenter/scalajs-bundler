@@ -137,3 +137,12 @@ custom webpack configuration file:
 
 You can find a fully working example
 [here](https://github.com/scalacenter/scalajs-bundler/blob/master/sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler/global-namespace).
+
+## How to improve the performance of the bundling process? {#performance}
+
+You can enable the [reload workflow](reference.md#reload-workflow) and disable source maps:
+
+~~~ scala
+enableReloadWorkflow := true
+emitSourceMaps := false
+~~~

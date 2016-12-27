@@ -68,6 +68,25 @@ useYarn := true
 
 The `yarn` command must be available in the host platform.
 
+### Reload Workflow {#reload-workflow}
+
+Each time you change something in your application source code and compile the project, Scala.js emits a new .js file 
+that can weigh several MBs (in fastOptJS mode) if your application is large. Turning this huge CommonJS module into 
+code executable by web browsers takes time. This can be a problem if you rely on a “live-reloading” workflow 
+(like the one of Play framework, for instance), because the reloading time can go up to 30 seconds.
+
+You can get a faster “change source and reload application” workflow by setting the `enableReloadWorkflow` 
+key to `true`.
+
+The reload workflow replaces the `fastOptJS::webpack` task implementation with a different one, that does not use 
+webpack to process the output of the Scala.js compilation.  Instead, it pre-bundles the modules imported by your 
+application and exposes them to the global namespace. Since these dependencies can then be resolved from the global 
+namespace, the output of Scala.js is just concatenated after the contents of the pre-bundling process.
+
+> {.note}
+> As soon as `enableReloadWorkflow` is true `fastOptJS::webpack` does **not** use webpack and therefore 
+> the custom webpack configuration file is ignored.
+
 ### Tasks and Settings {#tasks-and-settings}
 
 The tasks and settings that control the plugin are documented in the API documentation
