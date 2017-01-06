@@ -61,7 +61,7 @@ object JS {
   /** Name binding */
   def let(value: JS)(usage: JS => JS): JS = {
     val ident = freshIdentifier()
-    JS(Block(VarDef(Ident(ident), value.tree), usage(ref(ident)).tree))
+    JS(Block(VarDef(Ident(ident), Some(value.tree)), usage(ref(ident)).tree))
   }
 
   /** Name binding */
@@ -70,8 +70,8 @@ object JS {
     val ident2 = freshIdentifier()
     JS(
       Block(
-        VarDef(Ident(ident1), value1.tree),
-        VarDef(Ident(ident2), value2.tree),
+        VarDef(Ident(ident1), Some(value1.tree)),
+        VarDef(Ident(ident2), Some(value2.tree)),
         usage(ref(ident1), ref(ident2)).tree
       )
     )

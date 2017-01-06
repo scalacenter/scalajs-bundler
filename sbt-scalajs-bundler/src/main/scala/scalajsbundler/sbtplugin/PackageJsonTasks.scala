@@ -12,6 +12,7 @@ object PackageJsonTasks {
     * @param targetDir Directory in which write the file
     * @param npmDependencies NPM dependencies
     * @param npmDevDependencies NPM devDependencies
+    * @param npmResolutions Resolutions to use in case of conflicts
     * @param fullClasspath Classpath
     * @param configuration Current configuration (Compile or Test)
     * @param webpackVersion Webpack version
@@ -21,6 +22,7 @@ object PackageJsonTasks {
     targetDir: File,
     npmDependencies: Seq[(String, String)],
     npmDevDependencies: Seq[(String, String)],
+    npmResolutions: Map[String, String],
     fullClasspath: Seq[Attributed[File]],
     configuration: Configuration,
     webpackVersion: String,
@@ -39,6 +41,7 @@ object PackageJsonTasks {
         packageJsonFile,
         npmDependencies,
         npmDevDependencies,
+        npmResolutions,
         fullClasspath,
         configuration,
         webpackVersion

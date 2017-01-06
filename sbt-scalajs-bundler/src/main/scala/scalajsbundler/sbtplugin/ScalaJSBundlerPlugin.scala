@@ -101,6 +101,27 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       settingKey[Seq[(String, String)]]("NPM dev dependencies (libraries that the build uses)")
 
     /**
+      * Map of NPM packages (name -> version) to use in case transitive NPM dependencies
+      * refer to a same package but with different version numbers. In such a
+      * case, this setting defines which version should be used for the conflicting
+      * package. Example:
+      *
+      * {{{
+      *   npmResolutions in Compile := Map("react" -> "15.4.1")
+      * }}}
+      *
+      * If several Scala.js projects depend on different versions of `react`, the version `15.4.1`
+      * will be picked. But if all the projects depend on the same version of `react`, the version
+      * given in `npmResolutions` will be ignored.
+      *
+      * Note that this key must be scoped by a `Configuration` (either `Compile` or `Test`).
+      *
+      * @group settings
+      */
+    val npmResolutions: SettingKey[Map[String, String]] =
+      settingKey[Map[String, String]]("NPM dependencies resolutions in case of conflict")
+
+    /**
       * Bundles the output of a Scala.js stage.
       *
       * This task must be scoped by a Scala.js stage (either `fastOptJS` or `fullOptJS`) and
@@ -185,7 +206,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       * When enabled, dependencies are pre-bundled so that the output of `fastOptJS` can directly
       * be executed by a web browser without being further processed by a bundling system. This
       * reduces the delays when live-reloading the application on source modifications. Defaults
-      * to `true`.
+      * to `false`.
       *
       * Note that the “reload workflow” does '''not''' use the custom webpack configuration file,
       * if any.
@@ -237,7 +258,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
     // Include the manifest in the produced artifact
     (products in Compile) := (products in Compile).dependsOn(scalaJSBundlerManifest).value,
 
-    enableReloadWorkflow := true,
+    enableReloadWorkflow := false,
 
     useYarn := false,
 
@@ -255,6 +276,8 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       npmDependencies := Seq.empty,
 
       npmDevDependencies := Seq.empty,
+
+      npmResolutions := Map.empty,
 
       webpack in fullOptJS := webpackTask(fullOptJS).value,
 
@@ -296,6 +319,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
           (crossTarget in npmUpdate).value,
           npmDependencies.value,
           npmDevDependencies.value,
+          npmResolutions.value,
           fullClasspath.value,
           configuration.value,
           (version in webpack).value,

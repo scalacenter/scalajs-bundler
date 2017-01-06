@@ -21,6 +21,7 @@ val server =
       scalaJSProjects := Seq(client),
       pipelineStages in Assets := Seq(scalaJSPipeline),
       pipelineStages := Seq(digest, gzip),
+      // Expose as sbt-web assets some files retrieved from the NPM packages of the `client` project
       npmAssets ++= NpmAssets.ofProject(client) { modules => (modules / "font-awesome").*** }.value
     )
 

@@ -17,7 +17,7 @@ import scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.autoImport._
   *
   * = Tasks and Settings =
   *
-  * See the [[WebScalaJSBundlerPlugin$.autoimport autoImport]] member.
+  * See the [[WebScalaJSBundlerPlugin$.autoImport autoImport]] member.
   */
 object WebScalaJSBundlerPlugin extends AutoPlugin {
 
