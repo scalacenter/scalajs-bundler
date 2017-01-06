@@ -33,6 +33,6 @@ InputKey[Unit]("html") := {
 
 TaskKey[Unit]("checkSize") := {
   val artifactSize = IO.readBytes((webpack in (Compile, fullOptJS)).value.head).length
-  val expected = 19858
+  val expected = 19810
   assert(artifactSize == expected, s"expected: $expected, got: $artifactSize")
 }
