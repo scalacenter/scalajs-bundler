@@ -35,8 +35,6 @@ object Webpack {
       ) ++ (
         if (emitSourceMaps) {
           val webpackNpmPackage = NpmPackage.getForModule(targetDir, "webpack")
-          println(webpackNpmPackage)
-          println(webpackNpmPackage.flatMap(_.major))
           webpackNpmPackage.flatMap(_.major) match {
             case Some(1) =>
               Seq(

@@ -9,27 +9,4 @@ $ exists target/scala-2.11/scalajs-bundler/main/static-opt-bundle.js target/scal
 > html index-prod.html
 > checkSize
 
-# Disabling source maps in Scala.js also disables it for scalajs-bundler
-
-> clean
-> set emitSourceMaps := false
-> fastOptJS::webpack
-$ absent target/scala-2.11/scalajs-bundler/main/static-fastopt-bundle.js.map
-> fullOptJS::webpack
-$ absent target/scala-2.11/scalajs-bundler/main/static-opt-bundle.js.map
-
-# webpackEmitSourceMaps controls source maps emission for the webpack task
-
-> clean
-> set emitSourceMaps := true
-> set webpackEmitSourceMaps in (Compile, fastOptJS) := false
-> fastOptJS::webpack
-$ exists target/scala-2.11/scalajs-bundler/main/static-fastopt.js.map
-$ absent target/scala-2.11/scalajs-bundler/main/static-fastopt-bundle.js.map
-
-> set webpackEmitSourceMaps in (Compile, fullOptJS) := false
-> fullOptJS::webpack
-$ exists target/scala-2.11/scalajs-bundler/main/static-opt.js.map
-$ absent target/scala-2.11/scalajs-bundler/main/static-opt-bundle.js.map
-
 > test
