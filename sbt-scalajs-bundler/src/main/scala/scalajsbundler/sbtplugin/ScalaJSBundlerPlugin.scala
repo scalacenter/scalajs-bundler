@@ -251,7 +251,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
 
     scalaJSModuleKind := ModuleKind.CommonJSModule,
 
-    version in webpack := "1.13",
+    version in webpack := "1.14",
 
     webpackConfigFile := None,
 
@@ -446,7 +446,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
         Webpack.writeConfigFile(
           (webpackEmitSourceMaps in stageTask).value,
           (webpackEntries in stageTask).value,
-          (crossTarget in npmUpdate).value,
+          npmUpdate.value,
           streams.value.log
         ),
 

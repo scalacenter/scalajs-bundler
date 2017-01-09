@@ -4,6 +4,8 @@ enablePlugins(ScalaJSBundlerPlugin)
 
 scalaVersion := "2.11.8"
 
+version in webpack := "2.2.0-rc.3"
+
 libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "0.9.1"
 
 npmDependencies in Compile += "snabbdom" -> "0.5.3"
@@ -15,8 +17,6 @@ libraryDependencies += "org.scalatest" %%% "scalatest" % "3.0.0" % Test
 
 // Execute the tests in browser-like environment
 requiresDOM in Test := true
-
-enableReloadWorkflow := true
 
 useYarn := true
 
@@ -34,5 +34,7 @@ InputKey[Unit]("html") := {
 }
 
 TaskKey[Unit]("checkSize") := {
-  assert(IO.readBytes((webpack in (Compile, fullOptJS)).value.head).length == 19377)
+  val artifactSize = IO.readBytes((webpack in (Compile, fullOptJS)).value.head).length
+  val expected = 19810
+  assert(artifactSize == expected, s"expected: $expected, got: $artifactSize")
 }
