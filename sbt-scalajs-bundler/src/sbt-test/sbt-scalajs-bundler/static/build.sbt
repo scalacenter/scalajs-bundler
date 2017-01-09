@@ -18,6 +18,8 @@ requiresDOM in Test := true
 
 enableReloadWorkflow := true
 
+useYarn := true
+
 // Check that a HTML can be loaded (and that its JavaScript can be executed) without errors
 InputKey[Unit]("html") := {
   import complete.DefaultParsers._
