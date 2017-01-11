@@ -33,3 +33,10 @@ $ exists target/scala-2.11/scalajs-bundler/main/static-opt.js.map
 $ absent target/scala-2.11/scalajs-bundler/main/static-opt-bundle.js.map
 
 > test
+
+# Generate the html test report
+
+$ absent target/scala-2.11/static-fastopt-test.html
+> testHtmlFastOpt
+$ exists target/scala-2.11/static-fastopt-test.html
+> html target/scala-2.11/static-fastopt-test.html
