@@ -122,7 +122,7 @@ object Webpack {
     */
   def run(args: String*)(workingDir: File, log: Logger): Unit = {
     val webpackBin = workingDir / "node_modules" / "webpack" / "bin" / "webpack"
-    val cmd = s"node ${webpackBin.absolutePath} ${args.mkString(" ")}"
+    val cmd = "node" +: webpackBin.absolutePath +: args
     Commands.run(cmd, workingDir, log)
     ()
   }

@@ -18,12 +18,12 @@ class ExternalCommand(name: String) {
     * @param logger Logger
     */
   def run(args: String*)(workingDir: File, logger: Logger): Unit =
-    Commands.run((cmd +: args).mkString(" "), workingDir, logger)
+    Commands.run(cmd ++: args, workingDir, logger)
 
   val cmd =
     sys.props("os.name").toLowerCase match {
-      case os if os.contains("win") => s"cmd /c $name"
-      case _ => name
+      case os if os.contains("win") => Seq("cmd", "/c", name)
+      case _ => Seq(name)
     }
 
 }
