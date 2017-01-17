@@ -526,6 +526,9 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
           generatedWebpackConfigFile +:
           customWebpackConfigFile ++:
           entries.map(_._2) ++:
+          // Entries only contain launchers - we need to monitor
+          // Scala.js bundles themselves, too.
+          stageTask.value.data +:
           additionalFiles
       }
     )
