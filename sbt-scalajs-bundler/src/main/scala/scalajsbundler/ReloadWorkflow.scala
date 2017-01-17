@@ -68,7 +68,7 @@ object ReloadWorkflow {
         }
       val concatFile = targetDir / "scalajsbundler-concat.js"
       IO.write(concatFile, concatContent.show)
-      Commands.run(s"node ${concatFile.absolutePath}", workingDir, logger)
+      Commands.run(Seq("node", "concatFile.absolutePath"), workingDir, logger)
     } else {
       logger.info("Bundling dependencies")
       IO.copyFile(bundledDependencies, bundle)
