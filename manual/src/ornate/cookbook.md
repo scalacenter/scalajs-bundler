@@ -44,7 +44,7 @@ setting:
 
 ~~~ scala
 webpackMonitoredDirectories += baseDirectory.value / "my-scss"
-webpackMonitoredIncludeFilter := "*.scss"
+includeFilter in webpackMonitoredFiles := "*.scss"
 ~~~
 
 More fine-grained control over the list of monitored files is possible by overriding the

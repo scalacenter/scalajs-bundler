@@ -208,30 +208,16 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       * Additional directories, monitored for webpack launch.
       *
       * Changes to files in these directories that match
-      * `webpackMonitoredIncludeFilter` enable webpack launch in
-      * `webpack` task.
+      * `includeFilter` scoped to `webpackMonitoredFiles` enable
+      *  webpack launch in `webpack` task.
       *
       * Defaults to an empty `Seq`.
       * 
       * @group settings
-      * @see [[webpackMonitoredIncludeFilter]]
+      * @see [[webpackMonitoredFiles]]
       */
     val webpackMonitoredDirectories: SettingKey[Seq[File]] =
       settingKey[Seq[File]]("Directories, monitored for webpack launch")
-
-    /**
-      * Filter for files, monitored for webpack launch.
-      * 
-      * Changes to files matching this filter in `webpackMonitoredDirectories`
-      * enable webpack launch in `webpack` task.
-      * 
-      * Defaults to `AllPassFilter`
-      * 
-      * @group settings
-      * @see [[webpackMonitoredDirectories]]
-      */
-    val webpackMonitoredIncludeFilter: SettingKey[FileFilter] =
-      settingKey[FileFilter]("Filter for files, monitored for webpack launch")
 
     /**
       * List of files, monitored for webpack launch.
@@ -242,10 +228,9 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       *  - Custom webpack config (if any)
       *  - Files, provided by `webpackEntries` task.
       *  - Files from `webpackMonitoredDirectories`, filtered by
-      *    `webpackMonitoredIncludeFilter`
+      *    `includeFilter`
       *
       * @group settings
-      * @see [[webpackMonitoredIncludeFilter]]
       * @see [[webpackMonitoredDirectories]]
       * @see [[webpack]]
       */
@@ -323,7 +308,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
     // difference between configurations/stages. This way the
     // API user can modify it just once.
     webpackMonitoredDirectories := Seq(),
-    webpackMonitoredIncludeFilter := AllPassFilter
+    (includeFilter in webpackMonitoredFiles) := AllPassFilter
   ) ++
     inConfig(Compile)(perConfigSettings) ++
     inConfig(Test)(perConfigSettings ++ testSettings)
@@ -515,7 +500,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
         val packageJsonFile = scalaJSBundlerPackageJson.value
         val entries = (webpackEntries in stageTask).value
 
-        val filter = (webpackMonitoredIncludeFilter in stageTask).value
+        val filter = (includeFilter in webpackMonitoredFiles).value
         val dirs = (webpackMonitoredDirectories in stageTask).value
 
         val additionalFiles = dirs.flatMap(
