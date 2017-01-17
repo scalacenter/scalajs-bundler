@@ -147,6 +147,10 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       * }}}
       *
       * The task returns the produced bundles.
+      * 
+      * The task is cached, so webpack is only launched when some of the
+      * used files have changed. The list of files to be monitored is
+      * provided by webpackMonitoredFiles
       *
       * @group tasks
       */
@@ -199,6 +203,39 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       */
     val webpackEmitSourceMaps: SettingKey[Boolean] =
       settingKey[Boolean]("Whether webpack should emit source maps at all")
+
+    /**
+      * Additional directories, monitored for webpack launch.
+      *
+      * Changes to files in these directories that match
+      * `includeFilter` scoped to `webpackMonitoredFiles` enable
+      *  webpack launch in `webpack` task.
+      *
+      * Defaults to an empty `Seq`.
+      * 
+      * @group settings
+      * @see [[webpackMonitoredFiles]]
+      */
+    val webpackMonitoredDirectories: SettingKey[Seq[File]] =
+      settingKey[Seq[File]]("Directories, monitored for webpack launch")
+
+    /**
+      * List of files, monitored for webpack launch.
+      * 
+      * By default includes the following files:
+      *  - Generated `package.json`
+      *  - Generated webpack config
+      *  - Custom webpack config (if any)
+      *  - Files, provided by `webpackEntries` task.
+      *  - Files from `webpackMonitoredDirectories`, filtered by
+      *    `includeFilter`
+      *
+      * @group settings
+      * @see [[webpackMonitoredDirectories]]
+      * @see [[webpack]]
+      */
+    val webpackMonitoredFiles: TaskKey[Seq[File]] =
+      taskKey[Seq[File]]("Files that trigger webpack launch")
 
     /**
       * whether to enable the “reload workflow” for `webpack in fastOptJS`.
@@ -265,8 +302,13 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
     ensureModuleKindIsCommonJSModule := {
       if (scalaJSModuleKind.value == ModuleKind.CommonJSModule) true
       else sys.error(s"scalaJSModuleKind must be set to ModuleKind.CommonJSModule in projects where ScalaJSBundler plugin is enabled")
-    }
+    },
 
+    // Make these settings project-level, since we don't expect much
+    // difference between configurations/stages. This way the
+    // API user can modify it just once.
+    webpackMonitoredDirectories := Seq(),
+    (includeFilter in webpackMonitoredFiles) := AllPassFilter
   ) ++
     inConfig(Compile)(perConfigSettings) ++
     inConfig(Test)(perConfigSettings ++ testSettings)
@@ -450,8 +492,30 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
           streams.value.log
         ),
 
-      webpackEmitSourceMaps in stageTask := (emitSourceMaps in stageTask).value
+      webpackEmitSourceMaps in stageTask := (emitSourceMaps in stageTask).value,
 
+      webpackMonitoredFiles in stageTask := {
+        val generatedWebpackConfigFile = (scalaJSBundlerWebpackConfig in stageTask).value
+        val customWebpackConfigFile = (webpackConfigFile in stageTask).value
+        val packageJsonFile = scalaJSBundlerPackageJson.value
+        val entries = (webpackEntries in stageTask).value
+
+        val filter = (includeFilter in webpackMonitoredFiles).value
+        val dirs = (webpackMonitoredDirectories in stageTask).value
+
+        val additionalFiles = dirs.flatMap(
+          dir => (dir ** filter).get
+        )
+
+        packageJsonFile +:
+          generatedWebpackConfigFile +:
+          customWebpackConfigFile ++:
+          entries.map(_._2) ++:
+          // Entries only contain launchers - we need to monitor
+          // Scala.js bundles themselves, too.
+          stageTask.value.data +:
+          additionalFiles
+      }
     )
   }
 
@@ -462,8 +526,8 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       val targetDir = npmUpdate.value
       val generatedWebpackConfigFile = (scalaJSBundlerWebpackConfig in stage).value
       val customWebpackConfigFile = (webpackConfigFile in stage).value
-      val packageJsonFile = scalaJSBundlerPackageJson.value
       val entries = (webpackEntries in stage).value
+      val monitoredFiles = (webpackMonitoredFiles in stage).value
 
       val cachedActionFunction =
         FileFunction.cached(
@@ -478,12 +542,8 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
             log
           ).to[Set]
         }
-      cachedActionFunction(Set(
-        generatedWebpackConfigFile,
-        packageJsonFile
-      ) ++
-        (webpackConfigFile in stage).value.map(Set(_)).getOrElse(Set.empty) ++
-        entries.map(_._2).to[Set] + stage.value.data).to[Seq] // Note: the entries should be enough, excepted that they currently are launchers, which do not change even if the scalajs stage output changes
+
+      cachedActionFunction(monitoredFiles.to[Set]).to[Seq]
     }
 
   /**

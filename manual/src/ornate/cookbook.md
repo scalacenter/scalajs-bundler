@@ -36,6 +36,20 @@ file will be copied into the internal target directory, where the scalajs-bundle
 its configuration file, and where all the npm dependencies have been downloaded (so you can
 also `require` these dependencies).
 
+By default `webpack` task only actually launches webpack if it detects changes in
+settings or in the custom webpack config file. Depending on your usage scenario, you might
+want to monitor some other files as well (for example, if your webpack config references
+some additional resources). This can be achieved by using `webpackMonitoredDirectories`
+setting:
+
+~~~ scala
+webpackMonitoredDirectories += baseDirectory.value / "my-scss"
+includeFilter in webpackMonitoredFiles := "*.scss"
+~~~
+
+More fine-grained control over the list of monitored files is possible by overriding the
+`webpackMonitoredFiles` task.
+
 You can find a working example of custom configuration file
 [here](https://github.com/scalacenter/scalajs-bundler/blob/master/sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler/static/prod.webpack.config.js).
 
