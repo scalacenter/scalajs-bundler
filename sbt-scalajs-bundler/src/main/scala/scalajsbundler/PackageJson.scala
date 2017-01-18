@@ -42,7 +42,8 @@ object PackageJson {
       ) ++ Seq(
         "webpack" -> webpackVersion,
         "concat-with-sourcemaps" -> "1.0.4", // Used by the reload workflow
-        "source-map-loader" -> "0.1.5" // Used by webpack when emitSourceMaps is enabled
+        "source-map-loader" -> "0.1.5", // Used by webpack when emitSourceMaps is enabled
+        "webpack-dev-server" -> "1.16.2"
       )
 
     val packageJson =

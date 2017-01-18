@@ -267,6 +267,60 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
     val useYarn: SettingKey[Boolean] =
       settingKey[Boolean]("Whether to use yarn for updates")
 
+    /**
+      * Port, on which webpack-dev-server will be launched.
+      *
+      * Defaults to 8080.
+      *
+      * @see [[startWebpackDevServer]]
+      */
+    val webpackDevServerPort = SettingKey[Int](
+      "webpackDevServerPort",
+      "Port, on which webpack-dev-server operates"
+    )
+
+    /**
+      * Additional arguments to webpack-dev-server.
+      * 
+      * Defaults to an empty list.
+      *
+      * @see [[startWebpackDevServer]]
+      */
+    val webpackDevServerExtraArgs = SettingKey[Seq[String]](
+      "webpackDevServerExtraArgs",
+      "Custom arguments to webpack-dev-server"
+    )
+
+    /**
+      * Start background webpack-dev-server process.
+      *
+      * If webpack-dev-server is already running, it will be restarted.
+      *
+      * The started webpack-dev-server receives the following arguments:
+      * - `--config` is set to value of `webpackConfigFile` setting.
+      * - `--port` is set to value of `webpackDevServerPort` setting.
+      * - Contents of `webpackDevServerExtraArgs` setting.
+      *
+      * @see [[stopWebpackDevServer]]
+      * @see [[webpackDevServerPort]]
+      * @see [[webpackDevServerExtraArgs]]
+      */
+    val startWebpackDevServer = TaskKey[Unit](
+      "startWebpackDevServer",
+      "(Re)start webpack-dev-server process"
+    )
+
+    /**
+      * Stop running webpack-dev-server process.
+      *
+      * Does nothing if the server is not running.
+      *
+      * @see [[startWebpackDevServer]]
+      */
+    val stopWebpackDevServer = TaskKey[Unit](
+      "stopWebpackDevServer",
+      "Stop webpack-dev-server process (if running)"
+    )
   }
 
   private val scalaJSBundlerPackageJson =
@@ -274,6 +328,12 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
 
   private val scalaJSBundlerWebpackConfig =
     TaskKey[File]("scalaJSBundlerWebpackConfig", "Write the webpack configuration file", KeyRanks.Invisible)
+
+  private val webpackDevServer = SettingKey[WebpackDevServer](
+    "webpackDevServer",
+    "Global WebpackDevServer instance",
+    KeyRanks.Invisible
+  )
 
   private[scalajsbundler] val ensureModuleKindIsCommonJSModule =
     SettingKey[Boolean](
@@ -308,7 +368,56 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
     // difference between configurations/stages. This way the
     // API user can modify it just once.
     webpackMonitoredDirectories := Seq(),
-    (includeFilter in webpackMonitoredFiles) := AllPassFilter
+    (includeFilter in webpackMonitoredFiles) := AllPassFilter,
+
+    // webpack-dev-server wiring
+    webpackDevServerPort := 8080,
+    webpackDevServerExtraArgs := Seq(),
+
+    webpackDevServer := new WebpackDevServer(),
+
+    startWebpackDevServer := {
+      // We need to execute the full webpack task once, since it generates
+      // the required config file
+      (webpack in (Compile, fastOptJS)).value
+
+      // This duplicates file layout logic from `Webpack`
+      val targetDir = (npmUpdate in Compile).value
+      val customConfigOption = (webpackConfigFile in (Compile, fastOptJS)).value
+      val generatedConfig = (scalaJSBundlerWebpackConfig in (Compile, fastOptJS)).value
+
+      val config = customConfigOption match {
+        case Some(customConfig) => targetDir / customConfig.name
+        case None => generatedConfig
+      }
+
+      // To match `webpack` task behavior
+      val workDir = targetDir
+
+      val server = webpackDevServer.value
+      val logger = streams.value.log
+
+      server.start(
+        targetDir,
+        workDir,
+        config,
+        webpackDevServerPort.value,
+        webpackDevServerExtraArgs.value,
+        logger
+      )
+    },
+
+    stopWebpackDevServer := {
+      webpackDevServer.value.stop()
+    },
+
+    (onLoad in Global) := {
+      (onLoad in Global).value.compose(
+        _.addExitHook {
+          webpackDevServer.value.stop()
+        }
+      )
+    }
   ) ++
     inConfig(Compile)(perConfigSettings) ++
     inConfig(Test)(perConfigSettings ++ testSettings)
