@@ -267,10 +267,9 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
     val useYarn: SettingKey[Boolean] =
       settingKey[Boolean]("Whether to use yarn for updates")
 
+    val scalaJSBundlerPackageJson =
+      TaskKey[File]("scalaJSBundlerPackageJson", "Write a package.json file defining the NPM dependencies of project")
   }
-
-  private val scalaJSBundlerPackageJson =
-    TaskKey[File]("scalaJSBundlerPackageJson", "Write a package.json file defining the NPM dependencies of project", KeyRanks.Invisible)
 
   private val scalaJSBundlerWebpackConfig =
     TaskKey[File]("scalaJSBundlerWebpackConfig", "Write the webpack configuration file", KeyRanks.Invisible)
