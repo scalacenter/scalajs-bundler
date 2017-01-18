@@ -190,3 +190,32 @@ You can enable the [reload workflow](reference.md#reload-workflow) and disable s
 enableReloadWorkflow := true
 emitSourceMaps := false
 ~~~
+
+## How to rebuild and reload your page on code changes? (#webpack-dev-server)
+
+`scalajs-bundler` includes a simple wrapper over webpack-dev-server to simplify your
+workflow. It is exposed as two tasks (`startWebpackDevServer` and `stopWebpackDevServer`).
+The standard work session looks like this:
+
+1. Spawn background server process:
+  ~~~
+  > startWebpackDevServer
+  ~~~
+  By default the server is started on port `8080`. Use `webpackDevServerPort` setting to change this.
+2. Instruct SBT to rebuild on source changes:
+  ~~~
+  > ~fastOptJS
+  ~~~
+3. Now each time you change a source file, scala-js recompiles it, and webpack-dev-server
+  switches to the updated version.
+4. Shut down the background process:
+  ~~~
+  > stopWebpackDevServer
+  ~~~
+
+Additional arguments can be passed to webpack-dev-server via `webpackDevServerExtraArgs`
+setting. For example, you can add the following to your `build.sbt` to make your page
+reload on every change:
+~~~
+webpackDevServerExtraArgs := Seq("--inline")
+~~~
