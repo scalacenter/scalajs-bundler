@@ -194,12 +194,13 @@ emitSourceMaps := false
 ## How to rebuild and reload your page on code changes? (#webpack-dev-server)
 
 `scalajs-bundler` includes a simple wrapper over webpack-dev-server to simplify your
-workflow. It is exposed as two tasks (`startWebpackDevServer` and `stopWebpackDevServer`).
+workflow. It is exposed as two stage-level tasks (`startWebpackDevServer` and
+`stopWebpackDevServer`).
 The standard work session looks like this:
 
 1. Spawn background server process:
   ~~~
-  > startWebpackDevServer
+  > fastOptJS::startWebpackDevServer
   ~~~
   By default the server is started on port `8080`. Use `webpackDevServerPort` setting to change this.
 2. Instruct SBT to rebuild on source changes:
@@ -210,7 +211,7 @@ The standard work session looks like this:
   switches to the updated version.
 4. Shut down the background process:
   ~~~
-  > stopWebpackDevServer
+  > fastOptJS::stopWebpackDevServer
   ~~~
 
 Additional arguments can be passed to webpack-dev-server via `webpackDevServerExtraArgs`

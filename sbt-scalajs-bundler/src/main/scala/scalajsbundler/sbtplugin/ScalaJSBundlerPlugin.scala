@@ -370,46 +370,12 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
     webpackMonitoredDirectories := Seq(),
     (includeFilter in webpackMonitoredFiles) := AllPassFilter,
 
-    // webpack-dev-server wiring
+    // The defaults are specified at top level.
     webpackDevServerPort := 8080,
     webpackDevServerExtraArgs := Seq(),
 
+    // We can only have one server per project - for simplicity
     webpackDevServer := new WebpackDevServer(),
-
-    startWebpackDevServer := {
-      // We need to execute the full webpack task once, since it generates
-      // the required config file
-      (webpack in (Compile, fastOptJS)).value
-
-      // This duplicates file layout logic from `Webpack`
-      val targetDir = (npmUpdate in Compile).value
-      val customConfigOption = (webpackConfigFile in (Compile, fastOptJS)).value
-      val generatedConfig = (scalaJSBundlerWebpackConfig in (Compile, fastOptJS)).value
-
-      val config = customConfigOption match {
-        case Some(customConfig) => targetDir / customConfig.name
-        case None => generatedConfig
-      }
-
-      // To match `webpack` task behavior
-      val workDir = targetDir
-
-      val server = webpackDevServer.value
-      val logger = streams.value.log
-
-      server.start(
-        targetDir,
-        workDir,
-        config,
-        webpackDevServerPort.value,
-        webpackDevServerExtraArgs.value,
-        logger
-      )
-    },
-
-    stopWebpackDevServer := {
-      webpackDevServer.value.stop()
-    },
 
     (onLoad in Global) := {
       (onLoad in Global).value.compose(
@@ -624,6 +590,48 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
           // Scala.js bundles themselves, too.
           stageTask.value.data +:
           additionalFiles
+      },
+
+      // webpack-dev-server wiring
+      startWebpackDevServer in stageTask := {
+        // We need to execute the full webpack task once, since it generates
+        // the required config file
+        (webpack in stageTask).value
+
+        val port = (webpackDevServerPort in stageTask).value
+        val extraArgs = (webpackDevServerExtraArgs in stageTask).value
+
+        // This duplicates file layout logic from `Webpack`
+        val targetDir = (npmUpdate in stageTask).value
+        val customConfigOption = (webpackConfigFile in stageTask).value
+        val generatedConfig = (scalaJSBundlerWebpackConfig in stageTask).value
+
+        val config = customConfigOption match {
+          case Some(customConfig) => targetDir / customConfig.name
+          case None => generatedConfig
+        }
+
+        // To match `webpack` task behavior
+        val workDir = targetDir
+
+        // Server instance is project-level
+        val server = webpackDevServer.value
+        val logger = (streams in stageTask).value.log
+
+        server.start(
+          targetDir,
+          workDir,
+          config,
+          port,
+          extraArgs,
+          logger
+        )
+      },
+
+      // Stops the global server instance, but is defined on stage
+      // level to match `startWebpackDevServer`
+      stopWebpackDevServer in stageTask := {
+        webpackDevServer.value.stop()
       }
     )
   }
