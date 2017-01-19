@@ -267,6 +267,60 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
     val useYarn: SettingKey[Boolean] =
       settingKey[Boolean]("Whether to use yarn for updates")
 
+    /**
+      * Port, on which webpack-dev-server will be launched.
+      *
+      * Defaults to 8080.
+      *
+      * @see [[startWebpackDevServer]]
+      */
+    val webpackDevServerPort = SettingKey[Int](
+      "webpackDevServerPort",
+      "Port, on which webpack-dev-server operates"
+    )
+
+    /**
+      * Additional arguments to webpack-dev-server.
+      * 
+      * Defaults to an empty list.
+      *
+      * @see [[startWebpackDevServer]]
+      */
+    val webpackDevServerExtraArgs = SettingKey[Seq[String]](
+      "webpackDevServerExtraArgs",
+      "Custom arguments to webpack-dev-server"
+    )
+
+    /**
+      * Start background webpack-dev-server process.
+      *
+      * If webpack-dev-server is already running, it will be restarted.
+      *
+      * The started webpack-dev-server receives the following arguments:
+      * - `--config` is set to value of `webpackConfigFile` setting.
+      * - `--port` is set to value of `webpackDevServerPort` setting.
+      * - Contents of `webpackDevServerExtraArgs` setting.
+      *
+      * @see [[stopWebpackDevServer]]
+      * @see [[webpackDevServerPort]]
+      * @see [[webpackDevServerExtraArgs]]
+      */
+    val startWebpackDevServer = TaskKey[Unit](
+      "startWebpackDevServer",
+      "(Re)start webpack-dev-server process"
+    )
+
+    /**
+      * Stop running webpack-dev-server process.
+      *
+      * Does nothing if the server is not running.
+      *
+      * @see [[startWebpackDevServer]]
+      */
+    val stopWebpackDevServer = TaskKey[Unit](
+      "stopWebpackDevServer",
+      "Stop webpack-dev-server process (if running)"
+    )
   }
 
   private val scalaJSBundlerPackageJson =
@@ -274,6 +328,12 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
 
   private val scalaJSBundlerWebpackConfig =
     TaskKey[File]("scalaJSBundlerWebpackConfig", "Write the webpack configuration file", KeyRanks.Invisible)
+
+  private val webpackDevServer = SettingKey[WebpackDevServer](
+    "webpackDevServer",
+    "Global WebpackDevServer instance",
+    KeyRanks.Invisible
+  )
 
   private[scalajsbundler] val ensureModuleKindIsCommonJSModule =
     SettingKey[Boolean](
@@ -308,7 +368,22 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
     // difference between configurations/stages. This way the
     // API user can modify it just once.
     webpackMonitoredDirectories := Seq(),
-    (includeFilter in webpackMonitoredFiles) := AllPassFilter
+    (includeFilter in webpackMonitoredFiles) := AllPassFilter,
+
+    // The defaults are specified at top level.
+    webpackDevServerPort := 8080,
+    webpackDevServerExtraArgs := Seq(),
+
+    // We can only have one server per project - for simplicity
+    webpackDevServer := new WebpackDevServer(),
+
+    (onLoad in Global) := {
+      (onLoad in Global).value.compose(
+        _.addExitHook {
+          webpackDevServer.value.stop()
+        }
+      )
+    }
   ) ++
     inConfig(Compile)(perConfigSettings) ++
     inConfig(Test)(perConfigSettings ++ testSettings)
@@ -515,6 +590,50 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
           // Scala.js bundles themselves, too.
           stageTask.value.data +:
           additionalFiles
+      },
+
+      // webpack-dev-server wiring
+      startWebpackDevServer in stageTask := {
+        val serverDir = installWebpackDevServer.value
+
+        // We need to execute the full webpack task once, since it generates
+        // the required config file
+        (webpack in stageTask).value
+
+        val port = (webpackDevServerPort in stageTask).value
+        val extraArgs = (webpackDevServerExtraArgs in stageTask).value
+
+        // This duplicates file layout logic from `Webpack`
+        val targetDir = (npmUpdate in stageTask).value
+        val customConfigOption = (webpackConfigFile in stageTask).value
+        val generatedConfig = (scalaJSBundlerWebpackConfig in stageTask).value
+
+        val config = customConfigOption match {
+          case Some(customConfig) => targetDir / customConfig.name
+          case None => generatedConfig
+        }
+
+        // To match `webpack` task behavior
+        val workDir = targetDir
+
+        // Server instance is project-level
+        val server = webpackDevServer.value
+        val logger = (streams in stageTask).value.log
+
+        server.start(
+          serverDir,
+          workDir,
+          config,
+          port,
+          extraArgs,
+          logger
+        )
+      },
+
+      // Stops the global server instance, but is defined on stage
+      // level to match `startWebpackDevServer`
+      stopWebpackDevServer in stageTask := {
+        webpackDevServer.value.stop()
       }
     )
   }
@@ -559,6 +678,30 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
         log.info(s"Installing jsdom in ${installDir.absolutePath}")
         IO.createDirectory(installDir)
         Npm.run("install", "jsdom")(installDir, log)
+      }
+      installDir
+    }
+
+  /**
+    * Locally installs webpack-dev-server.
+    *
+    * @return Installation directory
+    */
+  lazy val installWebpackDevServer: Def.Initialize[Task[File]] =
+    Def.task {
+      val installDir = target.value / "scalajs-bundler-webpack-dev-server"
+      val log = streams.value.log
+      val webpackVersion = (version in webpack).value
+
+      if (!installDir.exists()) {
+        log.info(s"Installing webpack-dev-server in ${installDir.absolutePath}")
+        IO.createDirectory(installDir)
+        Npm.run(
+          "install",
+          // Webpack version should match the setting
+          "webpack@" + webpackVersion,
+          "webpack-dev-server"
+        )(installDir, log)
       }
       installDir
     }
