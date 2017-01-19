@@ -13,8 +13,6 @@ webpackConfigFile := Some(baseDirectory.value / "webpack.config.js")
 
 webpackDevServerPort := 7357
 
-//#relevant-settings
-
 // (Used by tests only) checks that a HTML can be loaded (and that its JavaScript can be executed) without errors
 InputKey[Unit]("html") := {
   import complete.DefaultParsers._
