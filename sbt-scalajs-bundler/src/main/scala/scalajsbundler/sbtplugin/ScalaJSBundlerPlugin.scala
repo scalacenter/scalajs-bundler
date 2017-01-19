@@ -594,6 +594,8 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
 
       // webpack-dev-server wiring
       startWebpackDevServer in stageTask := {
+        val serverDir = installWebpackDevServer.value
+
         // We need to execute the full webpack task once, since it generates
         // the required config file
         (webpack in stageTask).value
@@ -619,7 +621,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
         val logger = (streams in stageTask).value.log
 
         server.start(
-          targetDir,
+          serverDir,
           workDir,
           config,
           port,
@@ -676,6 +678,30 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
         log.info(s"Installing jsdom in ${installDir.absolutePath}")
         IO.createDirectory(installDir)
         Npm.run("install", "jsdom")(installDir, log)
+      }
+      installDir
+    }
+
+  /**
+    * Locally installs webpack-dev-server.
+    *
+    * @return Installation directory
+    */
+  lazy val installWebpackDevServer: Def.Initialize[Task[File]] =
+    Def.task {
+      val installDir = target.value / "scalajs-bundler-webpack-dev-server"
+      val log = streams.value.log
+      val webpackVersion = (version in webpack).value
+
+      if (!installDir.exists()) {
+        log.info(s"Installing webpack-dev-server in ${installDir.absolutePath}")
+        IO.createDirectory(installDir)
+        Npm.run(
+          "install",
+          // Webpack version should match the setting
+          "webpack@" + webpackVersion,
+          "webpack-dev-server"
+        )(installDir, log)
       }
       installDir
     }
