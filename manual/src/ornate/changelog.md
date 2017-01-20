@@ -2,10 +2,16 @@
 
 ## Version 0.5.0
 
-> 2016 December 27
+> 2017 January 18
 
+- [#57](https://github.com/scalacenter/scalajs-bundler/pull/57): Webpack 2.x support ;
 - [#80](https://github.com/scalacenter/scalajs-bundler/pull/80): Upgrade to Scala.js 0.6.14 ;
-- [#81](https://github.com/scalacenter/scalajs-bundler/pull/81): Set default value of the setting `enableReloadWorkflow` to false ;
+- [#81](https://github.com/scalacenter/scalajs-bundler/pull/81): Disable the reload workflow by default ;
+- [#94](https://github.com/scalacenter/scalajs-bundler/pull/94): Improve caching of tasks ;
+- [#95](https://github.com/scalacenter/scalajs-bundler/pull/95): Fix support for spaces in paths ;
+
+You can find the complete list of commits since the last release
+[here](https://github.com/scalacenter/scalajs-bundler/compare/v0.4.0...v0.5.0).
 
 ## Version 0.4.0
 

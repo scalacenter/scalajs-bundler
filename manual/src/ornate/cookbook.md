@@ -36,6 +36,20 @@ file will be copied into the internal target directory, where the scalajs-bundle
 its configuration file, and where all the npm dependencies have been downloaded (so you can
 also `require` these dependencies).
 
+By default `webpack` task only actually launches webpack if it detects changes in
+settings or in the custom webpack config file. Depending on your usage scenario, you might
+want to monitor some other files as well (for example, if your webpack config references
+some additional resources). This can be achieved by using `webpackMonitoredDirectories`
+setting:
+
+~~~ scala
+webpackMonitoredDirectories += baseDirectory.value / "my-scss"
+includeFilter in webpackMonitoredFiles := "*.scss"
+~~~
+
+More fine-grained control over the list of monitored files is possible by overriding the
+`webpackMonitoredFiles` task.
+
 You can find a working example of custom configuration file
 [here](https://github.com/scalacenter/scalajs-bundler/blob/master/sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler/static/prod.webpack.config.js).
 
@@ -175,4 +189,34 @@ You can enable the [reload workflow](reference.md#reload-workflow) and disable s
 ~~~ scala
 enableReloadWorkflow := true
 emitSourceMaps := false
+~~~
+
+## How to rebuild and reload your page on code changes? {#webpack-dev-server}
+
+`scalajs-bundler` includes a simple wrapper over webpack-dev-server to simplify your
+workflow. It is exposed as two stage-level tasks (`startWebpackDevServer` and
+`stopWebpackDevServer`).
+The standard work session looks like this:
+
+1. Spawn background server process:
+    ~~~
+    > fastOptJS::startWebpackDevServer
+    ~~~
+    By default the server is started on port `8080`. Use `webpackDevServerPort` setting to change this.
+2. Instruct SBT to rebuild on source changes:
+    ~~~
+    > ~fastOptJS
+    ~~~
+3. Now each time you change a source file, scala-js recompiles it, and webpack-dev-server
+    switches to the updated version.
+4. Shut down the background process:
+    ~~~
+    > fastOptJS::stopWebpackDevServer
+    ~~~
+
+Additional arguments can be passed to webpack-dev-server via `webpackDevServerExtraArgs`
+setting. For example, you can add the following to your `build.sbt` to make your page
+reload on every change:
+~~~
+webpackDevServerExtraArgs := Seq("--inline")
 ~~~

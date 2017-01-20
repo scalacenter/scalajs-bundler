@@ -28,12 +28,21 @@ object PackageJsonTasks {
     webpackVersion: String,
     streams: Keys.TaskStreams
   ): File = {
+ 
+    val hash = Seq(
+      configuration.name,
+      npmDependencies.toString,
+      npmDevDependencies.toString,
+      npmResolutions.toString,
+      fullClasspath.map(_.data.name).toString,
+      webpackVersion
+    ).mkString(",")
 
     val packageJsonFile = targetDir / "package.json"
 
     Caching.cached(
       packageJsonFile,
-      configuration.name,
+      hash,
       streams.cacheDirectory / s"scalajsbundler-package-json-${if (configuration == Compile) "main" else "test"}"
     ) { () =>
       PackageJson.write(
