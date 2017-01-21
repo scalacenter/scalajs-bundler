@@ -696,12 +696,21 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       if (!installDir.exists()) {
         log.info(s"Installing webpack-dev-server in ${installDir.absolutePath}")
         IO.createDirectory(installDir)
-        Npm.run(
-          "install",
-          // Webpack version should match the setting
-          "webpack@" + webpackVersion,
-          "webpack-dev-server"
-        )(installDir, log)
+        if (useYarn.value) {
+          Yarn.run(
+            "add",
+            // Webpack version should match the setting
+            "webpack@" + webpackVersion,
+            "webpack-dev-server"
+          )(installDir, log)
+        } else {
+          Npm.run(
+            "install",
+            // Webpack version should match the setting
+            "webpack@" + webpackVersion,
+            "webpack-dev-server"
+          )(installDir, log)
+        }
       }
       installDir
     }
