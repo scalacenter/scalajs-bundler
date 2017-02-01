@@ -4,7 +4,9 @@ enablePlugins(ScalaJSBundlerPlugin)
 
 scalaVersion := "2.11.8"
 
-version in webpack := "2.2.0-rc.3"
+version in webpack := "2.2.1"
+
+version in installWebpackDevServer := "2.2.0"
 
 libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "0.9.1"
 

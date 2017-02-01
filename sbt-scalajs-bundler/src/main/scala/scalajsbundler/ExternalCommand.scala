@@ -31,3 +31,22 @@ class ExternalCommand(name: String) {
 object Npm extends ExternalCommand("npm")
 
 object Yarn extends ExternalCommand("yarn")
+
+object ExternalCommand {
+
+  /**
+    * Locally install NPM packages
+    *
+    * @param installDir The directory in which to install the packages
+    * @param useYarn Whether to use yarn or npm
+    * @param logger sbt logger
+    * @param npmPackages Packages to install (e.g. "webpack", "webpack@2.2.1")
+    */
+  def install(installDir: File, useYarn: Boolean, logger: Logger)(npmPackages: String*): Unit =
+    if (useYarn) {
+      Yarn.run("add" +: npmPackages: _*)(installDir, logger)
+    } else {
+      Npm.run("install" +: npmPackages: _*)(installDir, logger)
+    }
+
+}
