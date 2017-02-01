@@ -301,6 +301,8 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       * - `--port` is set to value of `webpackDevServerPort` setting.
       * - Contents of `webpackDevServerExtraArgs` setting.
       *
+      * You can set the webpack-dev-server package version to use with the key `version in startWebpackDevServer`.
+      *
       * @see [[stopWebpackDevServer]]
       * @see [[webpackDevServerPort]]
       * @see [[webpackDevServerExtraArgs]]
@@ -349,6 +351,8 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
     scalaJSModuleKind := ModuleKind.CommonJSModule,
 
     version in webpack := "1.14",
+
+    version in startWebpackDevServer := "1.16.3",
 
     webpackConfigFile := None,
 
@@ -692,6 +696,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       val installDir = target.value / "scalajs-bundler-webpack-dev-server"
       val log = streams.value.log
       val webpackVersion = (version in webpack).value
+      val webpackDevServerVersion = (version in startWebpackDevServer).value
 
       if (!installDir.exists()) {
         log.info(s"Installing webpack-dev-server in ${installDir.absolutePath}")
@@ -700,15 +705,15 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
           Yarn.run(
             "add",
             // Webpack version should match the setting
-            "webpack@" + webpackVersion,
-            "webpack-dev-server"
+            s"webpack@$webpackVersion",
+            s"webpack-dev-server@$webpackDevServerVersion"
           )(installDir, log)
         } else {
           Npm.run(
             "install",
             // Webpack version should match the setting
-            "webpack@" + webpackVersion,
-            "webpack-dev-server"
+            s"webpack@$webpackVersion",
+            s"webpack-dev-server@$webpackDevServerVersion"
           )(installDir, log)
         }
       }
