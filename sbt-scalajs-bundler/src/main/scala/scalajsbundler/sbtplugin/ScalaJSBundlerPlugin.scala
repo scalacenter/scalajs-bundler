@@ -12,6 +12,7 @@ import org.scalajs.testadapter.ScalaJSFramework
 import sbt.Keys._
 import sbt._
 
+import scalajsbundler.ExternalCommand.install
 import scalajsbundler._
 
 /**
@@ -273,6 +274,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       * Defaults to 8080.
       *
       * @see [[startWebpackDevServer]]
+      * @group settings
       */
     val webpackDevServerPort = SettingKey[Int](
       "webpackDevServerPort",
@@ -285,6 +287,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       * Defaults to an empty list.
       *
       * @see [[startWebpackDevServer]]
+      * @group settings
       */
     val webpackDevServerExtraArgs = SettingKey[Seq[String]](
       "webpackDevServerExtraArgs",
@@ -304,6 +307,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       * @see [[stopWebpackDevServer]]
       * @see [[webpackDevServerPort]]
       * @see [[webpackDevServerExtraArgs]]
+      * @group tasks
       */
     val startWebpackDevServer = TaskKey[Unit](
       "startWebpackDevServer",
@@ -316,11 +320,35 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       * Does nothing if the server is not running.
       *
       * @see [[startWebpackDevServer]]
+      * @group tasks
       */
     val stopWebpackDevServer = TaskKey[Unit](
       "stopWebpackDevServer",
       "Stop webpack-dev-server process (if running)"
     )
+
+    /**
+      * Locally install jsdom.
+      *
+      * You can set the jsdom package version to install with the key `version in installJsdom`.
+      *
+      * Returns the installation directory.
+      *
+      * @group tasks
+      */
+    val installJsdom = taskKey[File]("Locally install jsdom")
+
+    /**
+      * Locally install webpack-dev-server.
+      *
+      * You can set the webpack-dev-server package version to install with the key `version in installWebpackDevServer`.
+      *
+      * Returns the installation directory.
+      *
+      * @group tasks
+      */
+    val installWebpackDevServer = taskKey[File]("Locally install webpack-dev-server")
+
   }
 
   private val scalaJSBundlerPackageJson =
@@ -349,6 +377,10 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
     scalaJSModuleKind := ModuleKind.CommonJSModule,
 
     version in webpack := "1.14",
+
+    version in installWebpackDevServer := "1.16.3",
+
+    version in installJsdom := "9.9.0",
 
     webpackConfigFile := None,
 
@@ -383,6 +415,36 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
           webpackDevServer.value.stop()
         }
       )
+    },
+
+    installJsdom := {
+      val installDir = target.value / "scalajs-bundler-jsdom"
+      val log = streams.value.log
+      val jsdomVersion = (version in installJsdom).value
+      if (!installDir.exists()) {
+        log.info(s"Installing jsdom in ${installDir.absolutePath}")
+        IO.createDirectory(installDir)
+        install(installDir, useYarn.value, log)(s"jsdom@$jsdomVersion")
+      }
+      installDir
+    },
+
+    installWebpackDevServer := {
+      val installDir = target.value / "scalajs-bundler-webpack-dev-server"
+      val log = streams.value.log
+      val webpackVersion = (version in webpack).value
+      val webpackDevServerVersion = (version in installWebpackDevServer).value
+
+      if (!installDir.exists()) {
+        log.info(s"Installing webpack-dev-server in ${installDir.absolutePath}")
+        IO.createDirectory(installDir)
+        install(installDir, useYarn.value, log)(
+          // Webpack version should match the setting
+          s"webpack@$webpackVersion",
+          s"webpack-dev-server@$webpackDevServerVersion"
+        )
+      }
+      installDir
     }
   ) ++
     inConfig(Compile)(perConfigSettings) ++
@@ -663,56 +725,6 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
         }
 
       cachedActionFunction(monitoredFiles.to[Set]).to[Seq]
-    }
-
-  /**
-    * Locally installs jsdom.
-    *
-    * @return Installation directory
-    */
-  lazy val installJsdom: Def.Initialize[Task[File]] =
-    Def.task {
-      val installDir = target.value / "scalajs-bundler-jsdom"
-      val log = streams.value.log
-      if (!installDir.exists()) {
-        log.info(s"Installing jsdom in ${installDir.absolutePath}")
-        IO.createDirectory(installDir)
-        Npm.run("install", "jsdom")(installDir, log)
-      }
-      installDir
-    }
-
-  /**
-    * Locally installs webpack-dev-server.
-    *
-    * @return Installation directory
-    */
-  lazy val installWebpackDevServer: Def.Initialize[Task[File]] =
-    Def.task {
-      val installDir = target.value / "scalajs-bundler-webpack-dev-server"
-      val log = streams.value.log
-      val webpackVersion = (version in webpack).value
-
-      if (!installDir.exists()) {
-        log.info(s"Installing webpack-dev-server in ${installDir.absolutePath}")
-        IO.createDirectory(installDir)
-        if (useYarn.value) {
-          Yarn.run(
-            "add",
-            // Webpack version should match the setting
-            "webpack@" + webpackVersion,
-            "webpack-dev-server"
-          )(installDir, log)
-        } else {
-          Npm.run(
-            "install",
-            // Webpack version should match the setting
-            "webpack@" + webpackVersion,
-            "webpack-dev-server"
-          )(installDir, log)
-        }
-      }
-      installDir
     }
 
   /**
