@@ -5,7 +5,11 @@ emitted by the Scala.js compiler with its npm dependencies into a single .js fil
 
 scalajs-bundler uses [npm](https://www.npmjs.com) and [webpack](https://webpack.github.io/) under the hood.
 
-Last stable version is ![](config:version).
+Last stable version is ![](config:version):
 
-[**Get started**](getting-started.md), [contribute](https://github.com/scalacenter/scalajs-bundler), or [get
-in touch](https://gitter.im/scalacenter/scalajs-bundler)!
+~~~ scala expandVars=true
+addSbtPlugin("ch.epfl.scala" % "sbt-scalajs-bundler" % "{{version}}")
+~~~
+
+See the [**getting started**](getting-started.md) page for more details about
+the setup process.
