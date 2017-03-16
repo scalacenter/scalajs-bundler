@@ -80,7 +80,7 @@ The corresponding Scala.js facade looks like the following:
 
 ~~~ scala
 import scala.scalajs.js
-import import scala.scalajs.js.annotation.JSImport
+import scala.scalajs.js.annotation.JSImport
 
 @JSImport("foo", JSImport.Namespace)
 @js.native
