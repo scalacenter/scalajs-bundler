@@ -127,6 +127,7 @@ object ReloadWorkflow {
     workingDir: File,
     entryPoint: File,
     bundleFile: File,
+    customWebpackConfigFile: Option[File],
     logger: Logger
   ): Unit = {
     logger.info("Pre-bundling dependencies")
@@ -139,7 +140,13 @@ object ReloadWorkflow {
       )
     IO.write(entryPoint, depsFileContent.show)
 
-    Webpack.run(entryPoint.absolutePath, bundleFile.absolutePath)(workingDir, logger)
+    customWebpackConfigFile match {
+      case Some(configFile) =>
+        Webpack.run("--config", configFile.getAbsolutePath, entryPoint.absolutePath, bundleFile.absolutePath)(workingDir, logger)
+      case None =>
+        Webpack.run(entryPoint.absolutePath, bundleFile.absolutePath)(workingDir, logger)
+
+    }
 
     ()
   }

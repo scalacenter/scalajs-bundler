@@ -159,6 +159,30 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       taskKey[Seq[File]]("Bundle the output of a Scala.js stage using webpack")
 
     /**
+      * Bundles the output of a Scala.js stage using the reload workflow.
+      *
+      * This is equivalent to running fastOptJS::webpack with reloadWorkflow := true.
+      * This task must be scoped by the Scala.js fastOptJS stage.
+      *
+      * For instance, to bundle the output of `fastOptJS`, run the following task from the sbt shell:
+      *
+      * {{{
+      *   fastOptJS::webpackReload
+      * }}}
+      *
+      * To use a custom webpack configuration file use:
+      *
+      * {{{
+      *   webpackConfigFile in webpackReload := Some(baseDirectory.value / "webpack-reload.config.js"),
+      * }}}
+      *
+      * @group tasks
+      */
+    val webpackReload: TaskKey[Seq[File]] =
+      taskKey[Seq[File]]("Bundle the output of a Scala.js stage by appending the generated javascript to the pre-bundled dependencies")
+
+
+    /**
       * configuration file to use with webpack. By default, the plugin generates a
       * configuration file, but you can supply your own file via this setting. Example of use:
       *
@@ -213,7 +237,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       *  webpack launch in `webpack` task.
       *
       * Defaults to an empty `Seq`.
-      * 
+      *
       * @group settings
       * @see [[webpackMonitoredFiles]]
       */
@@ -222,7 +246,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
 
     /**
       * List of files, monitored for webpack launch.
-      * 
+      *
       * By default includes the following files:
       *  - Generated `package.json`
       *  - Generated webpack config
@@ -246,8 +270,14 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       * reduces the delays when live-reloading the application on source modifications. Defaults
       * to `false`.
       *
-      * Note that the “reload workflow” does '''not''' use the custom webpack configuration file,
-      * if any.
+      * Note that the “reload workflow” does uses the custom webpack configuration file scoped to
+      * the webpackReload task.
+      *
+      * For example:
+      *
+      * {{{
+      *   webpackConfigFile in webpackReload := Some(baseDirectory.value / "webpack-reload.config.js"),
+      * }}}
       *
       * @group settings
       */
@@ -283,7 +313,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
 
     /**
       * Additional arguments to webpack-dev-server.
-      * 
+      *
       * Defaults to an empty list.
       *
       * @see [[startWebpackDevServer]]
@@ -463,6 +493,10 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       webpack in fastOptJS := Def.taskDyn {
         if (enableReloadWorkflow.value) ReloadWorkflowTasks.webpackTask(configuration.value, fastOptJS)
         else webpackTask(fastOptJS)
+      }.value,
+
+      webpackReload in fastOptJS := Def.taskDyn {
+        ReloadWorkflowTasks.webpackTask(configuration.value, fastOptJS)
       }.value,
 
       npmUpdate := {
