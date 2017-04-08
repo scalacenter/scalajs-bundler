@@ -187,7 +187,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       * configuration file, but you can supply your own file via this setting. Example of use:
       *
       * {{{
-      *   webpackConfigFile in fullOptJS := Some(baseDirectory.value / "my.prod.webpack.config.js")
+      *   webpackConfigFile in fullOptJS := Some(baseDirectory.value / "my.dev.webpack.config.js")
       * }}}
       *
       * You can find more insights on how to write a custom configuration file in the
@@ -197,6 +197,10 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       */
     val webpackConfigFile: SettingKey[Option[File]] =
       settingKey[Option[File]]("Configuration file to use with webpack")
+
+    val webpackSharedConfigFiles: SettingKey[Seq[File]] =
+      settingKey[Seq[File]]("Configuration file to use with webpack")
+
 
     /**
       * List of entry bundles to generate. By default it generates just one bundle
@@ -414,6 +418,8 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
 
     webpackConfigFile := None,
 
+    webpackSharedConfigFiles := Seq.empty,
+
     // Include the manifest in the produced artifact
     (products in Compile) := (products in Compile).dependsOn(scalaJSBundlerManifest).value,
 
@@ -580,6 +586,21 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
                 val sjsOutputName = sjsOutput.name.stripSuffix(".js")
                 val bundle = targetDir / s"$sjsOutputName-bundle.js"
 
+                val customWebpackConfigFile = (webpackConfigFile in test).value
+                val sharedWebpackConfigFiles = webpackSharedConfigFiles.value
+
+                val customConfigFile =
+                  customWebpackConfigFile.map { file =>
+                    val configFileCopy = targetDir / file.name
+                    IO.copyFile(file, configFileCopy)
+                    configFileCopy
+                  }
+
+                sharedWebpackConfigFiles.foreach { file =>
+                  val sharedConfigFileCopy = targetDir / file.name
+                  IO.copyFile(file, sharedConfigFileCopy)
+                }
+
                 val writeTestBundleFunction =
                   FileFunction.cached(
                     streams.value.cacheDirectory / "test-loader",
@@ -588,7 +609,14 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
                     logger.info("Writing and bundling the test loader")
                     val loader = targetDir / s"$sjsOutputName-loader.js"
                     JsDomTestEntries.writeLoader(sjsOutput, loader)
-                    Webpack.run(loader.absolutePath, bundle.absolutePath)(targetDir, logger)
+
+                    customConfigFile match {
+                      case Some(configFile) =>
+                        Webpack.run("--config", configFile.getAbsolutePath, loader.absolutePath, bundle.absolutePath)(targetDir, logger)
+                      case None =>
+                        Webpack.run(loader.absolutePath, bundle.absolutePath)(targetDir, logger)
+                    }
+
                     Set.empty
                   }
                 writeTestBundleFunction(Set(sjsOutput))
@@ -741,6 +769,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       val targetDir = npmUpdate.value
       val generatedWebpackConfigFile = (scalaJSBundlerWebpackConfig in stage).value
       val customWebpackConfigFile = (webpackConfigFile in stage).value
+      val sharedWebpackConfigFiles = webpackSharedConfigFiles.value
       val entries = (webpackEntries in stage).value
       val monitoredFiles = (webpackMonitoredFiles in stage).value
 
@@ -752,6 +781,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
           Webpack.bundle(
             generatedWebpackConfigFile,
             customWebpackConfigFile,
+            sharedWebpackConfigFiles,
             entries,
             targetDir,
             log

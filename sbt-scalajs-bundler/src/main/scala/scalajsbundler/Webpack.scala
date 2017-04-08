@@ -84,6 +84,7 @@ object Webpack {
   def bundle(
     generatedWebpackConfigFile: File,
     customWebpackConfigFile: Option[File],
+    sharedWebpackConfigFiles: Seq[File],
     entries: Seq[(String, File)],
     targetDir: File,
     log: Logger
@@ -98,6 +99,11 @@ object Webpack {
         case None =>
           generatedWebpackConfigFile
       }
+
+    sharedWebpackConfigFiles.foreach { file =>
+      val sharedConfigFileCopy = targetDir / file.name
+      IO.copyFile(file, sharedConfigFileCopy)
+    }
 
     log.info("Bundling the application with its NPM dependencies")
     Webpack.run("--config", configFile.absolutePath)(targetDir, log)
