@@ -43,7 +43,7 @@ object ReloadWorkflowTasks {
         val entryPointFile = targetDir / "scalajsbundler-entry-point.js"
         val bundleFile = targetDir / "scalajsbundler-deps.js" // Don’t need to differentiate between stages because the dependencies should not be different between fastOptJS and fullOptJS
         val webpackCfgFile = (webpackConfigFile in webpackReload).value
-        val webpackSharedCfgFiles = webpackSharedConfigFiles.value
+        val webpackResourcesFiles = webpackResources.value.get
 
         val importedModules =
           ReloadWorkflow.findImportedModules(
@@ -64,7 +64,7 @@ object ReloadWorkflowTasks {
             entryPointFile,
             bundleFile,
             webpackCfgFile,
-            webpackSharedCfgFiles,
+            webpackResourcesFiles,
             streams.value.log
           )
         }

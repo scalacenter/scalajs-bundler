@@ -13,6 +13,7 @@ import sbt.Keys._
 import sbt._
 
 import scalajsbundler.ExternalCommand.install
+import scalajsbundler.Webpack.copyToWorkingDir
 import scalajsbundler._
 
 /**
@@ -198,8 +199,8 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
     val webpackConfigFile: SettingKey[Option[File]] =
       settingKey[Option[File]]("Configuration file to use with webpack")
 
-    val webpackSharedConfigFiles: SettingKey[Seq[File]] =
-      settingKey[Seq[File]]("Configuration file to use with webpack")
+    val webpackResources: SettingKey[PathFinder] =
+      settingKey[PathFinder]("Webpack resources to copy to target directory (defaults to *.js)")
 
 
     /**
@@ -418,7 +419,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
 
     webpackConfigFile := None,
 
-    webpackSharedConfigFiles := Seq.empty,
+    webpackResources := baseDirectory.value * "*.js",
 
     // Include the manifest in the produced artifact
     (products in Compile) := (products in Compile).dependsOn(scalaJSBundlerManifest).value,
@@ -587,19 +588,22 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
                 val bundle = targetDir / s"$sjsOutputName-bundle.js"
 
                 val customWebpackConfigFile = (webpackConfigFile in test).value
-                val sharedWebpackConfigFiles = webpackSharedConfigFiles.value
+                val sharedWebpackConfigFiles = webpackResources.value.get
+
+                def copyToWorkingDir(file: File): File = {
+                  val copy = targetDir / file.name
+                  IO.copyFile(file, copy)
+                  copy
+                }
+
+                val copiedWebpackResources = sharedWebpackConfigFiles.map { file =>
+                  file -> copyToWorkingDir(file)
+                }.toMap
 
                 val customConfigFile =
                   customWebpackConfigFile.map { file =>
-                    val configFileCopy = targetDir / file.name
-                    IO.copyFile(file, configFileCopy)
-                    configFileCopy
+                    copiedWebpackResources.getOrElse(file, copyToWorkingDir(file))
                   }
-
-                sharedWebpackConfigFiles.foreach { file =>
-                  val sharedConfigFileCopy = targetDir / file.name
-                  IO.copyFile(file, sharedConfigFileCopy)
-                }
 
                 val writeTestBundleFunction =
                   FileFunction.cached(
@@ -732,10 +736,8 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
         val customConfigOption = (webpackConfigFile in stageTask).value
         val generatedConfig = (scalaJSBundlerWebpackConfig in stageTask).value
 
-        val config = customConfigOption match {
-          case Some(customConfig) => targetDir / customConfig.name
-          case None => generatedConfig
-        }
+        webpackResources.value.get.foreach(copyToWorkingDir(targetDir))
+        val config = customConfigOption.map(copyToWorkingDir(targetDir)).getOrElse(generatedConfig)
 
         // To match `webpack` task behavior
         val workDir = targetDir
@@ -769,7 +771,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       val targetDir = npmUpdate.value
       val generatedWebpackConfigFile = (scalaJSBundlerWebpackConfig in stage).value
       val customWebpackConfigFile = (webpackConfigFile in stage).value
-      val sharedWebpackConfigFiles = webpackSharedConfigFiles.value
+      val webpackResourceFiles = webpackResources.value.get
       val entries = (webpackEntries in stage).value
       val monitoredFiles = (webpackMonitoredFiles in stage).value
 
@@ -781,7 +783,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
           Webpack.bundle(
             generatedWebpackConfigFile,
             customWebpackConfigFile,
-            sharedWebpackConfigFiles,
+            webpackResourceFiles,
             entries,
             targetDir,
             log

@@ -8,6 +8,7 @@ import org.scalajs.sbtplugin.Loggers
 import org.scalajs.sbtplugin.ScalaJSPlugin.AutoImport._
 import sbt._
 
+import scalajsbundler.Webpack.copyToWorkingDir
 import scalajsbundler.util.{Commands, JS}
 
 /**
@@ -128,22 +129,13 @@ object ReloadWorkflow {
     entryPoint: File,
     bundleFile: File,
     customWebpackConfigFile: Option[File],
-    sharedWebpackConfigFiles: Seq[File],
+    webpackResources: Seq[File],
     logger: Logger
   ): Unit = {
     logger.info("Pre-bundling dependencies")
 
-    val customConfigFile =
-      customWebpackConfigFile.map { file =>
-        val configFileCopy = workingDir / file.name
-        IO.copyFile(file, configFileCopy)
-        configFileCopy
-      }
-
-    sharedWebpackConfigFiles.foreach { file =>
-      val sharedConfigFileCopy = workingDir / file.name
-      IO.copyFile(file, sharedConfigFileCopy)
-    }
+    webpackResources.foreach(copyToWorkingDir(workingDir))
+    val customConfigFile = customWebpackConfigFile.map(copyToWorkingDir(workingDir))
 
     val depsFileContent =
       JS.block(
