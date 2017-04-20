@@ -40,8 +40,7 @@ $ absent target/scala-2.11/static-fastopt-test.html
 > testHtmlFastOpt
 $ exists target/scala-2.11/static-fastopt-test.html
 > html target/scala-2.11/static-fastopt-test.html
-$ absent target/scala-2.11/static-fullopt-test.html
+$ absent target/scala-2.11/static-opt-test.html
 > testHtmlFullOpt
-$ pause
-$ exists target/scala-2.11/static-fullopt-test.html
-> html target/scala-2.11/static-fullopt-test.html
+$ exists target/scala-2.11/static-opt-test.html
+> html target/scala-2.11/static-opt-test.html
