@@ -26,8 +26,6 @@ webpackConfigFile in test := Some(baseDirectory.value / "reload.webpack.config.j
 // Use a different Webpack configuration file for reload workflow
 webpackConfigFile in webpackReload := Some(baseDirectory.value / "reload.webpack.config.js")
 
-webpackSharedConfigFiles := Seq(baseDirectory.value / "common.webpack.config.js")
-
 libraryDependencies += "org.scalatest" %%% "scalatest" % "3.0.0" % Test
 
 // Execute the tests in browser-like environment
