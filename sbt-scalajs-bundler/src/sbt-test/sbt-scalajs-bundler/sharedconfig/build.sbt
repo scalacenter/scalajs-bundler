@@ -21,17 +21,17 @@ webpackConfigFile in fastOptJS := Some(baseDirectory.value / "dev.webpack.config
 // Use a different Webpack configuration file for production
 webpackConfigFile in fullOptJS := Some(baseDirectory.value / "prod.webpack.config.js")
 
-webpackConfigFile in test := Some(baseDirectory.value / "reload.webpack.config.js")
+// Use the shared Webpack configuration file for reload workflow and for running the tests
+webpackConfigFile in webpackReload := Some(baseDirectory.value / "common.webpack.config.js")
 
-// Use a different Webpack configuration file for reload workflow
-webpackConfigFile in webpackReload := Some(baseDirectory.value / "reload.webpack.config.js")
+webpackConfigFile in Test := Some(baseDirectory.value / "common.webpack.config.js")
 
 libraryDependencies += "org.scalatest" %%% "scalatest" % "3.0.0" % Test
 
 // Execute the tests in browser-like environment
 requiresDOM in Test := true
 
-//enableReloadWorkflow := true
+enableReloadWorkflow := true
 
 useYarn := true
 
@@ -49,5 +49,5 @@ InputKey[Unit]("html") := {
 }
 
 TaskKey[Unit]("checkSize") := {
-  assert(IO.readBytes((webpack in (Compile, fullOptJS)).value.head).length == 176387)
+  assert(IO.readBytes((webpack in (Compile, fullOptJS)).value.head).length == 176439)
 }

@@ -76,16 +76,16 @@ code executable by web browsers takes time. This can be a problem if you rely on
 (like the one of Play framework, for instance), because the reloading time can go up to 30 seconds.
 
 You can get a faster “change source and reload application” workflow by setting the `enableReloadWorkflow` 
-key to `true`.
+key to `true`. An alternative way to invoke reload workflow is using the `fastOptJs::webpackReload` task.
 
 The reload workflow replaces the `fastOptJS::webpack` task implementation with a different one, that does not use 
 webpack to process the output of the Scala.js compilation.  Instead, it pre-bundles the modules imported by your 
 application and exposes them to the global namespace. Since these dependencies can then be resolved from the global 
 namespace, the output of Scala.js is just concatenated after the contents of the pre-bundling process.
 
-> {.note}
-> As soon as `enableReloadWorkflow` is true `fastOptJS::webpack` does **not** use webpack and therefore 
-> the custom webpack configuration file is ignored.
+It is possible to configure an alternative webpack configuration file which is used for building the bundle using the
+"webpackConfigFile in webpackReload" setting . The configuration file may not contain 'entry' nor 'output' configuration
+but can be used to for loaders etc.
 
 ### Tasks and Settings {#tasks-and-settings}
 

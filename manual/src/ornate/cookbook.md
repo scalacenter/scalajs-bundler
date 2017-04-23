@@ -53,6 +53,63 @@ More fine-grained control over the list of monitored files is possible by overri
 You can find a working example of custom configuration file
 [here](https://github.com/scalacenter/scalajs-bundler/blob/master/sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler/static/prod.webpack.config.js).
 
+It is also possible to configure a webpack config file to be used in reload workflow and when running the tests.
+This configuration may not contain `entry` and `output` configuration but can be used to configure loaders etc.
+
+These configuration files are configured using `webpackConfigFile in reloadTask` or `webpackConfigFile in Test`.
+For example:
+
+~~~ scala
+webpackConfigFile in webpackReload := Some(baseDirectory.value / "common.webpack.config.js")
+
+webpackConfigFile in Test := Some(baseDirectory.value / "common.webpack.config.js")
+~~~
+
+## Sharing webpack configuration among configuration files {#shared-config}
+
+In addition to the configured webpack config file, all .js files in the project base directory
+(as configured using the `webpackResources` setting) are copied to the target directory so they can be imported
+from the various configuration files.
+
+Here are the steps to share the loader configuration among your prod and dev config files. This
+uses webpack-merge for convenience the same result could be accomplished using plain js only.
+
+1. Put configuration it in a common.webpack.config.js file:
+
+~~~ javascript
+module.exports = {
+  module: {
+    loaders: [
+        ...
+    ],
+    rules: [
+        ...
+    ]
+  }
+}
+~~~
+
+2. Add webpack-merge to your npmDevDependencies:
+
+~~~
+npmDevDependencies in Compile += "webpack-merge" -> "4.1.0"
+~~~
+
+3. Merge in the common configuration in your dev.webpack.js file:
+
+~~~ javascript
+var merge = require("webpack-merge")
+var commonConfig = require("./common.webpack.config.js")
+
+module.exports = merge(commonConfig, {
+    ...
+})
+~~~
+
+You can find a working example of a project using a shared configuration file
+[here](https://github.com/scalacenter/scalajs-bundler/blob/master/sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler/sharedconfig).
+
+
 ## How to use npm modules from Scala code? {#facade}
 
 Once you have [added npm dependencies](getting-started.md) to the packages you are interested

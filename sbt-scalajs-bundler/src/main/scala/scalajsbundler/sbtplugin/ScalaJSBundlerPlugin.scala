@@ -199,6 +199,19 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
     val webpackConfigFile: SettingKey[Option[File]] =
       settingKey[Option[File]]("Configuration file to use with webpack")
 
+    /**
+      * Webpack configuration files to copy to the target directory. These files can be merged into the main
+      * configuration file.
+      *
+      * By default all .js files in the project base directory are copied:
+      *
+      * {{{
+      *   baseDirectory.value * "*.js"
+      * }}}
+      *
+      * How to share these configuration files among your webpack config files is documented in the
+      * [[http://scalacenter.github.io/scalajs-bundler/cookbook.html#shared-config cookbook]].
+      */
     val webpackResources: SettingKey[PathFinder] =
       settingKey[PathFinder]("Webpack resources to copy to target directory (defaults to *.js)")
 
@@ -587,23 +600,11 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
                 val sjsOutputName = sjsOutput.name.stripSuffix(".js")
                 val bundle = targetDir / s"$sjsOutputName-bundle.js"
 
-                val customWebpackConfigFile = (webpackConfigFile in test).value
-                val sharedWebpackConfigFiles = webpackResources.value.get
+                val customWebpackConfigFile = (webpackConfigFile in Test).value
+                val webpackResourceFiles = webpackResources.value.get
 
-                def copyToWorkingDir(file: File): File = {
-                  val copy = targetDir / file.name
-                  IO.copyFile(file, copy)
-                  copy
-                }
-
-                val copiedWebpackResources = sharedWebpackConfigFiles.map { file =>
-                  file -> copyToWorkingDir(file)
-                }.toMap
-
-                val customConfigFile =
-                  customWebpackConfigFile.map { file =>
-                    copiedWebpackResources.getOrElse(file, copyToWorkingDir(file))
-                  }
+                webpackResourceFiles.foreach(copyToWorkingDir(targetDir))
+                val customConfigFile = customWebpackConfigFile.map(copyToWorkingDir(targetDir))
 
                 val writeTestBundleFunction =
                   FileFunction.cached(

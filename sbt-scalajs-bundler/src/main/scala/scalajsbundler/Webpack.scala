@@ -8,9 +8,7 @@ object Webpack {
 
   def copyToWorkingDir(targetDir: File)(file: File): File = {
     val copy = targetDir / file.name
-    if (copy.getAbsolutePath != file.getAbsolutePath && !copy.exists()) {
-      IO.copyFile(file, copy)
-    }
+    IO.copyFile(file, copy)
     copy
   }
 
