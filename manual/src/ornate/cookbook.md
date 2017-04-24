@@ -72,9 +72,9 @@ In addition to the configured webpack config file, all .js files in the project 
 from the various configuration files.
 
 Here are the steps to share the loader configuration among your prod and dev config files. This
-uses webpack-merge for convenience the same result could be accomplished using plain js only.
+uses webpack-merge for convenience. The same result could be accomplished using plain js only.
 
-1. Put configuration it in a common.webpack.config.js file:
+1. Put configuration in a common.webpack.config.js file:
 
 ~~~ javascript
 module.exports = {
