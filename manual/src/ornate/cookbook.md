@@ -89,7 +89,7 @@ module.exports = {
 }
 ~~~
 
-2. Add webpack-merge to your npmDevDependencies:
+2. Add webpack-merge to your `npmDevDependencies`:
 
 ~~~
 npmDevDependencies in Compile += "webpack-merge" -> "4.1.0"

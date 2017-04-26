@@ -34,6 +34,14 @@ import scalajsbundler._
   *   version in webpack := "2.1.0-beta.25"
   * }}}
   *
+  * == `version in installJsdom` ==
+  *
+  * Version of jsdom to use.
+  *
+  * == `version in installWebpackDevServer` ==
+  *
+  * Version of webpack-dev-server to use.
+  *
   * == `crossTarget in npmUpdate` ==
   *
   * The directory in which NPM dependencies will be fetched, and where all the .js files
@@ -211,6 +219,8 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       *
       * How to share these configuration files among your webpack config files is documented in the
       * [[http://scalacenter.github.io/scalajs-bundler/cookbook.html#shared-config cookbook]].
+      *
+      * @group settings
       */
     val webpackResources: SettingKey[PathFinder] =
       settingKey[PathFinder]("Webpack resources to copy to target directory (defaults to *.js)")

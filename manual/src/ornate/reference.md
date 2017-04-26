@@ -71,7 +71,7 @@ The `yarn` command must be available in the host platform.
 ### Reload Workflow {#reload-workflow}
 
 Each time you change something in your application source code and compile the project, Scala.js emits a new .js file 
-that can weigh several MBs (in fastOptJS mode) if your application is large. Turning this huge CommonJS module into 
+that can weigh several MBs (in `fastOptJS` mode) if your application is large. Turning this huge CommonJS module into 
 code executable by web browsers takes time. This can be a problem if you rely on a “live-reloading” workflow 
 (like the one of Play framework, for instance), because the reloading time can go up to 30 seconds.
 
@@ -84,7 +84,7 @@ application and exposes them to the global namespace. Since these dependencies c
 namespace, the output of Scala.js is just concatenated after the contents of the pre-bundling process.
 
 It is possible to configure an alternative webpack configuration file which is used for building the bundle using the
-"webpackConfigFile in webpackReload" setting . The configuration file may not contain 'entry' nor 'output' configuration
+`webpackConfigFile in webpackReload` setting . The configuration file may not contain `entry` nor `output` configuration
 but can be used to for loaders etc.
 
 ### Tasks and Settings {#tasks-and-settings}

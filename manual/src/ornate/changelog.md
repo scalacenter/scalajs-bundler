@@ -1,5 +1,19 @@
 # Changelog
 
+## Version 0.6.0
+
+> 2017 April 26
+
+- [#96](https://github.com/scalacenter/scalajs-bundler/pull/96): webpack-dev-server integration ;
+- [#102](https://github.com/scalacenter/scalajs-bundler/pull/102): Make it possible to set the version of jsdom and webpack-dev-server to use ;
+- [#106](https://github.com/scalacenter/scalajs-bundler/pull/106): Add a [Community](community.md) page ;
+- [#108](https://github.com/scalacenter/scalajs-bundler/pull/108): Add gitter badge to the README ;
+- [#121](https://github.com/scalacenter/scalajs-bundler/pull/121): Make the sbt task fail when webpack fails ;
+- [#119](https://github.com/scalacenter/scalajs-bundler/pull/119): Add support for custom webpack config files in tests and in the reload workflow ;
+
+You can find the complete list of commits since the last release
+[here](https://github.com/scalacenter/scalajs-bundler/compare/v0.5.0...v0.6.0).
+
 ## Version 0.5.0
 
 > 2017 January 18
