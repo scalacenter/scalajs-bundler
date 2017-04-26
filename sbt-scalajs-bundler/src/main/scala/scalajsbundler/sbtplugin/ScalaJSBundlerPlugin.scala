@@ -211,10 +211,14 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       * Webpack configuration files to copy to the target directory. These files can be merged into the main
       * configuration file.
       *
-      * By default all .js files in the project base directory are copied:
+      * By default all .js files in the project base directory are copied (excluding webpack.config.js and webpackfile.js):
       *
       * {{{
-      *   baseDirectory.value * "*.js"
+      *   def isDefaultWebpackConfigFile(file: File): Boolean = {
+      *     file.getName == "webpack.config.js" || file.getName == "webpackfile.js"
+      *   }
+      *
+      *   (baseDirectory.value * "*.js").filter(f => !isDefaultWebpackConfigFile(f))
       * }}}
       *
       * How to share these configuration files among your webpack config files is documented in the
@@ -223,7 +227,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       * @group settings
       */
     val webpackResources: SettingKey[PathFinder] =
-      settingKey[PathFinder]("Webpack resources to copy to target directory (defaults to *.js)")
+      settingKey[PathFinder]("Webpack resources to copy to target directory (defaults to *.js excluding webpack.config.js and webpackfile.js)")
 
 
     /**
@@ -430,6 +434,10 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
 
   import autoImport._
 
+  def isDefaultWebpackConfigFile(file: File): Boolean = {
+    file.getName == "webpack.config.js" || file.getName == "webpackfile.js"
+  }
+
   override lazy val projectSettings: Seq[Def.Setting[_]] = Seq(
 
     scalaJSModuleKind := ModuleKind.CommonJSModule,
@@ -442,7 +450,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
 
     webpackConfigFile := None,
 
-    webpackResources := baseDirectory.value * "*.js",
+    webpackResources := (baseDirectory.value * "*.js").filter(f => !isDefaultWebpackConfigFile(f)),
 
     // Include the manifest in the produced artifact
     (products in Compile) := (products in Compile).dependsOn(scalaJSBundlerManifest).value,
