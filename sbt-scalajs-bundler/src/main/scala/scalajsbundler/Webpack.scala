@@ -96,8 +96,13 @@ object Webpack {
     log: Logger
   ): Seq[File] = {
 
-    webpackResources.foreach(copyToWorkingDir(targetDir))
-    val configFile = customWebpackConfigFile.map(copyToWorkingDir(targetDir)).getOrElse(generatedWebpackConfigFile)
+    val configFile = customWebpackConfigFile match {
+      case Some(customConfigFile) =>
+        webpackResources.foreach(copyToWorkingDir(targetDir))
+        copyToWorkingDir(targetDir)(customConfigFile)
+      case None =>
+        generatedWebpackConfigFile
+    }
 
     log.info("Bundling the application with its NPM dependencies")
     Webpack.run("--config", configFile.absolutePath)(targetDir, log)

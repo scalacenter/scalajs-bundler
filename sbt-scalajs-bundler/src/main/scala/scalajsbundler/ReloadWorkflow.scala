@@ -134,9 +134,6 @@ object ReloadWorkflow {
   ): Unit = {
     logger.info("Pre-bundling dependencies")
 
-    webpackResources.foreach(copyToWorkingDir(workingDir))
-    val customConfigFile = customWebpackConfigFile.map(copyToWorkingDir(workingDir))
-
     val depsFileContent =
       JS.block(
         imports.map { moduleName =>
@@ -145,9 +142,12 @@ object ReloadWorkflow {
       )
     IO.write(entryPoint, depsFileContent.show)
 
-    customConfigFile match {
+    customWebpackConfigFile match {
       case Some(configFile) =>
-        Webpack.run("--config", configFile.getAbsolutePath, entryPoint.absolutePath, bundleFile.absolutePath)(workingDir, logger)
+        val customConfigFileCopy = copyToWorkingDir(workingDir)(configFile)
+        webpackResources.foreach(copyToWorkingDir(workingDir))
+
+        Webpack.run("--config", customConfigFileCopy.getAbsolutePath, entryPoint.absolutePath, bundleFile.absolutePath)(workingDir, logger)
       case None =>
         Webpack.run(entryPoint.absolutePath, bundleFile.absolutePath)(workingDir, logger)
     }
