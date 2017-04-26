@@ -13,6 +13,7 @@ import sbt.Keys._
 import sbt._
 
 import scalajsbundler.ExternalCommand.install
+import scalajsbundler.Webpack.copyToWorkingDir
 import scalajsbundler._
 
 /**
@@ -159,11 +160,35 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       taskKey[Seq[File]]("Bundle the output of a Scala.js stage using webpack")
 
     /**
+      * Bundles the output of a Scala.js stage using the reload workflow.
+      *
+      * This is equivalent to running fastOptJS::webpack with reloadWorkflow := true.
+      * This task must be scoped by the Scala.js fastOptJS stage.
+      *
+      * For instance, to bundle the output of `fastOptJS`, run the following task from the sbt shell:
+      *
+      * {{{
+      *   fastOptJS::webpackReload
+      * }}}
+      *
+      * To use a custom webpack configuration file use:
+      *
+      * {{{
+      *   webpackConfigFile in webpackReload := Some(baseDirectory.value / "webpack-reload.config.js"),
+      * }}}
+      *
+      * @group tasks
+      */
+    val webpackReload: TaskKey[Seq[File]] =
+      taskKey[Seq[File]]("Bundle the output of a Scala.js stage by appending the generated javascript to the pre-bundled dependencies")
+
+
+    /**
       * configuration file to use with webpack. By default, the plugin generates a
       * configuration file, but you can supply your own file via this setting. Example of use:
       *
       * {{{
-      *   webpackConfigFile in fullOptJS := Some(baseDirectory.value / "my.prod.webpack.config.js")
+      *   webpackConfigFile in fullOptJS := Some(baseDirectory.value / "my.dev.webpack.config.js")
       * }}}
       *
       * You can find more insights on how to write a custom configuration file in the
@@ -173,6 +198,23 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       */
     val webpackConfigFile: SettingKey[Option[File]] =
       settingKey[Option[File]]("Configuration file to use with webpack")
+
+    /**
+      * Webpack configuration files to copy to the target directory. These files can be merged into the main
+      * configuration file.
+      *
+      * By default all .js files in the project base directory are copied:
+      *
+      * {{{
+      *   baseDirectory.value * "*.js"
+      * }}}
+      *
+      * How to share these configuration files among your webpack config files is documented in the
+      * [[http://scalacenter.github.io/scalajs-bundler/cookbook.html#shared-config cookbook]].
+      */
+    val webpackResources: SettingKey[PathFinder] =
+      settingKey[PathFinder]("Webpack resources to copy to target directory (defaults to *.js)")
+
 
     /**
       * List of entry bundles to generate. By default it generates just one bundle
@@ -213,7 +255,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       *  webpack launch in `webpack` task.
       *
       * Defaults to an empty `Seq`.
-      * 
+      *
       * @group settings
       * @see [[webpackMonitoredFiles]]
       */
@@ -222,7 +264,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
 
     /**
       * List of files, monitored for webpack launch.
-      * 
+      *
       * By default includes the following files:
       *  - Generated `package.json`
       *  - Generated webpack config
@@ -246,8 +288,14 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       * reduces the delays when live-reloading the application on source modifications. Defaults
       * to `false`.
       *
-      * Note that the “reload workflow” does '''not''' use the custom webpack configuration file,
-      * if any.
+      * Note that the “reload workflow” does uses the custom webpack configuration file scoped to
+      * the webpackReload task.
+      *
+      * For example:
+      *
+      * {{{
+      *   webpackConfigFile in webpackReload := Some(baseDirectory.value / "webpack-reload.config.js"),
+      * }}}
       *
       * @group settings
       */
@@ -283,7 +331,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
 
     /**
       * Additional arguments to webpack-dev-server.
-      * 
+      *
       * Defaults to an empty list.
       *
       * @see [[startWebpackDevServer]]
@@ -384,6 +432,8 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
 
     webpackConfigFile := None,
 
+    webpackResources := baseDirectory.value * "*.js",
+
     // Include the manifest in the produced artifact
     (products in Compile) := (products in Compile).dependsOn(scalaJSBundlerManifest).value,
 
@@ -463,6 +513,10 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       webpack in fastOptJS := Def.taskDyn {
         if (enableReloadWorkflow.value) ReloadWorkflowTasks.webpackTask(configuration.value, fastOptJS)
         else webpackTask(fastOptJS)
+      }.value,
+
+      webpackReload in fastOptJS := Def.taskDyn {
+        ReloadWorkflowTasks.webpackTask(configuration.value, fastOptJS)
       }.value,
 
       npmUpdate := {
@@ -546,6 +600,12 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
                 val sjsOutputName = sjsOutput.name.stripSuffix(".js")
                 val bundle = targetDir / s"$sjsOutputName-bundle.js"
 
+                val customWebpackConfigFile = (webpackConfigFile in Test).value
+                val webpackResourceFiles = webpackResources.value.get
+
+                webpackResourceFiles.foreach(copyToWorkingDir(targetDir))
+                val customConfigFile = customWebpackConfigFile.map(copyToWorkingDir(targetDir))
+
                 val writeTestBundleFunction =
                   FileFunction.cached(
                     streams.value.cacheDirectory / "test-loader",
@@ -554,7 +614,14 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
                     logger.info("Writing and bundling the test loader")
                     val loader = targetDir / s"$sjsOutputName-loader.js"
                     JsDomTestEntries.writeLoader(sjsOutput, loader)
-                    Webpack.run(loader.absolutePath, bundle.absolutePath)(targetDir, logger)
+
+                    customConfigFile match {
+                      case Some(configFile) =>
+                        Webpack.run("--config", configFile.getAbsolutePath, loader.absolutePath, bundle.absolutePath)(targetDir, logger)
+                      case None =>
+                        Webpack.run(loader.absolutePath, bundle.absolutePath)(targetDir, logger)
+                    }
+
                     Set.empty
                   }
                 writeTestBundleFunction(Set(sjsOutput))
@@ -670,10 +737,8 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
         val customConfigOption = (webpackConfigFile in stageTask).value
         val generatedConfig = (scalaJSBundlerWebpackConfig in stageTask).value
 
-        val config = customConfigOption match {
-          case Some(customConfig) => targetDir / customConfig.name
-          case None => generatedConfig
-        }
+        webpackResources.value.get.foreach(copyToWorkingDir(targetDir))
+        val config = customConfigOption.map(copyToWorkingDir(targetDir)).getOrElse(generatedConfig)
 
         // To match `webpack` task behavior
         val workDir = targetDir
@@ -707,6 +772,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       val targetDir = npmUpdate.value
       val generatedWebpackConfigFile = (scalaJSBundlerWebpackConfig in stage).value
       val customWebpackConfigFile = (webpackConfigFile in stage).value
+      val webpackResourceFiles = webpackResources.value.get
       val entries = (webpackEntries in stage).value
       val monitoredFiles = (webpackMonitoredFiles in stage).value
 
@@ -718,6 +784,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
           Webpack.bundle(
             generatedWebpackConfigFile,
             customWebpackConfigFile,
+            webpackResourceFiles,
             entries,
             targetDir,
             log
