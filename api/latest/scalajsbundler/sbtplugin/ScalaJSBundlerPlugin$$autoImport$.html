@@ -39,7 +39,7 @@
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/scalacenter/scalajs-bundler/blob/v0.5.0/sbt-scalajs-bundler/src/main/scala/scalajsbundler/sbtplugin/ScalaJSBundlerPlugin.scala" target="_blank">ScalaJSBundlerPlugin.scala</a></dd></dl><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/scalacenter/scalajs-bundler/blob/v0.7.0-SNAPSHOT/sbt-scalajs-bundler/src/main/scala/scalajsbundler/sbtplugin/ScalaJSBundlerPlugin.scala" target="_blank">ScalaJSBundlerPlugin.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
@@ -197,9 +197,8 @@
       <p class="shortcomment cmt">whether to enable the “reload workflow” for <code>webpack in fastOptJS</code>.</p><div class="fullcomment"><div class="comment cmt"><p>whether to enable the “reload workflow” for <code>webpack in fastOptJS</code>.</p><p>When enabled, dependencies are pre-bundled so that the output of <code>fastOptJS</code> can directly
 be executed by a web browser without being further processed by a bundling system. This
 reduces the delays when live-reloading the application on source modifications. Defaults
-to <code>false</code>.</p><p>Note that the “reload workflow” does <b>not</b> use the custom webpack configuration file,
-if any.
-</p></div></div>
+to <code>false</code>.</p><p>Note that the “reload workflow” does uses the custom webpack configuration file scoped to
+the webpackReload task.</p><p>For example:</p><pre>webpackConfigFile in webpackReload := <span class="std">Some</span>(baseDirectory.value / <span class="lit">"webpack-reload.config.js"</span>),</pre></div></div>
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
@@ -271,6 +270,34 @@ if any.
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.autoImport#installJsdom" visbl="pub" data-isabs="false" fullComment="yes" group="tasks">
+      <a id="installJsdom:sbt.TaskKey[sbt.File]"></a>
+      <a id="installJsdom:TaskKey[File]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">installJsdom</span><span class="result">: <span class="extype" name="sbt.TaskKey">TaskKey</span>[<a href="../../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Locally install jsdom.</p><div class="fullcomment"><div class="comment cmt"><p>Locally install jsdom.</p><p>You can set the jsdom package version to install with the key <code>version in installJsdom</code>.</p><p>Returns the installation directory.
+</p></div></div>
+    </li><li name="scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.autoImport#installWebpackDevServer" visbl="pub" data-isabs="false" fullComment="yes" group="tasks">
+      <a id="installWebpackDevServer:sbt.TaskKey[sbt.File]"></a>
+      <a id="installWebpackDevServer:TaskKey[File]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">installWebpackDevServer</span><span class="result">: <span class="extype" name="sbt.TaskKey">TaskKey</span>[<a href="../../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Locally install webpack-dev-server.</p><div class="fullcomment"><div class="comment cmt"><p>Locally install webpack-dev-server.</p><p>You can set the webpack-dev-server package version to install with the key <code>version in installWebpackDevServer</code>.</p><p>Returns the installation directory.
+</p></div></div>
     </li><li name="scala.Any#isInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isInstanceOf[T0]:Boolean"></a>
       <a id="isInstanceOf[T0]:Boolean"></a>
@@ -391,6 +418,37 @@ doSomething(npmDirectory / <span class="lit">"node_modules"</span> / <span class
 }</pre><p>The task returns the directory in which the dependencies have been fetched (the directory
 that contains the <code>node_modules</code> directory).
 </p></div></div>
+    </li><li name="scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.autoImport#startWebpackDevServer" visbl="pub" data-isabs="false" fullComment="yes" group="tasks">
+      <a id="startWebpackDevServer:sbt.TaskKey[Unit]"></a>
+      <a id="startWebpackDevServer:TaskKey[Unit]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">startWebpackDevServer</span><span class="result">: <span class="extype" name="sbt.TaskKey">TaskKey</span>[<span class="extype" name="scala.Unit">Unit</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Start background webpack-dev-server process.</p><div class="fullcomment"><div class="comment cmt"><p>Start background webpack-dev-server process.</p><p>If webpack-dev-server is already running, it will be restarted.</p><p>The started webpack-dev-server receives the following arguments:
+- <code>--config</code> is set to value of <code>webpackConfigFile</code> setting.
+- <code>--port</code> is set to value of <code>webpackDevServerPort</code> setting.
+- Contents of <code>webpackDevServerExtraArgs</code> setting.
+</p></div><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p><a href="#webpackDevServerExtraArgs:sbt.SettingKey[Seq[String]]" class="extmbr" name="scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.autoImport#webpackDevServerExtraArgs">webpackDevServerExtraArgs</a></p></span><span class="cmt"><p><a href="#webpackDevServerPort:sbt.SettingKey[Int]" class="extmbr" name="scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.autoImport#webpackDevServerPort">webpackDevServerPort</a></p></span><span class="cmt"><p><a href="#stopWebpackDevServer:sbt.TaskKey[Unit]" class="extmbr" name="scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.autoImport#stopWebpackDevServer">stopWebpackDevServer</a></p></span></dd></dl></div>
+    </li><li name="scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.autoImport#stopWebpackDevServer" visbl="pub" data-isabs="false" fullComment="yes" group="tasks">
+      <a id="stopWebpackDevServer:sbt.TaskKey[Unit]"></a>
+      <a id="stopWebpackDevServer:TaskKey[Unit]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">stopWebpackDevServer</span><span class="result">: <span class="extype" name="sbt.TaskKey">TaskKey</span>[<span class="extype" name="scala.Unit">Unit</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Stop running webpack-dev-server process.</p><div class="fullcomment"><div class="comment cmt"><p>Stop running webpack-dev-server process.</p><p>Does nothing if the server is not running.
+</p></div><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p><a href="#startWebpackDevServer:sbt.TaskKey[Unit]" class="extmbr" name="scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.autoImport#startWebpackDevServer">startWebpackDevServer</a></p></span></dd></dl></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
@@ -522,9 +580,37 @@ provided by webpackMonitoredFiles
       </span>
       </h4>
       <p class="shortcomment cmt">configuration file to use with webpack.</p><div class="fullcomment"><div class="comment cmt"><p>configuration file to use with webpack. By default, the plugin generates a
-configuration file, but you can supply your own file via this setting. Example of use:</p><pre>webpackConfigFile in fullOptJS := <span class="std">Some</span>(baseDirectory.value / <span class="lit">"my.prod.webpack.config.js"</span>)</pre><p>You can find more insights on how to write a custom configuration file in the
+configuration file, but you can supply your own file via this setting. Example of use:</p><pre>webpackConfigFile in fullOptJS := <span class="std">Some</span>(baseDirectory.value / <span class="lit">"my.dev.webpack.config.js"</span>)</pre><p>You can find more insights on how to write a custom configuration file in the
 <a href="http://scalacenter.github.io/scalajs-bundler/cookbook.html#custom-config" target="_blank">cookbook</a>.
 </p></div></div>
+    </li><li name="scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.autoImport#webpackDevServerExtraArgs" visbl="pub" data-isabs="false" fullComment="yes" group="settings">
+      <a id="webpackDevServerExtraArgs:sbt.SettingKey[Seq[String]]"></a>
+      <a id="webpackDevServerExtraArgs:SettingKey[Seq[String]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">webpackDevServerExtraArgs</span><span class="result">: <span class="extype" name="sbt.SettingKey">SettingKey</span>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Additional arguments to webpack-dev-server.</p><div class="fullcomment"><div class="comment cmt"><p>Additional arguments to webpack-dev-server.</p><p>Defaults to an empty list.
+</p></div><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p><a href="#startWebpackDevServer:sbt.TaskKey[Unit]" class="extmbr" name="scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.autoImport#startWebpackDevServer">startWebpackDevServer</a></p></span></dd></dl></div>
+    </li><li name="scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.autoImport#webpackDevServerPort" visbl="pub" data-isabs="false" fullComment="yes" group="settings">
+      <a id="webpackDevServerPort:sbt.SettingKey[Int]"></a>
+      <a id="webpackDevServerPort:SettingKey[Int]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">webpackDevServerPort</span><span class="result">: <span class="extype" name="sbt.SettingKey">SettingKey</span>[<span class="extype" name="scala.Int">Int</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Port, on which webpack-dev-server will be launched.</p><div class="fullcomment"><div class="comment cmt"><p>Port, on which webpack-dev-server will be launched.</p><p>Defaults to 8080.
+</p></div><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p><a href="#startWebpackDevServer:sbt.TaskKey[Unit]" class="extmbr" name="scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.autoImport#startWebpackDevServer">startWebpackDevServer</a></p></span></dd></dl></div>
     </li><li name="scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.autoImport#webpackEmitSourceMaps" visbl="pub" data-isabs="false" fullComment="yes" group="settings">
       <a id="webpackEmitSourceMaps:sbt.SettingKey[Boolean]"></a>
       <a id="webpackEmitSourceMaps:SettingKey[Boolean]"></a>
@@ -591,6 +677,36 @@ for your main class.
    <code>includeFilter</code>
 </li></ul></div><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p><a href="#webpack:sbt.TaskKey[Seq[sbt.File]]" class="extmbr" name="scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.autoImport#webpack">webpack</a>
 </p></span><span class="cmt"><p><a href="#webpackMonitoredDirectories:sbt.SettingKey[Seq[sbt.File]]" class="extmbr" name="scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.autoImport#webpackMonitoredDirectories">webpackMonitoredDirectories</a></p></span></dd></dl></div>
+    </li><li name="scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.autoImport#webpackReload" visbl="pub" data-isabs="false" fullComment="yes" group="tasks">
+      <a id="webpackReload:sbt.TaskKey[Seq[sbt.File]]"></a>
+      <a id="webpackReload:TaskKey[Seq[File]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">webpackReload</span><span class="result">: <span class="extype" name="sbt.TaskKey">TaskKey</span>[<span class="extype" name="scala.Seq">Seq</span>[<a href="../../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a>]]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Bundles the output of a Scala.</p><div class="fullcomment"><div class="comment cmt"><p>Bundles the output of a Scala.js stage using the reload workflow.</p><p>This is equivalent to running fastOptJS::webpack with reloadWorkflow := true.
+This task must be scoped by the Scala.js fastOptJS stage.</p><p>For instance, to bundle the output of <code>fastOptJS</code>, run the following task from the sbt shell:</p><pre>fastOptJS::webpackReload</pre><p>To use a custom webpack configuration file use:</p><pre>webpackConfigFile in webpackReload := <span class="std">Some</span>(baseDirectory.value / <span class="lit">"webpack-reload.config.js"</span>),</pre></div></div>
+    </li><li name="scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.autoImport#webpackResources" visbl="pub" data-isabs="false" fullComment="yes" group="settings">
+      <a id="webpackResources:sbt.SettingKey[sbt.PathFinder]"></a>
+      <a id="webpackResources:SettingKey[PathFinder]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">webpackResources</span><span class="result">: <span class="extype" name="sbt.SettingKey">SettingKey</span>[<span class="extype" name="sbt.PathFinder">PathFinder</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Webpack configuration files to copy to the target directory.</p><div class="fullcomment"><div class="comment cmt"><p>Webpack configuration files to copy to the target directory. These files can be merged into the main
+configuration file.</p><p>By default all .js files in the project base directory are copied:</p><pre>baseDirectory.value * <span class="lit">"*.js"</span></pre><p>How to share these configuration files among your webpack config files is documented in the
+<a href="http://scalacenter.github.io/scalajs-bundler/cookbook.html#shared-config" target="_blank">cookbook</a>.
+</p></div></div>
     </li></ol>
             </div>
 

@@ -97,19 +97,18 @@ their execution so that they can be loaded by jsdom.</p>
 <p>The <code class="hljs">yarn</code> command must be available in the host platform.</p>
 <h3 id="reload-workflow" class="a_section" data-magellan-target="reload-workflow">Reload Workflow<a class="a_hlink" href="#reload-workflow"></a></h3>
 <p>Each time you change something in your application source code and compile the project, Scala.js emits a new .js file
-that can weigh several MBs (in fastOptJS mode) if your application is large. Turning this huge CommonJS module into
+that can weigh several MBs (in <code class="hljs">fastOptJS</code> mode) if your application is large. Turning this huge CommonJS module into
 code executable by web browsers takes time. This can be a problem if you rely on a “live-reloading” workflow
 (like the one of Play framework, for instance), because the reloading time can go up to 30 seconds.</p>
 <p>You can get a faster “change source and reload application” workflow by setting the <code class="hljs">enableReloadWorkflow</code>
-key to <code class="hljs">true</code>.</p>
+key to <code class="hljs">true</code>. An alternative way to invoke reload workflow is using the <code class="hljs">fastOptJs::webpackReload</code> task.</p>
 <p>The reload workflow replaces the <code class="hljs">fastOptJS::webpack</code> task implementation with a different one, that does not use
 webpack to process the output of the Scala.js compilation.  Instead, it pre-bundles the modules imported by your
 application and exposes them to the global namespace. Since these dependencies can then be resolved from the global
 namespace, the output of Scala.js is just concatenated after the contents of the pre-bundling process.</p>
-<blockquote class="note">
-<p>As soon as <code class="hljs">enableReloadWorkflow</code> is true <code class="hljs">fastOptJS::webpack</code> does <strong>not</strong> use webpack and therefore
-the custom webpack configuration file is ignored.</p>
-</blockquote>
+<p>It is possible to configure an alternative webpack configuration file which is used for building the bundle using the
+<code class="hljs">webpackConfigFile in webpackReload</code> setting . The configuration file may not contain <code class="hljs">entry</code> nor <code class="hljs">output</code> configuration
+but can be used to for loaders etc.</p>
 <h3 id="tasks-and-settings" class="a_section" data-magellan-target="tasks-and-settings">Tasks and Settings<a class="a_hlink" href="#tasks-and-settings"></a></h3>
 <p>The tasks and settings that control the plugin are documented in the API documentation
 of the <a href="api/latest/index.html#scalajsbundler.sbtplugin.ScalaJSBundlerPlugin$">ScalaJSBundlerPlugin</a>.</p>
@@ -181,6 +180,13 @@ of the <a href="api/latest/index.html#scalajsbundler.sbtplugin.WebScalaJSBundler
   <li >
     
       <a href="cookbook.html">Cookbook</a>
+    
+    
+  </li>
+  
+  <li >
+    
+      <a href="community.html">Community</a>
     
     
   </li>

@@ -43,7 +43,7 @@
 that changed.</p><p>For this to work, the pre-bundled dependencies are exposed to the global namespace and a fake <code>require</code>
 implementation is also provided so that the output of Scala.js, which is supposed to be executed by
 a CommonJS compatible environment, can be executed by a web browser.
-</p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/scalacenter/scalajs-bundler/blob/v0.5.0/sbt-scalajs-bundler/src/main/scala/scalajsbundler/ReloadWorkflow.scala" target="_blank">ReloadWorkflow.scala</a></dd></dl><div class="toggleContainer block">
+</p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/scalacenter/scalajs-bundler/blob/v0.7.0-SNAPSHOT/sbt-scalajs-bundler/src/main/scala/scalajsbundler/ReloadWorkflow.scala" target="_blank">ReloadWorkflow.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
@@ -168,15 +168,15 @@ a CommonJS compatible environment, can be executed by a web browser.
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
     </li><li name="scalajsbundler.ReloadWorkflow#bundleDependencies" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="bundleDependencies(imports:Seq[String],workingDir:sbt.File,entryPoint:sbt.File,bundleFile:sbt.File,logger:sbt.Logger):Unit"></a>
-      <a id="bundleDependencies(Seq[String],File,File,File,Logger):Unit"></a>
+      <a id="bundleDependencies(imports:Seq[String],workingDir:sbt.File,entryPoint:sbt.File,bundleFile:sbt.File,customWebpackConfigFile:Option[sbt.File],webpackResources:Seq[sbt.File],logger:sbt.Logger):Unit"></a>
+      <a id="bundleDependencies(Seq[String],File,File,File,Option[File],Seq[File],Logger):Unit"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">bundleDependencies</span><span class="params">(<span name="imports">imports: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="workingDir">workingDir: <a href="../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a></span>, <span name="entryPoint">entryPoint: <a href="../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a></span>, <span name="bundleFile">bundleFile: <a href="../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a></span>, <span name="logger">logger: <span class="extype" name="sbt.Logger">Logger</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">bundleDependencies</span><span class="params">(<span name="imports">imports: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="workingDir">workingDir: <a href="../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a></span>, <span name="entryPoint">entryPoint: <a href="../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a></span>, <span name="bundleFile">bundleFile: <a href="../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a></span>, <span name="customWebpackConfigFile">customWebpackConfigFile: <span class="extype" name="scala.Option">Option</span>[<a href="../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a>]</span>, <span name="webpackResources">webpackResources: <span class="extype" name="scala.Seq">Seq</span>[<a href="../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a>]</span>, <span name="logger">logger: <span class="extype" name="sbt.Logger">Logger</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">imports</dt><dd class="cmt"><p>Imported module names</p></dd><dt class="param">workingDir</dt><dd class="cmt"><p>Directory where node_modules are present</p></dd><dt class="param">entryPoint</dt><dd class="cmt"><p>File to write the bundle entry point to</p></dd><dt class="param">bundleFile</dt><dd class="cmt"><p>File to write the bundle to</p></dd><dt class="param">logger</dt><dd class="cmt"><p>Logger

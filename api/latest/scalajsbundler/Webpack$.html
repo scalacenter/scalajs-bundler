@@ -39,7 +39,7 @@
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/scalacenter/scalajs-bundler/blob/v0.5.0/sbt-scalajs-bundler/src/main/scala/scalajsbundler/Webpack.scala" target="_blank">Webpack.scala</a></dd></dl><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/scalacenter/scalajs-bundler/blob/v0.7.0-SNAPSHOT/sbt-scalajs-bundler/src/main/scala/scalajsbundler/Webpack.scala" target="_blank">Webpack.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
@@ -164,15 +164,15 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
     </li><li name="scalajsbundler.Webpack#bundle" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="bundle(generatedWebpackConfigFile:sbt.File,customWebpackConfigFile:Option[sbt.File],entries:Seq[(String,sbt.File)],targetDir:sbt.File,log:sbt.Logger):Seq[sbt.File]"></a>
-      <a id="bundle(File,Option[File],Seq[(String,File)],File,Logger):Seq[File]"></a>
+      <a id="bundle(generatedWebpackConfigFile:sbt.File,customWebpackConfigFile:Option[sbt.File],webpackResources:Seq[sbt.File],entries:Seq[(String,sbt.File)],targetDir:sbt.File,log:sbt.Logger):Seq[sbt.File]"></a>
+      <a id="bundle(File,Option[File],Seq[File],Seq[(String,File)],File,Logger):Seq[File]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">bundle</span><span class="params">(<span name="generatedWebpackConfigFile">generatedWebpackConfigFile: <a href="../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a></span>, <span name="customWebpackConfigFile">customWebpackConfigFile: <span class="extype" name="scala.Option">Option</span>[<a href="../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a>]</span>, <span name="entries">entries: <span class="extype" name="scala.Seq">Seq</span>[(<span class="extype" name="scala.Predef.String">String</span>, <a href="../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a>)]</span>, <span name="targetDir">targetDir: <a href="../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a></span>, <span name="log">log: <span class="extype" name="sbt.Logger">Logger</span></span>)</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<a href="../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a>]</span>
+        <span class="name">bundle</span><span class="params">(<span name="generatedWebpackConfigFile">generatedWebpackConfigFile: <a href="../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a></span>, <span name="customWebpackConfigFile">customWebpackConfigFile: <span class="extype" name="scala.Option">Option</span>[<a href="../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a>]</span>, <span name="webpackResources">webpackResources: <span class="extype" name="scala.Seq">Seq</span>[<a href="../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a>]</span>, <span name="entries">entries: <span class="extype" name="scala.Seq">Seq</span>[(<span class="extype" name="scala.Predef.String">String</span>, <a href="../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a>)]</span>, <span name="targetDir">targetDir: <a href="../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a></span>, <span name="log">log: <span class="extype" name="sbt.Logger">Logger</span></span>)</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<a href="../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Run webpack to bundle the application.</p><div class="fullcomment"><div class="comment cmt"><p>Run webpack to bundle the application.
@@ -210,6 +210,19 @@
     </span>)</span>
               
         </dd></dl></div>
+    </li><li name="scalajsbundler.Webpack#copyToWorkingDir" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="copyToWorkingDir(targetDir:sbt.File)(file:sbt.File):sbt.File"></a>
+      <a id="copyToWorkingDir(File)(File):File"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">copyToWorkingDir</span><span class="params">(<span name="targetDir">targetDir: <a href="../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a></span>)</span><span class="params">(<span name="file">file: <a href="../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a></span>)</span><span class="result">: <a href="../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a></span>
+      </span>
+      </h4>
+      
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>

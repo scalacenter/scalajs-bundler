@@ -46,11 +46,13 @@
 <li><a href="cookbook.html#cookbook">Cookbook</a>
 <ul>
 <li><a href="cookbook.html#custom-config">How to use a custom webpack configuration file?</a></li>
+<li><a href="cookbook.html#shared-config">Sharing webpack configuration among configuration files</a></li>
 <li><a href="cookbook.html#facade">How to use npm modules from Scala code?</a></li>
 <li><a href="cookbook.html#publish">How to publish a facade for an npm module?</a></li>
 <li><a href="cookbook.html#global-namespace">How to use an existing facade assuming the JS library to be exposed to the global namespace?</a></li>
 <li><a href="cookbook.html#several-entry-points">How to bundle an application having several entry points?</a></li>
 <li><a href="cookbook.html#performance">How to improve the performance of the bundling process?</a></li>
+<li><a href="cookbook.html#webpack-dev-server">How to rebuild and reload your page on code changes?</a></li>
 </ul>
 </li>
 </ul>
@@ -96,6 +98,59 @@ includeFilter in webpackMonitoredFiles := <span class="hljs-string">"*.scss"</sp
 <code class="hljs">webpackMonitoredFiles</code> task.</p>
 <p>You can find a working example of custom configuration file
 <a href="https://github.com/scalacenter/scalajs-bundler/blob/master/sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler/static/prod.webpack.config.js">here</a>.</p>
+<p>It is also possible to configure a webpack config file to be used in reload workflow and when running the tests.
+This configuration may not contain <code class="hljs">entry</code> and <code class="hljs">output</code> configuration but can be used to configure loaders etc.</p>
+<p>These configuration files are configured using <code class="hljs">webpackConfigFile in reloadTask</code> or <code class="hljs">webpackConfigFile in Test</code>.
+For example:</p>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala">webpackConfigFile in webpackReload := <span class="hljs-type">Some</span>(baseDirectory.value / <span class="hljs-string">"common.webpack.config.js"</span>)
+
+webpackConfigFile in <span class="hljs-type">Test</span> := <span class="hljs-type">Some</span>(baseDirectory.value / <span class="hljs-string">"common.webpack.config.js"</span>)
+</code></pre>
+</div></div>
+<h2 id="shared-config" class="a_section" data-magellan-target="shared-config">Sharing webpack configuration among configuration files<a class="a_hlink" href="#shared-config"></a></h2>
+<p>In addition to the configured webpack config file, all .js files in the project base directory
+(as configured using the <code class="hljs">webpackResources</code> setting) are copied to the target directory so they can be imported
+from the various configuration files.</p>
+<p>Here are the steps to share the loader configuration among your prod and dev config files. This
+uses webpack-merge for convenience. The same result could be accomplished using plain js only.</p>
+<ol>
+<li>Put configuration in a common.webpack.config.js file:</li>
+</ol>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-javascript"><span class="hljs-built_in">module</span>.exports = {
+  <span class="hljs-built_in">module</span>: {
+    loaders: [
+        ...
+    ],
+    rules: [
+        ...
+    ]
+  }
+}
+</code></pre>
+</div></div>
+<ol start="2">
+<li>Add webpack-merge to your <code class="hljs">npmDevDependencies</code>:</li>
+</ol>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-bash">npmDevDependencies <span class="hljs-keyword">in</span> Compile += <span class="hljs-string">"webpack-merge"</span> -&gt; <span class="hljs-string">"4.1.0"</span>
+</code></pre>
+</div></div>
+<ol start="3">
+<li>Merge in the common configuration in your dev.webpack.js file:</li>
+</ol>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-javascript"><span class="hljs-keyword">var</span> merge = <span class="hljs-built_in">require</span>(<span class="hljs-string">"webpack-merge"</span>)
+<span class="hljs-keyword">var</span> commonConfig = <span class="hljs-built_in">require</span>(<span class="hljs-string">"./common.webpack.config.js"</span>)
+
+<span class="hljs-built_in">module</span>.exports = merge(commonConfig, {
+    ...
+})
+</code></pre>
+</div></div>
+<p>You can find a working example of a project using a shared configuration file
+<a href="https://github.com/scalacenter/scalajs-bundler/blob/master/sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler/sharedconfig">here</a>.</p>
 <h2 id="facade" class="a_section" data-magellan-target="facade">How to use npm modules from Scala code?<a class="a_hlink" href="#facade"></a></h2>
 <p>Once you have <a href="getting-started.html">added npm dependencies</a> to the packages you are interested
 in, you have to <em>import</em> them from your code to effectively use them.</p>
@@ -123,7 +178,7 @@ npm module:</p>
 <p>The corresponding Scala.js facade looks like the following:</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
 <pre class="hljs"><code class="language-scala"><span class="hljs-keyword">import</span> scala.scalajs.js
-<span class="hljs-keyword">import</span> <span class="hljs-keyword">import</span> scala.scalajs.js.annotation.<span class="hljs-type">JSImport</span>
+<span class="hljs-keyword">import</span> scala.scalajs.js.annotation.<span class="hljs-type">JSImport</span>
 
 <span class="hljs-meta">@JSImport</span>(<span class="hljs-string">"foo"</span>, <span class="hljs-type">JSImport</span>.<span class="hljs-type">Namespace</span>)
 <span class="hljs-meta">@js</span>.native
@@ -269,6 +324,40 @@ console.log(sjs.example.<span class="hljs-type">Library</span>().bar());</code><
 emitSourceMaps := <span class="hljs-literal">false</span>
 </code></pre>
 </div></div>
+<h2 id="webpack-dev-server" class="a_section" data-magellan-target="webpack-dev-server">How to rebuild and reload your page on code changes?<a class="a_hlink" href="#webpack-dev-server"></a></h2>
+<p><code class="hljs">scalajs-bundler</code> includes a simple wrapper over webpack-dev-server to simplify your
+workflow. It is exposed as two stage-level tasks (<code class="hljs">startWebpackDevServer</code> and
+<code class="hljs">stopWebpackDevServer</code>).
+The standard work session looks like this:</p>
+<ol>
+<li>Spawn background server process:
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-markdown"><span class="hljs-quote">&gt; fastOptJS::startWebpackDevServer</span>
+</code></pre>
+</div></div>
+By default the server is started on port <code class="hljs">8080</code>. Use <code class="hljs">webpackDevServerPort</code> setting to change this.</li>
+<li>Instruct SBT to rebuild on source changes:
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-markdown"><span class="hljs-quote">&gt; ~fastOptJS</span>
+</code></pre>
+</div></div>
+</li>
+<li>Now each time you change a source file, scala-js recompiles it, and webpack-dev-server
+switches to the updated version.</li>
+<li>Shut down the background process:
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-markdown"><span class="hljs-quote">&gt; fastOptJS::stopWebpackDevServer</span>
+</code></pre>
+</div></div>
+</li>
+</ol>
+<p>Additional arguments can be passed to webpack-dev-server via <code class="hljs">webpackDevServerExtraArgs</code>
+setting. For example, you can add the following to your <code class="hljs">build.sbt</code> to make your page
+reload on every change:</p>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala">webpackDevServerExtraArgs := <span class="hljs-type">Seq</span>(<span class="hljs-string">"--inline"</span>)
+</code></pre>
+</div></div>
 
               </main>
               
@@ -315,6 +404,13 @@ emitSourceMaps := <span class="hljs-literal">false</span>
   
   <li >
     
+      <a href="community.html">Community</a>
+    
+    
+  </li>
+  
+  <li >
+    
       <a href="changelog.html">Changelog</a>
     
     
@@ -341,6 +437,13 @@ emitSourceMaps := <span class="hljs-literal">false</span>
   <li>
     
        <a href="#custom-config">How to use a custom webpack configuration file?</a> 
+    
+    
+  </li>
+  
+  <li>
+    
+       <a href="#shared-config">Sharing webpack configuration among configuration files</a> 
     
     
   </li>
@@ -376,6 +479,13 @@ emitSourceMaps := <span class="hljs-literal">false</span>
   <li>
     
        <a href="#performance">How to improve the performance of the bundling process?</a> 
+    
+    
+  </li>
+  
+  <li>
+    
+       <a href="#webpack-dev-server">How to rebuild and reload your page on code changes?</a> 
     
     
   </li>

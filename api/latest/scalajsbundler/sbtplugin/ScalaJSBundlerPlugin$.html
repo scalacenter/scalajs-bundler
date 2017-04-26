@@ -42,12 +42,12 @@
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>This plugin enables <code>ScalaJSPlugin</code> and sets the <code>scalaJSModuleKind</code> to <code>CommonJSModule</code>. It also makes it
 possible to define dependencies to NPM packages and provides tasks to fetch them or to bundle the application
 with its dependencies.</p><h3> Tasks and Settings </h3><p>The <a href="ScalaJSBundlerPlugin$$autoImport$.html" class="extype" name="scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.autoImport">autoImport</a> member documents the keys provided by this plugin. Besides these keys, the
-following existing keys also control the plugin:</p><h4> <code>version in webpack</code> </h4><p>Version of webpack to use. Example:</p><pre>version in webpack := <span class="lit">"2.1.0-beta.25"</span></pre><h4> <code>crossTarget in npmUpdate</code> </h4><p>The directory in which NPM dependencies will be fetched, and where all the .js files
+following existing keys also control the plugin:</p><h4> <code>version in webpack</code> </h4><p>Version of webpack to use. Example:</p><pre>version in webpack := <span class="lit">"2.1.0-beta.25"</span></pre><h4> <code>version in installJsdom</code> </h4><p>Version of jsdom to use.</p><h4> <code>version in installWebpackDevServer</code> </h4><p>Version of webpack-dev-server to use.</p><h4> <code>crossTarget in npmUpdate</code> </h4><p>The directory in which NPM dependencies will be fetched, and where all the .js files
 will be generated. The directory is different according to the current <code>Configuration</code>
 (either <code>Compile</code> or <code>Test</code>).</p><p>Defaults to <code>crossTarget.value / &quot;scalajs-bundler&quot; / &quot;main&quot;</code> for <code>Compile</code> and
 <code>crossTarget.value / &quot;scalajs-bundler&quot; / &quot;test&quot;</code> for <code>Test</code>.</p><h4> <code>scalaJSLauncher</code> </h4><p>The launcher for Scala.js’ stage output (e.g. <code>scalaJSLauncher in fastOptJS</code>).
 The launcher runs the “main” of the application.
-</p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/scalacenter/scalajs-bundler/blob/v0.5.0/sbt-scalajs-bundler/src/main/scala/scalajsbundler/sbtplugin/ScalaJSBundlerPlugin.scala" target="_blank">ScalaJSBundlerPlugin.scala</a></dd></dl><div class="toggleContainer block">
+</p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/scalacenter/scalajs-bundler/blob/v0.7.0-SNAPSHOT/sbt-scalajs-bundler/src/main/scala/scalajsbundler/sbtplugin/ScalaJSBundlerPlugin.scala" target="_blank">ScalaJSBundlerPlugin.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="sbt.AutoPlugin">AutoPlugin</span>, <span class="extype" name="sbt.PluginsFunctions">PluginsFunctions</span>, <span class="extype" name="sbt.Plugins.Basic">Basic</span>, <span class="extype" name="sbt.Plugins">Plugins</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
@@ -339,21 +339,6 @@ The launcher runs the “main” of the application.
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="scalajsbundler.sbtplugin.ScalaJSBundlerPlugin#installJsdom" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="installJsdom:sbt.Def.Initialize[sbt.Task[sbt.File]]"></a>
-      <a id="installJsdom:sbt.Def.Initialize[Task[File]]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">lazy val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">installJsdom</span><span class="result">: <span class="extype" name="sbt.Init.Initialize">sbt.Def.Initialize</span>[<span class="extype" name="sbt.Task">Task</span>[<a href="../../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a>]]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Locally installs jsdom.</p><div class="fullcomment"><div class="comment cmt"><p>Locally installs jsdom.
-</p></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>Installation directory
-</p></dd></dl></div>
     </li><li name="scala.Any#isInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isInstanceOf[T0]:Boolean"></a>
       <a id="isInstanceOf[T0]:Boolean"></a>
