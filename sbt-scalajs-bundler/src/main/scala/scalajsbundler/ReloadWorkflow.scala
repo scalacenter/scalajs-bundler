@@ -8,7 +8,6 @@ import org.scalajs.sbtplugin.Loggers
 import org.scalajs.sbtplugin.ScalaJSPlugin.AutoImport._
 import sbt._
 
-import scalajsbundler.Webpack.copyToWorkingDir
 import scalajsbundler.util.{Commands, JS}
 
 /**
@@ -144,8 +143,7 @@ object ReloadWorkflow {
 
     customWebpackConfigFile match {
       case Some(configFile) =>
-        val customConfigFileCopy = copyToWorkingDir(workingDir)(configFile)
-        webpackResources.foreach(copyToWorkingDir(workingDir))
+        val customConfigFileCopy = Webpack.copyCustomWebpackConfigFiles(workingDir, webpackResources)(configFile)
 
         Webpack.run("--config", customConfigFileCopy.getAbsolutePath, entryPoint.absolutePath, bundleFile.absolutePath)(workingDir, logger)
       case None =>
