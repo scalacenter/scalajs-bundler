@@ -6,10 +6,23 @@ import scalajsbundler.util.{Commands, JS}
 
 object Webpack {
 
-  def copyToWorkingDir(targetDir: File)(file: File): File = {
-    val copy = targetDir / file.name
-    IO.copyFile(file, copy)
-    copy
+  /**
+    * Copies the custom webpack configuration file and the webpackResources to the target dir
+    *
+    * @param targetDir target directory
+    * @param webpackResources Resources to copy
+    * @param customConfigFile User supplied config file
+    * @return The copied config file.
+    */
+  def copyCustomWebpackConfigFiles(targetDir: File, webpackResources: Seq[File])(customConfigFile: File): File = {
+    def copyToWorkingDir(targetDir: File)(file: File): File = {
+      val copy = targetDir / file.name
+      IO.copyFile(file, copy)
+      copy
+    }
+
+    webpackResources.foreach(copyToWorkingDir(targetDir))
+    copyToWorkingDir(targetDir)(customConfigFile)
   }
 
   /**
@@ -96,8 +109,9 @@ object Webpack {
     log: Logger
   ): Seq[File] = {
 
-    webpackResources.foreach(copyToWorkingDir(targetDir))
-    val configFile = customWebpackConfigFile.map(copyToWorkingDir(targetDir)).getOrElse(generatedWebpackConfigFile)
+    val configFile = customWebpackConfigFile
+      .map(Webpack.copyCustomWebpackConfigFiles(targetDir, webpackResources))
+      .getOrElse(generatedWebpackConfigFile)
 
     log.info("Bundling the application with its NPM dependencies")
     Webpack.run("--config", configFile.absolutePath)(targetDir, log)

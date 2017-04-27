@@ -13,7 +13,6 @@ import sbt.Keys._
 import sbt._
 
 import scalajsbundler.ExternalCommand.install
-import scalajsbundler.Webpack.copyToWorkingDir
 import scalajsbundler._
 
 /**
@@ -611,10 +610,6 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
                 val bundle = targetDir / s"$sjsOutputName-bundle.js"
 
                 val customWebpackConfigFile = (webpackConfigFile in Test).value
-                val webpackResourceFiles = webpackResources.value.get
-
-                webpackResourceFiles.foreach(copyToWorkingDir(targetDir))
-                val customConfigFile = customWebpackConfigFile.map(copyToWorkingDir(targetDir))
 
                 val writeTestBundleFunction =
                   FileFunction.cached(
@@ -625,9 +620,10 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
                     val loader = targetDir / s"$sjsOutputName-loader.js"
                     JsDomTestEntries.writeLoader(sjsOutput, loader)
 
-                    customConfigFile match {
+                    customWebpackConfigFile match {
                       case Some(configFile) =>
-                        Webpack.run("--config", configFile.getAbsolutePath, loader.absolutePath, bundle.absolutePath)(targetDir, logger)
+                        val customConfigFileCopy = Webpack.copyCustomWebpackConfigFiles(targetDir, webpackResources.value.get)(configFile)
+                        Webpack.run("--config", customConfigFileCopy.getAbsolutePath, loader.absolutePath, bundle.absolutePath)(targetDir, logger)
                       case None =>
                         Webpack.run(loader.absolutePath, bundle.absolutePath)(targetDir, logger)
                     }
@@ -747,8 +743,9 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
         val customConfigOption = (webpackConfigFile in stageTask).value
         val generatedConfig = (scalaJSBundlerWebpackConfig in stageTask).value
 
-        webpackResources.value.get.foreach(copyToWorkingDir(targetDir))
-        val config = customConfigOption.map(copyToWorkingDir(targetDir)).getOrElse(generatedConfig)
+        val config = customConfigOption
+          .map(Webpack.copyCustomWebpackConfigFiles(targetDir, webpackResources.value.get))
+          .getOrElse(generatedConfig)
 
         // To match `webpack` task behavior
         val workDir = targetDir
