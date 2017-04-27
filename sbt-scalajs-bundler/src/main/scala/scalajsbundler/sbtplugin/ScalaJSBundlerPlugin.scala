@@ -131,6 +131,31 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       settingKey[Map[String, String]]("NPM dependencies resolutions in case of conflict")
 
     /**
+      * List of the additional package options to include in the generated 'package.json'.
+      *
+      * {{{
+      *   import scalajsbundler.util.JS._
+      *   npmConfig in Compile := Map(
+      *     "name"        -> str(name.value),
+      *     "version"     -> str(version.value),
+      *     "description" -> str("Awesome ScalaJS project..."),
+      *     "other"       -> obj(
+      *       "value0" -> bool(true),
+      *       "value1" -> obj(
+      *         "foo" -> str("bar")
+      *       )
+      *     )
+      *   )
+      * }}}
+      *
+      * Note that this key must be scoped by a `Configuration` (either `Compile` or `Test`).
+      *
+      * @group settings
+      */
+    val npmConfig: SettingKey[Map[String, util.JS]] =
+      settingKey[Map[String, util.JS]]("Additional option to include in the generated 'package.json'")
+
+    /**
       * Bundles the output of a Scala.js stage.
       *
       * This task must be scoped by a Scala.js stage (either `fastOptJS` or `fullOptJS`) and
@@ -156,7 +181,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       * }}}
       *
       * The task returns the produced bundles.
-      * 
+      *
       * The task is cached, so webpack is only launched when some of the
       * used files have changed. The list of files to be monitored is
       * provided by webpackMonitoredFiles
@@ -517,6 +542,8 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
 
       npmResolutions := Map.empty,
 
+      npmConfig := Map.empty,
+
       webpack in fullOptJS := webpackTask(fullOptJS).value,
 
       webpack in fastOptJS := Def.taskDyn {
@@ -562,6 +589,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
           npmDependencies.value,
           npmDevDependencies.value,
           npmResolutions.value,
+          npmConfig.value,
           fullClasspath.value,
           configuration.value,
           (version in webpack).value,
