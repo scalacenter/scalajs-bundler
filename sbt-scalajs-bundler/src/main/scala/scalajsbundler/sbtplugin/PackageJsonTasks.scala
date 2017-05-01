@@ -3,7 +3,7 @@ package scalajsbundler.sbtplugin
 import sbt._
 
 import scalajsbundler.PackageJson
-import scalajsbundler.util.{Caching, JS}
+import scalajsbundler.util.{Caching, JSON}
 
 object PackageJsonTasks {
 
@@ -13,7 +13,7 @@ object PackageJsonTasks {
     * @param npmDependencies NPM dependencies
     * @param npmDevDependencies NPM devDependencies
     * @param npmResolutions Resolutions to use in case of conflicts
-    * @param npmConfig Additional options to include in 'package.json'
+    * @param additionalNpmConfig Additional options to include in 'package.json'
     * @param fullClasspath Classpath
     * @param configuration Current configuration (Compile or Test)
     * @param webpackVersion Webpack version
@@ -24,7 +24,7 @@ object PackageJsonTasks {
     npmDependencies: Seq[(String, String)],
     npmDevDependencies: Seq[(String, String)],
     npmResolutions: Map[String, String],
-    npmConfig: Map[String, JS],
+    additionalNpmConfig: Map[String, JSON],
     fullClasspath: Seq[Attributed[File]],
     configuration: Configuration,
     webpackVersion: String,
@@ -53,7 +53,7 @@ object PackageJsonTasks {
         npmDependencies,
         npmDevDependencies,
         npmResolutions,
-        npmConfig,
+        additionalNpmConfig,
         fullClasspath,
         configuration,
         webpackVersion

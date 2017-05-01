@@ -134,8 +134,8 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       * List of the additional package options to include in the generated 'package.json'.
       *
       * {{{
-      *   import scalajsbundler.util.JS._
-      *   npmConfig in Compile := Map(
+      *   import scalajsbundler.util.JSON._
+      *   additionalNpmConfig in Compile := Map(
       *     "name"        -> str(name.value),
       *     "version"     -> str(version.value),
       *     "description" -> str("Awesome ScalaJS project..."),
@@ -152,8 +152,8 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       *
       * @group settings
       */
-    val npmConfig: SettingKey[Map[String, util.JS]] =
-      settingKey[Map[String, util.JS]]("Additional option to include in the generated 'package.json'")
+    val additionalNpmConfig: SettingKey[Map[String, util.JSON]] =
+      settingKey[Map[String, util.JSON]]("Additional option to include in the generated 'package.json'")
 
     /**
       * Bundles the output of a Scala.js stage.
@@ -542,7 +542,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
 
       npmResolutions := Map.empty,
 
-      npmConfig := Map.empty,
+      additionalNpmConfig := Map.empty,
 
       webpack in fullOptJS := webpackTask(fullOptJS).value,
 
@@ -589,7 +589,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
           npmDependencies.value,
           npmDevDependencies.value,
           npmResolutions.value,
-          npmConfig.value,
+          additionalNpmConfig.value,
           fullClasspath.value,
           configuration.value,
           (version in webpack).value,

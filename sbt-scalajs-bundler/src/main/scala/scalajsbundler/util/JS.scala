@@ -6,25 +6,39 @@ import org.scalajs.core.ir.Position
 import org.scalajs.core.tools.javascript.Printers
 import org.scalajs.core.tools.javascript.Trees._
 
+private[util] sealed abstract class JSLike(val tree: Tree) {
+  def show: String = tree.show
+  def show(isStat: Boolean = true): String = JSLike.show(tree, isStat)
+  def toJson: String = JSLike.show(tree, isStat = false)
+}
+
+object JSLike {
+  def show(tree: Tree, isStat: Boolean = true): String = {
+    val writer = new java.io.StringWriter
+    val printer = new Printers.JSTreePrinter(writer)
+    printer.printTree(tree, isStat)
+    writer.toString
+  }
+}
+
 /** A convenient wrapper around JS trees */
-final case class JS(tree: Tree) extends AnyVal {
+final class JS(tree: Tree) extends JSLike(tree) {
   import JS.position
   def dot(ident: String): JS = JS(DotSelect(tree, Ident(ident)))
   def bracket(ident: String): JS = JS(BracketSelect(tree, StringLiteral(ident)))
   def bracket(ident: JS): JS = JS(BracketSelect(tree, ident.tree))
   def assign(rhs: JS): JS = JS(Assign(tree, rhs.tree))
   def apply(args: JS*): JS = JS(Apply(tree, args.map(_.tree).to[List]))
-
-  def show: String = tree.show
 }
 
 object JS {
 
   implicit lazy val position: Position = Position.NoPosition
 
-  /** String literal */
-  def str(value: String): JS =
-    JS(StringLiteral(value))
+  def apply(tree: Tree): JS = new JS(tree)
+
+  /** Array literal. */
+  def arr(elems: JS*): JS = JS(ArrayConstr(elems.map(_.tree).to[List]))
 
   /** Boolean literal */
   def bool(value: Boolean): JS = JS(BooleanLiteral(value))
@@ -33,12 +47,12 @@ object JS {
   def obj(fields: (String, JS)*): JS =
     JS(ObjectConstr(fields.map { case (ident, value) => (StringLiteral(ident), value.tree) }.to[List]))
 
+  /** Object literal */
   def objStr(fields: Seq[(String, String)]): JS =
     obj(fields.map { case (k, v) => k -> JS.str(v) }: _*)
 
-  /** Array literal */
-  def arr(elems: JS*): JS =
-    JS(ArrayConstr(elems.map(_.tree).to[List]))
+  /** String literal */
+  def str(value: String): JS = JS(StringLiteral(value))
 
   /** Variable reference */
   def ref(ident: String): JS =
@@ -79,17 +93,35 @@ object JS {
 
   def `new`(ctor: JS, args: JS*): JS = JS(New(ctor.tree, args.map(_.tree).to[List]))
 
-  def toJson(obj: JS): String = show(obj.tree, isStat = false)
-
-  def show(tree: Tree, isStat: Boolean = true): String = {
-    val writer = new java.io.StringWriter
-    val printer = new Printers.JSTreePrinter(writer)
-    printer.printTree(tree, isStat)
-    writer.toString
-  }
-
   private val identifierSeq = new AtomicInteger(0)
   private def freshIdentifier(): String =
     s"x${identifierSeq.getAndIncrement()}"
+
+}
+
+final class JSON(tree: Tree) extends JSLike(tree)
+
+object JSON {
+
+  implicit lazy val position: Position = Position.NoPosition
+
+  def apply(tree: Tree): JSON = new JSON(tree)
+
+  /** Array literal. */
+  def arr(elems: JSON*): JSON = JSON(ArrayConstr(elems.map(_.tree).to[List]))
+
+  /** Boolean literal */
+  def bool(value: Boolean): JSON = JSON(BooleanLiteral(value))
+
+  /** Object literal */
+  def obj(fields: (String, JSON)*): JSON =
+    JSON(ObjectConstr(fields.map { case (ident, value) => (StringLiteral(ident), value.tree) }.to[List]))
+
+  /** Object literal */
+  def objStr(fields: Seq[(String, String)]): JSON =
+    obj(fields.map { case (k, v) => k -> JSON.str(v) }: _*)
+
+  /** String literal */
+  def str(value: String): JSON = JSON(StringLiteral(value))
 
 }
