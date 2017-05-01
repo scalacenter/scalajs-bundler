@@ -22,7 +22,7 @@ object JSLike {
 }
 
 /** A convenient wrapper around JS trees */
-final class JS(tree: Tree) extends JSLike(tree) {
+final class JS private(tree: Tree) extends JSLike(tree) {
   import JS.position
   def dot(ident: String): JS = JS(DotSelect(tree, Ident(ident)))
   def bracket(ident: String): JS = JS(BracketSelect(tree, StringLiteral(ident)))
@@ -99,7 +99,7 @@ object JS {
 
 }
 
-final class JSON(tree: Tree) extends JSLike(tree)
+final class JSON private(tree: Tree) extends JSLike(tree)
 
 object JSON {
 

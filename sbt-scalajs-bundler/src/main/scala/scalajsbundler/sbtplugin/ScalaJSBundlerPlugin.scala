@@ -131,7 +131,9 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       settingKey[Map[String, String]]("NPM dependencies resolutions in case of conflict")
 
     /**
-      * List of the additional package options to include in the generated 'package.json'.
+      * List of the additional configuration options to include in the generated 'package.json'.
+      * Note that package dependencies are automatically generated from `npmDependencies` and
+      * `npmDevDependencies` and should '''not''' be specified in this setting.
       *
       * {{{
       *   import scalajsbundler.util.JSON._
