@@ -26,9 +26,9 @@ final class JS private(tree: Tree) extends JSLike(tree) {
   import JS.position
   def dot(ident: String): JS = JS(DotSelect(tree, Ident(ident)))
   def bracket(ident: String): JS = JS(BracketSelect(tree, StringLiteral(ident)))
-  def bracket(ident: JS): JS = JS(BracketSelect(tree, ident.tree))
-  def assign(rhs: JS): JS = JS(Assign(tree, rhs.tree))
-  def apply(args: JS*): JS = JS(Apply(tree, args.map(_.tree).to[List]))
+  def bracket(ident: JSLike): JS = JS(BracketSelect(tree, ident.tree))
+  def assign(rhs: JSLike): JS = JS(Assign(tree, rhs.tree))
+  def apply(args: JSLike*): JS = JS(Apply(tree, args.map(_.tree).to[List]))
 }
 
 object JS {
@@ -38,13 +38,13 @@ object JS {
   def apply(tree: Tree): JS = new JS(tree)
 
   /** Array literal. */
-  def arr(elems: JS*): JS = JS(ArrayConstr(elems.map(_.tree).to[List]))
+  def arr(elems: JSLike*): JS = JS(ArrayConstr(elems.map(_.tree).to[List]))
 
   /** Boolean literal */
   def bool(value: Boolean): JS = JS(BooleanLiteral(value))
 
   /** Object literal */
-  def obj(fields: (String, JS)*): JS =
+  def obj(fields: (String, JSLike)*): JS =
     JS(ObjectConstr(fields.map { case (ident, value) => (StringLiteral(ident), value.tree) }.to[List]))
 
   /** Object literal */
@@ -64,10 +64,10 @@ object JS {
     JS(New(varRef("RegExp"), List(StringLiteral(value))))
 
   /** Block of several statements */
-  def block(stats: JS*): JS = JS(Block(stats.map(_.tree).to[List]))
+  def block(stats: JSLike*): JS = JS(Block(stats.map(_.tree).to[List]))
 
   /** Anonymous function definition */
-  def fun(body: JS => JS): JS = {
+  def fun(body: JSLike => JSLike): JS = {
     val param = freshIdentifier()
     JS(Function(List(ParamDef(Ident(param), rest = false)), Return(body(ref(param)).tree)))
   }
@@ -91,7 +91,7 @@ object JS {
     )
   }
 
-  def `new`(ctor: JS, args: JS*): JS = JS(New(ctor.tree, args.map(_.tree).to[List]))
+  def `new`(ctor: JSLike, args: JSLike*): JS = JS(New(ctor.tree, args.map(_.tree).to[List]))
 
   private val identifierSeq = new AtomicInteger(0)
   private def freshIdentifier(): String =
