@@ -10,7 +10,7 @@ lazy val npmConfig =
       npmDependencies in Compile += "react" -> "15.5.4",
       additionalNpmConfig in Compile := Map(
         "name" -> str("foo"),
-        "version" -> str("1.0"),
+        "version" -> str("1.0.0"),
         "zoo" -> obj(
           "bees" -> bool(true),
           "cows" -> bool(false),
