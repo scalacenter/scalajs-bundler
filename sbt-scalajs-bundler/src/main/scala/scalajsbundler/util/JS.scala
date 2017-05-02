@@ -64,10 +64,10 @@ object JS {
     JS(New(varRef("RegExp"), List(StringLiteral(value))))
 
   /** Block of several statements */
-  def block(stats: JSLike*): JS = JS(Block(stats.map(_.tree).to[List]))
+  def block(stats: JS*): JS = JS(Block(stats.map(_.tree).to[List]))
 
   /** Anonymous function definition */
-  def fun(body: JSLike => JSLike): JS = {
+  def fun(body: JS => JSLike): JS = {
     val param = freshIdentifier()
     JS(Function(List(ParamDef(Ident(param), rest = false)), Return(body(ref(param)).tree)))
   }
@@ -91,7 +91,7 @@ object JS {
     )
   }
 
-  def `new`(ctor: JSLike, args: JSLike*): JS = JS(New(ctor.tree, args.map(_.tree).to[List]))
+  def `new`(ctor: JS, args: JSLike*): JS = JS(New(ctor.tree, args.map(_.tree).to[List]))
 
   private val identifierSeq = new AtomicInteger(0)
   private def freshIdentifier(): String =
