@@ -25,7 +25,7 @@ lazy val npmConfig =
         findPackageJsonLine(jsonLines, "react" -> "15.5.4")
 
         findPackageJsonLine(jsonLines, "name" -> "foo")
-        findPackageJsonLine(jsonLines, "version" -> "1.0")
+        findPackageJsonLine(jsonLines, "version" -> "1.0.0")
         findPackageJsonLine(jsonLines, "bees" -> "true")
         findPackageJsonLine(jsonLines, "cows" -> "false")
         findPackageJsonLine(jsonLines, "sharks" -> "true")
