@@ -2,7 +2,7 @@ package scalajsbundler
 
 import sbt._
 
-import scalajsbundler.util.JS
+import scalajsbundler.util.JSON
 
 object PackageJson {
 
@@ -15,6 +15,7 @@ object PackageJson {
     * @param npmDependencies NPM dependencies
     * @param npmDevDependencies NPM devDependencies
     * @param npmResolutions Resolutions to use in case of conflicting dependencies
+    * @param additionalNpmConfig Additional options to include in 'package.json'
     * @param fullClasspath Classpath (used to look for dependencies of Scala.js libraries this project depends on)
     * @param currentConfiguration Current configuration
     * @return The created package.json file
@@ -25,6 +26,7 @@ object PackageJson {
     npmDependencies: Seq[(String, String)],
     npmDevDependencies: Seq[(String, String)],
     npmResolutions: Map[String, String],
+    additionalNpmConfig: Map[String, JSON],
     fullClasspath: Seq[Attributed[File]],
     currentConfiguration: Configuration,
     webpackVersion: String
@@ -46,12 +48,16 @@ object PackageJson {
       )
 
     val packageJson =
-      JS.obj(
-        "dependencies" -> JS.objStr(resolveDependencies(dependencies, npmResolutions, log)),
-        "devDependencies" -> JS.objStr(resolveDependencies(devDependencies, npmResolutions, log))
+      JSON.obj(
+        (
+          additionalNpmConfig.toSeq :+
+          "dependencies" -> JSON.objStr(resolveDependencies(dependencies, npmResolutions, log)) :+
+          "devDependencies" -> JSON.objStr(resolveDependencies(devDependencies, npmResolutions, log))
+        ): _*
       )
+
     log.debug("Writing 'package.json'")
-    IO.write(targetFile, JS.toJson(packageJson))
+    IO.write(targetFile, packageJson.toJson)
     ()
   }
 

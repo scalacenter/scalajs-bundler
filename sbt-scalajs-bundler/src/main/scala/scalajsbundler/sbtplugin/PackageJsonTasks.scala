@@ -3,7 +3,7 @@ package scalajsbundler.sbtplugin
 import sbt._
 
 import scalajsbundler.PackageJson
-import scalajsbundler.util.Caching
+import scalajsbundler.util.{Caching, JSON}
 
 object PackageJsonTasks {
 
@@ -13,6 +13,7 @@ object PackageJsonTasks {
     * @param npmDependencies NPM dependencies
     * @param npmDevDependencies NPM devDependencies
     * @param npmResolutions Resolutions to use in case of conflicts
+    * @param additionalNpmConfig Additional options to include in 'package.json'
     * @param fullClasspath Classpath
     * @param configuration Current configuration (Compile or Test)
     * @param webpackVersion Webpack version
@@ -23,12 +24,13 @@ object PackageJsonTasks {
     npmDependencies: Seq[(String, String)],
     npmDevDependencies: Seq[(String, String)],
     npmResolutions: Map[String, String],
+    additionalNpmConfig: Map[String, JSON],
     fullClasspath: Seq[Attributed[File]],
     configuration: Configuration,
     webpackVersion: String,
     streams: Keys.TaskStreams
   ): File = {
- 
+
     val hash = Seq(
       configuration.name,
       npmDependencies.toString,
@@ -51,6 +53,7 @@ object PackageJsonTasks {
         npmDependencies,
         npmDevDependencies,
         npmResolutions,
+        additionalNpmConfig,
         fullClasspath,
         configuration,
         webpackVersion
