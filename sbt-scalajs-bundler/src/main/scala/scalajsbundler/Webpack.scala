@@ -45,7 +45,7 @@ object Webpack {
     val webpackConfigContent =
       JS.ref("module").dot("exports").assign(JS.obj(Seq(
         "entry" -> JS.obj(webpackEntries.map { case (key, file) =>
-          key -> JS.str(file.absolutePath) }: _*
+          key -> JS.arr(JS.str(file.absolutePath)) }: _*
         ),
         "output" -> JS.obj(
           "path" -> JS.str(targetDir.absolutePath),
