@@ -176,6 +176,7 @@ object ReloadWorkflow {
       linker.linkUnit(irFiles, symbolRequirements, Loggers.sbtLogger2ToolsLogger(logger))
     linkingUnit.classDefs.flatMap(_.jsNativeLoadSpec).collect {
       case JSNativeLoadSpec.Import(module, _) => module
+      case JSNativeLoadSpec.ImportWithGlobalFallback(JSNativeLoadSpec.Import(module, _), _) => module
     }.distinct
   }
 
