@@ -8,6 +8,8 @@ libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "0.9.1"
 
 npmDependencies in Compile += "snabbdom" -> "0.5.3"
 
+npmDevDependencies in Compile += "uglifyjs-webpack-plugin" -> "0.4.3"
+
 // Use a different Webpack configuration file for production
 webpackConfigFile in fullOptJS := Some(baseDirectory.value / "prod.webpack.config.js")
 
