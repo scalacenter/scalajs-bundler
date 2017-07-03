@@ -4,6 +4,7 @@ import org.scalajs.core.tools.io.{FileVirtualJSFile, VirtualJSFile}
 import org.scalajs.core.tools.jsdep.ResolvedJSDependency
 import org.scalajs.core.tools.linker.backend.ModuleKind
 import org.scalajs.jsenv.ComJSEnv
+import org.scalajs.jsenv.nodejs.NodeJSEnv
 import org.scalajs.sbtplugin.Loggers.sbtLogger2ToolsLogger
 import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
 import org.scalajs.sbtplugin.ScalaJSPluginInternal.{scalaJSEnsureUnforked, scalaJSModuleIdentifier, scalaJSRequestsDOM}
@@ -460,6 +461,9 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
 
     scalaJSModuleKind := ModuleKind.CommonJSModule,
 
+    // Ask Scala.js to run the main module on script load
+    scalaJSUseMainModuleInitializer := true,
+
     version in webpack := "1.14",
 
     version in installWebpackDevServer := "1.16.3",
@@ -666,7 +670,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
                 val jsdomDir = installJsdom.value
                 new JSDOMNodeJSEnv(jsdomDir).loadLibs(Seq(ResolvedJSDependency.minimal(file)))
               } else Def.task {
-                NodeJSEnv().value.loadLibs(Seq(ResolvedJSDependency.minimal(FileVirtualJSFile(sjsOutput))))
+                new NodeJSEnv().loadLibs(Seq(ResolvedJSDependency.minimal(FileVirtualJSFile(sjsOutput))))
               }
             }.value
           }
@@ -696,26 +700,12 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       // Ask Scala.js to output its result in our target directory
       crossTarget in stageTask := (crossTarget in npmUpdate).value,
 
-      // Override Scala.js’ scalaJSLauncher to add support for CommonJSModule
-      scalaJSLauncher in stageTask := {
-        val launcher =
-          Launcher.write(
-            (crossTarget in npmUpdate).value,
-            stageTask.value,
-            stage,
-            (mainClass in (scalaJSLauncher in stageTask)).value.getOrElse(sys.error("No main class detected"))
-          )
-        Attributed[VirtualJSFile](FileVirtualJSFile(launcher.file))(
-          AttributeMap.empty.put(name.key, launcher.mainClass)
-        )
-      },
-
       // Override Scala.js’ relativeSourceMaps in case we have to emit source maps in the webpack task, because it does not work with absolute source maps
       relativeSourceMaps in stageTask := (webpackEmitSourceMaps in stageTask).value,
 
       webpackEntries in stageTask := {
         val launcherFile =
-          (scalaJSLauncher in stageTask).value.data match {
+          (scalaJSLinkedFile in stageTask).value match {
             case f: FileVirtualJSFile => f.file
             case _ => sys.error("Unable to find the launcher (real) file")
           }
