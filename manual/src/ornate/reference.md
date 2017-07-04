@@ -14,10 +14,6 @@ the `webpack` task scoped to a Scala.js stage (`fastOptJS` or `fullOptJS`):
 > fastOptJS::webpack
 ~~~
 
-The bundling process produces a single file that automatically calls the application entry
-point, so there is no need for an
-[additional launcher](http://www.scala-js.org/doc/project/building.html#writing-launcher-code).
-
 ### JavaScript Dependencies {#npm-dependencies}
 
 To define the npm packages your project depends on, use the `npmDependencies` key:

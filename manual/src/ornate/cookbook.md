@@ -167,8 +167,8 @@ There are several points worth highlighting:
 Finally, in your Scala code, just refer to the `foo` object:
 
 ~~~ scala
-object Main extends JSApp {
-  def main(): Unit = {
+object Main {
+  def main(args: Array[String]): Unit = {
     println(foo.bar(42))
   }
 }
@@ -209,15 +209,13 @@ custom webpack configuration file:
 You can find a fully working example
 [here](https://github.com/scalacenter/scalajs-bundler/blob/master/sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler/global-namespace).
 
-## How to bundle an application having several entry points? {#several-entry-points}
+## How to bundle an application having several entry points as exports? {#several-entry-points}
 
-By default, `ScalaJSBundlerPlugin` creates a Scala.js launcher that runs the application’s main class, and
-uses this launcher as a webpack entry. This works fine as long as your project is an application with a
-main class, but it will not work if you want to produce a single bundle exposing several entry points.
+By default, `ScalaJSBundlerPlugin` assumes that your application only has a main class, activated through
+`scalaJSUseMainModuleInitializer := true`, and disregards top-level *exports*. If you have exports that
+need to be exposed as several entry points, this will not work.
 
-In such a case, you will have to override the `scalaJSLauncher` key to refer to the output of Scala.js
-(instead of referring to the aforementioned generated launcher), and to use a custom webpack config file
-telling to expose the bundle as a library.
+In such a case, you will have to use a custom webpack config file telling to expose the bundle as a library.
 
 `build.sbt`:
 

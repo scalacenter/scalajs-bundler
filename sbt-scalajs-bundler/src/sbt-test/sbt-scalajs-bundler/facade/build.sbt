@@ -7,6 +7,7 @@ lazy val usage =
     .enablePlugins(ScalaJSBundlerPlugin)
     .settings(commonSettings: _*)
     .settings(
+      scalaJSUseMainModuleInitializer := true,
       libraryDependencies += "org.scalatest" %%% "scalatest" % "3.0.0" % Test
     )
     .dependsOn(facade)

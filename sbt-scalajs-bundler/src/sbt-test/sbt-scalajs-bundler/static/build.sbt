@@ -4,6 +4,8 @@ enablePlugins(ScalaJSBundlerPlugin)
 
 scalaVersion := "2.11.8"
 
+scalaJSUseMainModuleInitializer := true
+
 libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "0.9.1"
 
 npmDependencies in Compile += "snabbdom" -> "0.5.3"
@@ -37,6 +39,6 @@ InputKey[Unit]("html") := {
 
 TaskKey[Unit]("checkSize") := {
   val artifactSize = IO.readBytes((webpack in (Compile, fullOptJS)).value.head).length
-  val expected = 19410
+  val expected = 19790
   assert(artifactSize == expected, s"expected: $expected, got: $artifactSize")
 }

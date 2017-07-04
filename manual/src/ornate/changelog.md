@@ -1,5 +1,16 @@
 # Changelog
 
+## Version 0.7.0
+
+> Upcoming
+
+When upgrading to this release, make sure to enable `scalaJSUseMainModuleInitializer := true` in your build if you have a `main` method.
+
+- [#140](https://github.com/scalacenter/scalajs-bundler/pull/140): Upgrade to Scala.js 0.6.18 ;
+
+You can find the complete list of commits since the last release
+[here](https://github.com/scalacenter/scalajs-bundler/compare/v0.6.0...master).
+
 ## Version 0.6.0
 
 > 2017 April 26

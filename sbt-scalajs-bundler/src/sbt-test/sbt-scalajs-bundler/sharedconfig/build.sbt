@@ -5,6 +5,8 @@ enablePlugins(ScalaJSBundlerPlugin)
 
 scalaVersion := "2.11.8"
 
+scalaJSUseMainModuleInitializer := true
+
 libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "0.9.1"
 
 npmDependencies in Compile += "leaflet" -> "0.7.7"

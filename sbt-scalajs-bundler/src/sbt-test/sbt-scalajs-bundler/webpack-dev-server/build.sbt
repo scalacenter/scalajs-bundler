@@ -6,6 +6,8 @@ enablePlugins(ScalaJSBundlerPlugin)
 
 scalaVersion := "2.11.8"
 
+scalaJSUseMainModuleInitializer := true
+
 // Use a custom config file
 webpackConfigFile := Some(baseDirectory.value / "webpack.config.js")
 

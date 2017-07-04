@@ -50,11 +50,6 @@ import scalajsbundler._
   *
   * Defaults to `crossTarget.value / "scalajs-bundler" / "main"` for `Compile` and
   * `crossTarget.value / "scalajs-bundler" / "test"` for `Test`.
-  *
-  * == `scalaJSLauncher` ==
-  *
-  * The launcher for Scala.js’ stage output (e.g. `scalaJSLauncher in fastOptJS`).
-  * The launcher runs the “main” of the application.
   */
 object ScalaJSBundlerPlugin extends AutoPlugin {
 
@@ -459,7 +454,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
 
   override lazy val projectSettings: Seq[Def.Setting[_]] = Seq(
 
-    scalaJSModuleKind := ModuleKind.CommonJSModule,
+    scalaJSLinkerConfig ~= { _.withModuleKind(ModuleKind.CommonJSModule) },
 
     version in webpack := "1.14",
 
@@ -697,32 +692,13 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       // Ask Scala.js to output its result in our target directory
       crossTarget in stageTask := (crossTarget in npmUpdate).value,
 
-      // Override Scala.js’ scalaJSLauncher to add support for CommonJSModule
-      scalaJSLauncher in stageTask := {
-        val launcher =
-          Launcher.write(
-            (crossTarget in npmUpdate).value,
-            stageTask.value,
-            stage,
-            (mainClass in (scalaJSLauncher in stageTask)).value.getOrElse(sys.error("No main class detected"))
-          )
-        Attributed[VirtualJSFile](FileVirtualJSFile(launcher.file))(
-          AttributeMap.empty.put(name.key, launcher.mainClass)
-        )
-      },
-
       // Override Scala.js’ relativeSourceMaps in case we have to emit source maps in the webpack task, because it does not work with absolute source maps
       relativeSourceMaps in stageTask := (webpackEmitSourceMaps in stageTask).value,
 
       webpackEntries in stageTask := {
-        val launcherFile =
-          (scalaJSLauncher in stageTask).value.data match {
-            case f: FileVirtualJSFile => f.file
-            case _ => sys.error("Unable to find the launcher (real) file")
-          }
         val stageFile = stageTask.value.data
         val name = stageFile.name.stripSuffix(".js")
-        Seq(name -> launcherFile)
+        Seq(name -> stageFile)
       },
 
       scalaJSBundlerWebpackConfig in stageTask :=

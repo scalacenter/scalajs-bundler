@@ -8,13 +8,6 @@ npmDependencies in Compile += "node-uuid" -> "1.4.7"
 
 //#relevant-settings
 webpackConfigFile := Some(baseDirectory.value / "webpack.config.js")
-
-import org.scalajs.core.tools.io.{VirtualJSFile, FileVirtualJSFile}
-
-// Use the output of Scala.js as a “launcher”
-scalaJSLauncher in (Compile, fullOptJS) := {
-  Attributed.blank[VirtualJSFile](FileVirtualJSFile((fullOptJS in Compile).value.data))
-}
 //#relevant-settings
 
 // Check that a HTML can be loaded (and that its JavaScript can be executed) without errors

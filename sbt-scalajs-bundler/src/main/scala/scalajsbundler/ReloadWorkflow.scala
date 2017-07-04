@@ -2,10 +2,11 @@ package scalajsbundler
 
 import org.scalajs.core.ir.Trees.JSNativeLoadSpec
 import org.scalajs.core.tools.io.VirtualScalaJSIRFile
-import org.scalajs.core.tools.linker.ClearableLinker
-import org.scalajs.core.tools.linker.backend.{BasicLinkerBackend, LinkerBackend, OutputMode}
+import org.scalajs.core.tools.linker._
+import org.scalajs.core.tools.linker.standard._
+import org.scalajs.core.tools.linker.backend.{BasicLinkerBackend, LinkerBackend}
 import org.scalajs.sbtplugin.Loggers
-import org.scalajs.sbtplugin.ScalaJSPlugin.AutoImport._
+import org.scalajs.sbtplugin.ScalaJSPlugin.AutoImport.{ModuleKind => _, _}
 import sbt._
 
 import scalajsbundler.util.{Commands, JS}
@@ -36,7 +37,6 @@ object ReloadWorkflow {
     emitSourceMaps: Boolean,
     bundledDependencies: File,
     loader: File,
-    launcher: File,
     sjsOutput: File,
     workingDir: File,
     targetDir: File,
@@ -56,7 +56,6 @@ object ReloadWorkflow {
               concat.dot("add").apply(JS.str(bundledDependencies.absolutePath), fs.dot("readFileSync").apply(JS.str(bundledDependencies.absolutePath))),
               concat.dot("add").apply(JS.str(loader.absolutePath), fs.dot("readFileSync").apply(JS.str(loader.absolutePath))),
               concat.dot("add").apply(JS.str(sjsOutput.absolutePath), fs.dot("readFileSync").apply(JS.str(sjsOutput.absolutePath)), fs.dot("readFileSync").apply(JS.str(sjsOutput.absolutePath ++ ".map"), JS.str("utf-8"))),
-              concat.dot("add").apply(JS.str(launcher.absolutePath), fs.dot("readFileSync").apply(JS.str(launcher.absolutePath))),
               JS.let(JS.`new`(JS.ref("Buffer"), JS.str(s"\n//# sourceMappingURL=${bundle.name ++ ".map"}\n"))) { endBuffer =>
                 JS.let(JS.ref("Buffer").dot("concat").apply(JS.arr(concat.dot("content"), endBuffer))) { result =>
                   fs.dot("writeFileSync").apply(JS.str(bundle.absolutePath), result)
@@ -76,8 +75,6 @@ object ReloadWorkflow {
       IO.append(bundle, IO.readBytes(loader)) // shims `require`
       IO.append(bundle, ";\n")
       IO.append(bundle, IO.readBytes(sjsOutput))
-      IO.append(bundle, "\n")
-      IO.append(bundle, IO.readBytes(launcher))
     }
     bundle
   }
@@ -96,20 +93,6 @@ object ReloadWorkflow {
         window.dot("exports").assign(JS.obj())
       )
     IO.write(loader, depsLoaderContent.show)
-    ()
-  }
-
-  /**
-    * @return The written launcher file (calling the application entry point)
-    * @param mainClass Application entry point
-    * @param launcher File to write the launcher to
-    * @param logger Logger
-    */
-  def writeLauncher(mainClass: String, launcher: File, logger: Logger): Unit = {
-    logger.info("Writing the launcher file")
-    val window = JS.ref("window")
-    val launcherContent = Launcher.callEntryPoint(mainClass, window.dot("exports"))
-    IO.write(launcher, launcherContent.show)
     ()
   }
 
@@ -155,25 +138,29 @@ object ReloadWorkflow {
 
   /**
     * @return The list of ES modules imported by a Scala.js project
+    * @param linkerConfig Configuration of the Scala.js linker
     * @param linker Scala.js linker
     * @param irFiles Scala.js IR files
-    * @param outputMode Scala.js output mode
-    * @param emitSourceMaps Whether emitSourceMaps is enabled
+    * @param moduleInitializers Scala.js module initializers
     * @param logger Logger
     */
   def findImportedModules(
+    linkerConfig: StandardLinker.Config,
     linker: ClearableLinker,
     irFiles: Seq[VirtualScalaJSIRFile],
-    outputMode: OutputMode,
-    emitSourceMaps: Boolean,
+    moduleInitializers: Seq[ModuleInitializer],
     logger: Logger
   ): List[String] = {
-    val semantics = linker.semantics
-    val symbolRequirements =
-      new BasicLinkerBackend(semantics, outputMode, ModuleKind.CommonJSModule, emitSourceMaps, LinkerBackend.Config())
-        .symbolRequirements
+    require(linkerConfig.moduleKind == ModuleKind.CommonJSModule,
+        s"linkerConfig.moduleKind was ${linkerConfig.moduleKind}")
+    val symbolRequirements = {
+      val backend = new BasicLinkerBackend(linkerConfig.semantics,
+          linkerConfig.outputMode, linkerConfig.moduleKind, linkerConfig.sourceMap,
+          LinkerBackend.Config())
+      backend.symbolRequirements
+    }
     val linkingUnit =
-      linker.linkUnit(irFiles, symbolRequirements, Loggers.sbtLogger2ToolsLogger(logger))
+      linker.linkUnit(irFiles, moduleInitializers, symbolRequirements, Loggers.sbtLogger2ToolsLogger(logger))
     linkingUnit.classDefs.flatMap(_.jsNativeLoadSpec).collect {
       case JSNativeLoadSpec.Import(module, _) => module
     }.distinct

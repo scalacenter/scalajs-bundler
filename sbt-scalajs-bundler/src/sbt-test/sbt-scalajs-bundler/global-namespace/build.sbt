@@ -6,6 +6,8 @@ enablePlugins(ScalaJSBundlerPlugin)
 
 scalaVersion := "2.11.8"
 
+scalaJSUseMainModuleInitializer := true
+
 libraryDependencies += "com.github.japgolly.scalajs-react" %%% "core" % "0.11.3"
 
 //#relevant-settings

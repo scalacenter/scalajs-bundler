@@ -2,7 +2,7 @@ package scalajsbundler.sbtplugin
 
 import org.scalajs.sbtplugin.ScalaJSPlugin.AutoImport._
 import org.scalajs.sbtplugin.ScalaJSPluginInternal
-import org.scalajs.sbtplugin.ScalaJSPluginInternal.usesScalaJSLinkerTag
+import org.scalajs.sbtplugin.ScalaJSPluginInternal.{scalaJSLinker, usesScalaJSLinkerTag}
 import sbt.Keys._
 import sbt._
 
@@ -23,7 +23,6 @@ object ReloadWorkflowTasks {
           (webpackEmitSourceMaps in stage).value,
           bundleDependenciesTask(stage).value,
           writeLoaderTask(stage).value,
-          writeLauncherTask(stage).value,
           stage.value.data,
           targetDir,
           targetDir,
@@ -34,7 +33,8 @@ object ReloadWorkflowTasks {
 
   def bundleDependenciesTask(stage: TaskKey[Attributed[File]]): Def.Initialize[Task[File]] =
     Def.taskDyn {
-      val linker = (ScalaJSPluginInternal.scalaJSLinker in stage).value
+      val linkerConfig = (scalaJSLinkerConfig in stage).value
+      val linker = (scalaJSLinker in stage).value
       val linkerTag = (usesScalaJSLinkerTag in stage).value
       Def.task {
         val targetDir = (crossTarget in stage).value
@@ -47,10 +47,10 @@ object ReloadWorkflowTasks {
 
         val importedModules =
           ReloadWorkflow.findImportedModules(
+            linkerConfig,
             linker,
             scalaJSIR.value.data,
-            scalaJSOutputMode.value,
-            (emitSourceMaps in stage).value,
+            scalaJSModuleInitializers.value,
             logger
           )
         cached(
@@ -80,22 +80,6 @@ object ReloadWorkflowTasks {
         ReloadWorkflow.writeLoader(loaderFile, streams.value.log)
       }
       loaderFile
-    }
-
-  def writeLauncherTask(stage: TaskKey[Attributed[File]]): Def.Initialize[Task[File]] =
-    Def.task {
-      val entryPoint =
-        (mainClass in (scalaJSLauncher in stage)).value.getOrElse(sys.error("No main class detected"))
-      val targetDir = (crossTarget in stage).value
-      val launcherFile = targetDir / s"scalajsbundler-${stage.key.label}-launcher.js"
-      cached(
-        launcherFile,
-        entryPoint,
-        streams.value.cacheDirectory / s"scalajsbundler-${stage.key.label}-launcher"
-      ) { () =>
-        ReloadWorkflow.writeLauncher(entryPoint, launcherFile, streams.value.log)
-      }
-      launcherFile
     }
 
 }
