@@ -2,14 +2,18 @@
 
 ## Version 0.7.0
 
-> Upcoming
+> 2017 July 4
 
 When upgrading to this release, make sure to enable `scalaJSUseMainModuleInitializer := true` in your build if you have a `main` method.
 
+- [#125](https://github.com/scalacenter/scalajs-bundler/pull/125): Copy `webpackResources` only if a custom webpack config file is used ;
+- [#126](https://github.com/scalacenter/scalajs-bundler/pull/126): Ability to add custom `package.json` entries ;
+- [#129](https://github.com/scalacenter/scalajs-bundler/pull/129): Generate a JavaScript array of webpack entries rather than a string ;
 - [#140](https://github.com/scalacenter/scalajs-bundler/pull/140): Upgrade to Scala.js 0.6.18 ;
+- [#141](https://github.com/scalacenter/scalajs-bundler/pull/141): Handle `ImportWithGlobalFallback` in reload workflow.
 
 You can find the complete list of commits since the last release
-[here](https://github.com/scalacenter/scalajs-bundler/compare/v0.6.0...master).
+[here](https://github.com/scalacenter/scalajs-bundler/compare/v0.6.0...v0.7.0).
 
 ## Version 0.6.0
 
