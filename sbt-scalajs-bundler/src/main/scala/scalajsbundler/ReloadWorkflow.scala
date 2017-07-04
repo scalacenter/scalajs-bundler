@@ -161,8 +161,10 @@ object ReloadWorkflow {
     }
     val linkingUnit =
       linker.linkUnit(irFiles, moduleInitializers, symbolRequirements, Loggers.sbtLogger2ToolsLogger(logger))
-    linkingUnit.classDefs.flatMap(_.jsNativeLoadSpec).collect {
-      case JSNativeLoadSpec.Import(module, _) => module
+    linkingUnit.classDefs.flatMap(_.jsNativeLoadSpec).flatMap {
+      case JSNativeLoadSpec.Import(module, _) => List(module)
+      case JSNativeLoadSpec.ImportWithGlobalFallback(JSNativeLoadSpec.Import(module, _), _) => List(module)
+      case JSNativeLoadSpec.Global(_) => Nil
     }.distinct
   }
 
