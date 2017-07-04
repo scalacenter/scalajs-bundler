@@ -14,14 +14,14 @@ import scalajsbundler.util.Caching.cached
 /** Sbt tasks related to the reload workflow */
 object ReloadWorkflowTasks {
 
-  def webpackTask(config: Configuration, stage: TaskKey[Attributed[File]]): Def.Initialize[Task[Seq[File]]] =
+  def webpackTask(stage: TaskKey[Attributed[File]]): Def.Initialize[Task[Seq[File]]] =
     Def.task {
       assert(ensureModuleKindIsCommonJSModule.value)
       val targetDir = (crossTarget in stage).value
       Seq(
         ReloadWorkflow.writeFakeBundle(
           (webpackEmitSourceMaps in stage).value,
-          bundleDependenciesTask(config, stage).value,
+          bundleDependenciesTask(stage).value,
           writeLoaderTask(stage).value,
           writeLauncherTask(stage).value,
           stage.value.data,
@@ -32,10 +32,10 @@ object ReloadWorkflowTasks {
       )
     }
 
-  def bundleDependenciesTask(config: Configuration, stage: TaskKey[Attributed[File]]): Def.Initialize[Task[File]] =
+  def bundleDependenciesTask(stage: TaskKey[Attributed[File]]): Def.Initialize[Task[File]] =
     Def.taskDyn {
-      val linker = (ScalaJSPluginInternal.scalaJSLinker in (config, stage)).value
-      val linkerTag = (usesScalaJSLinkerTag in (config, stage)).value
+      val linker = (ScalaJSPluginInternal.scalaJSLinker in stage).value
+      val linkerTag = (usesScalaJSLinkerTag in stage).value
       Def.task {
         val targetDir = (crossTarget in stage).value
         val logger = streams.value.log
