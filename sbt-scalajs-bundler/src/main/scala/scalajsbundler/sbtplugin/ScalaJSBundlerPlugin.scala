@@ -681,8 +681,22 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
             new ScalaJSFramework(frameworkName, env, moduleKind, moduleIdentifier, toolsLogger, console)
           (tf, framework)
         }
-      }.dependsOn(npmUpdate).value
+      }.dependsOn(npmUpdate).value,
+
+      scalaJsTestHtmlSettings(testHtmlFastOpt, fastOptJS),
+
+      scalaJsTestHtmlSettings(testHtmlFullOpt, fullOptJS)
     )
+
+
+  private def scalaJsTestHtmlSettings(testHtmlKey: TaskKey[Attributed[File]], sjsKey: TaskKey[Attributed[File]]): Def.Setting[_] = {
+
+    sjsKey in testHtmlKey := {
+      val html = (sjsKey in testHtmlKey).value
+      val data = file(html.data.getPath.stripSuffix(".js") + "-bundle.js")
+      html.copy(data)(html.metadata)
+    }
+  }
 
   private def perScalaJSStageSettings(stage: Stage): Seq[Def.Setting[_]] = {
 
