@@ -39,7 +39,7 @@
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/scalacenter/scalajs-bundler/blob/v0.7.0-SNAPSHOT/sbt-scalajs-bundler/src/main/scala/scalajsbundler/sbtplugin/ScalaJSBundlerPlugin.scala" target="_blank">ScalaJSBundlerPlugin.scala</a></dd></dl><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/scalacenter/scalajs-bundler/blob/v0.8.0-SNAPSHOT/sbt-scalajs-bundler/src/main/scala/scalajsbundler/sbtplugin/ScalaJSBundlerPlugin.scala" target="_blank">ScalaJSBundlerPlugin.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
@@ -150,6 +150,33 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.autoImport#additionalNpmConfig" visbl="pub" data-isabs="false" fullComment="yes" group="settings">
+      <a id="additionalNpmConfig:sbt.SettingKey[Map[String,scalajsbundler.util.JSON]]"></a>
+      <a id="additionalNpmConfig:SettingKey[Map[String,JSON]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">additionalNpmConfig</span><span class="result">: <span class="extype" name="sbt.SettingKey">SettingKey</span>[<span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <a href="../util/JSON.html" class="extype" name="scalajsbundler.util.JSON">JSON</a>]]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">List of the additional configuration options to include in the generated 'package.</p><div class="fullcomment"><div class="comment cmt"><p>List of the additional configuration options to include in the generated 'package.json'.
+Note that package dependencies are automatically generated from <code>npmDependencies</code> and
+<code>npmDevDependencies</code> and should <b>not</b> be specified in this setting.</p><pre><span class="kw">import</span> scalajsbundler.util.JSON._
+additionalNpmConfig in Compile := <span class="std">Map</span>(
+  <span class="lit">"name"</span>        -&gt; str(name.value),
+  <span class="lit">"version"</span>     -&gt; str(version.value),
+  <span class="lit">"description"</span> -&gt; str(<span class="lit">"Awesome ScalaJS project..."</span>),
+  <span class="lit">"other"</span>       -&gt; obj(
+    <span class="lit">"value0"</span> -&gt; bool(<span class="kw">true</span>),
+    <span class="lit">"value1"</span> -&gt; obj(
+      <span class="lit">"foo"</span> -&gt; str(<span class="lit">"bar"</span>)
+    )
+  )
+)</pre><p>Note that this key must be scoped by a <code>Configuration</code> (either <code>Compile</code> or <code>Test</code>).
+</p></div></div>
     </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <a id="asInstanceOf[T0]:T0"></a>

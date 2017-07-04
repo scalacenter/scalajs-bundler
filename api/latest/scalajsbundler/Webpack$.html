@@ -39,7 +39,7 @@
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/scalacenter/scalajs-bundler/blob/v0.7.0-SNAPSHOT/sbt-scalajs-bundler/src/main/scala/scalajsbundler/Webpack.scala" target="_blank">Webpack.scala</a></dd></dl><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/scalacenter/scalajs-bundler/blob/v0.8.0-SNAPSHOT/sbt-scalajs-bundler/src/main/scala/scalajsbundler/Webpack.scala" target="_blank">Webpack.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
@@ -210,19 +210,22 @@
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="scalajsbundler.Webpack#copyToWorkingDir" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="copyToWorkingDir(targetDir:sbt.File)(file:sbt.File):sbt.File"></a>
-      <a id="copyToWorkingDir(File)(File):File"></a>
+    </li><li name="scalajsbundler.Webpack#copyCustomWebpackConfigFiles" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="copyCustomWebpackConfigFiles(targetDir:sbt.File,webpackResources:Seq[sbt.File])(customConfigFile:sbt.File):sbt.File"></a>
+      <a id="copyCustomWebpackConfigFiles(File,Seq[File])(File):File"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">copyToWorkingDir</span><span class="params">(<span name="targetDir">targetDir: <a href="../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a></span>)</span><span class="params">(<span name="file">file: <a href="../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a></span>)</span><span class="result">: <a href="../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a></span>
+        <span class="name">copyCustomWebpackConfigFiles</span><span class="params">(<span name="targetDir">targetDir: <a href="../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a></span>, <span name="webpackResources">webpackResources: <span class="extype" name="scala.Seq">Seq</span>[<a href="../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a>]</span>)</span><span class="params">(<span name="customConfigFile">customConfigFile: <a href="../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a></span>)</span><span class="result">: <a href="../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a></span>
       </span>
       </h4>
-      
+      <p class="shortcomment cmt">Copies the custom webpack configuration file and the webpackResources to the target dir
+</p><div class="fullcomment"><div class="comment cmt"><p>Copies the custom webpack configuration file and the webpackResources to the target dir
+</p></div><dl class="paramcmts block"><dt class="param">targetDir</dt><dd class="cmt"><p>target directory</p></dd><dt class="param">webpackResources</dt><dd class="cmt"><p>Resources to copy</p></dd><dt class="param">customConfigFile</dt><dd class="cmt"><p>User supplied config file</p></dd><dt>returns</dt><dd class="cmt"><p>The copied config file.
+</p></dd></dl></div>
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>

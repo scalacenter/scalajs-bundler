@@ -39,7 +39,7 @@
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Sbt tasks related to the reload workflow</p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/scalacenter/scalajs-bundler/blob/v0.7.0-SNAPSHOT/sbt-scalajs-bundler/src/main/scala/scalajsbundler/sbtplugin/ReloadWorkflowTasks.scala" target="_blank">ReloadWorkflowTasks.scala</a></dd></dl><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Sbt tasks related to the reload workflow</p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/scalacenter/scalajs-bundler/blob/v0.8.0-SNAPSHOT/sbt-scalajs-bundler/src/main/scala/scalajsbundler/sbtplugin/ReloadWorkflowTasks.scala" target="_blank">ReloadWorkflowTasks.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
@@ -164,15 +164,15 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
     </li><li name="scalajsbundler.sbtplugin.ReloadWorkflowTasks#bundleDependenciesTask" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="bundleDependenciesTask(config:sbt.Configuration,stage:sbt.TaskKey[sbt.Attributed[sbt.File]]):sbt.Def.Initialize[sbt.Task[sbt.File]]"></a>
-      <a id="bundleDependenciesTask(Configuration,TaskKey[Attributed[File]]):sbt.Def.Initialize[Task[File]]"></a>
+      <a id="bundleDependenciesTask(stage:sbt.TaskKey[sbt.Attributed[sbt.File]]):sbt.Def.Initialize[sbt.Task[sbt.File]]"></a>
+      <a id="bundleDependenciesTask(TaskKey[Attributed[File]]):sbt.Def.Initialize[Task[File]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">bundleDependenciesTask</span><span class="params">(<span name="config">config: <span class="extype" name="sbt.Configuration">Configuration</span></span>, <span name="stage">stage: <span class="extype" name="sbt.TaskKey">TaskKey</span>[<span class="extype" name="sbt.Attributed">Attributed</span>[<a href="../../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a>]]</span>)</span><span class="result">: <span class="extype" name="sbt.Init.Initialize">sbt.Def.Initialize</span>[<span class="extype" name="sbt.Task">Task</span>[<a href="../../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a>]]</span>
+        <span class="name">bundleDependenciesTask</span><span class="params">(<span name="stage">stage: <span class="extype" name="sbt.TaskKey">TaskKey</span>[<span class="extype" name="sbt.Attributed">Attributed</span>[<a href="../../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a>]]</span>)</span><span class="result">: <span class="extype" name="sbt.Init.Initialize">sbt.Def.Initialize</span>[<span class="extype" name="sbt.Task">Task</span>[<a href="../../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a>]]</span>
       </span>
       </h4>
       
@@ -402,28 +402,15 @@
               
         </dd></dl></div>
     </li><li name="scalajsbundler.sbtplugin.ReloadWorkflowTasks#webpackTask" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="webpackTask(config:sbt.Configuration,stage:sbt.TaskKey[sbt.Attributed[sbt.File]]):sbt.Def.Initialize[sbt.Task[Seq[sbt.File]]]"></a>
-      <a id="webpackTask(Configuration,TaskKey[Attributed[File]]):sbt.Def.Initialize[Task[Seq[File]]]"></a>
+      <a id="webpackTask(stage:sbt.TaskKey[sbt.Attributed[sbt.File]]):sbt.Def.Initialize[sbt.Task[Seq[sbt.File]]]"></a>
+      <a id="webpackTask(TaskKey[Attributed[File]]):sbt.Def.Initialize[Task[Seq[File]]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">webpackTask</span><span class="params">(<span name="config">config: <span class="extype" name="sbt.Configuration">Configuration</span></span>, <span name="stage">stage: <span class="extype" name="sbt.TaskKey">TaskKey</span>[<span class="extype" name="sbt.Attributed">Attributed</span>[<a href="../../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a>]]</span>)</span><span class="result">: <span class="extype" name="sbt.Init.Initialize">sbt.Def.Initialize</span>[<span class="extype" name="sbt.Task">Task</span>[<span class="extype" name="scala.Seq">Seq</span>[<a href="../../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a>]]]</span>
-      </span>
-      </h4>
-      
-    </li><li name="scalajsbundler.sbtplugin.ReloadWorkflowTasks#writeLauncherTask" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="writeLauncherTask(stage:sbt.TaskKey[sbt.Attributed[sbt.File]]):sbt.Def.Initialize[sbt.Task[sbt.File]]"></a>
-      <a id="writeLauncherTask(TaskKey[Attributed[File]]):sbt.Def.Initialize[Task[File]]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">writeLauncherTask</span><span class="params">(<span name="stage">stage: <span class="extype" name="sbt.TaskKey">TaskKey</span>[<span class="extype" name="sbt.Attributed">Attributed</span>[<a href="../../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a>]]</span>)</span><span class="result">: <span class="extype" name="sbt.Init.Initialize">sbt.Def.Initialize</span>[<span class="extype" name="sbt.Task">Task</span>[<a href="../../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a>]]</span>
+        <span class="name">webpackTask</span><span class="params">(<span name="stage">stage: <span class="extype" name="sbt.TaskKey">TaskKey</span>[<span class="extype" name="sbt.Attributed">Attributed</span>[<a href="../../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a>]]</span>)</span><span class="result">: <span class="extype" name="sbt.Init.Initialize">sbt.Def.Initialize</span>[<span class="extype" name="sbt.Task">Task</span>[<span class="extype" name="scala.Seq">Seq</span>[<a href="../../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a>]]]</span>
       </span>
       </h4>
       

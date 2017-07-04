@@ -43,7 +43,7 @@
 that changed.</p><p>For this to work, the pre-bundled dependencies are exposed to the global namespace and a fake <code>require</code>
 implementation is also provided so that the output of Scala.js, which is supposed to be executed by
 a CommonJS compatible environment, can be executed by a web browser.
-</p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/scalacenter/scalajs-bundler/blob/v0.7.0-SNAPSHOT/sbt-scalajs-bundler/src/main/scala/scalajsbundler/ReloadWorkflow.scala" target="_blank">ReloadWorkflow.scala</a></dd></dl><div class="toggleContainer block">
+</p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/scalacenter/scalajs-bundler/blob/v0.8.0-SNAPSHOT/sbt-scalajs-bundler/src/main/scala/scalajsbundler/ReloadWorkflow.scala" target="_blank">ReloadWorkflow.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
@@ -247,18 +247,18 @@ a CommonJS compatible environment, can be executed by a web browser.
               
         </dd></dl></div>
     </li><li name="scalajsbundler.ReloadWorkflow#findImportedModules" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="findImportedModules(linker:org.scalajs.core.tools.linker.ClearableLinker,irFiles:Seq[org.scalajs.core.tools.io.VirtualScalaJSIRFile],outputMode:org.scalajs.core.tools.linker.backend.OutputMode,emitSourceMaps:Boolean,logger:sbt.Logger):List[String]"></a>
-      <a id="findImportedModules(ClearableLinker,Seq[VirtualScalaJSIRFile],OutputMode,Boolean,Logger):List[String]"></a>
+      <a id="findImportedModules(linkerConfig:org.scalajs.core.tools.linker.StandardLinker.Config,linker:org.scalajs.core.tools.linker.ClearableLinker,irFiles:Seq[org.scalajs.core.tools.io.VirtualScalaJSIRFile],moduleInitializers:Seq[org.scalajs.core.tools.linker.ModuleInitializer],logger:sbt.Logger):List[String]"></a>
+      <a id="findImportedModules(Config,ClearableLinker,Seq[VirtualScalaJSIRFile],Seq[ModuleInitializer],Logger):List[String]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">findImportedModules</span><span class="params">(<span name="linker">linker: <span class="extype" name="org.scalajs.core.tools.linker.ClearableLinker">ClearableLinker</span></span>, <span name="irFiles">irFiles: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="org.scalajs.core.tools.io.VirtualScalaJSIRFile">VirtualScalaJSIRFile</span>]</span>, <span name="outputMode">outputMode: <span class="extype" name="org.scalajs.core.tools.linker.backend.OutputMode">OutputMode</span></span>, <span name="emitSourceMaps">emitSourceMaps: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="logger">logger: <span class="extype" name="sbt.Logger">Logger</span></span>)</span><span class="result">: <span class="extype" name="scala.List">List</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+        <span class="name">findImportedModules</span><span class="params">(<span name="linkerConfig">linkerConfig: <span class="extype" name="org.scalajs.core.tools.linker.StandardLinker.Config">Config</span></span>, <span name="linker">linker: <span class="extype" name="org.scalajs.core.tools.linker.ClearableLinker">ClearableLinker</span></span>, <span name="irFiles">irFiles: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="org.scalajs.core.tools.io.VirtualScalaJSIRFile">VirtualScalaJSIRFile</span>]</span>, <span name="moduleInitializers">moduleInitializers: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="org.scalajs.core.tools.linker.ModuleInitializer">ModuleInitializer</span>]</span>, <span name="logger">logger: <span class="extype" name="sbt.Logger">Logger</span></span>)</span><span class="result">: <span class="extype" name="scala.List">List</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">linker</dt><dd class="cmt"><p>Scala.js linker</p></dd><dt class="param">irFiles</dt><dd class="cmt"><p>Scala.js IR files</p></dd><dt class="param">outputMode</dt><dd class="cmt"><p>Scala.js output mode</p></dd><dt class="param">emitSourceMaps</dt><dd class="cmt"><p>Whether emitSourceMaps is enabled</p></dd><dt class="param">logger</dt><dd class="cmt"><p>Logger
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">linkerConfig</dt><dd class="cmt"><p>Configuration of the Scala.js linker</p></dd><dt class="param">linker</dt><dd class="cmt"><p>Scala.js linker</p></dd><dt class="param">irFiles</dt><dd class="cmt"><p>Scala.js IR files</p></dd><dt class="param">moduleInitializers</dt><dd class="cmt"><p>Scala.js module initializers</p></dd><dt class="param">logger</dt><dd class="cmt"><p>Logger
 </p></dd><dt>returns</dt><dd class="cmt"><p>The list of ES modules imported by a Scala.js project</p></dd></dl></div>
     </li><li name="scala.AnyRef#getClass" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getClass():Class[_]"></a>
@@ -435,33 +435,19 @@ a CommonJS compatible environment, can be executed by a web browser.
               
         </dd></dl></div>
     </li><li name="scalajsbundler.ReloadWorkflow#writeFakeBundle" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="writeFakeBundle(emitSourceMaps:Boolean,bundledDependencies:sbt.File,loader:sbt.File,launcher:sbt.File,sjsOutput:sbt.File,workingDir:sbt.File,targetDir:sbt.File,logger:sbt.Logger):sbt.File"></a>
-      <a id="writeFakeBundle(Boolean,File,File,File,File,File,File,Logger):File"></a>
+      <a id="writeFakeBundle(emitSourceMaps:Boolean,bundledDependencies:sbt.File,loader:sbt.File,sjsOutput:sbt.File,workingDir:sbt.File,targetDir:sbt.File,logger:sbt.Logger):sbt.File"></a>
+      <a id="writeFakeBundle(Boolean,File,File,File,File,File,Logger):File"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">writeFakeBundle</span><span class="params">(<span name="emitSourceMaps">emitSourceMaps: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="bundledDependencies">bundledDependencies: <a href="../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a></span>, <span name="loader">loader: <a href="../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a></span>, <span name="launcher">launcher: <a href="../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a></span>, <span name="sjsOutput">sjsOutput: <a href="../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a></span>, <span name="workingDir">workingDir: <a href="../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a></span>, <span name="targetDir">targetDir: <a href="../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a></span>, <span name="logger">logger: <span class="extype" name="sbt.Logger">Logger</span></span>)</span><span class="result">: <a href="../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a></span>
+        <span class="name">writeFakeBundle</span><span class="params">(<span name="emitSourceMaps">emitSourceMaps: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="bundledDependencies">bundledDependencies: <a href="../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a></span>, <span name="loader">loader: <a href="../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a></span>, <span name="sjsOutput">sjsOutput: <a href="../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a></span>, <span name="workingDir">workingDir: <a href="../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a></span>, <span name="targetDir">targetDir: <a href="../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a></span>, <span name="logger">logger: <span class="extype" name="sbt.Logger">Logger</span></span>)</span><span class="result">: <a href="../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a></span>
       </span>
       </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">emitSourceMaps</dt><dd class="cmt"><p>Whether to emit source maps at all</p></dd><dt class="param">bundledDependencies</dt><dd class="cmt"><p>Pre-bundled dependencies</p></dd><dt class="param">loader</dt><dd class="cmt"><p><code>require</code> implementation</p></dd><dt class="param">launcher</dt><dd class="cmt"><p>Entry point launcher</p></dd><dt class="param">sjsOutput</dt><dd class="cmt"><p>Output of Scala.js</p></dd><dt class="param">workingDir</dt><dd class="cmt"><p>Nodejs working directory</p></dd><dt class="param">targetDir</dt><dd class="cmt"><p>Target directory (where to write the bundle)
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">emitSourceMaps</dt><dd class="cmt"><p>Whether to emit source maps at all</p></dd><dt class="param">bundledDependencies</dt><dd class="cmt"><p>Pre-bundled dependencies</p></dd><dt class="param">loader</dt><dd class="cmt"><p><code>require</code> implementation</p></dd><dt class="param">sjsOutput</dt><dd class="cmt"><p>Output of Scala.js</p></dd><dt class="param">workingDir</dt><dd class="cmt"><p>Nodejs working directory</p></dd><dt class="param">targetDir</dt><dd class="cmt"><p>Target directory (where to write the bundle)
 </p></dd><dt>returns</dt><dd class="cmt"><p>A file that contains the concatenation of the dependencies bundle and the output of the Scala.js compilation</p></dd></dl></div>
-    </li><li name="scalajsbundler.ReloadWorkflow#writeLauncher" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="writeLauncher(mainClass:String,launcher:sbt.File,logger:sbt.Logger):Unit"></a>
-      <a id="writeLauncher(String,File,Logger):Unit"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">writeLauncher</span><span class="params">(<span name="mainClass">mainClass: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="launcher">launcher: <a href="../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a></span>, <span name="logger">logger: <span class="extype" name="sbt.Logger">Logger</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">mainClass</dt><dd class="cmt"><p>Application entry point</p></dd><dt class="param">launcher</dt><dd class="cmt"><p>File to write the launcher to</p></dd><dt class="param">logger</dt><dd class="cmt"><p>Logger
-</p></dd><dt>returns</dt><dd class="cmt"><p>The written launcher file (calling the application entry point)</p></dd></dl></div>
     </li><li name="scalajsbundler.ReloadWorkflow#writeLoader" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="writeLoader(loader:sbt.File,logger:sbt.Logger):Unit"></a>
       <a id="writeLoader(File,Logger):Unit"></a>

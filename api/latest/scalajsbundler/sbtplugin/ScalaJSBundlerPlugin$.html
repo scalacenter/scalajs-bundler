@@ -45,9 +45,8 @@ with its dependencies.</p><h3> Tasks and Settings </h3><p>The <a href="ScalaJSBu
 following existing keys also control the plugin:</p><h4> <code>version in webpack</code> </h4><p>Version of webpack to use. Example:</p><pre>version in webpack := <span class="lit">"2.1.0-beta.25"</span></pre><h4> <code>version in installJsdom</code> </h4><p>Version of jsdom to use.</p><h4> <code>version in installWebpackDevServer</code> </h4><p>Version of webpack-dev-server to use.</p><h4> <code>crossTarget in npmUpdate</code> </h4><p>The directory in which NPM dependencies will be fetched, and where all the .js files
 will be generated. The directory is different according to the current <code>Configuration</code>
 (either <code>Compile</code> or <code>Test</code>).</p><p>Defaults to <code>crossTarget.value / &quot;scalajs-bundler&quot; / &quot;main&quot;</code> for <code>Compile</code> and
-<code>crossTarget.value / &quot;scalajs-bundler&quot; / &quot;test&quot;</code> for <code>Test</code>.</p><h4> <code>scalaJSLauncher</code> </h4><p>The launcher for Scala.js’ stage output (e.g. <code>scalaJSLauncher in fastOptJS</code>).
-The launcher runs the “main” of the application.
-</p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/scalacenter/scalajs-bundler/blob/v0.7.0-SNAPSHOT/sbt-scalajs-bundler/src/main/scala/scalajsbundler/sbtplugin/ScalaJSBundlerPlugin.scala" target="_blank">ScalaJSBundlerPlugin.scala</a></dd></dl><div class="toggleContainer block">
+<code>crossTarget.value / &quot;scalajs-bundler&quot; / &quot;test&quot;</code> for <code>Test</code>.
+</p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/scalacenter/scalajs-bundler/blob/v0.8.0-SNAPSHOT/sbt-scalajs-bundler/src/main/scala/scalajsbundler/sbtplugin/ScalaJSBundlerPlugin.scala" target="_blank">ScalaJSBundlerPlugin.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="sbt.AutoPlugin">AutoPlugin</span>, <span class="extype" name="sbt.PluginsFunctions">PluginsFunctions</span>, <span class="extype" name="sbt.Plugins.Basic">Basic</span>, <span class="extype" name="sbt.Plugins">Plugins</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
@@ -242,6 +241,19 @@ The launcher runs the “main” of the application.
     </span>)</span>
               
         </dd></dl></div>
+    </li><li name="sbt.AutoPlugin#derivedProjects" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="derivedProjects(proj:sbt.ProjectDefinition[_]):Seq[sbt.Project]"></a>
+      <a id="derivedProjects(ProjectDefinition[_]):Seq[Project]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">derivedProjects</span><span class="params">(<span name="proj">proj: <span class="extype" name="sbt.ProjectDefinition">ProjectDefinition</span>[_]</span>)</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="sbt.Project">Project</span>]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AutoPlugin</dd></dl></div>
     </li><li name="sbt.PluginsFunctions#empty" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="empty:sbt.Plugins"></a>
       <a id="empty:Plugins"></a>
@@ -281,6 +293,19 @@ The launcher runs the “main” of the application.
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="sbt.AutoPlugin#extraProjects" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="extraProjects:Seq[sbt.Project]"></a>
+      <a id="extraProjects:Seq[Project]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">extraProjects</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="sbt.Project">Project</span>]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AutoPlugin</dd></dl></div>
     </li><li name="scala.AnyRef#finalize" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="finalize():Unit"></a>
       <a id="finalize():Unit"></a>

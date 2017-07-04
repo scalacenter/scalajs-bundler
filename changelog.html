@@ -42,6 +42,20 @@
               <main class="columns large-order-2 sections" id="_sections">
                 
                 <h1 id="changelog" class="a_section" data-magellan-target="changelog">Changelog<a class="a_hlink" href="#changelog"></a></h1>
+<h2 id="version-0.7.0" class="a_section" data-magellan-target="version-0.7.0">Version 0.7.0<a class="a_hlink" href="#version-0.7.0"></a></h2>
+<blockquote>
+<p>2017 July 4</p>
+</blockquote>
+<p>When upgrading to this release, make sure to enable <code class="hljs">scalaJSUseMainModuleInitializer := true</code> in your build if you have a <code class="hljs">main</code> method.</p>
+<ul>
+<li><a href="https://github.com/scalacenter/scalajs-bundler/pull/125">#125</a>: Copy <code class="hljs">webpackResources</code> only if a custom webpack config file is used ;</li>
+<li><a href="https://github.com/scalacenter/scalajs-bundler/pull/126">#126</a>: Ability to add custom <code class="hljs">package.json</code> entries ;</li>
+<li><a href="https://github.com/scalacenter/scalajs-bundler/pull/129">#129</a>: Generate a JavaScript array of webpack entries rather than a string ;</li>
+<li><a href="https://github.com/scalacenter/scalajs-bundler/pull/140">#140</a>: Upgrade to Scala.js 0.6.18 ;</li>
+<li><a href="https://github.com/scalacenter/scalajs-bundler/pull/141">#141</a>: Handle <code class="hljs">ImportWithGlobalFallback</code> in reload workflow.</li>
+</ul>
+<p>You can find the complete list of commits since the last release
+<a href="https://github.com/scalacenter/scalajs-bundler/compare/v0.6.0...v0.7.0">here</a>.</p>
 <h2 id="version-0.6.0" class="a_section" data-magellan-target="version-0.6.0">Version 0.6.0<a class="a_hlink" href="#version-0.6.0"></a></h2>
 <blockquote>
 <p>2017 April 26</p>
@@ -215,6 +229,13 @@ the classpath can be <code class="hljs">@JSImport</code>ed by your Scala facades
     
     
       <ul class="vertical menu">  
+  <li>
+    
+       <a href="#version-0.7.0">Version 0.7.0</a> 
+    
+    
+  </li>
+  
   <li>
     
        <a href="#version-0.6.0">Version 0.6.0</a> 

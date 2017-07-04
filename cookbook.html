@@ -50,7 +50,7 @@
 <li><a href="cookbook.html#facade">How to use npm modules from Scala code?</a></li>
 <li><a href="cookbook.html#publish">How to publish a facade for an npm module?</a></li>
 <li><a href="cookbook.html#global-namespace">How to use an existing facade assuming the JS library to be exposed to the global namespace?</a></li>
-<li><a href="cookbook.html#several-entry-points">How to bundle an application having several entry points?</a></li>
+<li><a href="cookbook.html#several-entry-points">How to bundle an application having several entry points as exports?</a></li>
 <li><a href="cookbook.html#performance">How to improve the performance of the bundling process?</a></li>
 <li><a href="cookbook.html#webpack-dev-server">How to rebuild and reload your page on code changes?</a></li>
 </ul>
@@ -207,8 +207,8 @@ importing local JavaScript files, etc.) can be found in
 </blockquote>
 <p>Finally, in your Scala code, just refer to the <code class="hljs">foo</code> object:</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
-<pre class="hljs"><code class="language-scala"><span class="hljs-class"><span class="hljs-keyword">object</span> <span class="hljs-title">Main</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">JSApp</span> </span>{
-  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">main</span></span>(): <span class="hljs-type">Unit</span> = {
+<pre class="hljs"><code class="language-scala"><span class="hljs-class"><span class="hljs-keyword">object</span> <span class="hljs-title">Main</span> </span>{
+  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">main</span></span>(args: <span class="hljs-type">Array</span>[<span class="hljs-type">String</span>]): <span class="hljs-type">Unit</span> = {
     println(foo.bar(<span class="hljs-number">42</span>))
   }
 }
@@ -276,23 +276,14 @@ webpackConfigFile := <span class="hljs-type">Some</span>(baseDirectory.value / <
 </div></div>
 <p>You can find a fully working example
 <a href="https://github.com/scalacenter/scalajs-bundler/blob/master/sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler/global-namespace">here</a>.</p>
-<h2 id="several-entry-points" class="a_section" data-magellan-target="several-entry-points">How to bundle an application having several entry points?<a class="a_hlink" href="#several-entry-points"></a></h2>
-<p>By default, <code class="hljs">ScalaJSBundlerPlugin</code> creates a Scala.js launcher that runs the application’s main class, and
-uses this launcher as a webpack entry. This works fine as long as your project is an application with a
-main class, but it will not work if you want to produce a single bundle exposing several entry points.</p>
-<p>In such a case, you will have to override the <code class="hljs">scalaJSLauncher</code> key to refer to the output of Scala.js
-(instead of referring to the aforementioned generated launcher), and to use a custom webpack config file
-telling to expose the bundle as a library.</p>
+<h2 id="several-entry-points" class="a_section" data-magellan-target="several-entry-points">How to bundle an application having several entry points as exports?<a class="a_hlink" href="#several-entry-points"></a></h2>
+<p>By default, <code class="hljs">ScalaJSBundlerPlugin</code> assumes that your application only has a main class, activated through
+<code class="hljs">scalaJSUseMainModuleInitializer := true</code>, and disregards top-level <em>exports</em>. If you have exports that
+need to be exposed as several entry points, this will not work.</p>
+<p>In such a case, you will have to use a custom webpack config file telling to expose the bundle as a library.</p>
 <p><code class="hljs">build.sbt</code>:</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
-<pre class="hljs"><code class="language-scala">webpackConfigFile := <span class="hljs-type">Some</span>(baseDirectory.value / <span class="hljs-string">"webpack.config.js"</span>)
-
-<span class="hljs-keyword">import</span> org.scalajs.core.tools.io.{<span class="hljs-type">VirtualJSFile</span>, <span class="hljs-type">FileVirtualJSFile</span>}
-
-<span class="hljs-comment">// Use the output of Scala.js as a “launcher”</span>
-scalaJSLauncher in (<span class="hljs-type">Compile</span>, fullOptJS) := {
-  <span class="hljs-type">Attributed</span>.blank[<span class="hljs-type">VirtualJSFile</span>](<span class="hljs-type">FileVirtualJSFile</span>((fullOptJS in <span class="hljs-type">Compile</span>).value.data))
-}</code></pre>
+<pre class="hljs"><code class="language-scala">webpackConfigFile := <span class="hljs-type">Some</span>(baseDirectory.value / <span class="hljs-string">"webpack.config.js"</span>)</code></pre>
 </div></div>
 <p><code class="hljs">webpack.config.js</code>:</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
@@ -471,7 +462,7 @@ reload on every change:</p>
   
   <li>
     
-       <a href="#several-entry-points">How to bundle an application having several entry points?</a> 
+       <a href="#several-entry-points">How to bundle an application having several entry points as exports?</a> 
     
     
   </li>
