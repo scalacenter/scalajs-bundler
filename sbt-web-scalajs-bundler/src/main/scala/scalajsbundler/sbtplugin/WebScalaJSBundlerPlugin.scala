@@ -59,10 +59,12 @@ object WebScalaJSBundlerPlugin extends AutoPlugin {
         val bundles: Seq[((File, String), Boolean)] =
           projects
             .map { project =>
-              val task = webpack in (project, Compile, sjsStage in project)
-              val clientTarget = npmUpdate in (project, Compile)
-              val sourceMapsEnabled = webpackEmitSourceMaps in (project, Compile, sjsStage in project)
-              (task, clientTarget, sourceMapsEnabled).map((files, target, enabled) => files.pair(relativeTo(target)).map((_, enabled)))
+              Def.task {
+                val files = (webpack in (project, Compile, sjsStage in project)).value
+                val clientTarget = (npmUpdate in (project, Compile)).value
+                val sourceMapsEnabled = (webpackEmitSourceMaps in (project, Compile, sjsStage in project)).value
+                files.pair(relativeTo(clientTarget)).map((_, sourceMapsEnabled))
+              }
             }
             .foldLeft(Def.task(Seq.empty[((File, String), Boolean)]))((acc, bundleFiles) => Def.task(acc.value ++ bundleFiles.value))
             .value
