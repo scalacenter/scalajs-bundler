@@ -2,8 +2,20 @@
 
 ## Basic setup
 
-You need to have [npm](https://docs.npmjs.com/getting-started/installing-node) installed on your
-system.
+You need to have `npm` installed on your system. `sbt-scalajs-bundler` has been designed and tested against version 4.x
+of `npm`, and at least one [change](https://github.com/npm/npm/issues/16901) in `npm` 5.x (the latest) is known to break
+the plugin's bundling logic. After [installing node](https://nodejs.org/en/download/), you can get the latest 4.x `npm`
+with:
+
+~~~ sh
+$ npm install -g npm@latest-4
+~~~
+
+If you plan to use Yarn to download JS dependencies, you'll also need:
+
+~~~ sh
+$ npm install -g yarn
+~~~
 
 Add the `sbt-scalajs-bundler` plugin to your Scala.js project, in your `project/plugins.sbt` file:
 
