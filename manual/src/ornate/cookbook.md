@@ -192,22 +192,22 @@ dependency on the facade and to enable the `ScalaJSBundlerPlugin` plugin.
 
 ## How to use an existing facade assuming the JS library to be exposed to the global namespace? {#global-namespace}
 
-Webpack is able to expose modules to the global namespace by using a custom loader:
-[expose-loader](https://github.com/webpack/expose-loader). Thus, you can write a custom webpack configuration
-file that uses this loader to expose the required modules to the global namespace. Typically, this file
-will look like this:
+Webpack is able to require external modules by using [imports-loader](https://github.com/webpack-contrib/imports-loader) 
+and expose them to the global namespace by using [expose-loader](https://github.com/webpack/expose-loader). 
+Thus, you can write a custom webpack configuration file that uses this loaders to expose the required 
+modules to the global namespace. Typically, this file will look like this:
 
-~~~ javascript src=../../../sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler/global-namespace/webpack.config.js
+~~~ javascript src=../../../sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler/global-namespace-with-jsdom-unit-testing/common.webpack.config.js
 ~~~
 
 Also, tweak your `build.sbt` to add the corresponding NPM dependencies and to use the
 custom webpack configuration file: 
 
-~~~ scala src=../../../sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler/global-namespace/build.sbt#relevant-settings
+~~~ scala src=../../../sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler/global-namespace-with-jsdom-unit-testing/build.sbt#relevant-settings
 ~~~
 
 You can find a fully working example
-[here](https://github.com/scalacenter/scalajs-bundler/blob/master/sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler/global-namespace).
+[here](https://github.com/scalacenter/scalajs-bundler/blob/master/sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler/global-namespace-with-jsdom-unit-testing).
 
 ## How to bundle an application having several entry points as exports? {#several-entry-points}
 
