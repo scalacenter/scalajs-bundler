@@ -80,7 +80,8 @@ object Webpack {
                   )
                 )
               )
-            case _ => sys.error("Unsupported webpack version")
+            case Some(x) => sys.error(s"Unsupported webpack major version $x")
+            case None => sys.error("No webpack version defined")
           }
         } else Nil
         ): _*))
