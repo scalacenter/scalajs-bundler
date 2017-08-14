@@ -566,7 +566,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
           ) { _ =>
             log.info("Updating NPM dependencies")
             if (useYarn.value) {
-              Yarn.run("install")(targetDir, log)
+              Yarn.run("install", "--non-interactive")(targetDir, log)
             } else {
               Npm.run("update")(targetDir, log)
             }

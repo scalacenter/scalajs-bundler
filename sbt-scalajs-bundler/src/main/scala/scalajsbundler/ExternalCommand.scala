@@ -44,7 +44,7 @@ object ExternalCommand {
     */
   def install(installDir: File, useYarn: Boolean, logger: Logger)(npmPackages: String*): Unit =
     if (useYarn) {
-      Yarn.run("add" +: npmPackages: _*)(installDir, logger)
+      Yarn.run("add" +: "--non-interactive" +: npmPackages: _*)(installDir, logger)
     } else {
       Npm.run("install" +: npmPackages: _*)(installDir, logger)
     }
