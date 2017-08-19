@@ -509,24 +509,6 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
         install(installDir, useYarn.value, log)(s"jsdom@$jsdomVersion")
       }
       installDir
-    },
-
-    installWebpackDevServer := {
-      val installDir = target.value / "scalajs-bundler-webpack-dev-server"
-      val log = streams.value.log
-      val webpackVersion = (version in webpack).value
-      val webpackDevServerVersion = (version in installWebpackDevServer).value
-
-      if (!installDir.exists()) {
-        log.info(s"Installing webpack-dev-server in ${installDir.absolutePath}")
-        IO.createDirectory(installDir)
-        install(installDir, useYarn.value, log)(
-          // Webpack version should match the setting
-          s"webpack@$webpackVersion",
-          s"webpack-dev-server@$webpackDevServerVersion"
-        )
-      }
-      installDir
     }
   ) ++
     inConfig(Compile)(perConfigSettings) ++
@@ -552,6 +534,8 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       webpackReload in fastOptJS := Def.taskDyn {
         ReloadWorkflowTasks.webpackTask(fastOptJS)
       }.value,
+
+      installWebpackDevServer := npmUpdate.value,
 
       npmUpdate := {
         val log = streams.value.log
@@ -591,6 +575,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
           fullClasspath.value,
           configuration.value,
           (version in webpack).value,
+          (version in installWebpackDevServer).value,
           streams.value
         ),
 
@@ -762,7 +747,6 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
         val logger = (streams in stageTask).value.log
 
         server.start(
-          serverDir,
           workDir,
           config,
           port,
