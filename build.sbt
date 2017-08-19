@@ -109,14 +109,14 @@ lazy val commonSettings =
       "-Xfuture"
     ),
     organization := "ch.epfl.scala",
-    pomExtra :=
-      <developers>
-        <developer>
-          <id>julienrf</id>
-          <name>Julien Richard-Foy</name>
-          <url>http://julien.richard-foy.fr</url>
-        </developer>
-      </developers>,
+    developers ++= List(
+      Developer(
+        id = "julienrf",
+        name = "Julien Richard-Foy",
+        url = url("http://julien.richard-foy.fr"),
+        email = "julien@richard-foy.fr"
+      )
+    ),
     homepage := Some(url(s"https://github.com/scalacenter/scalajs-bundler")),
     licenses := Seq("MIT License" -> url("http://opensource.org/licenses/mit-license.php")),
     scmInfo := Some(
