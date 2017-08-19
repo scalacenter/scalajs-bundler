@@ -67,7 +67,7 @@ object Webpack {
                   )
                 )
               )
-            case Some(2) =>
+            case Some(2) | Some(3) =>
               Seq(
                 "devtool" -> JS.str("source-map"),
                 "module" -> JS.obj(
