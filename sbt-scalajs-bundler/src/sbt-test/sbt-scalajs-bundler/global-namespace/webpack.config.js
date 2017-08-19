@@ -15,11 +15,16 @@ Object.keys(config.entry).forEach(function(key) {
 });
 
 // Globally expose the JS dependencies
-config.module.loaders = Object.keys(globalModules).map(function (pkg) {
-  return {
+config.module.rules = [];
+
+Object.keys(globalModules).forEach(function (pkg) {
+  config.module.rules.push({
     test: require.resolve(pkg),
-    loader: "expose-loader?" + globalModules[pkg]
-  }
+    use: [{
+      loader: "expose-loader",
+      options: globalModules[pkg]
+    }]
+  });
 });
 
 module.exports = config;
