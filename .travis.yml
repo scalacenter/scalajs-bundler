@@ -1,19 +1,10 @@
 language: scala
-dist: trusty
-os:
-  - linux
-scala:
-  - 2.10.6
+sudo: required
 jdk:
   - oraclejdk8
 env:
   global:
     - TRAVIS_NODE_VERSION="8"
-cache:
-  directories:
-    - $HOME/.ivy2/cache
-    - $HOME/.sbt/boot/
-    - $HOME/.coursier/cache
 before_install:
   # Install Node.js and yarn.
   - nvm install 6
@@ -23,3 +14,12 @@ before_install:
   - export PATH=$HOME/.yarn/bin:$PATH
 script:
   - sbt ";test;scripted"
+cache:
+  directories:
+    - $HOME/.ivy2/cache
+    - $HOME/.sbt
+    - $HOME/.coursier/cache
+before_cache:
+  # Cleanup the cached directories to avoid unnecessary cache updates
+  - find $HOME/.ivy2/cache -name "ivydata-*.properties" -print -delete
+  - find $HOME/.sbt        -name "*.lock"               -print -delete
