@@ -21,7 +21,6 @@ private [scalajsbundler] class WebpackDevServer {
     * @param logger - a logger to use for output
     */
   def start(
-    npmDir: File,
     workDir: File,
     configPath: File,
     port: Int,
@@ -30,7 +29,6 @@ private [scalajsbundler] class WebpackDevServer {
   ) = this.synchronized {
     stop()
     worker = Some(new Worker(
-      npmDir,
       workDir,
       configPath,
       port,
@@ -47,7 +45,6 @@ private [scalajsbundler] class WebpackDevServer {
   }
 
   private class Worker(
-    npmDir: File,
     workDir: File,
     configPath: File,
     port: Int,
@@ -55,19 +52,18 @@ private [scalajsbundler] class WebpackDevServer {
     logger: ProcessLogger
   ) {
 
-    logger.info("Starting webpack-dev-server");
-
-    val devServerPath = npmDir / "node_modules" /
-    "webpack-dev-server" / "bin" / "webpack-dev-server.js"
-
     val command = Seq(
       "node",
-      devServerPath.absolutePath,
+      "node_modules/webpack-dev-server/bin/webpack-dev-server.js",
       "--config",
       configPath.absolutePath,
       "--port",
       port.toString
     ) ++ extraArgs
+
+    logger.info("Starting webpack-dev-server");
+    command.foreach(arg => logger.info("  " + arg))
+    logger.info("workDir: " + workDir.toString)
 
     val process = Process(command, workDir).run(logger)
 

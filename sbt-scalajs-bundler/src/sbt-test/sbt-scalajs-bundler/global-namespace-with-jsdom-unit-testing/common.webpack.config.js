@@ -2,7 +2,7 @@ var globalModules = {
   moment: "moment"
 };
 
-module.exports = {
+var config = {
   module: {
     loaders: [
       {
@@ -11,14 +11,20 @@ module.exports = {
         loader: "imports-loader?" + Object.keys(globalModules).map(function(modName) {
           return modName + "=" + globalModules[modName];
         }).join(',')
-      },
-      Object.keys(globalModules).map(function(modName) {
-        // Expose global modules
-        return {
-          test: require.resolve(modName),
-          loader: "expose-loader?" + globalModules[modName]
-        }
-      })
+      }
     ]
   }
-};
+}
+
+Object.keys(globalModules).forEach(function(modName) {
+  // Expose global modules
+  config.module.rules.push(
+    {
+      test: require.resolve(modName),
+      loader: "expose-loader?" + globalModules[modName]
+    }
+  );
+});
+
+
+module.exports = config;

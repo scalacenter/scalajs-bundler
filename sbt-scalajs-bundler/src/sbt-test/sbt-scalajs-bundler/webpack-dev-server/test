@@ -2,7 +2,7 @@
 > fastOptJS::startWebpackDevServer
 # Give the server some time to launch
 # It's hacky, but this is just a test..
-$ sleep 3000
+$ sleep 10000
 > html index.html
 
 # the server should properly stop
@@ -11,7 +11,7 @@ $ sleep 3000
 
 # the server should properly terminate on exit
 > fastOptJS::startWebpackDevServer
-$ sleep 3000
+$ sleep 10000
 > html index.html
 -> exit
 -> html index.html

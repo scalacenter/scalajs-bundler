@@ -32,7 +32,7 @@ import scalajsbundler.util.JSON
   * Version of webpack to use. Example:
   *
   * {{{
-  *   version in webpack := "2.1.0-beta.25"
+  *   version in webpack := "3.5.5"
   * }}}
   *
   * == `version in installJsdom` ==
@@ -42,6 +42,10 @@ import scalajsbundler.util.JSON
   * == `version in installWebpackDevServer` ==
   *
   * Version of webpack-dev-server to use.
+  *
+  * {{{
+  *   version in webpack := "2.7.1"
+  * }}}
   *
   * == `crossTarget in npmUpdate` ==
   *
@@ -457,9 +461,9 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
 
     scalaJSLinkerConfig ~= { _.withModuleKind(ModuleKind.CommonJSModule) },
 
-    version in webpack := "1.14",
+    version in webpack := "3.5.5",
 
-    version in installWebpackDevServer := "1.16.3",
+    version in installWebpackDevServer := "2.7.1",
 
     version in installJsdom := "9.9.0",
 
@@ -510,24 +514,6 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
         install(installDir, useYarn.value, log)(s"jsdom@$jsdomVersion")
       }
       installDir
-    },
-
-    installWebpackDevServer := {
-      val installDir = target.value / "scalajs-bundler-webpack-dev-server"
-      val log = streams.value.log
-      val webpackVersion = (version in webpack).value
-      val webpackDevServerVersion = (version in installWebpackDevServer).value
-
-      if (!installDir.exists()) {
-        log.info(s"Installing webpack-dev-server in ${installDir.absolutePath}")
-        IO.createDirectory(installDir)
-        install(installDir, useYarn.value, log)(
-          // Webpack version should match the setting
-          s"webpack@$webpackVersion",
-          s"webpack-dev-server@$webpackDevServerVersion"
-        )
-      }
-      installDir
     }
   ) ++
     inConfig(Compile)(perConfigSettings) ++
@@ -556,6 +542,8 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       webpackReload in fastOptJS := Def.taskDyn {
         ReloadWorkflowTasks.webpackTask(fastOptJS)
       }.value,
+
+      installWebpackDevServer := npmUpdate.value,
 
       npmUpdate := {
         val log = streams.value.log
@@ -595,6 +583,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
           fullClasspath.value,
           configuration.value,
           (version in webpack).value,
+          (version in installWebpackDevServer).value,
           streams.value
         ),
 
@@ -751,7 +740,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
 
         // This duplicates file layout logic from `Webpack`
         val targetDir = (npmUpdate in stageTask).value
-        val customConfigOption = (webpackConfigFile in stageTask).value
+        val customConfigOption = (webpackConfigFile in startWebpackDevServer).value
         val generatedConfig = (scalaJSBundlerWebpackConfig in stageTask).value
 
         val config = customConfigOption
@@ -766,7 +755,6 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
         val logger = (streams in stageTask).value.log
 
         server.start(
-          serverDir,
           workDir,
           config,
           port,

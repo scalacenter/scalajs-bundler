@@ -28,6 +28,7 @@ object PackageJsonTasks {
     fullClasspath: Seq[Attributed[File]],
     configuration: Configuration,
     webpackVersion: String,
+    webpackDevServerVersion: String,
     streams: Keys.TaskStreams
   ): File = {
 
@@ -56,7 +57,8 @@ object PackageJsonTasks {
         additionalNpmConfig,
         fullClasspath,
         configuration,
-        webpackVersion
+        webpackVersion,
+        webpackDevServerVersion
       )
       ()
     }
