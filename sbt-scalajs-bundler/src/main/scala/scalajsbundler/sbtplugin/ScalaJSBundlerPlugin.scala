@@ -339,7 +339,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       * Whether to use [[https://yarnpkg.com/ Yarn]] to fetch dependencies instead
       * of `npm`. Yarn has a caching mechanism that makes the process faster.
       *
-      * If set to `true`, it requires the `yarn` command to be available in the
+      * If set to `true`, it requires Yarn 0.22.0+ to be available on the
       * host platform.
       *
       * Defaults to `false`.
