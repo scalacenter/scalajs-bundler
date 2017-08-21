@@ -51,6 +51,7 @@ object PackageJson {
       JSON.obj(
         (
           additionalNpmConfig.toSeq :+
+          "private" -> true :+
           "dependencies" -> JSON.objStr(resolveDependencies(dependencies, npmResolutions, log)) :+
           "devDependencies" -> JSON.objStr(resolveDependencies(devDependencies, npmResolutions, log))
         ): _*
