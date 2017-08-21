@@ -18,7 +18,7 @@ var config = {
 
 Object.keys(globalModules).forEach(function(modName) {
   // Expose global modules
-  config.module.loaders.push(
+  config.module.rules.push(
     {
       test: require.resolve(modName),
       loader: "expose-loader?" + globalModules[modName]
