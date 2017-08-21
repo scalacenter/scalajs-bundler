@@ -1,5 +1,13 @@
 # Changelog
 
+## Version 0.8.0-SNAPSHOT
+
+> Not yet released
+
+- [#160](https://github.com/scalacenter/scalajs-bundler/pull/160): 
+  * webpack 3.5.5 and webpack-dev-server 2.1.1 are now the default version
+  * Use the same npm update in webpack-dev-server and bundle
+
 ## Version 0.7.0
 
 > 2017 July 4

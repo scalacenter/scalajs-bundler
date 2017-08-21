@@ -31,7 +31,7 @@ import scalajsbundler._
   * Version of webpack to use. Example:
   *
   * {{{
-  *   version in webpack := "2.1.0-beta.25"
+  *   version in webpack := "3.5.5"
   * }}}
   *
   * == `version in installJsdom` ==
@@ -41,6 +41,10 @@ import scalajsbundler._
   * == `version in installWebpackDevServer` ==
   *
   * Version of webpack-dev-server to use.
+  *
+  * {{{
+  *   version in webpack := "2.7.1"
+  * }}}
   *
   * == `crossTarget in npmUpdate` ==
   *
