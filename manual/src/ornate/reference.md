@@ -62,7 +62,7 @@ By default, `npm` is used to fetch the dependencies but you can use [Yarn](https
 useYarn := true
 ~~~
 
-The `yarn` command must be available in the host platform.
+Yarn 0.22.0+ must be available on the host platform.
 
 ### Reload Workflow {#reload-workflow}
 
