@@ -18,7 +18,6 @@ cache:
   directories:
     - $HOME/.ivy2/cache
     - $HOME/.sbt
-    - $HOME/.coursier/cache
 before_cache:
   # Cleanup the cached directories to avoid unnecessary cache updates
   - find $HOME/.ivy2/cache -name "ivydata-*.properties" -print -delete
