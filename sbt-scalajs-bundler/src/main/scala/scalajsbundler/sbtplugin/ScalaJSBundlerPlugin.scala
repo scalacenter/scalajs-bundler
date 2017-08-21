@@ -15,6 +15,7 @@ import sbt._
 
 import scalajsbundler.ExternalCommand.install
 import scalajsbundler._
+import scalajsbundler.util.JSON
 
 /**
   * This plugin enables `ScalaJSPlugin` and sets the `scalaJSModuleKind` to `CommonJSModule`. It also makes it
@@ -540,7 +541,10 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
 
       npmResolutions := Map.empty,
 
-      additionalNpmConfig := Map.empty,
+      additionalNpmConfig := Map(
+        "private" -> JSON.bool(true),
+        "license" -> JSON.str("UNLICENSED")
+      ),
 
       webpack in fullOptJS := webpackTask(fullOptJS).value,
 
