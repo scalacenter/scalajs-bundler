@@ -54,11 +54,18 @@ object JS {
   /** String literal */
   def str(value: String): JS = JS(StringLiteral(value))
 
+  /** Numeric literal */
+  def int(value: Int): JS = JS(IntLiteral(value))
+
   /** Variable reference */
   def ref(ident: String): JS =
     JS(varRef(ident))
 
   private def varRef(ident: String): VarRef = VarRef(Ident(ident))
+
+  /** Variable definition */
+  def `var`(ident: String, rhs: Option[JSLike] = None): JS =
+    JS(VarDef(Ident(ident), rhs.map(_.tree)))
 
   def regex(value: String): JS =
     JS(New(varRef("RegExp"), List(StringLiteral(value))))
