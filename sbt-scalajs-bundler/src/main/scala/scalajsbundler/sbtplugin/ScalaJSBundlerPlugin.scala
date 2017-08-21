@@ -736,7 +736,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
 
         // This duplicates file layout logic from `Webpack`
         val targetDir = (npmUpdate in stageTask).value
-        val customConfigOption = (webpackConfigFile in stageTask).value
+        val customConfigOption = (webpackConfigFile in startWebpackDevServer).value
         val generatedConfig = (scalaJSBundlerWebpackConfig in stageTask).value
 
         val config = customConfigOption
