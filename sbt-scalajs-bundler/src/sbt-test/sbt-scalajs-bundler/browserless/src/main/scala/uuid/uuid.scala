@@ -6,7 +6,7 @@ import scala.scalajs.js.annotation.JSImport.Namespace
 import scala.scalajs.js.annotation.{JSExport, JSImport}
 import scala.scalajs.js.|
 
-@JSImport("node-uuid/uuid", Namespace)
+@JSImport("uuid", Namespace)
 @js.native
 object uuid extends UUID
 

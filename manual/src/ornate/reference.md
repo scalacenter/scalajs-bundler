@@ -19,7 +19,7 @@ the `webpack` task scoped to a Scala.js stage (`fastOptJS` or `fullOptJS`):
 To define the npm packages your project depends on, use the `npmDependencies` key:
 
 ~~~ scala
-npmDependencies in Compile += "node-uuid" -> "~1.4.7"
+npmDependencies in Compile += "uuid" -> "~3.1.0"
 ~~~
 
 You can also scope dependencies to `Test`:
