@@ -4,7 +4,7 @@ enablePlugins(ScalaJSBundlerPlugin)
 
 scalaVersion := "2.11.8"
 
-npmDependencies in Compile += "node-uuid" -> "1.4.7"
+npmDependencies in Compile += "uuid" -> "3.1.0"
 
 //#relevant-settings
 webpackConfigFile := Some(baseDirectory.value / "webpack.config.js")

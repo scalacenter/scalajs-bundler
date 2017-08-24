@@ -17,7 +17,7 @@ lazy val facade =
     .enablePlugins(ScalaJSBundlerPlugin)
     .settings(commonSettings: _*)
     .settings(
-      npmDependencies in Compile += "node-uuid" -> "1.4.7"
+      npmDependencies in Compile += "uuid" -> "3.1.0"
     )
 
 lazy val commonSettings = Seq(
