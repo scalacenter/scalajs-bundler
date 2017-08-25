@@ -24,8 +24,6 @@ webpackConfigFile in fastOptJS := Some(baseDirectory.value / "dev.webpack.config
 webpackConfigFile in fullOptJS := Some(baseDirectory.value / "prod.webpack.config.js")
 
 // Use the shared Webpack configuration file for reload workflow and for running the tests
-webpackConfigFile in webpackReload := Some(baseDirectory.value / "common.webpack.config.js")
-
 webpackConfigFile in Test := Some(baseDirectory.value / "common.webpack.config.js")
 
 libraryDependencies += "org.scalatest" %%% "scalatest" % "3.0.0" % Test
@@ -33,7 +31,7 @@ libraryDependencies += "org.scalatest" %%% "scalatest" % "3.0.0" % Test
 // Execute the tests in browser-like environment
 requiresDOM in Test := true
 
-enableReloadWorkflow := true
+webpackBundlingMode := BundlingMode.LibraryAndApplication()
 
 useYarn := true
 
@@ -51,7 +49,11 @@ InputKey[Unit]("html") := {
 }
 
 TaskKey[Unit]("checkSize") := {
-  val size = IO.readBytes((webpack in (Compile, fullOptJS)).value.head).length
+  val files = (webpack in (Compile, fullOptJS)).value
+  val bundleFile = files
+    .find(_.metadata.get(BundlerFileTypeAttr).exists(_ == BundlerFileType.ApplicationBundle))
+    .get.data
+  val artifactSize = IO.readBytes(bundleFile).length
   // Account for minor variance in size due to transitive dependency updates
-  assert(size > 150000 && size < 200000)
+  assert(artifactSize > 150000 && artifactSize < 200000)
 }

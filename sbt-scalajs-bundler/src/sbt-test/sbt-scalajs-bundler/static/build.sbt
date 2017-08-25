@@ -20,7 +20,7 @@ libraryDependencies += "org.scalatest" %%% "scalatest" % "3.0.0" % Test
 // Execute the tests in browser-like environment
 requiresDOM in Test := true
 
-enableReloadWorkflow := true
+webpackBundlingMode := BundlingMode.LibraryAndApplication()
 
 useYarn := true
 
@@ -38,7 +38,13 @@ InputKey[Unit]("html") := {
 }
 
 TaskKey[Unit]("checkSize") := {
-  val artifactSize = IO.readBytes((webpack in (Compile, fullOptJS)).value.head).length
-  val expected = 19790
+  //#filter-files
+  val files = (webpack in (Compile, fullOptJS)).value
+  val bundleFile = files
+    .find(_.metadata.get(BundlerFileTypeAttr).exists(_ == BundlerFileType.ApplicationBundle))
+    .get.data
+  //#filter-files
+  val artifactSize = IO.readBytes(bundleFile).length
+  val expected = 20802
   assert(artifactSize == expected, s"expected: $expected, got: $artifactSize")
 }

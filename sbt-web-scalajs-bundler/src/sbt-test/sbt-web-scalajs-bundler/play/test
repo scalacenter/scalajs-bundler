@@ -1,3 +1,4 @@
+> clean
 $ absent client/target/scala-2.11/scalajs-bundler/main/client-fastopt-bundle.js
 > server/scalaJSDev
 $ exists client/target/scala-2.11/scalajs-bundler/main/client-fastopt-bundle.js

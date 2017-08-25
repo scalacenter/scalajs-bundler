@@ -7,7 +7,7 @@ scalaVersion := "2.11.8"
 npmDependencies in Compile += "uuid" -> "3.1.0"
 
 //#relevant-settings
-webpackConfigFile := Some(baseDirectory.value / "webpack.config.js")
+webpackBundlingMode := BundlingMode.LibraryAndApplication()
 //#relevant-settings
 
 // Check that a HTML can be loaded (and that its JavaScript can be executed) without errors

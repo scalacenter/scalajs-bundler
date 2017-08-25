@@ -215,16 +215,10 @@ By default, `ScalaJSBundlerPlugin` assumes that your application only has a main
 `scalaJSUseMainModuleInitializer := true`, and disregards top-level *exports*. If you have exports that
 need to be exposed as several entry points, this will not work.
 
-In such a case, you will have to use a custom webpack config file telling to expose the bundle as a library.
+In such a case, you can use `BundlingMode.LibraryAndApplication()`.
 
 `build.sbt`:
-
-~~~ scala src="../../../sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler/library/build.sbt#relevant-settings"
-~~~
-
-`webpack.config.js`:
-
-~~~ javascript tab="webpack.config.js" src="../../../sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler/library/webpack.config.js"
+~~~ scala src=../../../sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler/library/build.sbt#relevant-settings
 ~~~
 
 Then, assuming that you defined the following library:
@@ -239,11 +233,22 @@ You can call its methods as follows from your JavaScript code:
 
 ## How to improve the performance of the bundling process? {#performance}
 
-You can enable the [reload workflow](reference.md#reload-workflow) and disable source maps:
+You can enable the [library-only bundling mode](reference.md#bundling-mode-library-only) and disable source maps:
 
 ~~~ scala
-enableReloadWorkflow := true
+webpackBundlingMode := BundlingMode.LibraryOnly() 
 emitSourceMaps := false
+~~~
+
+## How to select specific files from the `BundlingMode.Library` output
+
+In [library-only bundling mode](reference.md#bundling-mode-library-only) and 
+[library with application bundling mode](reference.md#bundling-mode-library-and-application), the `webpack` task
+produces multiple files. In order to determine which of these files is, for instance, the 
+[BundlerFileType.Application](api:scalajsbundler.BundlerFileType$$Application$), you 
+can use the `_.metadata` property of the files, like this:
+
+~~~ scala src="../../../sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler/static/build.sbt#filter-files"
 ~~~
 
 ## How to rebuild and reload your page on code changes? {#webpack-dev-server}
@@ -262,7 +267,7 @@ The standard work session looks like this:
     ~~~
     > ~fastOptJS
     ~~~
-3. Now each time you change a source file, scala-js recompiles it, and webpack-dev-server
+3. Now each time you change a source file, Scala.js recompiles it, and webpack-dev-server
     switches to the updated version.
 4. Shut down the background process:
     ~~~
