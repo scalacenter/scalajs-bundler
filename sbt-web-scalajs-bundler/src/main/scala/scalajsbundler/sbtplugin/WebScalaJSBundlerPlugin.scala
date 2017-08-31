@@ -43,10 +43,23 @@ object WebScalaJSBundlerPlugin extends AutoPlugin {
   override lazy val requires = WebScalaJS
 
   override lazy val projectSettings = Seq(
+    monitoredScalaJSDirectories ++= allFrontendProjectResourceDirectories.value,
     scalaJSDev := pipelineStage(fastOptJS in Compile, scalaJSDev).value,
     scalaJSProd := pipelineStage(fullOptJS in Compile, scalaJSProd).value,
     npmAssets := Nil
   )
+
+  val allFrontendProjectResourceDirectories: Def.Initialize[Seq[File]] = Def.settingDyn {
+    val projectRefs = scalaJSProjects.value.map(Project.projectToRef)
+    projectRefs.map { project =>
+      Def.setting {
+        (resourceDirectories in Compile in project).value
+      }
+    }.foldLeft(Def.setting(Seq.empty[File]))((acc, resourceDirectories) =>
+      Def.setting(acc.value ++ resourceDirectories.value)
+    )
+  }
+
 
   def pipelineStage(sjsStage: TaskKey[Attributed[File]], self: TaskKey[Pipeline.Stage]): Def.Initialize[Task[Pipeline.Stage]] =
     Def.taskDyn {
