@@ -572,7 +572,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
             if (useYarn.value) {
               Yarn.run("install", "--non-interactive")(targetDir, log)
             } else {
-              Npm.run("update")(targetDir, log)
+              Npm.run("install")(targetDir, log)
             }
             jsResources.foreach { resource =>
               IO.write(targetDir / resource.relativePath, resource.content)
