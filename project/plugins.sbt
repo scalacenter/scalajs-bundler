@@ -8,7 +8,7 @@ libraryDependencies += "org.scala-sbt" % "scripted-plugin" % sbtVersion.value
 
 addSbtPlugin("com.typesafe.sbt" % "sbt-site" % "1.1.0")
 
-addSbtPlugin("com.novocode" % "sbt-ornate" % "0.3")
+addSbtPlugin("com.novocode" % "sbt-ornate" % "0.5")
 
 addSbtPlugin("com.eed3si9n" % "sbt-unidoc" % "0.3.3")
 

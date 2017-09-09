@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 0.8.0
+When upgrading to this release, make sure to check out the new [webpackBundlingMode](reference.md#bundling-mode) 
+configuration value. The old `enableReloadWorkflow` key has been removed, in favor 
+of `BundlingMode.LibraryAndApplication()`.
+
 ## Version 0.7.0
 
 > 2017 July 4

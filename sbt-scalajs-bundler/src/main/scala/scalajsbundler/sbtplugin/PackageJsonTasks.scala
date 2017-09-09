@@ -2,7 +2,7 @@ package scalajsbundler.sbtplugin
 
 import sbt._
 
-import scalajsbundler.PackageJson
+import scalajsbundler.{BundlerFile, PackageJson}
 import scalajsbundler.util.{Caching, JSON}
 
 object PackageJsonTasks {
@@ -29,7 +29,7 @@ object PackageJsonTasks {
     configuration: Configuration,
     webpackVersion: String,
     streams: Keys.TaskStreams
-  ): File = {
+  ): BundlerFile.PackageJson = {
 
     val hash = Seq(
       configuration.name,
@@ -61,7 +61,7 @@ object PackageJsonTasks {
       ()
     }
 
-    packageJsonFile
+    BundlerFile.PackageJson(packageJsonFile)
   }
 
 }

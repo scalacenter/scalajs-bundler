@@ -1,13 +1,13 @@
 package scalajsbundler.sbtplugin
 
-import org.scalajs.core.tools.io.{FileVirtualJSFile, VirtualJSFile}
+import org.scalajs.core.tools.io.FileVirtualJSFile
 import org.scalajs.core.tools.jsdep.ResolvedJSDependency
 import org.scalajs.core.tools.linker.backend.ModuleKind
 import org.scalajs.jsenv.ComJSEnv
 import org.scalajs.jsenv.nodejs.NodeJSEnv
 import org.scalajs.sbtplugin.Loggers.sbtLogger2ToolsLogger
 import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
-import org.scalajs.sbtplugin.ScalaJSPluginInternal.{scalaJSEnsureUnforked, scalaJSModuleIdentifier, scalaJSRequestsDOM}
+import org.scalajs.sbtplugin.ScalaJSPluginInternal._
 import org.scalajs.sbtplugin.{FrameworkDetectorWrapper, ScalaJSPlugin, ScalaJSPluginInternal, Stage}
 import org.scalajs.testadapter.ScalaJSFramework
 import sbt.Keys._
@@ -24,7 +24,7 @@ import scalajsbundler.util.JSON
   *
   * = Tasks and Settings =
   *
-  * The [[ScalaJSBundlerPlugin$.autoImport autoImport]] member documents the keys provided by this plugin. Besides these keys, the
+  * The [[ScalaJSBundlerPlugin.autoImport autoImport]] member documents the keys provided by this plugin. Besides these keys, the
   * following existing keys also control the plugin:
   *
   * == `version in webpack` ==
@@ -62,6 +62,15 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
     * @groupname settings Settings
     */
   object autoImport {
+    type BundlingMode = scalajsbundler.BundlingMode
+    val BundlingMode = scalajsbundler.BundlingMode
+    type BundlerFile = scalajsbundler.BundlerFile
+    val BundlerFile = scalajsbundler.BundlerFile
+    type BundlerFileType = scalajsbundler.BundlerFileType
+    val BundlerFileType = scalajsbundler.BundlerFileType
+    val ProjectNameAttr: AttributeKey[String] = SBTBundlerFile.ProjectNameAttr
+    val BundlerFileTypeAttr: AttributeKey[BundlerFileType] = SBTBundlerFile.BundlerFileTypeAttr
+    implicit class RichBundlerFile(f: BundlerFile.Public) extends SBTBundlerFile(f)
 
     /**
       * Fetches NPM dependencies. Returns the directory in which the `npm install` command has been run.
@@ -155,6 +164,19 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       settingKey[Map[String, util.JSON]]("Additional option to include in the generated 'package.json'")
 
     /**
+      * [[scalajsbundler.BundlingMode]] to use.
+      *
+      * Must be one of:
+      *   `Application`             - Process the entire Scala.js output file with webpack, producing a bundle including all dependencies
+      *   `LibraryOnly()`           - Process only the entrypoints via webpack and produce a library of dependencies
+      *   `LibraryAndApplication()  - Process only the entrypoints, concatenating the library with the application to produce a bundle
+      *
+      * The default value is `Application`
+      */
+    val webpackBundlingMode: SettingKey[BundlingMode] =
+      settingKey[BundlingMode]("Bundling mode, one of BundlingMode.{ Application,  LibraryOnly, LibraryAndApplication }.")
+
+    /**
       * Bundles the output of a Scala.js stage.
       *
       * This task must be scoped by a Scala.js stage (either `fastOptJS` or `fullOptJS`) and
@@ -185,34 +207,22 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       * used files have changed. The list of files to be monitored is
       * provided by webpackMonitoredFiles
       *
-      * @group tasks
-      */
-    val webpack: TaskKey[Seq[File]] =
-      taskKey[Seq[File]]("Bundle the output of a Scala.js stage using webpack")
-
-    /**
-      * Bundles the output of a Scala.js stage using the reload workflow.
-      *
-      * This is equivalent to running fastOptJS::webpack with reloadWorkflow := true.
-      * This task must be scoped by the Scala.js fastOptJS stage.
-      *
-      * For instance, to bundle the output of `fastOptJS`, run the following task from the sbt shell:
+      * The files produced are wrapped in [[sbt.Attributed]], and tagged with
+      * [[scalajsbundler.sbtplugin.SBTBundlerFile.ProjectNameAttr]] and
+      * [[scalajsbundler.sbtplugin.SBTBundlerFile.BundlerFileTypeAttr]]. The
+      * [[scalajsbundler.sbtplugin.SBTBundlerFile.ProjectNameAttr]] contains the "prefix" of the file names, such
+      * as `yourapp-fastopt`, while the
+      * [[scalajsbundler.sbtplugin.SBTBundlerFile.BundlerFileTypeAttr]] contains the bundle file type, which can be
+      * used to filter the list of files by their [[scalajsbundler.BundlerFileType]]. For example:
       *
       * {{{
-      *   fastOptJS::webpackReload
-      * }}}
-      *
-      * To use a custom webpack configuration file use:
-      *
-      * {{{
-      *   webpackConfigFile in webpackReload := Some(baseDirectory.value / "webpack-reload.config.js"),
+      *   webpack.value.find(_.metadata.get(BundlerFileTypeAttr).exists(_ == BundlerFileType.ApplicationBundle))
       * }}}
       *
       * @group tasks
       */
-    val webpackReload: TaskKey[Seq[File]] =
-      taskKey[Seq[File]]("Bundle the output of a Scala.js stage by appending the generated javascript to the pre-bundled dependencies")
-
+    val webpack: TaskKey[Seq[Attributed[File]]] =
+      taskKey[Seq[Attributed[File]]]("Bundle the output of a Scala.js stage using webpack")
 
     /**
       * configuration file to use with webpack. By default, the plugin generates a
@@ -247,16 +257,6 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       */
     val webpackResources: SettingKey[PathFinder] =
       settingKey[PathFinder]("Webpack resources to copy to target directory (defaults to *.js)")
-
-
-    /**
-      * List of entry bundles to generate. By default it generates just one bundle
-      * for your main class.
-      *
-      * @group tasks
-      */
-    val webpackEntries: TaskKey[Seq[(String, File)]] =
-      taskKey[Seq[(String, File)]]("Webpack entry bundles")
 
     /**
       * whether to enable (or not) source-map in
@@ -312,28 +312,6 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       */
     val webpackMonitoredFiles: TaskKey[Seq[File]] =
       taskKey[Seq[File]]("Files that trigger webpack launch")
-
-    /**
-      * whether to enable the “reload workflow” for `webpack in fastOptJS`.
-      *
-      * When enabled, dependencies are pre-bundled so that the output of `fastOptJS` can directly
-      * be executed by a web browser without being further processed by a bundling system. This
-      * reduces the delays when live-reloading the application on source modifications. Defaults
-      * to `false`.
-      *
-      * Note that the “reload workflow” does uses the custom webpack configuration file scoped to
-      * the webpackReload task.
-      *
-      * For example:
-      *
-      * {{{
-      *   webpackConfigFile in webpackReload := Some(baseDirectory.value / "webpack-reload.config.js"),
-      * }}}
-      *
-      * @group settings
-      */
-    val enableReloadWorkflow: SettingKey[Boolean] =
-      settingKey[Boolean]("Whether to enable the reload workflow for fastOptJS")
 
     /**
       * Whether to use [[https://yarnpkg.com/ Yarn]] to fetch dependencies instead
@@ -433,10 +411,16 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
   }
 
   private val scalaJSBundlerPackageJson =
-    TaskKey[File]("scalaJSBundlerPackageJson", "Write a package.json file defining the NPM dependencies of project", KeyRanks.Invisible)
+    TaskKey[BundlerFile.PackageJson]("scalaJSBundlerPackageJson",
+      "Write a package.json file defining the NPM dependencies of project",
+      KeyRanks.Invisible
+    )
 
-  private val scalaJSBundlerWebpackConfig =
-    TaskKey[File]("scalaJSBundlerWebpackConfig", "Write the webpack configuration file", KeyRanks.Invisible)
+  private[sbtplugin] val scalaJSBundlerWebpackConfig =
+    TaskKey[BundlerFile.WebpackConfig]("scalaJSBundlerWebpackConfig",
+      "Write the webpack configuration file",
+      KeyRanks.Invisible
+    )
 
   private val webpackDevServer = SettingKey[WebpackDevServer](
     "webpackDevServer",
@@ -470,14 +454,14 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
     // Include the manifest in the produced artifact
     (products in Compile) := (products in Compile).dependsOn(scalaJSBundlerManifest).value,
 
-    enableReloadWorkflow := false,
-
     useYarn := false,
 
     ensureModuleKindIsCommonJSModule := {
       if (scalaJSModuleKind.value == ModuleKind.CommonJSModule) true
       else sys.error(s"scalaJSModuleKind must be set to ModuleKind.CommonJSModule in projects where ScalaJSBundler plugin is enabled")
     },
+
+    webpackBundlingMode := BundlingMode.Default,
 
     // Make these settings project-level, since we don't expect much
     // difference between configurations/stages. This way the
@@ -546,17 +530,6 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
         "license" -> JSON.str("UNLICENSED")
       ),
 
-      webpack in fullOptJS := webpackTask(fullOptJS).value,
-
-      webpack in fastOptJS := Def.taskDyn {
-        if (enableReloadWorkflow.value) ReloadWorkflowTasks.webpackTask(fastOptJS)
-        else webpackTask(fastOptJS)
-      }.value,
-
-      webpackReload in fastOptJS := Def.taskDyn {
-        ReloadWorkflowTasks.webpackTask(fastOptJS)
-      }.value,
-
       npmUpdate := {
         val log = streams.value.log
         val targetDir = (crossTarget in npmUpdate).value
@@ -580,7 +553,8 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
             Set.empty
           }
 
-        cachedActionFunction(Set(packageJsonFile) ++ jsResources.collect { case f: FileVirtualJSFile => f.file }.to[Set])
+        cachedActionFunction(Set(packageJsonFile.file) ++
+          jsResources.collect { case f: FileVirtualJSFile => f.file }.to[Set])
 
         targetDir
       },
@@ -699,19 +673,21 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       // Override Scala.js’ relativeSourceMaps in case we have to emit source maps in the webpack task, because it does not work with absolute source maps
       relativeSourceMaps in stageTask := (webpackEmitSourceMaps in stageTask).value,
 
-      webpackEntries in stageTask := {
-        val stageFile = stageTask.value.data
-        val name = stageFile.name.stripSuffix(".js")
-        Seq(name -> stageFile)
-      },
+      scalaJSBundlerWebpackConfig in stageTask := BundlerFile.WebpackConfig(
+        WebpackTasks.entry(stageTask).value,
+        npmUpdate.value / "scalajs.webpack.config.js"
+      ),
 
-      scalaJSBundlerWebpackConfig in stageTask :=
-        Webpack.writeConfigFile(
-          (webpackEmitSourceMaps in stageTask).value,
-          (webpackEntries in stageTask).value,
-          npmUpdate.value,
-          streams.value.log
-        ),
+      webpack in stageTask := Def.taskDyn {
+        webpackBundlingMode.value match {
+          case scalajsbundler.BundlingMode.Application =>
+            WebpackTasks.webpack(stageTask)
+          case mode: scalajsbundler.BundlingMode.LibraryOnly =>
+            LibraryTasks.librariesAndLoaders(stageTask, mode)
+          case mode: scalajsbundler.BundlingMode.LibraryAndApplication =>
+            LibraryTasks.libraryAndLoadersBundle(stageTask, mode)
+        }
+      }.value,
 
       webpackEmitSourceMaps in stageTask := (emitSourceMaps in stageTask).value,
 
@@ -719,22 +695,21 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
         val generatedWebpackConfigFile = (scalaJSBundlerWebpackConfig in stageTask).value
         val customWebpackConfigFile = (webpackConfigFile in stageTask).value
         val packageJsonFile = scalaJSBundlerPackageJson.value
-        val entries = (webpackEntries in stageTask).value
-
+        val entry = WebpackTasks.entry(stageTask).value
         val filter = (includeFilter in webpackMonitoredFiles).value
         val dirs = (webpackMonitoredDirectories in stageTask).value
 
-        val additionalFiles = dirs.flatMap(
+        val generatedFiles: Seq[File] = Seq(
+          packageJsonFile.file,
+          generatedWebpackConfigFile.file ,
+          entry.file
+        )
+        val additionalFiles: Seq[File] = dirs.flatMap(
           dir => (dir ** filter).get
         )
-
-        packageJsonFile +:
-          generatedWebpackConfigFile +:
-          customWebpackConfigFile ++:
-          entries.map(_._2) ++:
-          // Entries only contain launchers - we need to monitor
-          // Scala.js bundles themselves, too.
-          stageTask.value.data +:
+        generatedFiles ++
+          customWebpackConfigFile.toSeq ++
+          webpackResources.value.get ++
           additionalFiles
       },
 
@@ -756,7 +731,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
 
         val config = customConfigOption
           .map(Webpack.copyCustomWebpackConfigFiles(targetDir, webpackResources.value.get))
-          .getOrElse(generatedConfig)
+          .getOrElse(generatedConfig.file)
 
         // To match `webpack` task behavior
         val workDir = targetDir
@@ -783,39 +758,10 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
     )
   }
 
-  def webpackTask(stage: TaskKey[Attributed[File]]): Def.Initialize[Task[Seq[File]]] =
-    Def.task {
-      assert(ensureModuleKindIsCommonJSModule.value)
-      val log = streams.value.log
-      val targetDir = npmUpdate.value
-      val generatedWebpackConfigFile = (scalaJSBundlerWebpackConfig in stage).value
-      val customWebpackConfigFile = (webpackConfigFile in stage).value
-      val webpackResourceFiles = webpackResources.value.get
-      val entries = (webpackEntries in stage).value
-      val monitoredFiles = (webpackMonitoredFiles in stage).value
-
-      val cachedActionFunction =
-        FileFunction.cached(
-          streams.value.cacheDirectory / s"${stage.key.label}-webpack",
-          inStyle = FilesInfo.hash
-        ) { _ =>
-          Webpack.bundle(
-            generatedWebpackConfigFile,
-            customWebpackConfigFile,
-            webpackResourceFiles,
-            entries,
-            targetDir,
-            log
-          ).to[Set]
-        }
-
-      cachedActionFunction(monitoredFiles.to[Set]).to[Seq]
-    }
-
   /**
     * Writes the scalajs-bundler manifest file.
     */
-  lazy val scalaJSBundlerManifest: Def.Initialize[Task[File]] =
+  val scalaJSBundlerManifest: Def.Initialize[Task[File]] =
     Def.task {
       NpmDependencies.writeManifest(
         NpmDependencies(
