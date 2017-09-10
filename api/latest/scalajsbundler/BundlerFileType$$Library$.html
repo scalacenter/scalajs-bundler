@@ -2,17 +2,17 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>ReloadWorkflowTasks - scalajsbundler.sbtplugin.ReloadWorkflowTasks</title>
-          <meta name="description" content="ReloadWorkflowTasks - scalajsbundler.sbtplugin.ReloadWorkflowTasks" />
-          <meta name="keywords" content="ReloadWorkflowTasks scalajsbundler.sbtplugin.ReloadWorkflowTasks" />
+          <title>Library - scalajsbundler.BundlerFileType.Library</title>
+          <meta name="description" content="Library - scalajsbundler.BundlerFileType.Library" />
+          <meta name="keywords" content="Library scalajsbundler.BundlerFileType.Library" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
-      <link href="../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
-      <link href="../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <link href="../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
       <script type="text/javascript">
          if(top === self) {
-            var url = '../../index.html';
-            var hash = 'scalajsbundler.sbtplugin.ReloadWorkflowTasks$';
+            var url = '../index.html';
+            var hash = 'scalajsbundler.BundlerFileType$$Library$';
             var anchor = window.location.hash;
             var anchor_opt = '';
             if (anchor.length >= 1)
@@ -24,9 +24,9 @@
         </head>
         <body class="value">
       <div id="definition">
-        <img src="../../lib/object_big.png" />
-        <p id="owner"><a href="../package.html" class="extype" name="scalajsbundler">scalajsbundler</a>.<a href="package.html" class="extype" name="scalajsbundler.sbtplugin">sbtplugin</a></p>
-        <h1>ReloadWorkflowTasks</h1>
+        <img src="../lib/object_big.png" />
+        <p id="owner"><a href="package.html" class="extype" name="scalajsbundler">scalajsbundler</a>.<a href="BundlerFileType$.html" class="extype" name="scalajsbundler.BundlerFileType">BundlerFileType</a></p>
+        <h1>Library</h1>
       </div>
 
       <h4 id="signature" class="signature">
@@ -35,13 +35,14 @@
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <span class="name">ReloadWorkflowTasks</span>
+        <span class="name">Library</span><span class="result"> extends <a href="BundlerFileType.html" class="extype" name="scalajsbundler.BundlerFileType">BundlerFileType</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Sbt tasks related to the reload workflow</p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/scalacenter/scalajs-bundler/blob/v0.8.0-SNAPSHOT/sbt-scalajs-bundler/src/main/scala/scalajsbundler/sbtplugin/ReloadWorkflowTasks.scala" target="_blank">ReloadWorkflowTasks.scala</a></dd></dl><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Library dependencies provided by webpack
+</p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/scalacenter/scalajs-bundler/blob/v0.9.0-SNAPSHOT/sbt-scalajs-bundler/src/main/scala/scalajsbundler/BundlerFileType.scala" target="_blank">BundlerFileType.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <a href="BundlerFileType.html" class="extype" name="scalajsbundler.BundlerFileType">BundlerFileType</a>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -59,7 +60,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="scalajsbundler.sbtplugin.ReloadWorkflowTasks"><span>ReloadWorkflowTasks</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="scalajsbundler.BundlerFileType.Library"><span>Library</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.Product"><span>Product</span></li><li class="in" name="scala.Equals"><span>Equals</span></li><li class="in" name="scalajsbundler.BundlerFileType"><span>BundlerFileType</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -163,19 +164,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="scalajsbundler.sbtplugin.ReloadWorkflowTasks#bundleDependenciesTask" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="bundleDependenciesTask(stage:sbt.TaskKey[sbt.Attributed[sbt.File]]):sbt.Def.Initialize[sbt.Task[sbt.File]]"></a>
-      <a id="bundleDependenciesTask(TaskKey[Attributed[File]]):sbt.Def.Initialize[Task[File]]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">bundleDependenciesTask</span><span class="params">(<span name="stage">stage: <span class="extype" name="sbt.TaskKey">TaskKey</span>[<span class="extype" name="sbt.Attributed">Attributed</span>[<a href="../../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a>]]</span>)</span><span class="result">: <span class="extype" name="sbt.Init.Initialize">sbt.Def.Initialize</span>[<span class="extype" name="sbt.Task">Task</span>[<a href="../../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a>]]</span>
-      </span>
-      </h4>
-      
     </li><li name="scala.AnyRef#clone" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a>
       <a id="clone():AnyRef"></a>
@@ -188,7 +176,7 @@
         <span class="name">clone</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.AnyRef">AnyRef</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
       <span class="defval" name="classOf[java.lang.CloneNotSupportedException]">...</span>
@@ -233,7 +221,7 @@
         <span class="name">finalize</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
       <span class="symbol">classOf[java.lang.Throwable]</span>
@@ -250,19 +238,6 @@
       </span>
       <span class="symbol">
         <span class="name">getClass</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.Class">Class</span>[_]</span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="scala.AnyRef#hashCode" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="hashCode():Int"></a>
-      <a id="hashCode():Int"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">hashCode</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
@@ -331,19 +306,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="scala.AnyRef#toString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="toString():String"></a>
-      <a id="toString():String"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">toString</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <a id="wait():Unit"></a>
@@ -401,32 +363,6 @@
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="scalajsbundler.sbtplugin.ReloadWorkflowTasks#webpackTask" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="webpackTask(stage:sbt.TaskKey[sbt.Attributed[sbt.File]]):sbt.Def.Initialize[sbt.Task[Seq[sbt.File]]]"></a>
-      <a id="webpackTask(TaskKey[Attributed[File]]):sbt.Def.Initialize[Task[Seq[File]]]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">webpackTask</span><span class="params">(<span name="stage">stage: <span class="extype" name="sbt.TaskKey">TaskKey</span>[<span class="extype" name="sbt.Attributed">Attributed</span>[<a href="../../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a>]]</span>)</span><span class="result">: <span class="extype" name="sbt.Init.Initialize">sbt.Def.Initialize</span>[<span class="extype" name="sbt.Task">Task</span>[<span class="extype" name="scala.Seq">Seq</span>[<a href="../../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a>]]]</span>
-      </span>
-      </h4>
-      
-    </li><li name="scalajsbundler.sbtplugin.ReloadWorkflowTasks#writeLoaderTask" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="writeLoaderTask(stage:sbt.TaskKey[sbt.Attributed[sbt.File]]):sbt.Def.Initialize[sbt.Task[sbt.File]]"></a>
-      <a id="writeLoaderTask(TaskKey[Attributed[File]]):sbt.Def.Initialize[Task[File]]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">writeLoaderTask</span><span class="params">(<span name="stage">stage: <span class="extype" name="sbt.TaskKey">TaskKey</span>[<span class="extype" name="sbt.Attributed">Attributed</span>[<a href="../../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a>]]</span>)</span><span class="result">: <span class="extype" name="sbt.Init.Initialize">sbt.Def.Initialize</span>[<span class="extype" name="sbt.Task">Task</span>[<a href="../../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a>]]</span>
-      </span>
-      </h4>
-      
     </li></ol>
             </div>
 
@@ -436,7 +372,17 @@
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="scala.AnyRef">
+        <div class="parent" name="scala.Serializable">
+              <h3>Inherited from <span class="extype" name="scala.Serializable">Serializable</span></h3>
+            </div><div class="parent" name="java.io.Serializable">
+              <h3>Inherited from <span class="extype" name="java.io.Serializable">Serializable</span></h3>
+            </div><div class="parent" name="scala.Product">
+              <h3>Inherited from <span class="extype" name="scala.Product">Product</span></h3>
+            </div><div class="parent" name="scala.Equals">
+              <h3>Inherited from <span class="extype" name="scala.Equals">Equals</span></h3>
+            </div><div class="parent" name="scalajsbundler.BundlerFileType">
+              <h3>Inherited from <a href="BundlerFileType.html" class="extype" name="scalajsbundler.BundlerFileType">BundlerFileType</a></h3>
+            </div><div class="parent" name="scala.AnyRef">
               <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
             </div><div class="parent" name="scala.Any">
               <h3>Inherited from <span class="extype" name="scala.Any">Any</span></h3>
@@ -456,6 +402,6 @@
       <div id="tooltip"></div>
 
       <div id="footer">  </div>
-      <script defer="defer" type="text/javascript" id="jquery-js" src="../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../lib/template.js"></script>
+      <script defer="defer" type="text/javascript" id="jquery-js" src="../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../lib/template.js"></script>
     </body>
       </html>

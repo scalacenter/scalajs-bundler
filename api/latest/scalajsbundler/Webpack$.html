@@ -39,7 +39,7 @@
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/scalacenter/scalajs-bundler/blob/v0.8.0-SNAPSHOT/sbt-scalajs-bundler/src/main/scala/scalajsbundler/Webpack.scala" target="_blank">Webpack.scala</a></dd></dl><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/scalacenter/scalajs-bundler/blob/v0.9.0-SNAPSHOT/sbt-scalajs-bundler/src/main/scala/scalajsbundler/Webpack.scala" target="_blank">Webpack.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
@@ -164,33 +164,35 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
     </li><li name="scalajsbundler.Webpack#bundle" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="bundle(generatedWebpackConfigFile:sbt.File,customWebpackConfigFile:Option[sbt.File],webpackResources:Seq[sbt.File],entries:Seq[(String,sbt.File)],targetDir:sbt.File,log:sbt.Logger):Seq[sbt.File]"></a>
-      <a id="bundle(File,Option[File],Seq[File],Seq[(String,File)],File,Logger):Seq[File]"></a>
+      <a id="bundle(emitSourceMaps:Boolean,generatedWebpackConfigFile:scalajsbundler.BundlerFile.WebpackConfig,customWebpackConfigFile:Option[sbt.File],webpackResources:Seq[sbt.File],entry:scalajsbundler.BundlerFile.Application,targetDir:sbt.File,log:sbt.Logger):scalajsbundler.BundlerFile.ApplicationBundle"></a>
+      <a id="bundle(Boolean,WebpackConfig,Option[File],Seq[File],Application,File,Logger):ApplicationBundle"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">bundle</span><span class="params">(<span name="generatedWebpackConfigFile">generatedWebpackConfigFile: <a href="../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a></span>, <span name="customWebpackConfigFile">customWebpackConfigFile: <span class="extype" name="scala.Option">Option</span>[<a href="../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a>]</span>, <span name="webpackResources">webpackResources: <span class="extype" name="scala.Seq">Seq</span>[<a href="../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a>]</span>, <span name="entries">entries: <span class="extype" name="scala.Seq">Seq</span>[(<span class="extype" name="scala.Predef.String">String</span>, <a href="../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a>)]</span>, <span name="targetDir">targetDir: <a href="../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a></span>, <span name="log">log: <span class="extype" name="sbt.Logger">Logger</span></span>)</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<a href="../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a>]</span>
+        <span class="name">bundle</span><span class="params">(<span name="emitSourceMaps">emitSourceMaps: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="generatedWebpackConfigFile">generatedWebpackConfigFile: <a href="BundlerFile$$WebpackConfig.html" class="extype" name="scalajsbundler.BundlerFile.WebpackConfig">WebpackConfig</a></span>, <span name="customWebpackConfigFile">customWebpackConfigFile: <span class="extype" name="scala.Option">Option</span>[<a href="../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a>]</span>, <span name="webpackResources">webpackResources: <span class="extype" name="scala.Seq">Seq</span>[<a href="../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a>]</span>, <span name="entry">entry: <a href="BundlerFile$$Application.html" class="extype" name="scalajsbundler.BundlerFile.Application">Application</a></span>, <span name="targetDir">targetDir: <a href="../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a></span>, <span name="log">log: <span class="extype" name="sbt.Logger">Logger</span></span>)</span><span class="result">: <a href="BundlerFile$$ApplicationBundle.html" class="extype" name="scalajsbundler.BundlerFile.ApplicationBundle">ApplicationBundle</a></span>
       </span>
       </h4>
       <p class="shortcomment cmt">Run webpack to bundle the application.</p><div class="fullcomment"><div class="comment cmt"><p>Run webpack to bundle the application.
-</p></div><dl class="paramcmts block"><dt class="param">generatedWebpackConfigFile</dt><dd class="cmt"><p>Webpack config file generated by scalajs-bundler</p></dd><dt class="param">customWebpackConfigFile</dt><dd class="cmt"><p>User supplied config file</p></dd><dt class="param">entries</dt><dd class="cmt"><p>Module entries</p></dd><dt class="param">targetDir</dt><dd class="cmt"><p>Target directory (and working directory for Nodejs)</p></dd><dt class="param">log</dt><dd class="cmt"><p>Logger</p></dd><dt>returns</dt><dd class="cmt"><p>The generated bundles
+</p></div><dl class="paramcmts block"><dt class="param">emitSourceMaps</dt><dd class="cmt"><p>Whether or not source maps are enabled</p></dd><dt class="param">generatedWebpackConfigFile</dt><dd class="cmt"><p>Webpack config file generated by scalajs-bundler</p></dd><dt class="param">customWebpackConfigFile</dt><dd class="cmt"><p>User supplied config file</p></dd><dt class="param">webpackResources</dt><dd class="cmt"><p>Additional resources to be copied to the working folder</p></dd><dt class="param">entry</dt><dd class="cmt"><p>Scala.js application to bundle</p></dd><dt class="param">targetDir</dt><dd class="cmt"><p>Target directory (and working directory for Nodejs)</p></dd><dt class="param">log</dt><dd class="cmt"><p>Logger</p></dd><dt>returns</dt><dd class="cmt"><p>The generated bundles
 </p></dd></dl></div>
-    </li><li name="scalajsbundler.Webpack#bundleName" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="bundleName(entry:String):String"></a>
-      <a id="bundleName(String):String"></a>
+    </li><li name="scalajsbundler.Webpack#bundleLibraries" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="bundleLibraries(emitSourceMaps:Boolean,generatedWebpackConfigFile:scalajsbundler.BundlerFile.WebpackConfig,customWebpackConfigFile:Option[sbt.File],webpackResources:Seq[sbt.File],entryPointFile:scalajsbundler.BundlerFile.EntryPoint,libraryModuleName:String,log:sbt.Logger):scalajsbundler.BundlerFile.Library"></a>
+      <a id="bundleLibraries(Boolean,WebpackConfig,Option[File],Seq[File],EntryPoint,String,Logger):Library"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">bundleName</span><span class="params">(<span name="entry">entry: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+        <span class="name">bundleLibraries</span><span class="params">(<span name="emitSourceMaps">emitSourceMaps: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="generatedWebpackConfigFile">generatedWebpackConfigFile: <a href="BundlerFile$$WebpackConfig.html" class="extype" name="scalajsbundler.BundlerFile.WebpackConfig">WebpackConfig</a></span>, <span name="customWebpackConfigFile">customWebpackConfigFile: <span class="extype" name="scala.Option">Option</span>[<a href="../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a>]</span>, <span name="webpackResources">webpackResources: <span class="extype" name="scala.Seq">Seq</span>[<a href="../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a>]</span>, <span name="entryPointFile">entryPointFile: <a href="BundlerFile$$EntryPoint.html" class="extype" name="scalajsbundler.BundlerFile.EntryPoint">EntryPoint</a></span>, <span name="libraryModuleName">libraryModuleName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="log">log: <span class="extype" name="sbt.Logger">Logger</span></span>)</span><span class="result">: <a href="BundlerFile$$Library.html" class="extype" name="scalajsbundler.BundlerFile.Library">Library</a></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Filename of the generated bundle, given its module entry name</p>
+      <p class="shortcomment cmt">Run webpack to bundle the application.</p><div class="fullcomment"><div class="comment cmt"><p>Run webpack to bundle the application.
+</p></div><dl class="paramcmts block"><dt class="param">emitSourceMaps</dt><dd class="cmt"><p>Are source maps enabled?</p></dd><dt class="param">generatedWebpackConfigFile</dt><dd class="cmt"><p>Webpack config file generated by scalajs-bundler</p></dd><dt class="param">customWebpackConfigFile</dt><dd class="cmt"><p>User supplied config file</p></dd><dt class="param">webpackResources</dt><dd class="cmt"><p>Additional webpack resources to include in the working directory</p></dd><dt class="param">entryPointFile</dt><dd class="cmt"><p>The entrypoint file to bundle dependencies for</p></dd><dt class="param">libraryModuleName</dt><dd class="cmt"><p>The library module name to assign the webpack bundle to</p></dd><dt class="param">log</dt><dd class="cmt"><p>Logger</p></dd><dt>returns</dt><dd class="cmt"><p>The generated bundle
+</p></dd></dl></div>
     </li><li name="scala.AnyRef#clone" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a>
       <a id="clone():AnyRef"></a>
@@ -448,20 +450,20 @@
               
         </dd></dl></div>
     </li><li name="scalajsbundler.Webpack#writeConfigFile" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="writeConfigFile(emitSourceMaps:Boolean,webpackEntries:Seq[(String,sbt.File)],targetDir:sbt.File,log:sbt.Logger):sbt.File"></a>
-      <a id="writeConfigFile(Boolean,Seq[(String,File)],File,Logger):File"></a>
+      <a id="writeConfigFile(emitSourceMaps:Boolean,entry:scalajsbundler.BundlerFile.WebpackInput,webpackConfigFile:scalajsbundler.BundlerFile.WebpackConfig,libraryBundleName:Option[String],log:sbt.Logger):Unit"></a>
+      <a id="writeConfigFile(Boolean,WebpackInput,WebpackConfig,Option[String],Logger):Unit"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">writeConfigFile</span><span class="params">(<span name="emitSourceMaps">emitSourceMaps: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="webpackEntries">webpackEntries: <span class="extype" name="scala.Seq">Seq</span>[(<span class="extype" name="scala.Predef.String">String</span>, <a href="../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a>)]</span>, <span name="targetDir">targetDir: <a href="../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a></span>, <span name="log">log: <span class="extype" name="sbt.Logger">Logger</span></span>)</span><span class="result">: <a href="../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a></span>
+        <span class="name">writeConfigFile</span><span class="params">(<span name="emitSourceMaps">emitSourceMaps: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="entry">entry: <a href="BundlerFile$$WebpackInput.html" class="extype" name="scalajsbundler.BundlerFile.WebpackInput">WebpackInput</a></span>, <span name="webpackConfigFile">webpackConfigFile: <a href="BundlerFile$$WebpackConfig.html" class="extype" name="scalajsbundler.BundlerFile.WebpackConfig">WebpackConfig</a></span>, <span name="libraryBundleName">libraryBundleName: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="log">log: <span class="extype" name="sbt.Logger">Logger</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Writes the webpack configuration file
-</p><div class="fullcomment"><div class="comment cmt"><p>Writes the webpack configuration file
-</p></div><dl class="paramcmts block"><dt class="param">emitSourceMaps</dt><dd class="cmt"><p>Whether source maps is enabled at all</p></dd><dt class="param">webpackEntries</dt><dd class="cmt"><p>Module entries (name, file.js)</p></dd><dt class="param">targetDir</dt><dd class="cmt"><p>Directory to write the file into</p></dd><dt class="param">log</dt><dd class="cmt"><p>Logger</p></dd><dt>returns</dt><dd class="cmt"><p>The written file
+      <p class="shortcomment cmt">Writes the webpack configuration file.</p><div class="fullcomment"><div class="comment cmt"><p>Writes the webpack configuration file. The output file is designed to be minimal, and to be extended,
+however, the <code>entry</code> and <code>output</code> keys must be preserved in order for the bundler to work as expected.
+</p></div><dl class="paramcmts block"><dt class="param">emitSourceMaps</dt><dd class="cmt"><p>Whether source maps is enabled at all</p></dd><dt class="param">entry</dt><dd class="cmt"><p>The input entrypoint file to process via webpack</p></dd><dt class="param">webpackConfigFile</dt><dd class="cmt"><p>webpack configuration file to write to</p></dd><dt class="param">libraryBundleName</dt><dd class="cmt"><p>If defined, generate a library bundle named <code>libraryBundleName</code></p></dd><dt class="param">log</dt><dd class="cmt"><p>Logger
 </p></dd></dl></div>
     </li></ol>
             </div>

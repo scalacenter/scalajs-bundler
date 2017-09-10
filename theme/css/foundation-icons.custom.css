@@ -1,0 +1,18 @@
+@font-face {
+  font-family: "foundation-icons";
+  src: url("foundation-icons.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+
+.a_foundation_icon {
+  font-family: "foundation-icons";
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  text-decoration: inherit;
+}

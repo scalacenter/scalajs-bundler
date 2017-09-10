@@ -7,8 +7,10 @@
     <title>Reference</title>
     <link rel="stylesheet" href="theme/css/foundation.min.css">
     <link rel="stylesheet" href="theme/css/app.css">
-     <link rel="stylesheet" href="theme/highlight.js/styles/github-gist.css"> 
     
+     <link rel="stylesheet" href="theme/highlight.js/styles/github-gist.css">  <link rel="stylesheet" href="theme/css/foundation-icons.custom.css"> 
+    
+     <link rel="prev" href="getting-started.html"  title="Getting started"  />  <link rel="next" href="cookbook.html"  title="Cookbook"  />  <link rel="start" href="index.html"  title="Introduction"  />  <link rel="toc" href="site-contents.html"  title="Table of Contents"  /> 
   </head>
   <body>
     <div class="expanded row">
@@ -40,6 +42,23 @@
             <div class="row">
               
               <main class="columns large-order-2 sections" id="_sections">
+                 
+  <ul class="menu align-right simple a_navbar a_navbar_top">
+    
+      
+        <li><a href="getting-started.html"  title="Getting started" ><span class="a_foundation_icon"></span>  Previous</a></li>
+      
+    
+      
+        <li><a href="cookbook.html"  title="Cookbook" ><span class="a_foundation_icon"></span>  Next</a></li>
+      
+    
+      
+        <li><a href="site-contents.html"  title="Table of Contents" ><span class="a_foundation_icon"></span>  Contents</a></li>
+      
+    
+  </ul>
+ 
                 
                 <h1 id="reference" class="a_section" data-magellan-target="reference">Reference<a class="a_hlink" href="#reference"></a></h1>
 <h2 id="scalajsbundlerplugin" class="a_section" data-magellan-target="scalajsbundlerplugin"><code class="hljs">ScalaJSBundlerPlugin</code><a class="a_hlink" href="#scalajsbundlerplugin"></a></h2>
@@ -56,7 +75,7 @@ the <code class="hljs">webpack</code> task scoped to a Scala.js stage (<code cla
 <h3 id="npm-dependencies" class="a_section" data-magellan-target="npm-dependencies">JavaScript Dependencies<a class="a_hlink" href="#npm-dependencies"></a></h3>
 <p>To define the npm packages your project depends on, use the <code class="hljs">npmDependencies</code> key:</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
-<pre class="hljs"><code class="language-scala">npmDependencies in <span class="hljs-type">Compile</span> += <span class="hljs-string">"node-uuid"</span> -&gt; <span class="hljs-string">"~1.4.7"</span>
+<pre class="hljs"><code class="language-scala">npmDependencies in <span class="hljs-type">Compile</span> += <span class="hljs-string">"uuid"</span> -&gt; <span class="hljs-string">"~3.1.0"</span>
 </code></pre>
 </div></div>
 <p>You can also scope dependencies to <code class="hljs">Test</code>:</p>
@@ -91,21 +110,80 @@ their execution so that they can be loaded by jsdom.</p>
 <pre class="hljs"><code class="language-scala">useYarn := <span class="hljs-literal">true</span>
 </code></pre>
 </div></div>
-<p>The <code class="hljs">yarn</code> command must be available in the host platform.</p>
-<h3 id="reload-workflow" class="a_section" data-magellan-target="reload-workflow">Reload Workflow<a class="a_hlink" href="#reload-workflow"></a></h3>
-<p>Each time you change something in your application source code and compile the project, Scala.js emits a new .js file
-that can weigh several MBs (in <code class="hljs">fastOptJS</code> mode) if your application is large. Turning this huge CommonJS module into
-code executable by web browsers takes time. This can be a problem if you rely on a “live-reloading” workflow
-(like the one of Play framework, for instance), because the reloading time can go up to 30 seconds.</p>
-<p>You can get a faster “change source and reload application” workflow by setting the <code class="hljs">enableReloadWorkflow</code>
-key to <code class="hljs">true</code>. An alternative way to invoke reload workflow is using the <code class="hljs">fastOptJs::webpackReload</code> task.</p>
-<p>The reload workflow replaces the <code class="hljs">fastOptJS::webpack</code> task implementation with a different one, that does not use
-webpack to process the output of the Scala.js compilation.  Instead, it pre-bundles the modules imported by your
-application and exposes them to the global namespace. Since these dependencies can then be resolved from the global
-namespace, the output of Scala.js is just concatenated after the contents of the pre-bundling process.</p>
-<p>It is possible to configure an alternative webpack configuration file which is used for building the bundle using the
-<code class="hljs">webpackConfigFile in webpackReload</code> setting . The configuration file may not contain <code class="hljs">entry</code> nor <code class="hljs">output</code> configuration
-but can be used to for loaders etc.</p>
+<p>Yarn 0.22.0+ must be available on the host platform.</p>
+<h3 id="bundling-mode" class="a_section" data-magellan-target="bundling-mode">Bundling Mode<a class="a_hlink" href="#bundling-mode"></a></h3>
+<p>Each time you change something in your application source code and compile the project, Scala.js emits a new .js
+file that can weigh several MBs if your application is large. Scalajs-bundler provides
+a few different options with respect to handling this large output file, controlled by setting the optional
+<code class="hljs">webpackBundlingMode</code> key.</p>
+<h4 id="bundling-mode-application" class="a_section" data-magellan-target="bundling-mode-application">Application (default)<a class="a_hlink" href="#bundling-mode-application"></a></h4>
+<p><code class="hljs">webpackBundlingMode := BundlingMode.Application</code> generates a webpack config that simply processes the Scala.js output file as an
+entrypoint. This means that webpack loaders, plugins, etc will work as usual. It also means that webpack will
+have to process a very large Scala.Js output file.</p>
+<p>Turning this CommonJS module into code executable by web browsers takes time, often upwards of a minute.</p>
+<p>Nonetheless, this is identical to what you'd get if were to duplicate your workflow outside scalajs-bundler,
+so it remains the default.</p>
+<h4 id="bundling-mode-library-only" class="a_section" data-magellan-target="bundling-mode-library-only">Library Only<a class="a_hlink" href="#bundling-mode-library-only"></a></h4>
+<p>You can get a much faster “change source and reload application” workflow by setting the
+<code class="hljs">webpackBundlingMode := BundlingMode.LibraryOnly()</code> key. This bundling mode avoids having webpack process the entire
+Scala.js output, but instead uses webpack to bundle all the javascript dependencies (determined via <code class="hljs">@JSImport</code>
+and any changes to the <code class="hljs">webpack.config.js</code>). This is accomplished by setting the webpack <code class="hljs">output.library</code> and
+<code class="hljs">output.libraryTarget</code> keys in the webpack.config. By default, this generates a global variable named
+<code class="hljs">ScalaJSBundlerLibrary</code>, but if needed, that variable name can be overridden via the <code class="hljs">exportedName</code>
+parameter provided to <code class="hljs">BundlingMode.LibraryOnly</code>.</p>
+<p>It then uses a special &quot;loader&quot; to resolve these dependencies for the actual Scala.js application.</p>
+<p>In order to use this mode, instead of including <code class="hljs">yourapp-bundle.js</code> in your page, you will need to include
+<code class="hljs">yourapp-library.js</code>, <code class="hljs">yourapp-loader.js</code>, <code class="hljs">yourapp-fastopt.js</code> or <code class="hljs">yourapp-opt.js</code>. If you're using Play
+Framework, you could use a twirl template similar to this one:</p>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-html">@(projectName: String,
+  assets: String =&gt; String,
+  resourceExists: String =&gt; Boolean,
+  htmlAttributes: Html = Html("")
+)
+
+@defining(s"${projectName.toLowerCase}") { name =&gt;
+  @Seq(s"$name-opt-library.js", s"$name-fastopt-library.js").find(resourceExists).map(name =&gt; jsScript(assets(name), htmlAttributes))
+}
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">language</span>=<span class="hljs-string">"JavaScript"</span>&gt;</span><span class="undefined">
+var exports = window;
+exports.require = window["ScalaJSBundlerLibrary"].require;
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+@defining(s"${projectName.toLowerCase}") { name =&gt;
+  @Seq(s"$name-opt.js", s"$name-fastopt.js").find(resourceExists).map(name =&gt; jsScript(assets(name), htmlAttributes))
+}
+</code></pre>
+</div></div>
+<p>The default variable global for the library is <code class="hljs">ScalaJsBundlerDependencies</code>. Should you need to change it,
+you can provide a new variable name to the configuration, such as <code class="hljs">bundlingMode := BundlingMode.LibrariesOnly(&quot;myLib&quot;)</code>.</p>
+<h5 id="benefits" class="a_section" data-magellan-target="benefits">Benefits<a class="a_hlink" href="#benefits"></a></h5>
+<p>By avoiding processing the entire Scala.js output file, webpack times from 10's of seconds to minutes to
+a couple of seconds, depending on how many dependencies webpack has to resolve. In addition, since the
+module references are all still managed by webpack, any custom loaders such as the <code class="hljs">html-loader</code> or <code class="hljs">text-loader</code>
+will work as usual. Other webpack configuration such as external modules also work out of the box.</p>
+<p>By splitting the output into a separate library and Scala.js app we are able to leverage browser caching for most
+reloads, since it's seldom that both .js assets and Scala.js assets change at the same time.</p>
+<p>By avoiding any post-processing of the Scala.js output, we leave the sourcemap generated by the Scala.js compiler
+entirely intact. This means we avoid any translation or lookup errors introduced by webpack, and also means
+we save a bunch more processing time even if sourcemaps are enabled.</p>
+<h5 id="how-it-works" class="a_section" data-magellan-target="how-it-works">How It Works<a class="a_hlink" href="#how-it-works"></a></h5>
+<p>Scalajs-bundler has a unique advantage in the JavaScript build ecosystem in that it runs inside SBT and has
+access to the Scala.Js compiler internals. By leveraging these, we can generate a fake <code class="hljs">entrypoint.js</code> file that
+represents all the <code class="hljs">@JSImport</code>s from a Scala.JS project. We can use this entrypoint to generate a library file
+that provides access to all those imports without webpack having to ever process the entire Scala.js output.</p>
+<p>Inside the <code class="hljs">entrypoint.js</code> file we also provide a trivial <code class="hljs">require</code> implementation that provides access to the
+modules which were imported.</p>
+<p>All that remains is to provide an <code class="hljs">exports</code> variable with a reference to the <code class="hljs">require</code> implementation
+for the Scala.js out to hang onto, which is what the loader provides.</p>
+<h4 id="bundling-mode-library-and-application" class="a_section" data-magellan-target="bundling-mode-library-and-application">Library and Application<a class="a_hlink" href="#bundling-mode-library-and-application"></a></h4>
+<p><code class="hljs">bundlingMode := BundlingMode.LibraryAndApplication()</code> builds on <code class="hljs">BundlingMode.LibraryOnly</code> and attempts to
+duplicate the output of <code class="hljs">BundlingMode.Application</code> without the overhead processing the entire Scala.js output file.
+It uses the same library file generation process as <code class="hljs">BundlingMode.LibraryOnly</code>. It then bundles that library,
+the loader, and the Scala.js output into a <code class="hljs">yourapp-bundle</code> file by concatenating them. If <code class="hljs">enableSourceMaps := true</code>,
+it will attempt to use the node.js <code class="hljs">concat-with-sourcemaps</code> module to combine the sourcemaps as well.</p>
+<p>If you need interoperability with the full <code class="hljs">Application</code> mode or somehow can't handle the two files generated
+by the <code class="hljs">LibraryOnly()</code> mode, this mode may be useful for you. However, it relies on post-processing and eliminates
+some of the benefits of the <code class="hljs">LibraryOnly</code> mode, so consider carefully if you really need it before turning it on.</p>
 <h3 id="tasks-and-settings" class="a_section" data-magellan-target="tasks-and-settings">Tasks and Settings<a class="a_hlink" href="#tasks-and-settings"></a></h3>
 <p>The tasks and settings that control the plugin are documented in the API documentation
 of the <a href="api/latest/index.html#scalajsbundler.sbtplugin.ScalaJSBundlerPlugin$">ScalaJSBundlerPlugin</a>.</p>
@@ -138,64 +216,97 @@ These assets keep their path prefix relative to the <code class="hljs">node_modu
 <p>The tasks and settings that control the plugin are documented in the API documentation
 of the <a href="api/latest/index.html#scalajsbundler.sbtplugin.WebScalaJSBundlerPlugin$">WebScalaJSBundlerPlugin</a>.</p>
 
+                 
+  <ul class="menu align-right simple a_navbar a_navbar_bottom">
+    
+      
+        <li><a href="getting-started.html"  title="Getting started" ><span class="a_foundation_icon"></span>  Previous</a></li>
+      
+    
+      
+        <li><a href="cookbook.html"  title="Cookbook" ><span class="a_foundation_icon"></span>  Next</a></li>
+      
+    
+      
+        <li><a href="site-contents.html"  title="Table of Contents" ><span class="a_foundation_icon"></span>  Contents</a></li>
+      
+    
+  </ul>
+ 
               </main>
               
               
                 <div data-sticky-container class="small-12 medium-12 large-2 large-order-1 columns a_sitenav_container">
                   <nav class="a_sitenav" data-sticky data-sticky-on="large" data-anchor="_sections">
                     
-                  <ul>
-                     
+                    <ul>
+                       
   <li >
     
-      <a href="index.html">Introduction</a>
+      
+        <a href="index.html">Introduction</a>
+      
     
     
   </li>
   
   <li >
     
-      <a href="motivation.html">Motivation</a>
+      
+        <a href="motivation.html">Motivation</a>
+      
     
     
   </li>
   
   <li >
     
-      <a href="getting-started.html">Getting started</a>
+      
+        <a href="getting-started.html">Getting started</a>
+      
     
     
   </li>
   
   <li  class="a_thispage" >
     
-      <a href="reference.html">Reference</a>
+      
+        <a href="reference.html">Reference</a>
+      
     
     
   </li>
   
   <li >
     
-      <a href="cookbook.html">Cookbook</a>
+      
+        <a href="cookbook.html">Cookbook</a>
+      
     
     
   </li>
   
   <li >
     
-      <a href="community.html">Community</a>
+      
+        <a href="community.html">Community</a>
+      
     
     
   </li>
   
   <li >
     
-      <a href="changelog.html">Changelog</a>
+      
+        <a href="changelog.html">Changelog</a>
+      
     
     
   </li>
  
-                  </ul>
+                    </ul>
+                    
+                    
                   </nav>
                 </div>
               
@@ -207,81 +318,150 @@ of the <a href="api/latest/index.html#scalajsbundler.sbtplugin.WebScalaJSBundler
 </header> 
                     <ul class="vertical menu" data-magellan>
                        
-  <li>
-    
-       <a href="#reference">Reference</a> 
-    
-    
-      <ul class="vertical menu">  
-  <li>
-    
-       <a href="#scalajsbundlerplugin">ScalaJSBundlerPlugin</a> 
-    
-    
-      <ul class="vertical menu">  
-  <li>
-    
-       <a href="#npm-dependencies">JavaScript Dependencies</a> 
-    
-    
-  </li>
   
-  <li>
-    
-       <a href="#jsdom">jsdom Support for Tests</a> 
-    
-    
-  </li>
+    <li>
+      
+         <a href="#reference">Reference</a> 
+      
+      
+        <ul class="vertical menu">  
   
-  <li>
-    
-       <a href="#yarn">Yarn</a> 
-    
-    
-  </li>
+    <li>
+      
+         <a href="#scalajsbundlerplugin">ScalaJSBundlerPlugin</a> 
+      
+      
+        <ul class="vertical menu">  
   
-  <li>
-    
-       <a href="#reload-workflow">Reload Workflow</a> 
-    
-    
-  </li>
+    <li>
+      
+         <a href="#npm-dependencies">JavaScript Dependencies</a> 
+      
+      
+    </li>
   
-  <li>
-    
-       <a href="#tasks-and-settings">Tasks and Settings</a> 
-    
-    
-  </li>
+  
+  
+    <li>
+      
+         <a href="#jsdom">jsdom Support for Tests</a> 
+      
+      
+    </li>
+  
+  
+  
+    <li>
+      
+         <a href="#yarn">Yarn</a> 
+      
+      
+    </li>
+  
+  
+  
+    <li>
+      
+         <a href="#bundling-mode">Bundling Mode</a> 
+      
+      
+        <ul class="vertical menu">  
+  
+    <li>
+      
+         <a href="#bundling-mode-application">Application (default)</a> 
+      
+      
+    </li>
+  
+  
+  
+    <li>
+      
+         <a href="#bundling-mode-library-only">Library Only</a> 
+      
+      
+        <ul class="vertical menu">  
+  
+    <li>
+      
+         <a href="#benefits">Benefits</a> 
+      
+      
+    </li>
+  
+  
+  
+    <li>
+      
+         <a href="#how-it-works">How It Works</a> 
+      
+      
+    </li>
+  
   </ul>
-    
-  </li>
+      
+    </li>
   
-  <li>
-    
-       <a href="#webscalajsbundlerplugin">WebScalaJSBundlerPlugin</a> 
-    
-    
-      <ul class="vertical menu">  
-  <li>
-    
-       <a href="#npm-assets">Importing Assets from NPM Packages</a> 
-    
-    
-  </li>
   
-  <li>
-    
-       <a href="#web-tasks-and-settings">Tasks and Settings</a> 
-    
-    
-  </li>
+  
+    <li>
+      
+         <a href="#bundling-mode-library-and-application">Library and Application</a> 
+      
+      
+    </li>
+  
   </ul>
-    
-  </li>
+      
+    </li>
+  
+  
+  
+    <li>
+      
+         <a href="#tasks-and-settings">Tasks and Settings</a> 
+      
+      
+    </li>
+  
   </ul>
-    
-  </li>
+      
+    </li>
+  
+  
+  
+    <li>
+      
+         <a href="#webscalajsbundlerplugin">WebScalaJSBundlerPlugin</a> 
+      
+      
+        <ul class="vertical menu">  
+  
+    <li>
+      
+         <a href="#npm-assets">Importing Assets from NPM Packages</a> 
+      
+      
+    </li>
+  
+  
+  
+    <li>
+      
+         <a href="#web-tasks-and-settings">Tasks and Settings</a> 
+      
+      
+    </li>
+  
+  </ul>
+      
+    </li>
+  
+  </ul>
+      
+    </li>
+  
  
                     </ul>
                   </nav>
@@ -306,6 +486,7 @@ of the <a href="api/latest/index.html#scalajsbundler.sbtplugin.WebScalaJSBundler
         </div>
       </footer>
     </div>
+    
     <script src="theme/js/jquery.min.js"></script>
     <script src="theme/js/what-input.min.js"></script>
     <script src="theme/js/foundation.min.js"></script>

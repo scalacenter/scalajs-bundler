@@ -58,7 +58,46 @@
 
         <div id="types" class="types members">
               <h3>Type Members</h3>
-              <ol><li name="scalajsbundler.ExternalCommand" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+              <ol><li name="scalajsbundler.BundlerFile" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="BundlerFileextendsProductwithSerializable"></a>
+      <a id="BundlerFile:BundlerFile"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">sealed </span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="BundlerFile.html"><span class="name">BundlerFile</span></a><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">Files used in the <code>ScalaJSBundler</code> pipeline.</p>
+    </li><li name="scalajsbundler.BundlerFileType" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="BundlerFileTypeextendsAnyRef"></a>
+      <a id="BundlerFileType:BundlerFileType"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">sealed abstract </span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="BundlerFileType.html"><span class="name">BundlerFileType</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">The type of a given <a href="BundlerFile$$Public.html" class="extype" name="scalajsbundler.BundlerFile.Public">BundlerFile.Public</a>.</p>
+    </li><li name="scalajsbundler.BundlingMode" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="BundlingModeextendsAnyRef"></a>
+      <a id="BundlingMode:BundlingMode"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">sealed </span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="BundlingMode.html"><span class="name">BundlingMode</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">The BundlingMode dictates how webpack is configured for bundling.</p>
+    </li><li name="scalajsbundler.ExternalCommand" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="ExternalCommandextendsAnyRef"></a>
       <a id="ExternalCommand:ExternalCommand"></a>
       <h4 class="signature">
@@ -117,7 +156,46 @@
 
         <div id="values" class="values members">
               <h3>Value Members</h3>
-              <ol><li name="scalajsbundler.ExternalCommand" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+              <ol><li name="scalajsbundler.BundlerFile" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="BundlerFile"></a>
+      <a id="BundlerFile:BundlerFile"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="BundlerFile$.html"><span class="name">BundlerFile</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="scalajsbundler.BundlerFileType" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="BundlerFileType"></a>
+      <a id="BundlerFileType:BundlerFileType"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="BundlerFileType$.html"><span class="name">BundlerFileType</span></a>
+      </span>
+      </h4>
+      
+    </li><li name="scalajsbundler.BundlingMode" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="BundlingMode"></a>
+      <a id="BundlingMode:BundlingMode"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="BundlingMode$.html"><span class="name">BundlingMode</span></a>
+      </span>
+      </h4>
+      
+    </li><li name="scalajsbundler.ExternalCommand" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="ExternalCommand"></a>
       <a id="ExternalCommand:ExternalCommand"></a>
       <h4 class="signature">
@@ -195,19 +273,6 @@
       </span>
       </h4>
       
-    </li><li name="scalajsbundler.ReloadWorkflow" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="ReloadWorkflow"></a>
-      <a id="ReloadWorkflow:ReloadWorkflow"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a href="ReloadWorkflow$.html"><span class="name">ReloadWorkflow</span></a>
-      </span>
-      </h4>
-      <p class="comment cmt">Faster workflow when a developer changes the source code and then reloads the application.</p>
     </li><li name="scalajsbundler.Webpack" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="Webpack"></a>
       <a id="Webpack:Webpack"></a>
@@ -218,6 +283,19 @@
       </span>
       <span class="symbol">
         <a href="Webpack$.html"><span class="name">Webpack</span></a>
+      </span>
+      </h4>
+      
+    </li><li name="scalajsbundler.WebpackEntryPoint" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="WebpackEntryPoint"></a>
+      <a id="WebpackEntryPoint:WebpackEntryPoint"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="WebpackEntryPoint$.html"><span class="name">WebpackEntryPoint</span></a>
       </span>
       </h4>
       

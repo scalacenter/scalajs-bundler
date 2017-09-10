@@ -2,9 +2,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>ReloadWorkflow - scalajsbundler.ReloadWorkflow</title>
-          <meta name="description" content="ReloadWorkflow - scalajsbundler.ReloadWorkflow" />
-          <meta name="keywords" content="ReloadWorkflow scalajsbundler.ReloadWorkflow" />
+          <title>EntryPoint - scalajsbundler.BundlerFile.EntryPoint</title>
+          <meta name="description" content="EntryPoint - scalajsbundler.BundlerFile.EntryPoint" />
+          <meta name="keywords" content="EntryPoint scalajsbundler.BundlerFile.EntryPoint" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -12,7 +12,7 @@
       <script type="text/javascript">
          if(top === self) {
             var url = '../index.html';
-            var hash = 'scalajsbundler.ReloadWorkflow$';
+            var hash = 'scalajsbundler.BundlerFile$$EntryPoint$';
             var anchor = window.location.hash;
             var anchor_opt = '';
             if (anchor.length >= 1)
@@ -24,9 +24,9 @@
         </head>
         <body class="value">
       <div id="definition">
-        <img src="../lib/object_big.png" />
-        <p id="owner"><a href="package.html" class="extype" name="scalajsbundler">scalajsbundler</a></p>
-        <h1>ReloadWorkflow</h1>
+        <a href="BundlerFile$$EntryPoint.html" title="Go to companion"><img src="../lib/object_to_class_big.png" /></a>
+        <p id="owner"><a href="package.html" class="extype" name="scalajsbundler">scalajsbundler</a>.<a href="BundlerFile$.html" class="extype" name="scalajsbundler.BundlerFile">BundlerFile</a></p>
+        <h1><a href="BundlerFile$$EntryPoint.html" title="Go to companion">EntryPoint</a></h1>
       </div>
 
       <h4 id="signature" class="signature">
@@ -35,17 +35,13 @@
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <span class="name">ReloadWorkflow</span>
+        <span class="name">EntryPoint</span><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Faster workflow when a developer changes the source code and then reloads the application.</p><p>It pre-bundles the dependencies once and then recompiles just the part of the application
-that changed.</p><p>For this to work, the pre-bundled dependencies are exposed to the global namespace and a fake <code>require</code>
-implementation is also provided so that the output of Scala.js, which is supposed to be executed by
-a CommonJS compatible environment, can be executed by a web browser.
-</p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/scalacenter/scalajs-bundler/blob/v0.8.0-SNAPSHOT/sbt-scalajs-bundler/src/main/scala/scalajsbundler/ReloadWorkflow.scala" target="_blank">ReloadWorkflow.scala</a></dd></dl><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/scalacenter/scalajs-bundler/blob/v0.9.0-SNAPSHOT/sbt-scalajs-bundler/src/main/scala/scalajsbundler/BundlerFile.scala" target="_blank">BundlerFile.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -63,7 +59,7 @@ a CommonJS compatible environment, can be executed by a web browser.
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="scalajsbundler.ReloadWorkflow"><span>ReloadWorkflow</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="scalajsbundler.BundlerFile.EntryPoint"><span>EntryPoint</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -167,21 +163,6 @@ a CommonJS compatible environment, can be executed by a web browser.
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="scalajsbundler.ReloadWorkflow#bundleDependencies" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="bundleDependencies(imports:Seq[String],workingDir:sbt.File,entryPoint:sbt.File,bundleFile:sbt.File,customWebpackConfigFile:Option[sbt.File],webpackResources:Seq[sbt.File],logger:sbt.Logger):Unit"></a>
-      <a id="bundleDependencies(Seq[String],File,File,File,Option[File],Seq[File],Logger):Unit"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">bundleDependencies</span><span class="params">(<span name="imports">imports: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="workingDir">workingDir: <a href="../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a></span>, <span name="entryPoint">entryPoint: <a href="../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a></span>, <span name="bundleFile">bundleFile: <a href="../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a></span>, <span name="customWebpackConfigFile">customWebpackConfigFile: <span class="extype" name="scala.Option">Option</span>[<a href="../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a>]</span>, <span name="webpackResources">webpackResources: <span class="extype" name="scala.Seq">Seq</span>[<a href="../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a>]</span>, <span name="logger">logger: <span class="extype" name="sbt.Logger">Logger</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">imports</dt><dd class="cmt"><p>Imported module names</p></dd><dt class="param">workingDir</dt><dd class="cmt"><p>Directory where node_modules are present</p></dd><dt class="param">entryPoint</dt><dd class="cmt"><p>File to write the bundle entry point to</p></dd><dt class="param">bundleFile</dt><dd class="cmt"><p>File to write the bundle to</p></dd><dt class="param">logger</dt><dd class="cmt"><p>Logger
-</p></dd><dt>returns</dt><dd class="cmt"><p>The imported dependencies of the Scala.js project, bundled into a single file, and exported to the
-        global namespace</p></dd></dl></div>
     </li><li name="scala.AnyRef#clone" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a>
       <a id="clone():AnyRef"></a>
@@ -227,6 +208,19 @@ a CommonJS compatible environment, can be executed by a web browser.
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="scalajsbundler.BundlerFile.EntryPoint#fileName" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="fileName(entry:String):String"></a>
+      <a id="fileName(String):String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">fileName</span><span class="params">(<span name="entry">entry: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Filename of the generated bundle, given its module entry name</p>
     </li><li name="scala.AnyRef#finalize" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="finalize():Unit"></a>
       <a id="finalize():Unit"></a>
@@ -246,20 +240,6 @@ a CommonJS compatible environment, can be executed by a web browser.
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="scalajsbundler.ReloadWorkflow#findImportedModules" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="findImportedModules(linkerConfig:org.scalajs.core.tools.linker.StandardLinker.Config,linker:org.scalajs.core.tools.linker.ClearableLinker,irFiles:Seq[org.scalajs.core.tools.io.VirtualScalaJSIRFile],moduleInitializers:Seq[org.scalajs.core.tools.linker.ModuleInitializer],logger:sbt.Logger):List[String]"></a>
-      <a id="findImportedModules(Config,ClearableLinker,Seq[VirtualScalaJSIRFile],Seq[ModuleInitializer],Logger):List[String]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">findImportedModules</span><span class="params">(<span name="linkerConfig">linkerConfig: <span class="extype" name="org.scalajs.core.tools.linker.StandardLinker.Config">Config</span></span>, <span name="linker">linker: <span class="extype" name="org.scalajs.core.tools.linker.ClearableLinker">ClearableLinker</span></span>, <span name="irFiles">irFiles: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="org.scalajs.core.tools.io.VirtualScalaJSIRFile">VirtualScalaJSIRFile</span>]</span>, <span name="moduleInitializers">moduleInitializers: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="org.scalajs.core.tools.linker.ModuleInitializer">ModuleInitializer</span>]</span>, <span name="logger">logger: <span class="extype" name="sbt.Logger">Logger</span></span>)</span><span class="result">: <span class="extype" name="scala.List">List</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">linkerConfig</dt><dd class="cmt"><p>Configuration of the Scala.js linker</p></dd><dt class="param">linker</dt><dd class="cmt"><p>Scala.js linker</p></dd><dt class="param">irFiles</dt><dd class="cmt"><p>Scala.js IR files</p></dd><dt class="param">moduleInitializers</dt><dd class="cmt"><p>Scala.js module initializers</p></dd><dt class="param">logger</dt><dd class="cmt"><p>Logger
-</p></dd><dt>returns</dt><dd class="cmt"><p>The list of ES modules imported by a Scala.js project</p></dd></dl></div>
     </li><li name="scala.AnyRef#getClass" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getClass():Class[_]"></a>
       <a id="getClass():Class[_]"></a>
@@ -299,19 +279,6 @@ a CommonJS compatible environment, can be executed by a web browser.
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="scalajsbundler.ReloadWorkflow#modulePrefix" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="modulePrefix:String"></a>
-      <a id="modulePrefix:String"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">modulePrefix</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
-      </span>
-      </h4>
-      
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>
       <a id="ne(AnyRef):Boolean"></a>
@@ -434,34 +401,6 @@ a CommonJS compatible environment, can be executed by a web browser.
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="scalajsbundler.ReloadWorkflow#writeFakeBundle" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="writeFakeBundle(emitSourceMaps:Boolean,bundledDependencies:sbt.File,loader:sbt.File,sjsOutput:sbt.File,workingDir:sbt.File,targetDir:sbt.File,logger:sbt.Logger):sbt.File"></a>
-      <a id="writeFakeBundle(Boolean,File,File,File,File,File,Logger):File"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">writeFakeBundle</span><span class="params">(<span name="emitSourceMaps">emitSourceMaps: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="bundledDependencies">bundledDependencies: <a href="../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a></span>, <span name="loader">loader: <a href="../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a></span>, <span name="sjsOutput">sjsOutput: <a href="../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a></span>, <span name="workingDir">workingDir: <a href="../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a></span>, <span name="targetDir">targetDir: <a href="../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a></span>, <span name="logger">logger: <span class="extype" name="sbt.Logger">Logger</span></span>)</span><span class="result">: <a href="../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">emitSourceMaps</dt><dd class="cmt"><p>Whether to emit source maps at all</p></dd><dt class="param">bundledDependencies</dt><dd class="cmt"><p>Pre-bundled dependencies</p></dd><dt class="param">loader</dt><dd class="cmt"><p><code>require</code> implementation</p></dd><dt class="param">sjsOutput</dt><dd class="cmt"><p>Output of Scala.js</p></dd><dt class="param">workingDir</dt><dd class="cmt"><p>Nodejs working directory</p></dd><dt class="param">targetDir</dt><dd class="cmt"><p>Target directory (where to write the bundle)
-</p></dd><dt>returns</dt><dd class="cmt"><p>A file that contains the concatenation of the dependencies bundle and the output of the Scala.js compilation</p></dd></dl></div>
-    </li><li name="scalajsbundler.ReloadWorkflow#writeLoader" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="writeLoader(loader:sbt.File,logger:sbt.Logger):Unit"></a>
-      <a id="writeLoader(File,Logger):Unit"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">writeLoader</span><span class="params">(<span name="loader">loader: <a href="../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a></span>, <span name="logger">logger: <span class="extype" name="sbt.Logger">Logger</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">loader</dt><dd class="cmt"><p>File to write the loader to</p></dd><dt class="param">logger</dt><dd class="cmt"><p>Logger
-</p></dd><dt>returns</dt><dd class="cmt"><p>The written loader file (faking a <code>require</code> implementation)</p></dd></dl></div>
     </li></ol>
             </div>
 
@@ -471,7 +410,11 @@ a CommonJS compatible environment, can be executed by a web browser.
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="scala.AnyRef">
+        <div class="parent" name="scala.Serializable">
+              <h3>Inherited from <span class="extype" name="scala.Serializable">Serializable</span></h3>
+            </div><div class="parent" name="java.io.Serializable">
+              <h3>Inherited from <span class="extype" name="java.io.Serializable">Serializable</span></h3>
+            </div><div class="parent" name="scala.AnyRef">
               <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
             </div><div class="parent" name="scala.Any">
               <h3>Inherited from <span class="extype" name="scala.Any">Any</span></h3>

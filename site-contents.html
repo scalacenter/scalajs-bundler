@@ -9,6 +9,8 @@
     <link rel="stylesheet" href="theme/css/app.css">
     
     
+    
+    
   </head>
   <body>
     <div class="expanded row">
@@ -41,6 +43,7 @@
               
               <main class="columns large-order-2 sections" id="_sections">
                 
+                
                 <h1 id="table-of-contents" class="a_section" data-magellan-target="table-of-contents">Table of Contents<a class="a_hlink" href="#table-of-contents"></a></h1>
 <ul>
 <li><a href="index.html">Introduction</a></li>
@@ -64,7 +67,18 @@
 <li><a href="reference.html#npm-dependencies">JavaScript Dependencies</a></li>
 <li><a href="reference.html#jsdom">jsdom Support for Tests</a></li>
 <li><a href="reference.html#yarn">Yarn</a></li>
-<li><a href="reference.html#reload-workflow">Reload Workflow</a></li>
+<li><a href="reference.html#bundling-mode">Bundling Mode</a>
+<ul>
+<li><a href="reference.html#bundling-mode-application">Application (default)</a></li>
+<li><a href="reference.html#bundling-mode-library-only">Library Only</a>
+<ul>
+<li><a href="reference.html#benefits">Benefits</a></li>
+<li><a href="reference.html#how-it-works">How It Works</a></li>
+</ul>
+</li>
+<li><a href="reference.html#bundling-mode-library-and-application">Library and Application</a></li>
+</ul>
+</li>
 <li><a href="reference.html#tasks-and-settings">Tasks and Settings</a></li>
 </ul>
 </li>
@@ -85,12 +99,14 @@
 <li><a href="cookbook.html#global-namespace">How to use an existing facade assuming the JS library to be exposed to the global namespace?</a></li>
 <li><a href="cookbook.html#several-entry-points">How to bundle an application having several entry points as exports?</a></li>
 <li><a href="cookbook.html#performance">How to improve the performance of the bundling process?</a></li>
+<li><a href="cookbook.html#how-to-select-specific-files-from-the-bundlingmode.library-output">How to select specific files from the BundlingMode.Library output</a></li>
 <li><a href="cookbook.html#webpack-dev-server">How to rebuild and reload your page on code changes?</a></li>
 </ul>
 </li>
 <li><a href="community.html">Community</a></li>
 <li><a href="changelog.html">Changelog</a>
 <ul>
+<li><a href="changelog.html#version-0.8.0">Version 0.8.0</a></li>
 <li><a href="changelog.html#version-0.7.0">Version 0.7.0</a></li>
 <li><a href="changelog.html#version-0.6.0">Version 0.6.0</a></li>
 <li><a href="changelog.html#version-0.5.0">Version 0.5.0</a></li>
@@ -103,64 +119,81 @@
 </li>
 </ul>
 
+                
               </main>
               
               
                 <div data-sticky-container class="small-12 medium-12 large-2 large-order-1 columns a_sitenav_container">
                   <nav class="a_sitenav" data-sticky data-sticky-on="large" data-anchor="_sections">
                     
-                  <ul>
-                     
+                    <ul>
+                       
   <li >
     
-      <a href="index.html">Introduction</a>
+      
+        <a href="index.html">Introduction</a>
+      
     
     
   </li>
   
   <li >
     
-      <a href="motivation.html">Motivation</a>
+      
+        <a href="motivation.html">Motivation</a>
+      
     
     
   </li>
   
   <li >
     
-      <a href="getting-started.html">Getting started</a>
+      
+        <a href="getting-started.html">Getting started</a>
+      
     
     
   </li>
   
   <li >
     
-      <a href="reference.html">Reference</a>
+      
+        <a href="reference.html">Reference</a>
+      
     
     
   </li>
   
   <li >
     
-      <a href="cookbook.html">Cookbook</a>
+      
+        <a href="cookbook.html">Cookbook</a>
+      
     
     
   </li>
   
   <li >
     
-      <a href="community.html">Community</a>
+      
+        <a href="community.html">Community</a>
+      
     
     
   </li>
   
   <li >
     
-      <a href="changelog.html">Changelog</a>
+      
+        <a href="changelog.html">Changelog</a>
+      
     
     
   </li>
  
-                  </ul>
+                    </ul>
+                    
+                    
                   </nav>
                 </div>
               
@@ -185,6 +218,7 @@
         </div>
       </footer>
     </div>
+    
     <script src="theme/js/jquery.min.js"></script>
     <script src="theme/js/what-input.min.js"></script>
     <script src="theme/js/foundation.min.js"></script>

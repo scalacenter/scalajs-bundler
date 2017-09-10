@@ -46,7 +46,7 @@ following existing keys also control the plugin:</p><h4> <code>version in webpac
 will be generated. The directory is different according to the current <code>Configuration</code>
 (either <code>Compile</code> or <code>Test</code>).</p><p>Defaults to <code>crossTarget.value / &quot;scalajs-bundler&quot; / &quot;main&quot;</code> for <code>Compile</code> and
 <code>crossTarget.value / &quot;scalajs-bundler&quot; / &quot;test&quot;</code> for <code>Test</code>.
-</p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/scalacenter/scalajs-bundler/blob/v0.8.0-SNAPSHOT/sbt-scalajs-bundler/src/main/scala/scalajsbundler/sbtplugin/ScalaJSBundlerPlugin.scala" target="_blank">ScalaJSBundlerPlugin.scala</a></dd></dl><div class="toggleContainer block">
+</p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/scalacenter/scalajs-bundler/blob/v0.9.0-SNAPSHOT/sbt-scalajs-bundler/src/main/scala/scalajsbundler/sbtplugin/ScalaJSBundlerPlugin.scala" target="_blank">ScalaJSBundlerPlugin.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="sbt.AutoPlugin">AutoPlugin</span>, <span class="extype" name="sbt.PluginsFunctions">PluginsFunctions</span>, <span class="extype" name="sbt.Plugins.Basic">Basic</span>, <span class="extype" name="sbt.Plugins">Plugins</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
@@ -487,7 +487,7 @@ will be generated. The directory is different according to the current <code>Con
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">lazy val</span>
+        <span class="kind">val</span>
       </span>
       <span class="symbol">
         <span class="name">scalaJSBundlerManifest</span><span class="result">: <span class="extype" name="sbt.Init.Initialize">sbt.Def.Initialize</span>[<span class="extype" name="sbt.Task">Task</span>[<a href="../../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a>]]</span>
@@ -590,19 +590,6 @@ will be generated. The directory is different according to the current <code>Con
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="scalajsbundler.sbtplugin.ScalaJSBundlerPlugin#webpackTask" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="webpackTask(stage:sbt.TaskKey[sbt.Attributed[sbt.File]]):sbt.Def.Initialize[sbt.Task[Seq[sbt.File]]]"></a>
-      <a id="webpackTask(TaskKey[Attributed[File]]):sbt.Def.Initialize[Task[Seq[File]]]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">webpackTask</span><span class="params">(<span name="stage">stage: <span class="extype" name="sbt.TaskKey">TaskKey</span>[<span class="extype" name="sbt.Attributed">Attributed</span>[<a href="../../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a>]]</span>)</span><span class="result">: <span class="extype" name="sbt.Init.Initialize">sbt.Def.Initialize</span>[<span class="extype" name="sbt.Task">Task</span>[<span class="extype" name="scala.Seq">Seq</span>[<a href="../../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a>]]]</span>
-      </span>
-      </h4>
-      
     </li></ol>
             </div>
 
