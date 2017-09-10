@@ -1,9 +1,26 @@
 # Changelog
 
 ## Version 0.8.0
+
+> 2017 September 10
+
 When upgrading to this release, make sure to check out the new [webpackBundlingMode](reference.md#bundling-mode) 
 configuration value. The old `enableReloadWorkflow` key has been removed, in favor 
 of `BundlingMode.LibraryAndApplication()`.
+
+- [#143](https://github.com/scalacenter/scalajs-bundler/pull/143): Document the compatible versions of npm;
+- [#146](https://github.com/scalacenter/scalajs-bundler/pull/146): Document how to use global modules with jsdom in tests;
+- [#149](https://github.com/scalacenter/scalajs-bundler/pull/149): Introduce `webpackBundlingMode` to finely control whether to bundle the output of Scala.js or not;
+- [#153](https://github.com/scalacenter/scalajs-bundler/pull/153): Use the non interactive mode of Yarn;
+- [#161](https://github.com/scalacenter/scalajs-bundler/pull/161): Set `"private": true` in generated `package.json` file to eliminate errors from npm;
+- [#162](https://github.com/scalacenter/scalajs-bundler/pull/162): Differentiate between missing and unsupported Webpack versions;
+- [#166](https://github.com/scalacenter/scalajs-bundler/pull/166): Move to Travis-CI;
+- [#167](https://github.com/scalacenter/scalajs-bundler/pull/167): Upgrade tests that use `uuid`;
+- [#171](https://github.com/scalacenter/scalajs-bundler/pull/171): Add `scalaJSProjects` resource directories to `monitoredScalaJSDirectories`;
+- [#172](https://github.com/scalacenter/scalajs-bundler/pull/172): Use `npm install` command instead of `npm update`.
+
+You can find the complete list of commits since the last release
+[here](https://github.com/scalacenter/scalajs-bundler/compare/v0.7.0...v0.8.0).
 
 ## Version 0.7.0
 
