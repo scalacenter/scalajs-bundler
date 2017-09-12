@@ -15,7 +15,7 @@ Object.keys(config.entry).forEach(function(key) {
 });
 
 // Globally expose the JS dependencies
-config.module.loaders = Object.keys(globalModules).map(function (pkg) {
+config.module.rules = Object.keys(globalModules).map(function (pkg) {
   return {
     test: require.resolve(pkg),
     loader: "expose-loader?" + globalModules[pkg]
