@@ -7,7 +7,8 @@ val client =
       libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "0.9.1",
       npmDependencies in Compile ++= Seq(
         "snabbdom" -> "0.5.3",
-        "font-awesome" -> "4.7.0"
+        "font-awesome" -> "4.7.0",
+        "url-loader" -> "0.5.9"
       )
     )
 

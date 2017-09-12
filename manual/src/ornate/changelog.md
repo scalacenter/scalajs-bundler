@@ -1,5 +1,13 @@
 # Changelog
 
+## Version 0.9.0-SNAPSHOT
+
+> Not yet released
+
+When upgrading to this release, make sure to migrate your webpack configuration to webpack 3.X https://webpack.js.org/guides/migrating/
+
+- [#666](https://github.com/scalacenter/scalajs-bundler/pull/666): Set webpack 3.X as default version. Run webpack-dev-server within the scalajs-bundler directory, this make shure that loaders are available eagerly.
+
 ## Version 0.8.0
 
 > 2017 September 10
