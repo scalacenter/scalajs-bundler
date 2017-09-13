@@ -39,12 +39,12 @@ import scalajsbundler.util.JSON
   *
   * Version of jsdom to use.
   *
-  * == `version in installWebpackDevServer` ==
+  * == `version in startWebpackDevServer` ==
   *
   * Version of webpack-dev-server to use.
   *
   * {{{
-  *   version in installWebpackDevServer := "2.7.1"
+  *   version in startWebpackDevServer := "2.7.1"
   * }}}
   *
   * == `crossTarget in npmUpdate` ==
@@ -400,18 +400,6 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       * @group tasks
       */
     val installJsdom = taskKey[File]("Locally install jsdom")
-
-    /**
-      * Locally install webpack-dev-server.
-      *
-      * You can set the webpack-dev-server package version to install with the key `version in installWebpackDevServer`.
-      *
-      * Returns the installation directory.
-      *
-      * @group tasks
-      */
-    val installWebpackDevServer = taskKey[File]("Locally install webpack-dev-server")
-
   }
 
   private val scalaJSBundlerPackageJson =
@@ -447,7 +435,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
 
     version in webpack := "3.5.5",
 
-    version in installWebpackDevServer := "2.7.1",
+    version in startWebpackDevServer := "2.7.1",
 
     version in installJsdom := "9.9.0",
 
@@ -496,24 +484,6 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
         log.info(s"Installing jsdom in ${installDir.absolutePath}")
         IO.createDirectory(installDir)
         install(installDir, useYarn.value, log)(s"jsdom@$jsdomVersion")
-      }
-      installDir
-    },
-
-    installWebpackDevServer := {
-      val installDir = target.value / "scalajs-bundler-webpack-dev-server"
-      val log = streams.value.log
-      val webpackVersion = (version in webpack).value
-      val webpackDevServerVersion = (version in installWebpackDevServer).value
-
-      if (!installDir.exists()) {
-        log.info(s"Installing webpack-dev-server in ${installDir.absolutePath}")
-        IO.createDirectory(installDir)
-        install(installDir, useYarn.value, log)(
-          // Webpack version should match the setting
-          s"webpack@$webpackVersion",
-          s"webpack-dev-server@$webpackDevServerVersion"
-        )
       }
       installDir
     }
@@ -573,6 +543,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
           fullClasspath.value,
           configuration.value,
           (version in webpack).value,
+          (version in startWebpackDevServer).value,
           streams.value
         ),
 
@@ -721,13 +692,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       },
 
       // webpack-dev-server wiring
-      startWebpackDevServer in stageTask := {
-        val serverDir = installWebpackDevServer.value
-
-        // We need to execute the full webpack task once, since it generates
-        // the required config file
-        (webpack in stageTask).value
-
+      startWebpackDevServer in stageTask := Def.task {
         val port = (webpackDevServerPort in stageTask).value
         val extraArgs = (webpackDevServerExtraArgs in stageTask).value
 
@@ -748,14 +713,19 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
         val logger = (streams in stageTask).value.log
 
         server.start(
-          serverDir,
           workDir,
           config,
           port,
           extraArgs,
           logger
         )
-      },
+      }.dependsOn(
+        // We need to execute the full webpack task once, since it generates
+        // the required config file
+        (webpack in stageTask),
+
+        npmUpdate
+      ).value,
 
       // Stops the global server instance, but is defined on stage
       // level to match `startWebpackDevServer`
