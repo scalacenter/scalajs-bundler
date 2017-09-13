@@ -32,7 +32,7 @@ import scalajsbundler.util.JSON
   * Version of webpack to use. Example:
   *
   * {{{
-  *   version in webpack := "2.1.0-beta.25"
+  *   version in webpack := "3.5.5"
   * }}}
   *
   * == `version in installJsdom` ==
@@ -42,6 +42,10 @@ import scalajsbundler.util.JSON
   * == `version in installWebpackDevServer` ==
   *
   * Version of webpack-dev-server to use.
+  *
+  * {{{
+  *   version in installWebpackDevServer := "2.7.1"
+  * }}}
   *
   * == `crossTarget in npmUpdate` ==
   *
@@ -441,9 +445,9 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
 
     scalaJSLinkerConfig ~= { _.withModuleKind(ModuleKind.CommonJSModule) },
 
-    version in webpack := "1.14",
+    version in webpack := "3.5.5",
 
-    version in installWebpackDevServer := "1.16.3",
+    version in installWebpackDevServer := "2.7.1",
 
     version in installJsdom := "9.9.0",
 

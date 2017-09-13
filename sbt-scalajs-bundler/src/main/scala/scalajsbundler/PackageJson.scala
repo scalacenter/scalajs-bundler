@@ -37,6 +37,15 @@ object PackageJson {
         if (currentConfiguration == Compile) npmManifestDependencies.compileDependencies
         else npmManifestDependencies.testDependencies
       )
+
+    val sourceMapLoaderVersion = 
+      NpmPackage(webpackVersion).major match {
+        case Some(1) | Some(2) => "0.1.5"
+        case Some(3) => "0.2.1"
+        case Some(x) => sys.error(s"Unsupported webpack major version $x")
+        case None => sys.error("No webpack version defined")
+      }
+
     val devDependencies =
       npmDevDependencies ++ (
         if (currentConfiguration == Compile) npmManifestDependencies.compileDevDependencies
@@ -44,7 +53,7 @@ object PackageJson {
       ) ++ Seq(
         "webpack" -> webpackVersion,
         "concat-with-sourcemaps" -> "1.0.4", // Used by the reload workflow
-        "source-map-loader" -> "0.1.5" // Used by webpack when emitSourceMaps is enabled
+        "source-map-loader" -> sourceMapLoaderVersion // Used by webpack when emitSourceMaps is enabled
       )
 
     val packageJson =

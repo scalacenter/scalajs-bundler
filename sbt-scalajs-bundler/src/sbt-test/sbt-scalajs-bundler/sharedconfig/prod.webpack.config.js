@@ -7,6 +7,8 @@ var commonConfig = require("./common.webpack.config.js");
 module.exports = merge(generatedConfig, commonConfig, {
 
   "plugins": [
-    new webpack.optimize.UglifyJsPlugin()
+    new webpack.optimize.UglifyJsPlugin({
+      sourceMap: true
+    })
   ]
 })

@@ -45,6 +45,13 @@ TaskKey[Unit]("checkSize") := {
     .get.data
   //#filter-files
   val artifactSize = IO.readBytes(bundleFile).length
-  val expected = 20802
-  assert(artifactSize == expected, s"expected: $expected, got: $artifactSize")
+
+  val sizeLow = 20000
+  val sizeHigh = 22000
+
+  // Account for minor variance in size due to transitive dependency updates
+  assert(
+    artifactSize >= sizeLow && artifactSize <= sizeHigh,
+    s"expected: [$sizeLow, $sizeHigh], got: $artifactSize"
+  )
 }
