@@ -10,12 +10,14 @@ scalaJSUseMainModuleInitializer := true
 libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "0.9.1"
 
 npmDependencies in Compile += "leaflet" -> "0.7.7"
+
 npmDevDependencies in Compile ++= Seq(
   "webpack-merge" -> "4.1.0",
   "file-loader" -> "0.10.1",
   "image-webpack-loader" -> "3.3.0",
   "css-loader" -> "0.27.0",
-  "style-loader" -> "0.16.0"
+  "style-loader" -> "0.18.2",
+  "url-loader" -> "0.5.9"
 )
 
 webpackConfigFile in fastOptJS := Some(baseDirectory.value / "dev.webpack.config.js")
