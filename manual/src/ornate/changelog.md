@@ -4,9 +4,13 @@
 
 > Not yet released
 
-When upgrading to this release, make sure to migrate your webpack configuration to webpack 3.X https://webpack.js.org/guides/migrating/
+When upgrading to this release, make sure to migrate your webpack configuration to [webpack 3.X](https://webpack.js.org/guides/migrating/).
+
+This version works with both sbt version 0.13 and 1.0. In order to support sbt 1.0,
+Scala.js has been upgraded to [0.6.19](https://www.scala-js.org/news/2017/07/29/announcing-scalajs-0.6.19/).
 
 - [#175](https://github.com/scalacenter/scalajs-bundler/pull/175): Set webpack 3.X as default version.
+- [#179](https://github.com/scalacenter/scalajs-bundler/pull/179): Cross publish for sbt 1.0
 
 ## Version 0.8.0
 

@@ -1,6 +1,8 @@
 import sbtunidoc.Plugin.ScalaUnidoc
 import sbtunidoc.Plugin.UnidocKeys.unidoc
 
+val runScripted = taskKey[Unit]("Run supported sbt scripted tests")
+
 val `sbt-scalajs-bundler` =
   project.in(file("sbt-scalajs-bundler"))
     .settings(commonSettings: _*)
@@ -8,7 +10,7 @@ val `sbt-scalajs-bundler` =
       sbtPlugin := true,
       name := "sbt-scalajs-bundler",
       description := "Module bundler for Scala.js projects",
-      addSbtPlugin("org.scala-js" % "sbt-scalajs" % "0.6.18")
+      addSbtPlugin("org.scala-js" % "sbt-scalajs" % "0.6.19")
     )
 
 val `sbt-web-scalajs-bundler` =
@@ -23,7 +25,7 @@ val `sbt-web-scalajs-bundler` =
       },
       name := "sbt-web-scalajs-bundler",
       description := "Module bundler for Scala.js projects (integration with sbt-web-scalajs)",
-      addSbtPlugin("com.vmunier" % "sbt-web-scalajs" % "1.0.5")
+      addSbtPlugin("com.vmunier" % "sbt-web-scalajs" % "1.0.6")
     )
     .dependsOn(`sbt-scalajs-bundler`)
 
@@ -68,9 +70,8 @@ import ReleaseTransformations._
 
 val `scalajs-bundler` =
   project.in(file("."))
-    .settings(ScriptedPlugin.scriptedSettings ++ noPublishSettings: _*)
+    .settings(noPublishSettings: _*)
     .settings(
-      sbtPlugin := true,
       releaseProcess := Seq[ReleaseStep](
         checkSnapshotDependencies,
         inquireVersions,
@@ -88,9 +89,7 @@ val `scalajs-bundler` =
         commitNextVersion,
         pushChanges,
         releaseStepTask(GhPagesKeys.pushSite in manual)
-      ),
-      scriptedLaunchOpts += "-Dplugin.version=" + version.value,
-      scriptedBufferLog := false
+      )
     )
     .aggregate(`sbt-scalajs-bundler`, `sbt-web-scalajs-bundler`, manual, apiDoc)
 
@@ -125,6 +124,16 @@ lazy val commonSettings =
         "scm:git:git@github.com:scalacenter/scalajs-bundler.git"
       )
     ),
+    crossSbtVersions := List("0.13.16", "1.0.2"),
+    scalaVersion := {
+      (sbtBinaryVersion in pluginCrossBuild).value match {
+        case "0.13" => "2.10.6"
+        case _ => "2.12.3"
+      }
+    },
+    // fixed in https://github.com/sbt/sbt/pull/3397 (for sbt 0.13.17)
+    sbtBinaryVersion in update := (sbtBinaryVersion in pluginCrossBuild).value,
+    runScripted := runScriptedTask.value,
     scriptedLaunchOpts += "-Dplugin.version=" + version.value,
     scriptedBufferLog := false
   )
@@ -135,3 +144,36 @@ lazy val noPublishSettings =
     publish := (),
     publishLocal := ()
   )
+
+def runScriptedTask = Def.taskDyn {
+  val sbtBinVersion = (sbtBinaryVersion in pluginCrossBuild).value
+  val base = sbtTestDirectory.value
+
+  def isCompatible(directory: File): Boolean = {
+    val buildProps = new java.util.Properties()
+    IO.load(buildProps, directory / "project" / "build.properties")
+    Option(buildProps.getProperty("sbt.version"))
+      .map { version =>
+        val requiredBinVersion = CrossVersion.binarySbtVersion(version)
+        val compatible = requiredBinVersion == sbtBinVersion
+        if (!compatible) {
+          val testName = directory.relativeTo(base).getOrElse(directory)
+          streams.value.log.warn(s"Skipping $testName since it requires sbt $requiredBinVersion")
+        }
+        compatible
+      }
+      .getOrElse(true)
+  }
+
+  val testDirectoryFinder = base * AllPassFilter * AllPassFilter filter { _.isDirectory }
+  val tests = for {
+    test <- testDirectoryFinder.get
+    if isCompatible(test)
+    path <- Path.relativeTo(base)(test)
+  } yield path.replace('\\', '/')
+
+  if (tests.nonEmpty)
+    Def.task(scripted.toTask(tests.mkString(" ", " ", "")).value)
+  else
+    Def.task(streams.value.log.warn("No tests can be run for this sbt version"))
+}

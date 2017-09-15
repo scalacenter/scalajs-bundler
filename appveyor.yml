@@ -1,14 +1,20 @@
 version: '{build}'
 os: Windows Server 2012
+environment:
+  matrix:
+    - CI_SBT_VERSION: 0.13.16
+    - CI_SBT_VERSION: 1.0.2
 install:
   - cmd: choco install sbt --version 0.13.15 -ia "INSTALLDIR=""C:\sbt"""
   - cmd: SET PATH=C:\sbt\bin;%JAVA_HOME%\bin;%PATH%
   - cmd: SET SBT_OPTS=-XX:MaxPermSize=2g -Xmx4g
-build_script:
-  - sbt clean compile
+build: off
 test_script:
-  - sbt test scripted
+  # Normally this would be "^^%CI_SBT_VERSION%" but it looks like
+  # AppVeyor expands single '^' to '^^' to workaround the fact that in
+  # Windows batch files '^' serves as an escape charactor.
+  - cmd: sbt ";^%CI_SBT_VERSION%;test;runScripted"
 cache:
   - C:\sbt
-  - C:\Users\appveyor\.ivy2
+  - C:\Users\appveyor\.ivy2\cache
   - C:\Users\appveyor\.sbt
