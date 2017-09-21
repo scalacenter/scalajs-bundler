@@ -21,7 +21,7 @@ We use [sbt-scripted](http://eed3si9n.com/testing-sbt-plugins) to test the plugi
 To run all the tests:
 
 ~~~ sh
-$ sbt scripted
+$ sbt runScripted
 ~~~
 
 Or, to run a single test:

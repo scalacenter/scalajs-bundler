@@ -9,7 +9,6 @@ import webscalajs.WebScalaJS
 import webscalajs.WebScalaJS.autoImport._
 
 import scala.collection.immutable.Nil
-import scalajsbundler.Webpack
 import scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.autoImport._
 
 /**
@@ -61,15 +60,10 @@ object WebScalaJSBundlerPlugin extends AutoPlugin {
     )
   }
 
-  def pipelineStage(sjsStage: TaskKey[Attributed[File]], self: TaskKey[Pipeline.Stage]): Def.Initialize[Task[Pipeline.Stage]] =
+  def bundlesWithSourceMaps(sjsStage: TaskKey[Attributed[File]]): Def.Initialize[Task[Seq[(File, String)]]] =
     Def.taskDyn {
       val projects = scalaJSProjects.value.map(Project.projectToRef)
-      val npmAssetsMappings = npmAssets.value
-      val selfIncludeFilter = (includeFilter in self).value
-      val selfExcludeFilter = (excludeFilter in self).value
-      Def.task { mappings: Seq[PathMapping] =>
-        val filtered = filterMappings(mappings, selfIncludeFilter, selfExcludeFilter)
-
+      Def.task {
         // ((file, relative-path), sourceMapsEnabled)
         val bundles: Seq[((File, String), Boolean)] =
           projects
@@ -78,22 +72,33 @@ object WebScalaJSBundlerPlugin extends AutoPlugin {
                 val files = (webpack in (project, Compile, sjsStage in project)).value
                 val clientTarget = (npmUpdate in (project, Compile)).value
                 val sourceMapsEnabled = (webpackEmitSourceMaps in (project, Compile, sjsStage in project)).value
-                files.map(_.data).pair(relativeTo(clientTarget)).map((_, sourceMapsEnabled))
+                files.map(_.data).pair(Path.relativeTo(clientTarget)).map((_, sourceMapsEnabled))
               }
             }
             .foldLeft(Def.task(Seq.empty[((File, String), Boolean)]))((acc, bundleFiles) => Def.task(acc.value ++ bundleFiles.value))
             .value
 
-        val bundlesWithSourceMaps =
-          bundles.flatMap { case ((file, path), bundleSourceMapsEnabled) =>
-            val sourceMapFile = file.getParentFile / (file.name ++ ".map")
-            if (bundleSourceMapsEnabled && sourceMapFile.exists) {
-              val sourceMapPath = path ++ ".map"
-              Seq(file -> path, sourceMapFile -> sourceMapPath)
-            } else Seq(file -> path)
-          }
+        bundles.flatMap { case ((file, path), bundleSourceMapsEnabled) =>
+          val sourceMapFile = file.getParentFile / (file.name ++ ".map")
+          if (bundleSourceMapsEnabled && sourceMapFile.exists) {
+            val sourceMapPath = path ++ ".map"
+            Seq(file -> path, sourceMapFile -> sourceMapPath)
+          } else Seq(file -> path)
+        }
+      }
+    }
 
-        filtered ++ bundlesWithSourceMaps ++ WebScalaJS.sourcemapScalaFiles(sjsStage).value ++ npmAssetsMappings
+  def pipelineStage(sjsStage: TaskKey[Attributed[File]], self: TaskKey[Pipeline.Stage]): Def.Initialize[Task[Pipeline.Stage]] =
+    Def.taskDyn {
+      val npmAssetsMappings = npmAssets.value
+      val selfIncludeFilter = (includeFilter in self).value
+      val selfExcludeFilter = (excludeFilter in self).value
+      val bundleMappings = bundlesWithSourceMaps(sjsStage).value
+      val sourcemapScalaFiles = WebScalaJS.sourcemapScalaFiles(sjsStage).value
+      Def.task { mappings: Seq[PathMapping] =>
+        val filtered = filterMappings(mappings, selfIncludeFilter, selfExcludeFilter)
+
+        filtered ++ bundleMappings ++ sourcemapScalaFiles ++ npmAssetsMappings
       }
     }
 

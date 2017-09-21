@@ -164,8 +164,8 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       *
       * @group settings
       */
-    val additionalNpmConfig: SettingKey[Map[String, util.JSON]] =
-      settingKey[Map[String, util.JSON]]("Additional option to include in the generated 'package.json'")
+    val additionalNpmConfig: SettingKey[Map[String, JSON]] =
+      settingKey[Map[String, JSON]]("Additional option to include in the generated 'package.json'")
 
     /**
       * [[scalajsbundler.BundlingMode]] to use.
@@ -651,9 +651,12 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
 
         // Pretend that we are not using a CommonJS module if jsdom is involved, otherwise that
         // would be incompatible with the way jsdom loads scripts
-        val (moduleKind, moduleIdentifier) =
+        val (moduleKind, moduleIdentifier) = {
+          val withoutDom = (scalaJSModuleKind.value, scalaJSModuleIdentifier.value)
+
           if ((scalaJSRequestsDOM in fastOptJS).value) (ModuleKind.NoModule, None)
-          else (scalaJSModuleKind.value, scalaJSModuleIdentifier.value)
+          else withoutDom
+        }
 
         val detector =
           new FrameworkDetectorWrapper(env, moduleKind, moduleIdentifier).wrapped

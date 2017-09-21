@@ -1,7 +1,6 @@
 package scalajsbundler
 
-import sbt.{Process, Logger, ProcessLogger}
-import sbt.Path._
+import sbt._
 import java.io.File
 
 /**
@@ -52,24 +51,23 @@ private [scalajsbundler] class WebpackDevServer {
     configPath: File,
     port: Int,
     extraArgs: Seq[String],
-    logger: ProcessLogger
+    logger: Logger
   ) {
-
     logger.info("Starting webpack-dev-server");
 
     val devServerPath = npmDir / "node_modules" /
-    "webpack-dev-server" / "bin" / "webpack-dev-server.js"
+      "webpack-dev-server" / "bin" / "webpack-dev-server.js"
 
     val command = Seq(
       "node",
-      devServerPath.absolutePath,
+      devServerPath.getAbsolutePath,
       "--config",
-      configPath.absolutePath,
+      configPath.getAbsolutePath,
       "--port",
       port.toString
     ) ++ extraArgs
 
-    val process = Process(command, workDir).run(logger)
+    val process = util.Commands.start(command, workDir, logger)
 
     def stop() = {
       logger.info("Stopping webpack-dev-server");
