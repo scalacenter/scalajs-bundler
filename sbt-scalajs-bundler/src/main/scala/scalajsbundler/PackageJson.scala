@@ -29,7 +29,8 @@ object PackageJson {
     additionalNpmConfig: Map[String, JSON],
     fullClasspath: Seq[Attributed[File]],
     currentConfiguration: Configuration,
-    webpackVersion: String
+    webpackVersion: String,
+    webpackDevServerVersion: String
   ): Unit = {
     val npmManifestDependencies = NpmDependencies.collectFromClasspath(fullClasspath)
     val dependencies =
@@ -52,6 +53,7 @@ object PackageJson {
         else npmManifestDependencies.testDevDependencies
       ) ++ Seq(
         "webpack" -> webpackVersion,
+        "webpack-dev-server" -> webpackDevServerVersion,
         "concat-with-sourcemaps" -> "1.0.4", // Used by the reload workflow
         "source-map-loader" -> sourceMapLoaderVersion // Used by webpack when emitSourceMaps is enabled
       )

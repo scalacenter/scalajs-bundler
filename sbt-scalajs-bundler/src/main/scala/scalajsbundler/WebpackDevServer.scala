@@ -11,8 +11,6 @@ private [scalajsbundler] class WebpackDevServer {
   private var worker: Option[Worker] = None
 
   /**
-    * @param npmDir - path to directory containing node_modules
-    * subdirectory.
     * @param workDir - path to working directory for webpack-dev-server
     * @param configPath - path to webpack config.
     * @param port - port, on which the server will operate.
@@ -20,7 +18,6 @@ private [scalajsbundler] class WebpackDevServer {
     * @param logger - a logger to use for output
     */
   def start(
-    npmDir: File,
     workDir: File,
     configPath: File,
     port: Int,
@@ -29,7 +26,6 @@ private [scalajsbundler] class WebpackDevServer {
   ) = this.synchronized {
     stop()
     worker = Some(new Worker(
-      npmDir,
       workDir,
       configPath,
       port,
@@ -46,7 +42,6 @@ private [scalajsbundler] class WebpackDevServer {
   }
 
   private class Worker(
-    npmDir: File,
     workDir: File,
     configPath: File,
     port: Int,
@@ -55,12 +50,9 @@ private [scalajsbundler] class WebpackDevServer {
   ) {
     logger.info("Starting webpack-dev-server");
 
-    val devServerPath = npmDir / "node_modules" /
-      "webpack-dev-server" / "bin" / "webpack-dev-server.js"
-
     val command = Seq(
       "node",
-      devServerPath.getAbsolutePath,
+      "node_modules/webpack-dev-server/bin/webpack-dev-server.js",
       "--config",
       configPath.getAbsolutePath,
       "--port",

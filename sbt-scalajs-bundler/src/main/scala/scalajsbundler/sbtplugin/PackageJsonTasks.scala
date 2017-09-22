@@ -17,6 +17,7 @@ object PackageJsonTasks {
     * @param fullClasspath Classpath
     * @param configuration Current configuration (Compile or Test)
     * @param webpackVersion Webpack version
+    * @param webpackDevServerVersion Webpack development server version
     * @return The written package.json file
     */
   def writePackageJson(
@@ -28,6 +29,7 @@ object PackageJsonTasks {
     fullClasspath: Seq[Attributed[File]],
     configuration: Configuration,
     webpackVersion: String,
+    webpackDevServerVersion: String,
     streams: Keys.TaskStreams
   ): BundlerFile.PackageJson = {
 
@@ -37,7 +39,8 @@ object PackageJsonTasks {
       npmDevDependencies.toString,
       npmResolutions.toString,
       fullClasspath.map(_.data.name).toString,
-      webpackVersion
+      webpackVersion,
+      webpackDevServerVersion
     ).mkString(",")
 
     val packageJsonFile = targetDir / "package.json"
@@ -56,7 +59,8 @@ object PackageJsonTasks {
         additionalNpmConfig,
         fullClasspath,
         configuration,
-        webpackVersion
+        webpackVersion,
+        webpackDevServerVersion
       )
       ()
     }

@@ -11,6 +11,7 @@ Scala.js has been upgraded to [0.6.19](https://www.scala-js.org/news/2017/07/29/
 
 - [#175](https://github.com/scalacenter/scalajs-bundler/pull/175): Set webpack 3.X as default version.
 - [#179](https://github.com/scalacenter/scalajs-bundler/pull/179): Cross publish for sbt 1.0
+- [#176](https://github.com/scalacenter/scalajs-bundler/pull/176): Run webpack-dev-server from the scalajs-bundler folder
 
 ## Version 0.8.0
 
