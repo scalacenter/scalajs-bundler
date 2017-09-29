@@ -280,3 +280,80 @@ reload on every change:
 ~~~
 webpackDevServerExtraArgs := Seq("--inline")
 ~~~
+
+## How to resolve conflicts in global namespace between webpack output and 3rd-party js libs?
+
+The only reliable way is to isolate such js libraries from global scope.
+
+Many js libs modify global scope, register global vars, etc. Let's look on these two:
+~~~ scala
+npmDependencies in Compile ++= Seq(
+  "leaflet" -> "1.2.0",
+  "leaflet.markercluster" -> "1.1.0"
+)
+~~~
+If you are using [Leaflet.js](http://leafletjs.com/) with bundled application,
+you may randomly suffer from errors like `L is not a function` in production builds.
+This occurs because leaflet binds itself to `window.L` during its initialization,
+webpack doesn't know that and also writes into global `L`.
+
+1. If problematic js library is clever enought, it may possible to rollback its global var
+   into original value. For Leaflet.js, add such code into start of the `main()`:
+   ~~~ scala
+   object MyJsApp {
+     def main(args: Array[String]): Unit = {
+       // Leaflet.js can unbind itself from global scope, restoring previous value of window.L:
+       Leaflet.noConflict()
+
+       // Now, global L contains original webpack-generated function or undefined.
+       // ...
+     }
+   }
+
+   @JSImport("leaflet", JSImport.Namespace)
+   @js.native
+   object Leaflet extends js.Object {
+     def noConflict(): Leaflet.type = js.native
+   }
+   ~~~
+
+2. But how to force module-unfriendly js-libs to not to interact with global scope?
+   Anothen example, [Leaflet.MarkerCluster plugin](https://github.com/Leaflet/Leaflet.markercluster)
+   reads and writes into global `L` during early initialization, and accesses `L` during furner activity.
+
+   We need to replace global `L` with imported leaflet module, and export `L.MarkerCluterGroup`.
+   Webpack [imports-loader](https://github.com/webpack-contrib/imports-loader) and
+   [exports-loader](https://github.com/webpack-contrib/exports-loader) can help.
+   Add these lines into `build.sbt`:
+   ~~~ scala
+   npmDevDependencies in Compile ++= Seq(
+     "imports-loader" -> "0.7.1",
+     "exports-loader" -> "0.6.4"
+   )
+   ~~~
+   You may need to `sbt clean` after this step.
+   
+   Let's write scala.js facade for `L.MarkerClusterGroup`:
+   ~~~ scala
+   @js.native
+   @JSImport("imports-loader?L=leaflet!exports-loader?L.MarkerClusterGroup!./node_modules/leaflet.markercluster/dist/leaflet.markercluster.js", JSImport.Namespace)
+   class MarkerClusterGroup(options: js.Object) extends js.Object
+   ~~~
+
+   `@JSImport` module contains following instructions for webpack loaders:
+   - `imports-loader?L=leaflet!` to substitute global `L` with leaflet module import.
+      It will add `var L = require('leaflet');` into beginning of module source code.
+   - `exports-loader?L.MarkerClusterGroup!` to export newly-created variable `L.MarketClusterGroup`
+     as a module.
+   - Last part is a path to original js file, relative to `target/scala-x.xx/scalajs-bundler/main`.
+     Do not forget `./` in path beginning.
+   
+   Let's try it:
+   ~~~ scala
+   val clusterOptions: js.Object = ...
+   val mcg = new MarkerClusterGroup( clusterOptions )
+   Leaflet.addLayer(mcg)
+   ~~~
+
+   Read more about [webpack shimming](https://github.com/webpack/docs/wiki/shimming-modules) with more examples.
+
