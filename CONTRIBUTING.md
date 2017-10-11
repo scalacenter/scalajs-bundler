@@ -1,6 +1,10 @@
 Contributing
 ===========
 
+## General recommendations
+
+Test and document each added feature.
+
 ## Organization of the repository
 
 - `sbt-scalajs-bundler/` The scalajs-bundler sbt plugin
@@ -65,6 +69,9 @@ $ sbt publishLocal
 $ sbt manual/previewSite
 ~~~
 
-## General recommendations
+## Publish a release
 
-Test and document each added feature.
+- Check that the `changelog.md` file is up to date (in the `manual` project)
+- Push a Git tag (name it `vX.Y.Z`, where `X`, `Y`, `Z` are major, minor and revision numbers, respectively)
+  - Either from GitHub [web interface](https://github.com/scalacenter/scalajs-bundler/releases/new),
+  - Or from the Git CLI: `$ git tag v1.0.0; git push --tags`

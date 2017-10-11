@@ -5,7 +5,7 @@ val runScripted = taskKey[Unit]("Run supported sbt scripted tests")
 
 val `sbt-scalajs-bundler` =
   project.in(file("sbt-scalajs-bundler"))
-    .settings(commonSettings: _*)
+    .settings(commonSettings)
     .settings(
       sbtPlugin := true,
       name := "sbt-scalajs-bundler",
@@ -15,7 +15,7 @@ val `sbt-scalajs-bundler` =
 
 val `sbt-web-scalajs-bundler` =
   project.in(file("sbt-web-scalajs-bundler"))
-    .settings(commonSettings: _*)
+    .settings(commonSettings)
     .settings(
       sbtPlugin := true,
       scriptedDependencies := {
@@ -55,6 +55,7 @@ val manual =
       git.remoteRepo := "git@github.com:scalacenter/scalajs-bundler.git",
       ornateSourceDir := Some(sourceDirectory.value / "ornate"),
       ornateTargetDir := Some(ornateTarget.value),
+      ornateSettings := Map("version" -> version.value),
       siteSubdirName in ornate := "",
       addMappingsToSiteDir(mappings in ornate, siteSubdirName in ornate),
       mappings in ornate := {
@@ -66,77 +67,47 @@ val manual =
       addMappingsToSiteDir(mappings in ScalaUnidoc in packageDoc in apiDoc, siteSubdirName in packageDoc)
     )
 
-import ReleaseTransformations._
-
 val `scalajs-bundler` =
   project.in(file("."))
     .settings(noPublishSettings: _*)
-    .settings(
-      releaseProcess := Seq[ReleaseStep](
-        checkSnapshotDependencies,
-        inquireVersions,
-        runClean,
-        runTest,
-        releaseStepInputTask(scripted in `sbt-scalajs-bundler`),
-        releaseStepInputTask(scripted in `sbt-web-scalajs-bundler`),
-        releaseStepTask(ornate in manual),
-        setReleaseVersion,
-        commitReleaseVersion,
-        tagRelease,
-        releaseStepTask(PgpKeys.publishSigned in `sbt-scalajs-bundler`),
-        releaseStepTask(PgpKeys.publishSigned in `sbt-web-scalajs-bundler`),
-        setNextVersion,
-        commitNextVersion,
-        pushChanges,
-        releaseStepTask(GhPagesKeys.pushSite in manual)
-      )
-    )
-    .aggregate(`sbt-scalajs-bundler`, `sbt-web-scalajs-bundler`, manual, apiDoc)
+    .aggregate(`sbt-scalajs-bundler`, `sbt-web-scalajs-bundler`)
 
-lazy val commonSettings =
-  ScriptedPlugin.scriptedSettings ++ Seq(
-    scalacOptions ++= Seq(
-      "-feature",
-      "-deprecation",
-      "-encoding", "UTF-8",
-      "-unchecked",
-      "-Xlint",
-      "-Yno-adapted-args",
-      "-Ywarn-dead-code",
-      "-Ywarn-numeric-widen",
-      "-Ywarn-value-discard",
-      "-Xfuture"
-    ),
-    organization := "ch.epfl.scala",
-    pomExtra :=
-      <developers>
-        <developer>
-          <id>julienrf</id>
-          <name>Julien Richard-Foy</name>
-          <url>http://julien.richard-foy.fr</url>
-        </developer>
-      </developers>,
-    homepage := Some(url(s"https://github.com/scalacenter/scalajs-bundler")),
-    licenses := Seq("MIT License" -> url("http://opensource.org/licenses/mit-license.php")),
-    scmInfo := Some(
-      ScmInfo(
-        url("https://github.com/scalacenter/scalajs-bundler"),
-        "scm:git:git@github.com:scalacenter/scalajs-bundler.git"
-      )
-    ),
-    crossSbtVersions := List("0.13.16", "1.0.2"),
-    scalaVersion := {
-      (sbtBinaryVersion in pluginCrossBuild).value match {
-        case "0.13" => "2.10.6"
-        case _ => "2.12.3"
-      }
-    },
-    // fixed in https://github.com/sbt/sbt/pull/3397 (for sbt 0.13.17)
-    sbtBinaryVersion in update := (sbtBinaryVersion in pluginCrossBuild).value,
-    runScripted := runScriptedTask.value,
-    scriptedLaunchOpts += "-Dplugin.version=" + version.value,
-    scriptedBufferLog := false
-  )
+inScope(ThisScope.copy(project = Global))(List(
+  pgpPublicRing := file("./travis/local.pubring.asc"),
+  pgpSecretRing := file("./travis/local.secring.asc"),
+  releaseEarlyWith := SonatypePublisher,
+  scalacOptions ++= Seq(
+    "-feature",
+    "-deprecation",
+    "-encoding", "UTF-8",
+    "-unchecked",
+    "-Xlint",
+    "-Yno-adapted-args",
+    "-Ywarn-dead-code",
+    "-Ywarn-numeric-widen",
+    "-Ywarn-value-discard",
+    "-Xfuture"
+  ),
+  organization := "ch.epfl.scala",
+  homepage := Some(url(s"https://github.com/scalacenter/scalajs-bundler")),
+  licenses := Seq("MIT License" -> url("http://opensource.org/licenses/mit-license.php")),
+  developers := List(Developer("julienrf", "Julien Richard-Foy", "julien.richard-foy@epfl.ch", url("http://julien.richard-foy.fr")))
+))
+
+lazy val commonSettings = ScriptedPlugin.scriptedSettings ++ List(
+  runScripted := runScriptedTask.value,
+  scriptedLaunchOpts += "-Dplugin.version=" + version.value,
+  scriptedBufferLog := false,
+  crossSbtVersions := List("0.13.16", "1.0.2"),
+  scalaVersion := {
+    (sbtBinaryVersion in pluginCrossBuild).value match {
+      case "0.13" => "2.10.6"
+      case _ => "2.12.3"
+    }
+  },
+  // fixed in https://github.com/sbt/sbt/pull/3397 (for sbt 0.13.17)
+  sbtBinaryVersion in update := (sbtBinaryVersion in pluginCrossBuild).value
+)
 
 lazy val noPublishSettings =
   Seq(
