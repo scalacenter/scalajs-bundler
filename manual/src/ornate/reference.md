@@ -69,7 +69,7 @@ Yarn 0.22.0+ must be available on the host platform.
 Each time you change something in your application source code and compile the project, Scala.js emits a new .js 
 file that can weigh several MBs if your application is large. Scalajs-bundler provides
 a few different options with respect to handling this large output file, controlled by setting the optional
-`webpackBundlingMode` key.
+`webpackBundlingMode` key and can be scoped to a Scala.js stage(`fastOptJS` or `fullOptJS`).
 
 #### Application (default) {#bundling-mode-application}
 
