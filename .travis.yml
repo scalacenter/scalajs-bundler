@@ -23,7 +23,7 @@ before_install:
     tar xv -C travis -f travis/secrets.tar;
   fi
 script:
-- sbt -no-colors ";^^$TRAVIS_SBT_VERSION;test;runScripted"
+- sbt
 after_success:
 - if [ $TRAVIS_PULL_REQUEST = 'false' && -n "$TRAVIS_TAG" ]; then
    sbt ";^^$TRAVIS_SBT_VERSION; releaseEarly; manual/ghpagesPushSite";
@@ -37,6 +37,3 @@ before_cache:
 # Cleanup the cached directories to avoid unnecessary cache updates
 - find $HOME/.ivy2/cache -name "ivydata-*.properties" -print -delete
 - find $HOME/.sbt        -name "*.lock"               -print -delete
-deploy:
-  on:
-    tags: true
