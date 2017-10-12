@@ -94,6 +94,12 @@ inScope(ThisScope.copy(project = Global))(List(
     "-Ywarn-value-discard",
     "-Xfuture"
   ),
+  scmInfo := Some(
+    ScmInfo(
+      url("https://github.com/scalacenter/scalajs-bundler"),
+      "scm:git@github.com:scalacenter/scalajs-bundler.git"
+    )
+  ),
   organization := "ch.epfl.scala",
   homepage := Some(url(s"https://github.com/scalacenter/scalajs-bundler")),
   licenses := Seq("MIT License" -> url("http://opensource.org/licenses/mit-license.php")),
