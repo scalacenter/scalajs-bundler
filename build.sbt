@@ -78,7 +78,7 @@ inScope(ThisScope.copy(project = Global))(List(
   pgpPassphrase := sys.env.get("PGP_PASS").map(_.toArray),
   credentials ++= (
     for {
-      username <- sys.env.get("SONATYPE_USERNAME")
+      username <- sys.env.get("SONATYPE_USER")
       password <- sys.env.get("SONATYPE_PASSWORD")
     } yield Credentials("Sonatype Nexus Repository Manager", "oss.sonatype.org", username, password)
   ).toList,
