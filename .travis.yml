@@ -26,7 +26,7 @@ script:
 - sbt
 after_success:
 - if [ $TRAVIS_PULL_REQUEST = 'false' ] && [ -n "$TRAVIS_TAG" ]; then
-   sbt ";^^$TRAVIS_SBT_VERSION; releaseEarly; manual/ghpagesPushSite";
+   sbt ";^^$TRAVIS_SBT_VERSION; publishSigned; sonatypeReleaseAll; manual/ghpagesPushSite";
   fi
 cache:
   yarn: true

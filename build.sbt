@@ -75,7 +75,12 @@ val `scalajs-bundler` =
 inScope(ThisScope.copy(project = Global))(List(
   pgpPublicRing := file("./travis/local.pubring.asc"),
   pgpSecretRing := file("./travis/local.secring.asc"),
-  releaseEarlyWith := SonatypePublisher,
+  credentials ++= (
+    for {
+      username <- sys.env.get("SONATYPE_USERNAME")
+      password <- sys.env.get("SONATYPE_PASSWORD")
+    } yield Credentials("Sonatype Nexus Repository Manager", "oss.sonatype.org", username, password)
+  ).toList,
   scalacOptions ++= Seq(
     "-feature",
     "-deprecation",
