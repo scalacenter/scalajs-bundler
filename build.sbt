@@ -75,6 +75,7 @@ val `scalajs-bundler` =
 inScope(ThisScope.copy(project = Global))(List(
   pgpPublicRing := file("./travis/local.pubring.asc"),
   pgpSecretRing := file("./travis/local.secring.asc"),
+  pgpPassphrase := sys.env.get("PGP_PASS").map(_.toArray),
   credentials ++= (
     for {
       username <- sys.env.get("SONATYPE_USERNAME")
