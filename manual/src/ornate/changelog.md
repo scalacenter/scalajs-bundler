@@ -2,7 +2,7 @@
 
 ## Version 0.9.0
 
-> 2017 Setember 11
+> 2017 October 12
 
 When upgrading to this release, make sure to migrate your webpack configuration to [webpack 3.X](https://webpack.js.org/guides/migrating/).
 
