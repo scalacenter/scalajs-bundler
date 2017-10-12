@@ -25,7 +25,7 @@ before_install:
 script:
 - sbt
 after_success:
-- if [ $TRAVIS_PULL_REQUEST = 'false' && -n "$TRAVIS_TAG" ]; then
+- if [ $TRAVIS_PULL_REQUEST = 'false' ] && [ -n "$TRAVIS_TAG" ]; then
    sbt ";^^$TRAVIS_SBT_VERSION; releaseEarly; manual/ghpagesPushSite";
   fi
 cache:
