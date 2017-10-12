@@ -115,7 +115,7 @@ their execution so that they can be loaded by jsdom.</p>
 <p>Each time you change something in your application source code and compile the project, Scala.js emits a new .js
 file that can weigh several MBs if your application is large. Scalajs-bundler provides
 a few different options with respect to handling this large output file, controlled by setting the optional
-<code class="hljs">webpackBundlingMode</code> key.</p>
+<code class="hljs">webpackBundlingMode</code> key and can be scoped to a Scala.js stage(<code class="hljs">fastOptJS</code> or <code class="hljs">fullOptJS</code>).</p>
 <h4 id="bundling-mode-application" class="a_section" data-magellan-target="bundling-mode-application">Application (default)<a class="a_hlink" href="#bundling-mode-application"></a></h4>
 <p><code class="hljs">webpackBundlingMode := BundlingMode.Application</code> generates a webpack config that simply processes the Scala.js output file as an
 entrypoint. This means that webpack loaders, plugins, etc will work as usual. It also means that webpack will

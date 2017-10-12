@@ -39,7 +39,7 @@
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/scalacenter/scalajs-bundler/blob/v0.9.0-SNAPSHOT/sbt-scalajs-bundler/src/main/scala/scalajsbundler/util/Commands.scala" target="_blank">Commands.scala</a></dd></dl><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/scalacenter/scalajs-bundler/blob/v0.9.0/sbt-scalajs-bundler/src/main/scala/scalajsbundler/util/Commands.scala" target="_blank">Commands.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
@@ -306,7 +306,7 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
     </li><li name="scalajsbundler.util.Commands#run" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="run(cmd:Seq[String],cwd:sbt.File,logger:sbt.Logger):Unit"></a>
+      <a id="run(cmd:Seq[String],cwd:java.io.File,logger:sbt.Logger):Unit"></a>
       <a id="run(Seq[String],File,Logger):Unit"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -314,7 +314,20 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">run</span><span class="params">(<span name="cmd">cmd: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="cwd">cwd: <a href="../../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a></span>, <span name="logger">logger: <span class="extype" name="sbt.Logger">Logger</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">run</span><span class="params">(<span name="cmd">cmd: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="cwd">cwd: <span class="extype" name="java.io.File">File</span></span>, <span name="logger">logger: <span class="extype" name="sbt.Logger">Logger</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="scalajsbundler.util.Commands#start" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="start(cmd:Seq[String],cwd:java.io.File,logger:sbt.Logger):scala.sys.process.Process"></a>
+      <a id="start(Seq[String],File,Logger):Process"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">start</span><span class="params">(<span name="cmd">cmd: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="cwd">cwd: <span class="extype" name="java.io.File">File</span></span>, <span name="logger">logger: <span class="extype" name="sbt.Logger">Logger</span></span>)</span><span class="result">: <span class="extype" name="scala.sys.process.Process">Process</span></span>
       </span>
       </h4>
       

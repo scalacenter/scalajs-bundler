@@ -61,6 +61,21 @@
  
                 
                 <h1 id="changelog" class="a_section" data-magellan-target="changelog">Changelog<a class="a_hlink" href="#changelog"></a></h1>
+<h2 id="version-0.9.0" class="a_section" data-magellan-target="version-0.9.0">Version 0.9.0<a class="a_hlink" href="#version-0.9.0"></a></h2>
+<blockquote>
+<p>2017 Setember 11</p>
+</blockquote>
+<p>When upgrading to this release, make sure to migrate your webpack configuration to <a href="https://webpack.js.org/guides/migrating/">webpack 3.X</a>.</p>
+<p>This version works with both sbt version 0.13 and 1.0. In order to support sbt 1.0,
+Scala.js has been upgraded to <a href="https://www.scala-js.org/news/2017/07/29/announcing-scalajs-0.6.19/">0.6.19</a>.</p>
+<ul>
+<li><a href="https://github.com/scalacenter/scalajs-bundler/pull/175">#175</a>: Set webpack 3.X as default version;</li>
+<li><a href="https://github.com/scalacenter/scalajs-bundler/pull/179">#179</a>: Cross publish for sbt 1.0;</li>
+<li><a href="https://github.com/scalacenter/scalajs-bundler/pull/176">#176</a>: Run webpack-dev-server from the scalajs-bundler folder;</li>
+<li><a href="https://github.com/scalacenter/scalajs-bundler/pull/176">#177</a>: Scope webpackBundlingMode per Scala.js stage (<code class="hljs">fastOptJS</code> or <code class="hljs">fullOptJS</code>);</li>
+</ul>
+<p>You can find the complete list of commits since the last release
+<a href="https://github.com/scalacenter/scalajs-bundler/compare/v0.8.0...v0.9.0">here</a>.</p>
 <h2 id="version-0.8.0" class="a_section" data-magellan-target="version-0.8.0">Version 0.8.0<a class="a_hlink" href="#version-0.8.0"></a></h2>
 <blockquote>
 <p>2017 September 10</p>
@@ -303,6 +318,15 @@ the classpath can be <code class="hljs">@JSImport</code>ed by your Scala facades
       
       
         <ul class="vertical menu">  
+  
+    <li>
+      
+         <a href="#version-0.9.0">Version 0.9.0</a> 
+      
+      
+    </li>
+  
+  
   
     <li>
       

@@ -255,24 +255,30 @@ modules to the global namespace. Typically, this file will look like this:</p>
   moment: <span class="hljs-string">"moment"</span>
 };
 
+<span class="hljs-keyword">const</span> importRule =
+  {
+    <span class="hljs-comment">// Force require global modules</span>
+    test: <span class="hljs-regexp">/.*-(fast|full)opt\.js$/</span>,
+    loader: <span class="hljs-string">"imports-loader?"</span> + <span class="hljs-built_in">Object</span>.keys(globalModules).map(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">modName</span>) </span>{
+      <span class="hljs-keyword">return</span> modName + <span class="hljs-string">"="</span> + globalModules[modName];
+    }).join(<span class="hljs-string">','</span>)
+  };
+
+
+<span class="hljs-keyword">const</span> exposeRules =
+  <span class="hljs-built_in">Object</span>.keys(globalModules).map(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">modName</span>) </span>{
+    <span class="hljs-comment">// Expose global modules</span>
+    <span class="hljs-keyword">return</span> {
+      test: <span class="hljs-built_in">require</span>.resolve(modName),
+      loader: <span class="hljs-string">"expose-loader?"</span> + globalModules[modName]
+    }
+  });
+
+<span class="hljs-keyword">const</span> allRules = exposeRules.concat(importRule);
+
 <span class="hljs-built_in">module</span>.exports = {
   <span class="hljs-built_in">module</span>: {
-    loaders: [
-      {
-        <span class="hljs-comment">// Force require global modules</span>
-        test: <span class="hljs-regexp">/.*-(fast|full)opt\.js$/</span>,
-        loader: <span class="hljs-string">"imports-loader?"</span> + <span class="hljs-built_in">Object</span>.keys(globalModules).map(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">modName</span>) </span>{
-          <span class="hljs-keyword">return</span> modName + <span class="hljs-string">"="</span> + globalModules[modName];
-        }).join(<span class="hljs-string">','</span>)
-      },
-      <span class="hljs-built_in">Object</span>.keys(globalModules).map(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">modName</span>) </span>{
-        <span class="hljs-comment">// Expose global modules</span>
-        <span class="hljs-keyword">return</span> {
-          test: <span class="hljs-built_in">require</span>.resolve(modName),
-          loader: <span class="hljs-string">"expose-loader?"</span> + globalModules[modName]
-        }
-      })
-    ]
+    rules: allRules
   }
 };</code></pre>
 </div></div>
