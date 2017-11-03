@@ -117,7 +117,7 @@ exports.require = window["ScalaJSBundlerLibrary"].require;
 ~~~
 
 The default variable global for the library is `ScalaJsBundlerDependencies`. Should you need to change it, 
-you can provide a new variable name to the configuration, such as `bundlingMode := BundlingMode.LibrariesOnly("myLib")`.
+you can provide a new variable name to the configuration, such as `webpackBundlingMode := BundlingMode.LibrariesOnly("myLib")`.
 
 ##### Benefits
 
