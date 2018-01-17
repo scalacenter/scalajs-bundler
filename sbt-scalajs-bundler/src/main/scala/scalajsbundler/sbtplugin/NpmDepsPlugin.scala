@@ -1,6 +1,7 @@
 package scalajsbundler.sbtplugin
 
 import org.scalajs.core.tools.io.FileVirtualJSFile
+import org.scalajs.core.tools.jsdep.ResolvedJSDependency
 import org.scalajs.sbtplugin.ScalaJSPlugin
 import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
 import sbt.Keys._
@@ -16,43 +17,70 @@ object NpmDepsPlugin extends AutoPlugin {
   // Exported keys
   object autoImport {
 
+    case class Dep(module: String, version: String, jsFiles: String*)
+
+    // From ScalaJSBundlerPlugin
     val npmUpdate = taskKey[File]("Fetch NPM dependencies")
 
+    // From ScalaJSBundlerPlugin
     val useYarn: SettingKey[Boolean] =
       settingKey[Boolean]("Whether to use yarn for updates")
 
-    /**
-      * List of the NPM packages (name and version) your application depends on.
-      * You can use [semver](https://docs.npmjs.com/misc/semver) versions:
-      *
-      * {{{
-      *   npmDependencies in Compile += "uuid" -> "~3.0.0"
-      * }}}
-      *
-      * Note that this key must be scoped by a `Configuration` (either `Compile` or `Test`).
-      *
-      * @group settings
-      */
+    // From ScalaJSBundlerPlugin
     val npmDependencies: SettingKey[Seq[(String, String)]] =
       settingKey[Seq[(String, String)]]("NPM dependencies (libraries that your program uses)")
 
+    // From ScalaJSBundlerPlugin
+    val npmResolutions: SettingKey[Map[String, String]] =
+      settingKey[Map[String, String]]("NPM dependencies resolutions in case of conflict")
+
+    // From ScalaJSBundlerPlugin
+    val additionalNpmConfig: SettingKey[Map[String, JSON]] =
+      settingKey[Map[String, JSON]]("Additional option to include in the generated 'package.json'")
+
+    val npmDeps = settingKey[Seq[Dep]]("List of js depencies to be fetched")
+
+    val dependencyFile = taskKey[File]("File containing all external js files")
+
+    // Patched packageJson with no webpack reference
     val packageJson = TaskKey[BundlerFile.PackageJson]("packageJson",
       "Write a package.json file defining the NPM dependencies of project",
       KeyRanks.Invisible
     )
 
-    val npmResolutions: SettingKey[Map[String, String]] =
-      settingKey[Map[String, String]]("NPM dependencies resolutions in case of conflict")
-
-    val additionalNpmConfig: SettingKey[Map[String, JSON]] =
-      settingKey[Map[String, JSON]]("Additional option to include in the generated 'package.json'")
-
   }
 
   import autoImport._
 
-  override lazy val projectSettings: Seq[Def.Setting[_]] = Seq(
-    npmDependencies := Seq.empty
+  override lazy val projectSettings = Seq(
+    npmDeps in Compile := Seq.empty,
+    npmDependencies in Compile := Seq.empty,
+    skip in packageJSDependencies := false,
+    resolvedJSDependencies in Compile := {
+      val logger = streams.value.log
+      val prev = (resolvedJSDependencies in Compile).value
+
+      // Fetch the js paths in node_modules
+      val jss = {
+        val nodeModules = (npmUpdate in Compile).value / "node_modules"
+
+        (for {
+          m <- (npmDeps in Compile).value
+          js <- m.jsFiles
+        } yield {
+          logger.info(s"Fetch $js in ${nodeModules / m.module}")
+          get(nodeModules / m.module, js)
+        }).flatten
+
+      }
+
+      val resolvedDependencies = jss.map { f =>
+        ResolvedJSDependency.minimal(FileVirtualJSFile(f))
+      }
+
+      prev.map(_ ++ resolvedDependencies)
+    },
+    dependencyFile := (packageMinifiedJSDependencies in Compile).value
   ) ++ perScalaJSStageSettings(fullOptJS) ++ perScalaJSStageSettings(fastOptJS)
 
   def perScalaJSStageSettings(stage: TaskKey[Attributed[File]]): Seq[Def.Setting[_]] = Seq(
@@ -62,20 +90,21 @@ object NpmDepsPlugin extends AutoPlugin {
 
   private lazy val perConfigSettings: Seq[Def.Setting[_]] = Seq(
     npmResolutions := Map.empty,
-
+    npmDependencies in Compile := {
+      val prevNpmDep = (npmDependencies in Compile).value
+      val newDeps = (npmDeps in Compile).value.map { dep => dep.module -> dep.version }
+      prevNpmDep ++ newDeps
+    },
     additionalNpmConfig := Map(
       "private" -> JSON.bool(true),
       "license" -> JSON.str("UNLICENSED")
     ),
 
     npmUpdate := {
-      println("NPM UPDATE NPM DEPS")
       val log = streams.value.log
       val targetDir = (crossTarget in npmUpdate).value
       val jsResources = scalaJSNativeLibraries.value.data
       val packageJsonFile = packageJson.value
-
-      println("packJSON " + packageJsonFile.file.getAbsolutePath)
 
       val cachedActionFunction =
         FileFunction.cached(
@@ -96,7 +125,6 @@ object NpmDepsPlugin extends AutoPlugin {
 
       cachedActionFunction(Set(packageJsonFile.file) ++
         jsResources.collect { case f: FileVirtualJSFile =>
-          println("in cached " + f.file.getAbsolutePath)
           f.file
         }.to[Set])
 
@@ -117,5 +145,15 @@ object NpmDepsPlugin extends AutoPlugin {
     )
 
   )
+
+  private def recursiveListFiles(f: File): Array[File] = {
+    val these = f.listFiles
+    these ++ these.filter(_.isDirectory).flatMap(recursiveListFiles)
+  }
+
+  private def get(path: File, jsFile: String) = {
+    val files = recursiveListFiles(path)
+    files.find(_.getName == jsFile)
+  }
 
 }
