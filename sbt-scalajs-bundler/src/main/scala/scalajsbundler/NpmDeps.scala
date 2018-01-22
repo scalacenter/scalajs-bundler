@@ -56,8 +56,9 @@ object NpmDeps {
               Iterator.continually(stream.getNextEntry())
                 .takeWhile(_ != null)
                 .filter(_.getName == NpmDeps.manifestFileName)
-                .flatMap(_ => fromJSON[NpmDeps](IO.readStream(stream)))
-                .to[List]
+                .flatMap(_ => {
+                  fromJSON[NpmDeps](readJSON(IO.readStream(stream)))
+                }).to[List]
             } finally {
               stream.close()
             }
@@ -73,7 +74,7 @@ object NpmDeps {
   }
 
 
-  def writeNpmDepsJson(npmDeps: NpmDeps,targetFile: File): File = {
+  def writeNpmDepsJson(npmDeps: NpmDeps, targetFile: File): File = {
     IO.write(targetFile, jsonToString(npmDeps.toJSON))
     targetFile
   }
