@@ -16,6 +16,7 @@ import scalajsbundler.{BundlerFile, Webpack, WebpackEntryPoint}
 import scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.autoImport._
 import scalajsbundler.sbtplugin.ScalaJSBundlerPlugin._
 import scalajsbundler.util.{Caching, JSBundler, ScalaJSOutputAnalyzer}
+import scalajsbundler.sbtplugin.NpmDepsPlugin.autoImport._
 
 object LibraryTasks {
 

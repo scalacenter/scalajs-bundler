@@ -8,7 +8,7 @@ import org.scalajs.jsenv.nodejs.NodeJSEnv
 import org.scalajs.sbtplugin.Loggers.sbtLogger2ToolsLogger
 import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
 import org.scalajs.sbtplugin.ScalaJSPluginInternal._
-import org.scalajs.sbtplugin.{FrameworkDetectorWrapper, ScalaJSPlugin, ScalaJSPluginInternal, Stage}
+import org.scalajs.sbtplugin.{FrameworkDetectorWrapper, ScalaJSPluginInternal, Stage}
 import org.scalajs.testadapter.ScalaJSFramework
 import sbt.Keys._
 import sbt._
@@ -58,8 +58,11 @@ import scalajsbundler.util.JSON
   */
 object ScalaJSBundlerPlugin extends AutoPlugin {
 
-  override lazy val requires = ScalaJSPlugin
+  override lazy val requires = NpmDepsPlugin
 
+
+  import NpmDepsPlugin.autoImport._
+  import NpmDepsPlugin._
   // Exported keys
   /**
     * @groupname tasks Tasks
@@ -75,30 +78,6 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
     val ProjectNameAttr: AttributeKey[String] = SBTBundlerFile.ProjectNameAttr
     val BundlerFileTypeAttr: AttributeKey[BundlerFileType] = SBTBundlerFile.BundlerFileTypeAttr
     implicit class RichBundlerFile(f: BundlerFile.Public) extends SBTBundlerFile(f)
-
-    /**
-      * Fetches NPM dependencies. Returns the directory in which the `npm install` command has been run.
-      *
-      * The plugin uses different directories according to the configuration (`Compile` or `Test`). Thus,
-      * this setting is scoped by a `Configuration`.
-      *
-      * Typically, if you want to define a task that uses the downloaded NPM packages you should
-      * specify the `Configuration` you are interested in:
-      *
-      * {{{
-      *   myCustomTask := {
-      *     val npmDirectory = (npmUpdate in Compile).value
-      *     doSomething(npmDirectory / "node_modules" / "some-package")
-      *   }
-      * }}}
-      *
-      * The task returns the directory in which the dependencies have been fetched (the directory
-      * that contains the `node_modules` directory).
-      *
-      * @group tasks
-      */
-    val npmUpdate: TaskKey[File] =
-      taskKey[File]("Fetch NPM dependencies")
 
     /**
       * List of the NPM packages (name and version) your application depends on.
@@ -318,20 +297,6 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       taskKey[Seq[File]]("Files that trigger webpack launch")
 
     /**
-      * Whether to use [[https://yarnpkg.com/ Yarn]] to fetch dependencies instead
-      * of `npm`. Yarn has a caching mechanism that makes the process faster.
-      *
-      * If set to `true`, it requires Yarn 0.22.0+ to be available on the
-      * host platform.
-      *
-      * Defaults to `false`.
-      *
-      * @group settings
-      */
-    val useYarn: SettingKey[Boolean] =
-      settingKey[Boolean]("Whether to use yarn for updates")
-
-    /**
       * Port, on which webpack-dev-server will be launched.
       *
       * Defaults to 8080.
@@ -401,12 +366,6 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       */
     val installJsdom = taskKey[File]("Locally install jsdom")
   }
-
-  private val scalaJSBundlerPackageJson =
-    TaskKey[BundlerFile.PackageJson]("scalaJSBundlerPackageJson",
-      "Write a package.json file defining the NPM dependencies of project",
-      KeyRanks.Invisible
-    )
 
   private[sbtplugin] val scalaJSBundlerWebpackConfig =
     TaskKey[BundlerFile.WebpackConfig]("scalaJSBundlerWebpackConfig",
@@ -503,35 +462,6 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
         "private" -> JSON.bool(true),
         "license" -> JSON.str("UNLICENSED")
       ),
-
-      npmUpdate := {
-        val log = streams.value.log
-        val targetDir = (crossTarget in npmUpdate).value
-        val jsResources = scalaJSNativeLibraries.value.data
-        val packageJsonFile = scalaJSBundlerPackageJson.value
-
-        val cachedActionFunction =
-          FileFunction.cached(
-            streams.value.cacheDirectory / "scalajsbundler-npm-update",
-            inStyle = FilesInfo.hash
-          ) { _ =>
-            log.info("Updating NPM dependencies")
-            if (useYarn.value) {
-              Yarn.run("install", "--non-interactive")(targetDir, log)
-            } else {
-              Npm.run("install")(targetDir, log)
-            }
-            jsResources.foreach { resource =>
-              IO.write(targetDir / resource.relativePath, resource.content)
-            }
-            Set.empty
-          }
-
-        cachedActionFunction(Set(packageJsonFile.file) ++
-          jsResources.collect { case f: FileVirtualJSFile => f.file }.to[Set])
-
-        targetDir
-      },
 
       scalaJSBundlerPackageJson :=
         PackageJsonTasks.writePackageJson(

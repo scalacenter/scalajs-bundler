@@ -17,18 +17,43 @@ object NpmDepsPlugin extends AutoPlugin {
   // Exported keys
   object autoImport {
 
-    // From ScalaJSBundlerPlugin
-    val npmUpdate = taskKey[File]("Fetch NPM dependencies")
+    /**
+      * Fetches NPM dependencies. Returns the directory in which the `npm install` command has been run.
+      *
+      * The plugin uses different directories according to the configuration (`Compile` or `Test`). Thus,
+      * this setting is scoped by a `Configuration`.
+      *
+      * Typically, if you want to define a task that uses the downloaded NPM packages you should
+      * specify the `Configuration` you are interested in:
+      *
+      * {{{
+      *   myCustomTask := {
+      *     val npmDirectory = (npmUpdate in Compile).value
+      *     doSomething(npmDirectory / "node_modules" / "some-package")
+      *   }
+      * }}}
+      *
+      * The task returns the directory in which the dependencies have been fetched (the directory
+      * that contains the `node_modules` directory).
+      *
+      * @group tasks
+      */
+    val npmUpdate: TaskKey[File] =
+      taskKey[File]("Fetch NPM dependencies")
 
-    // From ScalaJSBundlerPlugin
+    /**
+      * Whether to use [[https://yarnpkg.com/ Yarn]] to fetch dependencies instead
+      * of `npm`. Yarn has a caching mechanism that makes the process faster.
+      *
+      * If set to `true`, it requires Yarn 0.22.0+ to be available on the
+      * host platform.
+      *
+      * Defaults to `false`.
+      *
+      * @group settings
+      */
     val useYarn: SettingKey[Boolean] =
       settingKey[Boolean]("Whether to use yarn for updates")
-
-    // From ScalaJSBundlerPlugin
-    val packageJson = TaskKey[BundlerFile.PackageJson]("packageJson",
-      "Write a package.json file defining the NPM dependencies of project",
-      KeyRanks.Invisible
-    )
 
     val npmDeps = settingKey[NpmDeps]("List of js dependencies to be fetched")
 
@@ -38,6 +63,12 @@ object NpmDepsPlugin extends AutoPlugin {
   }
 
   import autoImport._
+
+  val scalaJSBundlerPackageJson =
+    TaskKey[BundlerFile.PackageJson]("scalaJSBundlerPackageJson",
+      "Write a package.json file defining the NPM dependencies of project",
+      KeyRanks.Invisible
+    )
 
   override lazy val projectSettings = Seq(
     npmDeps in Compile := List.empty,
@@ -86,7 +117,7 @@ object NpmDepsPlugin extends AutoPlugin {
       val log = streams.value.log
       val targetDir = (crossTarget in npmUpdate).value
       val jsResources = scalaJSNativeLibraries.value.data
-      val packageJsonFile = packageJson.value
+      val packageJsonFile = scalaJSBundlerPackageJson.value
 
       val cachedActionFunction =
         FileFunction.cached(
@@ -113,7 +144,7 @@ object NpmDepsPlugin extends AutoPlugin {
       targetDir
     },
 
-    packageJson := PackageJsonTasks.writePackageJson(
+    scalaJSBundlerPackageJson := PackageJsonTasks.writePackageJson(
       (crossTarget in npmUpdate).value,
       (allNpmDeps in Compile).value.map { dep => dep.module -> dep.version },
       Seq(),
