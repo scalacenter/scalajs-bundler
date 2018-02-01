@@ -20,16 +20,16 @@ object h extends js.Function3[String, js.UndefOr[js.Any], js.UndefOr[js.Any], VN
 }
 
 @js.native
-class VNode(
-  selector: js.UndefOr[String],
-  data: js.UndefOr[VNodeData],
-  children: js.UndefOr[js.Array[VNode | String]],
-  text: js.UndefOr[String],
-  elm: js.UndefOr[Element | Text],
-  key: js.UndefOr[String | Double]
-) extends js.Object
+trait VNode extends js.Object {
+  var selector: js.UndefOr[String] = js.native
+  var data: js.UndefOr[VNodeData]= js.native
+  var children: js.UndefOr[js.Array[VNode | String]]= js.native
+  var text: js.UndefOr[String]= js.native
+  var elm: js.UndefOr[Element | Text]= js.native
+  var key: js.UndefOr[String | Double]= js.native
+}
 
 @js.native
-class VNodeData extends js.Object
+trait VNodeData extends js.Object
 
 
