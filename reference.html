@@ -155,7 +155,7 @@ exports.require = window["ScalaJSBundlerLibrary"].require;
 </code></pre>
 </div></div>
 <p>The default variable global for the library is <code class="hljs">ScalaJsBundlerDependencies</code>. Should you need to change it,
-you can provide a new variable name to the configuration, such as <code class="hljs">bundlingMode := BundlingMode.LibrariesOnly(&quot;myLib&quot;)</code>.</p>
+you can provide a new variable name to the configuration, such as <code class="hljs">webpackBundlingMode := BundlingMode.LibrariesOnly(&quot;myLib&quot;)</code>.</p>
 <h5 id="benefits" class="a_section" data-magellan-target="benefits">Benefits<a class="a_hlink" href="#benefits"></a></h5>
 <p>By avoiding processing the entire Scala.js output file, webpack times from 10's of seconds to minutes to
 a couple of seconds, depending on how many dependencies webpack has to resolve. In addition, since the
