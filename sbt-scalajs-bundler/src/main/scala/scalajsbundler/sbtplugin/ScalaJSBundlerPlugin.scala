@@ -485,9 +485,10 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
 
     installJsdom := {
       val installDir = target.value / "scalajs-bundler-jsdom"
+      val jsdomDir = installDir / "node_modules" / "jsdom"
       val log = streams.value.log
       val jsdomVersion = (version in installJsdom).value
-      if (!installDir.exists()) {
+      if (!jsdomDir.exists()) {
         log.info(s"Installing jsdom in ${installDir.absolutePath}")
         IO.createDirectory(installDir)
         install(installDir, useYarn.value, log)(s"jsdom@$jsdomVersion")
