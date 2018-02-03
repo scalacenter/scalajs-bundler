@@ -31,7 +31,7 @@ webpackConfigFile in Test := Some(baseDirectory.value / "common.webpack.config.j
 libraryDependencies += "org.scalatest" %%% "scalatest" % "3.0.0" % Test
 
 // Execute the tests in browser-like environment
-requiresDOM in Test := true
+jsEnv := new org.scalajs.jsenv.jsdomnodejs.JSDOMNodeJSEnv
 
 webpackBundlingMode := BundlingMode.LibraryAndApplication()
 

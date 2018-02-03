@@ -25,7 +25,7 @@ webpackConfigFile in fastOptJS := Some(baseDirectory.value / "dev.webpack.config
 webpackConfigFile in Test := Some(baseDirectory.value / "test.webpack.config.js")
 
 // Execute the tests in browser-like environment
-requiresDOM in Test := true
+jsEnv := new org.scalajs.jsenv.jsdomnodejs.JSDOMNodeJSEnv
 //#relevant-settings
 
 libraryDependencies += "org.scalatest" %%% "scalatest" % "3.0.0" % Test
