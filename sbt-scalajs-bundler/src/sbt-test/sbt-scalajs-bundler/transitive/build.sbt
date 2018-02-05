@@ -16,6 +16,12 @@ val sub3 =
       npmDependencies in Compile += "react" -> "15.3.2"
     )
 
+val sub4 =
+  proj("sub4")
+    .settings(
+      npmDependencies in Compile += "react" -> ">=15.3.2"
+    )
+
 val checkPackageJson = taskKey[Unit]("Check that the package.json file does not contain duplicate entries for the 'react' dependency")
 
 val noConflicts =
@@ -37,6 +43,10 @@ val resolution =
     .settings(
       npmResolutions in Compile := Map("react" -> "15.4.1")
     )
+
+val delegatedToPackageManager =
+  proj("delegatedToPackageManager")
+    .dependsOn(sub1, sub4)
 
 def proj(id: String): Project =
   Project(id, file(id))

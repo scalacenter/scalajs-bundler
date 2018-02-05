@@ -136,6 +136,10 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       * will be picked. But if all the projects depend on the same version of `react`, the version
       * given in `npmResolutions` will be ignored.
       *
+      * If different versions of the packages are referred but the package is NOT configured in `npmResolutions`,
+      * a version conflict resolution is delegated to npm/yarn. This behavior may reduce a need to configure
+      * `npmResolutions` explicitly. E.g. "14.4.2" can be automatically-picked for ">=14.0.0 14.4.2 ^14.4.1".
+      *
       * Note that this key must be scoped by a `Configuration` (either `Compile` or `Test`).
       *
       * @group settings
