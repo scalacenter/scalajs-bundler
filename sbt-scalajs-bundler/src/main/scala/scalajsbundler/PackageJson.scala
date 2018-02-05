@@ -99,8 +99,10 @@ object PackageJson {
               case Seq(single) =>
                 name -> single
               case _ =>
-                val resolution =
-                  resolutions.getOrElse(name, sys.error(s"Different versions of '$name' are required: $versions, but no “resolution” has been provided."))
+                val resolution = resolutions.get(name) match {
+                  case Some(v) => v
+                  case None => versions.mkString(" ")
+                }
                 name -> resolution
             }
           resolvedDependency :: result
