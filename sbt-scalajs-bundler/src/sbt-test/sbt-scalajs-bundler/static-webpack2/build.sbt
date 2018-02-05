@@ -8,7 +8,7 @@ scalaJSUseMainModuleInitializer := true
 
 version in webpack := "2.2.1"
 
-version in startWebpackDevServer := "2.2.0"
+version in startWebpackDevServer := "2.11.1"
 
 libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "0.9.1"
 
