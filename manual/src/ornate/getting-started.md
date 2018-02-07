@@ -54,7 +54,14 @@ addSbtPlugin("ch.epfl.scala" % "sbt-web-scalajs-bundler" % "{{version}}")
 Then, enable the `WebScalaJSBundlerPlugin` on the project that uses sbt-web:
 
 ~~~ scala
-enablePlugins(WebScalaJSBundlerPlugin)
+lazy val server = project
+  .settings(
+    scalaJSProjects := Seq(client),
+    pipelineStages in Assets := Seq(scalaJSPipeline)
+  )
+  .enablePlugins(WebScalaJSBundlerPlugin)
+
+lazy val client = project.enablePlugins(ScalaJSBundlerPlugin, ScalaJSWeb)
 ~~~
 
 You also need to setup the `ScalaJSBundlerPlugin` on the Scala.js project, as described in the preceding section, and
