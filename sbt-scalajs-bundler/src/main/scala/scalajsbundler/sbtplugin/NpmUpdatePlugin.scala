@@ -8,7 +8,7 @@ import sbt._
 
 import scalajsbundler._
 
-object NpmDepsPlugin extends AutoPlugin {
+object NpmUpdatePlugin extends AutoPlugin {
 
   override lazy val requires = ScalaJSPlugin
 

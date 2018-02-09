@@ -61,11 +61,11 @@ import scalajsbundler.util.JSON
   */
 object ScalaJSBundlerPlugin extends AutoPlugin {
 
-  override lazy val requires = NpmDepsPlugin
+  override lazy val requires = NpmUpdatePlugin
 
 
-  import NpmDepsPlugin.autoImport._
-  import NpmDepsPlugin._
+  import NpmUpdatePlugin.autoImport._
+  import NpmUpdatePlugin._
   // Exported keys
   /**
     * @groupname tasks Tasks

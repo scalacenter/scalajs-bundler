@@ -5,7 +5,7 @@ import sbt.{Def, _}
 import scalajsbundler.sbtplugin.ScalaJSBundlerPlugin._
 import scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.autoImport._
 import scalajsbundler.Webpack
-import scalajsbundler.sbtplugin.NpmDepsPlugin.autoImport._
+import scalajsbundler.sbtplugin.NpmUpdatePlugin.autoImport._
 
 object WebpackTasks {
   private[sbtplugin] def entry(stage: TaskKey[Attributed[File]])
