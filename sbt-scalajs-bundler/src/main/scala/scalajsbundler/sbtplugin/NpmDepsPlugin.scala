@@ -62,7 +62,8 @@ object NpmDepsPlugin extends AutoPlugin {
       KeyRanks.Invisible
     )
 
-  override lazy val projectSettings = inConfig(Compile)(perConfigSettings)
+  override lazy val projectSettings =
+    inConfig(Compile)(perConfigSettings) ++ inConfig(Test)(perConfigSettings)
 
   private lazy val perConfigSettings: Seq[Def.Setting[_]] = Seq(
     npmUpdate := {
