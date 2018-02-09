@@ -1,5 +1,7 @@
 package scalajsbundler.sbtplugin
 
+import java.util.concurrent.atomic.AtomicReference
+
 import org.scalajs.core.tools.io.FileVirtualJSFile
 import org.scalajs.core.tools.jsdep.ResolvedJSDependency
 import org.scalajs.core.tools.linker.backend.ModuleKind
@@ -8,11 +10,12 @@ import org.scalajs.jsenv.nodejs.NodeJSEnv
 import org.scalajs.sbtplugin.Loggers.sbtLogger2ToolsLogger
 import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
 import org.scalajs.sbtplugin.ScalaJSPluginInternal._
-import org.scalajs.sbtplugin.{FrameworkDetectorWrapper, ScalaJSPluginInternal, Stage}
-import org.scalajs.testadapter.ScalaJSFramework
+import org.scalajs.sbtplugin.{ScalaJSPluginInternal, Stage}
+import org.scalajs.testadapter.TestAdapter
 import sbt.Keys._
 import sbt._
 
+import scala.annotation.tailrec
 import scalajsbundler.ExternalCommand.install
 import scalajsbundler._
 import scalajsbundler.util.JSON
@@ -111,6 +114,10 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       * If several Scala.js projects depend on different versions of `react`, the version `15.4.1`
       * will be picked. But if all the projects depend on the same version of `react`, the version
       * given in `npmResolutions` will be ignored.
+      *
+      * If different versions of the packages are referred but the package is NOT configured in `npmResolutions`,
+      * a version conflict resolution is delegated to npm/yarn. This behavior may reduce a need to configure
+      * `npmResolutions` explicitly. E.g. "14.4.2" can be automatically-picked for ">=14.0.0 14.4.2 ^14.4.1".
       *
       * Note that this key must be scoped by a `Configuration` (either `Compile` or `Test`).
       *
@@ -487,6 +494,30 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
     perScalaJSStageSettings(Stage.FastOpt) ++
     perScalaJSStageSettings(Stage.FullOpt)
 
+  private val createdTestAdapters = new AtomicReference[List[TestAdapter]](Nil)
+
+  @tailrec
+  private def newTestAdapter(jsEnv: ComJSEnv, config: TestAdapter.Config): TestAdapter = {
+    val prev = createdTestAdapters.get()
+    val r = new TestAdapter(jsEnv, config)
+    if (createdTestAdapters.compareAndSet(prev, r :: prev)) r
+    else newTestAdapter(jsEnv, config)
+  }
+
+  private def closeAllTestAdapters(): Unit =
+    createdTestAdapters.getAndSet(Nil).foreach(_.close())
+
+  override def globalSettings: Seq[Def.Setting[_]] = Seq(
+    onComplete := {
+      val prev = onComplete.value
+
+      { () =>
+        prev()
+        closeAllTestAdapters()
+      }
+    }
+  )
+
   private lazy val testSettings: Seq[Setting[_]] =
     Seq(
       npmDependencies ++= (npmDependencies in Compile).value,
@@ -559,14 +590,19 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
           else withoutDom
         }
 
-        val detector =
-          new FrameworkDetectorWrapper(env, moduleKind, moduleIdentifier).wrapped
+        val frameworkNames = frameworks.map(_.implClassNames.toList).toList
 
-        detector.detect(frameworks, toolsLogger).map { case (tf, frameworkName) =>
-          val framework =
-            new ScalaJSFramework(frameworkName, env, moduleKind, moduleIdentifier, toolsLogger, console)
-          (tf, framework)
-        }
+        val config = TestAdapter.Config()
+          .withLogger(toolsLogger)
+          .withJSConsole(console)
+          .withModuleSettings(moduleKind, moduleIdentifier)
+
+        val adapter = new TestAdapter(env, config)
+        val frameworkAdapters = adapter.loadFrameworks(frameworkNames)
+
+        frameworks.zip(frameworkAdapters).collect {
+          case (tf, Some(adapter)) => (tf, adapter)
+        }.toMap
       }.dependsOn(npmUpdate).value
     )
 

@@ -2,3 +2,4 @@
 > no-conflicts/checkPackageJson
 -> conflict/npmUpdate
 > resolution/npmUpdate
+> delegatedToPackageManager/npmUpdate

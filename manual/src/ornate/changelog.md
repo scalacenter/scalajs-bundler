@@ -1,5 +1,18 @@
 # Changelog
 
+## Version 0.10.0
+
+> 2018 January 31
+
+This release requires sbt 0.13.16+ and adds support for Scala.js 0.6.22.
+
+- [#210](https://github.com/scalacenter/scalajs-bundler/pull/210): Bundler doesn't support version of jsdom more than 9;
+- [#185](https://github.com/scalacenter/scalajs-bundler/pull/185): Correct webpackBundlingMode key in docs;
+- [#212](https://github.com/scalacenter/scalajs-bundler/pull/212): Migrate to sbt-scalajs 0.6.22;
+
+You can find the complete list of commits since the last release
+[here](https://github.com/scalacenter/scalajs-bundler/compare/v0.9.0...v0.10.0).
+
 ## Version 0.9.0
 
 > 2017 October 12
