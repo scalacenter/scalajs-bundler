@@ -62,13 +62,7 @@ object NpmDepsPlugin extends AutoPlugin {
       KeyRanks.Invisible
     )
 
-  override lazy val projectSettings =
-    perScalaJSStageSettings(fullOptJS) ++ perScalaJSStageSettings(fastOptJS)
-
-  protected def perScalaJSStageSettings(stage: TaskKey[Attributed[File]]): Seq[Def.Setting[_]] = Seq(
-    useYarn := false
-  ) ++ inConfig(Compile)(perConfigSettings)
-
+  override lazy val projectSettings = inConfig(Compile)(perConfigSettings)
 
   private lazy val perConfigSettings: Seq[Def.Setting[_]] = Seq(
     npmUpdate := {
