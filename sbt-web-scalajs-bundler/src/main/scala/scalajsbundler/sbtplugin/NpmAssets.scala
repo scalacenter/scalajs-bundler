@@ -3,7 +3,7 @@ package scalajsbundler.sbtplugin
 import com.typesafe.sbt.web.PathMapping
 import sbt._
 
-import scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.autoImport.npmUpdate
+import scalajsbundler.sbtplugin.NpmDepsPlugin.autoImport.npmUpdate
 
 object NpmAssets {
 

@@ -3,6 +3,7 @@ package scalajsbundler.sbtplugin
 import com.typesafe.sbt.web.PathMapping
 import com.typesafe.sbt.web.pipeline.Pipeline
 import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
+import NpmDepsPlugin.autoImport._
 import sbt.Keys._
 import sbt._
 import webscalajs.WebScalaJS
