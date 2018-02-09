@@ -8,7 +8,6 @@ val `sbt-scalajs-bundler` =
     .settings(commonSettings)
     .settings(
       sbtPlugin := true,
-      version := "0.11.0",
       name := "sbt-scalajs-bundler",
       description := "Module bundler for Scala.js projects",
       addSbtPlugin("org.scala-js" % "sbt-scalajs" % "0.6.22")
