@@ -10,7 +10,7 @@ import org.scalajs.jsenv.nodejs.NodeJSEnv
 import org.scalajs.sbtplugin.Loggers.sbtLogger2ToolsLogger
 import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
 import org.scalajs.sbtplugin.ScalaJSPluginInternal._
-import org.scalajs.sbtplugin.{ScalaJSPluginInternal, Stage}
+import org.scalajs.sbtplugin.{ScalaJSPlugin, ScalaJSPluginInternal, Stage}
 import org.scalajs.testadapter.TestAdapter
 import sbt.Keys._
 import sbt._
@@ -61,11 +61,8 @@ import scalajsbundler.util.JSON
   */
 object ScalaJSBundlerPlugin extends AutoPlugin {
 
-  override lazy val requires = NpmUpdatePlugin
+  override lazy val requires = ScalaJSPlugin
 
-
-  import NpmUpdatePlugin.autoImport._
-  import NpmUpdatePlugin._
   // Exported keys
   /**
     * @groupname tasks Tasks
@@ -80,7 +77,32 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
     val BundlerFileType = scalajsbundler.BundlerFileType
     val ProjectNameAttr: AttributeKey[String] = SBTBundlerFile.ProjectNameAttr
     val BundlerFileTypeAttr: AttributeKey[BundlerFileType] = SBTBundlerFile.BundlerFileTypeAttr
+
     implicit class RichBundlerFile(f: BundlerFile.Public) extends SBTBundlerFile(f)
+
+    /**
+      * Fetches NPM dependencies. Returns the directory in which the `npm install` command has been run.
+      *
+      * The plugin uses different directories according to the configuration (`Compile` or `Test`). Thus,
+      * this setting is scoped by a `Configuration`.
+      *
+      * Typically, if you want to define a task that uses the downloaded NPM packages you should
+      * specify the `Configuration` you are interested in:
+      *
+      * {{{
+      *   myCustomTask := {
+      *     val npmDirectory = (npmUpdate in Compile).value
+      *     doSomething(npmDirectory / "node_modules" / "some-package")
+      *   }
+      * }}}
+      *
+      * The task returns the directory in which the dependencies have been fetched (the directory
+      * that contains the `node_modules` directory).
+      *
+      * @group tasks
+      */
+    val npmUpdate: TaskKey[File] =
+      taskKey[File]("Fetch NPM dependencies")
 
     /**
       * List of the NPM packages (name and version) your application depends on.
@@ -157,12 +179,12 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       * [[scalajsbundler.BundlingMode]] to use.
       *
       * Must be one of:
-      *   `Application`             - Process the entire Scala.js output file with webpack, producing a bundle including all dependencies
-      *   `LibraryOnly()`           - Process only the entrypoints via webpack and produce a library of dependencies
-      *   `LibraryAndApplication()  - Process only the entrypoints, concatenating the library with the application to produce a bundle
+      * `Application`             - Process the entire Scala.js output file with webpack, producing a bundle including all dependencies
+      * `LibraryOnly()`           - Process only the entrypoints via webpack and produce a library of dependencies
+      * `LibraryAndApplication()  - Process only the entrypoints, concatenating the library with the application to produce a bundle
       *
       * The default value is `Application`
-      */
+      **/
     val webpackBundlingMode: SettingKey[BundlingMode] =
       settingKey[BundlingMode]("Bundling mode, one of BundlingMode.{ Application,  LibraryOnly, LibraryAndApplication }.")
 
@@ -275,7 +297,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       *
       * Changes to files in these directories that match
       * `includeFilter` scoped to `webpackMonitoredFiles` enable
-      *  webpack launch in `webpack` task.
+      * webpack launch in `webpack` task.
       *
       * Defaults to an empty `Seq`.
       *
@@ -294,7 +316,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       *  - Custom webpack config (if any)
       *  - Files, provided by `webpackEntries` task.
       *  - Files from `webpackMonitoredDirectories`, filtered by
-      *    `includeFilter`
+      * `includeFilter`
       *
       * @group settings
       * @see [[webpackMonitoredDirectories]]
@@ -302,6 +324,20 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       */
     val webpackMonitoredFiles: TaskKey[Seq[File]] =
       taskKey[Seq[File]]("Files that trigger webpack launch")
+
+    /**
+      * Whether to use [[https://yarnpkg.com/ Yarn]] to fetch dependencies instead
+      * of `npm`. Yarn has a caching mechanism that makes the process faster.
+      *
+      * If set to `true`, it requires Yarn 0.22.0+ to be available on the
+      * host platform.
+      *
+      * Defaults to `false`.
+      *
+      * @group settings
+      */
+    val useYarn: SettingKey[Boolean] =
+      settingKey[Boolean]("Whether to use yarn for updates")
 
     /**
       * Port, on which webpack-dev-server will be launched.
@@ -374,6 +410,12 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
     val installJsdom = taskKey[File]("Locally install jsdom")
   }
 
+  private val scalaJSBundlerPackageJson =
+    TaskKey[BundlerFile.PackageJson]("scalaJSBundlerPackageJson",
+      "Write a package.json file defining the NPM dependencies of project",
+      KeyRanks.Invisible
+    )
+
   private[sbtplugin] val scalaJSBundlerWebpackConfig =
     TaskKey[BundlerFile.WebpackConfig]("scalaJSBundlerWebpackConfig",
       "Write the webpack configuration file",
@@ -397,7 +439,9 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
 
   override lazy val projectSettings: Seq[Def.Setting[_]] = Seq(
 
-    scalaJSLinkerConfig ~= { _.withModuleKind(ModuleKind.CommonJSModule) },
+    scalaJSLinkerConfig ~= {
+      _.withModuleKind(ModuleKind.CommonJSModule)
+    },
 
     version in webpack := "3.5.5",
 
@@ -470,6 +514,13 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
         "license" -> JSON.str("UNLICENSED")
       ),
 
+      npmUpdate := NpmUpdateTasks.npmUpdate(
+        (crossTarget in npmUpdate).value,
+        scalaJSBundlerPackageJson.value.file,
+        useYarn.value,
+        scalaJSNativeLibraries.value.data,
+        streams.value),
+
       scalaJSBundlerPackageJson :=
         PackageJsonTasks.writePackageJson(
           (crossTarget in npmUpdate).value,
@@ -491,8 +542,8 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       // Override Scala.js’ loadedJSEnv to first run `npm update`
       loadedJSEnv := loadedJSEnv.dependsOn(npmUpdate).value
     ) ++
-    perScalaJSStageSettings(Stage.FastOpt) ++
-    perScalaJSStageSettings(Stage.FullOpt)
+      perScalaJSStageSettings(Stage.FastOpt) ++
+      perScalaJSStageSettings(Stage.FullOpt)
 
   private val createdTestAdapters = new AtomicReference[List[TestAdapter]](Nil)
 
@@ -645,7 +696,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
 
         val generatedFiles: Seq[File] = Seq(
           packageJsonFile.file,
-          generatedWebpackConfigFile.file ,
+          generatedWebpackConfigFile.file,
           entry.file
         )
         val additionalFiles: Seq[File] = dirs.flatMap(
