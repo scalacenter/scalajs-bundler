@@ -148,9 +148,7 @@ object Webpack {
     Webpack.run("--config", configFile.absolutePath)(targetDir, log)
 
     // TODO Support custom webpack config file (the output may be overridden by users)
-    val bundle = generatedWebpackConfigFile.asApplicationBundle
-    assert(bundle.file.exists(), "Webpack failed to create application bundle")
-    bundle
+    generatedWebpackConfigFile.asApplicationBundle
   }
 
   /**
@@ -188,9 +186,7 @@ object Webpack {
 
     Webpack.run("--config", configFile.absolutePath)(generatedWebpackConfigFile.targetDir, log)
 
-    val library = generatedWebpackConfigFile.asLibrary
-    assert(library.file.exists, "Webpack failed to create library file")
-    library
+    generatedWebpackConfigFile.asLibrary
   }
 
   /**
