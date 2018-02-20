@@ -8,6 +8,7 @@ import scala.sys.process.ProcessLogger
 object Commands {
 
   def run(cmd: Seq[String], cwd: File, logger: Logger): Unit = {
+    logger.debug(s"Command: ${cmd.mkString(" ")}")
     val process = Process(cmd, cwd)
     val code = process ! toProcessLogger(logger)
     if (code != 0) {
