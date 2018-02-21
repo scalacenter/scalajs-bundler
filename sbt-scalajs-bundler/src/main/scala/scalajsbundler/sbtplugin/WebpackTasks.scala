@@ -28,6 +28,7 @@ object WebpackTasks {
       val targetDir = npmUpdate.value
       val log = streams.value.log
       val monitoredFiles = (webpackMonitoredFiles in stage).value
+      val extraArgs = (webpackExtraArgs in stage).value
 
       val cachedActionFunction =
         FileFunction.cached(
@@ -42,6 +43,7 @@ object WebpackTasks {
               webpackResourceFiles,
               entriesList,
               targetDir,
+              extraArgs,
               log
             ).file)
         }

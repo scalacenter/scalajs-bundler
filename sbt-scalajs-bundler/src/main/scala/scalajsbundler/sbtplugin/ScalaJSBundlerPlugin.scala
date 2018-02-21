@@ -325,6 +325,18 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       taskKey[Seq[File]]("Files that trigger webpack launch")
 
     /**
+      * Additional arguments to webpack
+      *
+      * Defaults to an empty list.
+      *
+      * @group settings
+      */
+    val webpackExtraArgs = SettingKey[Seq[String]](
+      "webpackExtraArgs",
+      "Custom arguments to webpack"
+    )
+
+    /**
       * Whether to use [[https://yarnpkg.com/ Yarn]] to fetch dependencies instead
       * of `npm`. Yarn has a caching mechanism that makes the process faster.
       *
@@ -467,6 +479,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
     // API user can modify it just once.
     webpackMonitoredDirectories := Seq(),
     (includeFilter in webpackMonitoredFiles) := AllPassFilter,
+    webpackExtraArgs := Seq(),
 
     // The defaults are specified at top level.
     webpackDevServerPort := 8080,

@@ -136,6 +136,7 @@ object Webpack {
      webpackResources: Seq[File],
      entry: BundlerFile.Application,
      targetDir: File,
+     extraArgs: Seq[String],
      log: Logger
   ): BundlerFile.ApplicationBundle = {
     writeConfigFile(emitSourceMaps, entry, generatedWebpackConfigFile, None, log)
@@ -145,7 +146,8 @@ object Webpack {
       .getOrElse(generatedWebpackConfigFile.file)
 
     log.info("Bundling the application with its NPM dependencies")
-    Webpack.run("--config", configFile.absolutePath)(targetDir, log)
+    val args = extraArgs ++: Seq("--config", configFile.absolutePath)
+    Webpack.run(args: _*)(targetDir, log)
 
     // TODO Support custom webpack config file (the output may be overridden by users)
     val bundle = generatedWebpackConfigFile.asApplicationBundle
@@ -172,6 +174,7 @@ object Webpack {
     webpackResources: Seq[File],
     entryPointFile: BundlerFile.EntryPoint,
     libraryModuleName: String,
+    extraArgs: Seq[String],
     log: Logger
   ): BundlerFile.Library = {
     writeConfigFile(
@@ -186,7 +189,8 @@ object Webpack {
       .map(Webpack.copyCustomWebpackConfigFiles(generatedWebpackConfigFile.targetDir, webpackResources))
       .getOrElse(generatedWebpackConfigFile.file)
 
-    Webpack.run("--config", configFile.absolutePath)(generatedWebpackConfigFile.targetDir, log)
+    val args = extraArgs ++: Seq("--config", configFile.absolutePath)
+    Webpack.run(args: _*)(generatedWebpackConfigFile.targetDir, log)
 
     val library = generatedWebpackConfigFile.asLibrary
     assert(library.file.exists, "Webpack failed to create library file")
@@ -202,7 +206,7 @@ object Webpack {
     */
   def run(args: String*)(workingDir: File, log: Logger): Unit = {
     val webpackBin = workingDir / "node_modules" / "webpack" / "bin" / "webpack"
-    val cmd = "node" +: webpackBin.absolutePath +: "--bail" +: args
+    val cmd = Seq("node", webpackBin.absolutePath, "--bail") ++ args
     Commands.run(cmd, workingDir, log)
     ()
   }

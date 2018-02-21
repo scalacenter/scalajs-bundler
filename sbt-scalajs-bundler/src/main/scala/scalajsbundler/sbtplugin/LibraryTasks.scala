@@ -67,7 +67,6 @@ object LibraryTasks {
       assert(ensureModuleKindIsCommonJSModule.value)
       val log = streams.value.log
       val emitSourceMaps = (webpackEmitSourceMaps in stage).value
-      val targetDir = npmUpdate.value
       val customWebpackConfigFile = (webpackConfigFile in stage).value
       val generatedWebpackConfigFile =
         (scalaJSBundlerWebpackConfig in stage).value
@@ -78,6 +77,7 @@ object LibraryTasks {
         Seq(generatedWebpackConfigFile.file, entryPointFile.file) ++
         webpackResourceFiles ++ compileResources
       val cacheLocation = streams.value.cacheDirectory / s"${stage.key.label}-webpack-libraries"
+      val extraArgs = (webpackExtraArgs in stage).value
 
       val cachedActionFunction =
         FileFunction.cached(
@@ -95,6 +95,7 @@ object LibraryTasks {
                 webpackResourceFiles,
                 entryPointFile,
                 mode.exportedName,
+                extraArgs,
                 log
               )
               .file)
