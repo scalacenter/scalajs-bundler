@@ -280,3 +280,21 @@ reload on every change:
 ~~~
 webpackDevServerExtraArgs := Seq("--inline")
 ~~~
+
+## How to pass extra parameters to webpack
+
+`scalajs-bundler` invokes `webpack` with a configuration generated either automatically from the build or set with `webpackConfigFile`.
+`webpack` is then called with the following arguments:
+
+~~~
+--bail --config <configfile>
+~~~
+
+You can add extra params to the `webpack` call, for example, to increase debugging
+
+~~~
+webpackExtraArgs := Seq("--profile", "--progress", "true")
+~~~
+
+**Note** Params are passed verbatim, they are not sanitized and could produce errors when passed to webpack.
+In particular, don't attempt to override the `--config` param.
