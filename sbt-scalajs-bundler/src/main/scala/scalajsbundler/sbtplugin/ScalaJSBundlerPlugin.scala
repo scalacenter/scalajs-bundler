@@ -47,7 +47,7 @@ import scalajsbundler.util.JSON
   * Version of webpack-dev-server to use.
   *
   * {{{
-  *   version in startWebpackDevServer := "2.7.1"
+  *   version in startWebpackDevServer := "2.11.1"
   * }}}
   *
   * == `crossTarget in npmUpdate` ==
@@ -454,7 +454,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
 
     version in webpack := "3.5.5",
 
-    version in startWebpackDevServer := "2.7.1",
+    version in startWebpackDevServer := "2.11.1",
 
     version in installJsdom := "9.9.0",
 
