@@ -30,7 +30,8 @@ object PackageJson {
     fullClasspath: Seq[Attributed[File]],
     currentConfiguration: Configuration,
     webpackVersion: String,
-    webpackDevServerVersion: String
+    webpackDevServerVersion: String,
+    webpackCliVersion: String
   ): Unit = {
     val npmManifestDependencies = NpmDependencies.collectFromClasspath(fullClasspath)
     val dependencies =
@@ -39,20 +40,27 @@ object PackageJson {
         else npmManifestDependencies.testDependencies
       )
 
-    val sourceMapLoaderVersion = 
+    val sourceMapLoaderVersion =
       NpmPackage(webpackVersion).major match {
         case Some(1) | Some(2) => "0.1.5"
-        case Some(3) => "0.2.1"
-        case Some(x) => sys.error(s"Unsupported webpack major version $x")
-        case None => sys.error("No webpack version defined")
+        case Some(3)           => "0.2.1"
+        case Some(4)           => "0.2.3"
+        case Some(x)           => sys.error(s"Unsupported webpack major version $x")
+        case None              => sys.error("No webpack version defined")
+      }
+
+    val webpackPackages =
+      NpmPackage(webpackVersion).major match {
+        case Some(1) | Some(2) | Some(3) => Seq("webpack" -> webpackVersion)
+        case Some(4)                     => Seq("webpack" -> webpackVersion, "webpack-cli" -> webpackCliVersion)
+        case _                           => Seq.empty
       }
 
     val devDependencies =
       npmDevDependencies ++ (
         if (currentConfiguration == Compile) npmManifestDependencies.compileDevDependencies
         else npmManifestDependencies.testDevDependencies
-      ) ++ Seq(
-        "webpack" -> webpackVersion,
+      ) ++ webpackPackages ++ Seq(
         "webpack-dev-server" -> webpackDevServerVersion,
         "concat-with-sourcemaps" -> "1.0.4", // Used by the reload workflow
         "source-map-loader" -> sourceMapLoaderVersion // Used by webpack when emitSourceMaps is enabled

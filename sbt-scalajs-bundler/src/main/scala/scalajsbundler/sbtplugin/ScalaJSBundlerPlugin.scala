@@ -377,6 +377,14 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
     )
 
     /**
+      * Version of webpack-cli
+      *
+      * @group settings
+      */
+    val webpackCliVersion: SettingKey[String] =
+      settingKey[String]("Version of webpack-cli to use")
+
+    /**
       * Start background webpack-dev-server process.
       *
       * If webpack-dev-server is already running, it will be restarted.
@@ -453,6 +461,8 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
     scalaJSLinkerConfig ~= { _.withModuleKind(ModuleKind.CommonJSModule) },
 
     version in webpack := "3.5.5",
+
+    webpackCliVersion := "2.0.9",
 
     version in startWebpackDevServer := "2.11.1",
 
@@ -543,6 +553,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
           configuration.value,
           (version in webpack).value,
           (version in startWebpackDevServer).value,
+          webpackCliVersion.value,
           streams.value
         ),
 
