@@ -11,8 +11,8 @@ object Library {
 //#library-definition
 
 object SomeOtherCode {
-  import uuid.uuid
+  import uuid.UUID
 
-  def quux(b: Boolean): String = if (b) uuid.v4() else uuid.v1()
+  def quux(b: Boolean): String = if (b) UUID.v4() else UUID.v1()
 
 }

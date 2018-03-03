@@ -8,7 +8,7 @@ import scala.scalajs.js.|
 
 @JSImport("uuid", Namespace)
 @js.native
-object uuid extends UUID
+object UUID extends UUID
 
 @js.native
 trait UUID extends js.Object {
