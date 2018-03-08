@@ -44,7 +44,7 @@ object ExternalCommand {
     */
   def install(installDir: File, useYarn: Boolean, logger: Logger)(npmPackages: String*): Unit =
     if (useYarn) {
-      Yarn.run("add" +: "--non-interactive" +: npmPackages: _*)(installDir, logger)
+      Yarn.run("add" +: "--mutex" +: "file:/tmp/.yarn-mutex" +: "--non-interactive" +: npmPackages: _*)(installDir, logger)
     } else {
       Npm.run("install" +: npmPackages: _*)(installDir, logger)
     }
