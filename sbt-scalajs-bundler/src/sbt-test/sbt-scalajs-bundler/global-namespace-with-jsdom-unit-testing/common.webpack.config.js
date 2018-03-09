@@ -25,7 +25,6 @@ const exposeRules = Object.keys(globalModules).map(function(modName) {
 const allRules = exposeRules.concat(importRule);
 
 module.exports = {
-  mode: "development",
   performance: { hints: false },
   module: {
     rules: allRules

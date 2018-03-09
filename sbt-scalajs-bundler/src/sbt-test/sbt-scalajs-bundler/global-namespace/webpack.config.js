@@ -22,6 +22,4 @@ config.module.rules = Object.keys(globalModules).map(function(pkg) {
   };
 });
 
-config.mode = "development";
-
 module.exports = config;

@@ -13,6 +13,7 @@ import sbt.Keys._
 import sbt.{Def, _}
 
 import scalajsbundler.{BundlerFile, Webpack, WebpackEntryPoint}
+import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport.fastOptJS
 import scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.autoImport._
 import scalajsbundler.sbtplugin.ScalaJSBundlerPlugin._
 import scalajsbundler.util.{Caching, JSBundler, ScalaJSOutputAnalyzer}
@@ -78,6 +79,7 @@ object LibraryTasks {
         webpackResourceFiles ++ compileResources
       val cacheLocation = streams.value.cacheDirectory / s"${stage.key.label}-webpack-libraries"
       val extraArgs = (webpackExtraArgs in stage).value
+      val webpackMode = if (stage.key == fastOptJS.key) Webpack.DevelopmentMode else Webpack.ProductionMode
 
       val cachedActionFunction =
         FileFunction.cached(
@@ -96,6 +98,7 @@ object LibraryTasks {
                 entryPointFile,
                 mode.exportedName,
                 extraArgs,
+                webpackMode,
                 log
               )
               .file)
