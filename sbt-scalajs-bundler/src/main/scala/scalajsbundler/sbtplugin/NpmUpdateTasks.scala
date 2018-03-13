@@ -17,11 +17,8 @@ object NpmUpdateTasks {
                 useYarn: Boolean,
                 jsResources: Seq[VirtualJSFile with RelativeVirtualFile],
                 streams: Keys.TaskStreams
-               )
-  //Def.Initialize[Task[File]] =
-  = {
+                ) = {
     val log = streams.log
-//    val jsResources = (scalaJSNativeLibraries in Compile).value.data
 
     val cachedActionFunction =
       FileFunction.cached(

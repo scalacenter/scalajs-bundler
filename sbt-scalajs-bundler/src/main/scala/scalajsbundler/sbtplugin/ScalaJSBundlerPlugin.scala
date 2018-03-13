@@ -47,7 +47,7 @@ import scalajsbundler.util.JSON
   * Version of webpack-dev-server to use.
   *
   * {{{
-  *   version in startWebpackDevServer := "2.7.1"
+  *   version in startWebpackDevServer := "2.11.1"
   * }}}
   *
   * == `crossTarget in npmUpdate` ==
@@ -326,6 +326,18 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       taskKey[Seq[File]]("Files that trigger webpack launch")
 
     /**
+      * Additional arguments to webpack
+      *
+      * Defaults to an empty list.
+      *
+      * @group settings
+      */
+    val webpackExtraArgs = SettingKey[Seq[String]](
+      "webpackExtraArgs",
+      "Custom arguments to webpack"
+    )
+
+    /**
       * Whether to use [[https://yarnpkg.com/ Yarn]] to fetch dependencies instead
       * of `npm`. Yarn has a caching mechanism that makes the process faster.
       *
@@ -445,7 +457,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
 
     version in webpack := "3.5.5",
 
-    version in startWebpackDevServer := "2.7.1",
+    version in startWebpackDevServer := "2.11.1",
 
     version in installJsdom := "9.9.0",
 
@@ -470,6 +482,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
     // API user can modify it just once.
     webpackMonitoredDirectories := Seq(),
     (includeFilter in webpackMonitoredFiles) := AllPassFilter,
+    webpackExtraArgs := Seq(),
 
     // The defaults are specified at top level.
     webpackDevServerPort := 8080,
@@ -488,9 +501,10 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
 
     installJsdom := {
       val installDir = target.value / "scalajs-bundler-jsdom"
+      val jsdomDir = installDir / "node_modules" / "jsdom"
       val log = streams.value.log
       val jsdomVersion = (version in installJsdom).value
-      if (!installDir.exists()) {
+      if (!jsdomDir.exists()) {
         log.info(s"Installing jsdom in ${installDir.absolutePath}")
         IO.createDirectory(installDir)
         install(installDir, useYarn.value, log)(s"jsdom@$jsdomVersion")

@@ -21,17 +21,17 @@ object PackageJsonTasks {
     * @return The written package.json file
     */
   def writePackageJson(
-    targetDir: File,
-    npmDependencies: Seq[(String, String)],
-    npmDevDependencies: Seq[(String, String)],
-    npmResolutions: Map[String, String],
-    additionalNpmConfig: Map[String, JSON],
-    fullClasspath: Seq[Attributed[File]],
-    configuration: Configuration,
-    webpackVersion: String,
-    webpackDevServerVersion: String,
-    streams: Keys.TaskStreams
-  ): BundlerFile.PackageJson = {
+                        targetDir: File,
+                        npmDependencies: Seq[(String, String)],
+                        npmDevDependencies: Seq[(String, String)],
+                        npmResolutions: Map[String, String],
+                        additionalNpmConfig: Map[String, JSON],
+                        fullClasspath: Seq[Attributed[File]],
+                        configuration: Configuration,
+                        webpackVersion: String,
+                        webpackDevServerVersion: String,
+                        streams: Keys.TaskStreams
+                      ): BundlerFile.PackageJson = {
 
     val hash = Seq(
       configuration.name,
@@ -61,48 +61,6 @@ object PackageJsonTasks {
         configuration,
         webpackVersion,
         webpackDevServerVersion
-      )
-      ()
-    }
-
-    BundlerFile.PackageJson(packageJsonFile)
-  }
-
-   /**
-    * Writes the package.json file that describes the project dependencies
-    * @param targetDir Directory in which write the file
-    * @param npmDependencies NPM dependencies
-    * @param fullClasspath Classpath
-    * @param configuration Current configuration (Compile or Test)
-    * @return The written package.json file
-    */
-  def writeOnlyDepsPackageJson(
-    targetDir: File,
-    npmDependencies: Seq[(String, String)],
-    fullClasspath: Seq[Attributed[File]],
-    configuration: Configuration,
-    streams: Keys.TaskStreams
-  ): BundlerFile.PackageJson = {
-
-    val hash = Seq(
-      configuration.name,
-      npmDependencies.toString,
-      fullClasspath.map(_.data.name).toString
-    ).mkString(",")
-
-    val packageJsonFile = targetDir / "package.json"
-
-    Caching.cached(
-      packageJsonFile,
-      hash,
-      streams.cacheDirectory / s"scalajsbundler-package-json-${if (configuration == Compile) "main" else "test"}"
-    ) { () =>
-      PackageJson.writeDepsOnly(
-        streams.log,
-        packageJsonFile,
-        fullClasspath,
-        npmDependencies,
-        configuration
       )
       ()
     }
