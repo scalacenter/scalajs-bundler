@@ -11,7 +11,15 @@ import sbt._
 import scalajsbundler.BundlerFile.PackageJson
 
 object NpmUpdateTasks {
-
+  /**
+    * Runs the Npm or Yarn
+    * @param targetDir npm Directory
+    * @param packageJsonFile Json file containing NPM dependencies
+    * @param useYarn Whether to use yarn or npm	
+    * @param jsResources A sequence of javascript resources
+    * @param stream A sbt TaskStream
+    * @return The written npm directory
+    */
   def npmUpdate(targetDir: File,
                 packageJsonFile: File,
                 useYarn: Boolean,

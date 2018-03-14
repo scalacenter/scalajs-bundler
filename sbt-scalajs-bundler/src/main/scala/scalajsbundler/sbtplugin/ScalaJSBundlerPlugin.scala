@@ -77,7 +77,6 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
     val BundlerFileType = scalajsbundler.BundlerFileType
     val ProjectNameAttr: AttributeKey[String] = SBTBundlerFile.ProjectNameAttr
     val BundlerFileTypeAttr: AttributeKey[BundlerFileType] = SBTBundlerFile.BundlerFileTypeAttr
-
     implicit class RichBundlerFile(f: BundlerFile.Public) extends SBTBundlerFile(f)
 
     /**
@@ -179,12 +178,12 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       * [[scalajsbundler.BundlingMode]] to use.
       *
       * Must be one of:
-      * `Application`             - Process the entire Scala.js output file with webpack, producing a bundle including all dependencies
-      * `LibraryOnly()`           - Process only the entrypoints via webpack and produce a library of dependencies
-      * `LibraryAndApplication()  - Process only the entrypoints, concatenating the library with the application to produce a bundle
+      *   `Application`             - Process the entire Scala.js output file with webpack, producing a bundle including all dependencies
+      *   `LibraryOnly()`           - Process only the entrypoints via webpack and produce a library of dependencies
+      *   `LibraryAndApplication()  - Process only the entrypoints, concatenating the library with the application to produce a bundle
       *
       * The default value is `Application`
-      **/
+      */
     val webpackBundlingMode: SettingKey[BundlingMode] =
       settingKey[BundlingMode]("Bundling mode, one of BundlingMode.{ Application,  LibraryOnly, LibraryAndApplication }.")
 
@@ -297,7 +296,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       *
       * Changes to files in these directories that match
       * `includeFilter` scoped to `webpackMonitoredFiles` enable
-      * webpack launch in `webpack` task.
+      *  webpack launch in `webpack` task.
       *
       * Defaults to an empty `Seq`.
       *
@@ -316,7 +315,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       *  - Custom webpack config (if any)
       *  - Files, provided by `webpackEntries` task.
       *  - Files from `webpackMonitoredDirectories`, filtered by
-      * `includeFilter`
+      *    `includeFilter`
       *
       * @group settings
       * @see [[webpackMonitoredDirectories]]
@@ -451,9 +450,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
 
   override lazy val projectSettings: Seq[Def.Setting[_]] = Seq(
 
-    scalaJSLinkerConfig ~= {
-      _.withModuleKind(ModuleKind.CommonJSModule)
-    },
+    scalaJSLinkerConfig ~= { _.withModuleKind(ModuleKind.CommonJSModule) },
 
     version in webpack := "3.5.5",
 
@@ -529,11 +526,11 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       ),
 
       npmUpdate := NpmUpdateTasks.npmUpdate(
-        (crossTarget in npmUpdate).value,
-        scalaJSBundlerPackageJson.value.file,
-        useYarn.value,
-        scalaJSNativeLibraries.value.data,
-        streams.value),
+	(crossTarget in npmUpdate).value,
+	scalaJSBundlerPackageJson.value.file,
+	useYarn.value,
+	scalaJSNativeLibraries.value.data,
+	streams.value),
 
       scalaJSBundlerPackageJson :=
         PackageJsonTasks.writePackageJson(
@@ -556,8 +553,8 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       // Override Scala.js’ loadedJSEnv to first run `npm update`
       loadedJSEnv := loadedJSEnv.dependsOn(npmUpdate).value
     ) ++
-      perScalaJSStageSettings(Stage.FastOpt) ++
-      perScalaJSStageSettings(Stage.FullOpt)
+    perScalaJSStageSettings(Stage.FastOpt) ++
+    perScalaJSStageSettings(Stage.FullOpt)
 
   private val createdTestAdapters = new AtomicReference[List[TestAdapter]](Nil)
 
@@ -710,7 +707,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
 
         val generatedFiles: Seq[File] = Seq(
           packageJsonFile.file,
-          generatedWebpackConfigFile.file,
+          generatedWebpackConfigFile.file ,
           entry.file
         )
         val additionalFiles: Seq[File] = dirs.flatMap(
@@ -783,3 +780,4 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
     }
 
 }
+

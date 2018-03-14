@@ -21,17 +21,17 @@ object PackageJsonTasks {
     * @return The written package.json file
     */
   def writePackageJson(
-                        targetDir: File,
-                        npmDependencies: Seq[(String, String)],
-                        npmDevDependencies: Seq[(String, String)],
-                        npmResolutions: Map[String, String],
-                        additionalNpmConfig: Map[String, JSON],
-                        fullClasspath: Seq[Attributed[File]],
-                        configuration: Configuration,
-                        webpackVersion: String,
-                        webpackDevServerVersion: String,
-                        streams: Keys.TaskStreams
-                      ): BundlerFile.PackageJson = {
+    targetDir: File,
+    npmDependencies: Seq[(String, String)],
+    npmDevDependencies: Seq[(String, String)],
+    npmResolutions: Map[String, String],
+    additionalNpmConfig: Map[String, JSON],
+    fullClasspath: Seq[Attributed[File]],
+    configuration: Configuration,
+    webpackVersion: String,
+    webpackDevServerVersion: String,
+    streams: Keys.TaskStreams
+  ): BundlerFile.PackageJson = {
 
     val hash = Seq(
       configuration.name,

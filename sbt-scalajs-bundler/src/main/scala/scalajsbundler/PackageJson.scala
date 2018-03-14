@@ -21,25 +21,25 @@ object PackageJson {
     * @return The created package.json file
     */
   def write(
-             log: Logger,
-             targetFile: File,
-             npmDependencies: Seq[(String, String)],
-             npmDevDependencies: Seq[(String, String)],
-             npmResolutions: Map[String, String],
-             additionalNpmConfig: Map[String, JSON],
-             fullClasspath: Seq[Attributed[File]],
-             currentConfiguration: Configuration,
-             webpackVersion: String,
-             webpackDevServerVersion: String
-           ): Unit = {
+    log: Logger,
+    targetFile: File,
+    npmDependencies: Seq[(String, String)],
+    npmDevDependencies: Seq[(String, String)],
+    npmResolutions: Map[String, String],
+    additionalNpmConfig: Map[String, JSON],
+    fullClasspath: Seq[Attributed[File]],
+    currentConfiguration: Configuration,
+    webpackVersion: String,
+    webpackDevServerVersion: String
+  ): Unit = {
     val npmManifestDependencies = NpmDependencies.collectFromClasspath(fullClasspath)
     val dependencies =
       npmDependencies ++ (
         if (currentConfiguration == Compile) npmManifestDependencies.compileDependencies
         else npmManifestDependencies.testDependencies
-        )
+      )
 
-    val sourceMapLoaderVersion =
+    val sourceMapLoaderVersion = 
       NpmPackage(webpackVersion).major match {
         case Some(1) | Some(2) => "0.1.5"
         case Some(3) => "0.2.1"
@@ -51,7 +51,7 @@ object PackageJson {
       npmDevDependencies ++ (
         if (currentConfiguration == Compile) npmManifestDependencies.compileDevDependencies
         else npmManifestDependencies.testDevDependencies
-        ) ++ Seq(
+      ) ++ Seq(
         "webpack" -> webpackVersion,
         "webpack-dev-server" -> webpackDevServerVersion,
         "concat-with-sourcemaps" -> "1.0.4", // Used by the reload workflow
@@ -62,9 +62,9 @@ object PackageJson {
       JSON.obj(
         (
           additionalNpmConfig.toSeq :+
-            "dependencies" -> JSON.objStr(resolveDependencies(dependencies, npmResolutions, log)) :+
-            "devDependencies" -> JSON.objStr(resolveDependencies(devDependencies, npmResolutions, log))
-          ): _*
+          "dependencies" -> JSON.objStr(resolveDependencies(dependencies, npmResolutions, log)) :+
+          "devDependencies" -> JSON.objStr(resolveDependencies(devDependencies, npmResolutions, log))
+        ): _*
       )
 
     log.debug("Writing 'package.json'")
@@ -85,10 +85,10 @@ object PackageJson {
     * @param log Logger
     */
   def resolveDependencies(
-                           dependencies: Seq[(String, String)],
-                           resolutions: Map[String, String],
-                           log: Logger
-                         ): List[(String, String)] ={
+    dependencies: Seq[(String, String)],
+    resolutions: Map[String, String],
+    log: Logger
+  ): List[(String, String)] ={
     val resolvedDependencies =
       dependencies
         .groupBy { case (name, version) => name }
@@ -111,9 +111,9 @@ object PackageJson {
     // Add a warning in case a resolution was defined but not used because the corresponding
     // dependency was not in conflict.
     val unusedResolutions =
-    resolutions.filter { case (name, resolution) =>
-      resolvedDependencies.exists { case (n, v) => n == name && v != resolution }
-    }
+      resolutions.filter { case (name, resolution) =>
+        resolvedDependencies.exists { case (n, v) => n == name && v != resolution }
+      }
     if (unusedResolutions.nonEmpty) {
       log.warn(s"Unused resolutions: $unusedResolutions")
     }
