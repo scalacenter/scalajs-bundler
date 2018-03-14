@@ -75,7 +75,7 @@ object PackageJson {
   /**
     * Resolves multiple occurrences of a dependency to a same package.
     *
-    *  - If all the occurrences refer to the same version, pick this one ;
+    *  - If all the occurrences refer to the same version, pick this one ;
     *  - If they refer to different versions, pick the one defined in `resolutions` (or fail
     *    if there is no such resolution).
     *
