@@ -1,14 +1,8 @@
 package scalajsbundler.sbtplugin
 
 import org.scalajs.core.tools.io.{FileVirtualJSFile, RelativeVirtualFile, VirtualJSFile}
-import org.scalajs.sbtplugin.ScalaJSPlugin.AutoImport.scalaJSNativeLibraries
-import sbt.Keys.{crossTarget, streams}
-import sbt.{Attributed, Def, File, FileFunction, FilesInfo, IO, Task, TaskKey}
-
 import scalajsbundler.{Npm, Yarn}
 import sbt._
-
-import scalajsbundler.BundlerFile.PackageJson
 
 object NpmUpdateTasks {
   /**
