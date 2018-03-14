@@ -525,34 +525,12 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
         "license" -> JSON.str("UNLICENSED")
       ),
 
-      npmUpdate := {
-        val log = streams.value.log
-        val targetDir = (crossTarget in npmUpdate).value
-        val jsResources = scalaJSNativeLibraries.value.data
-        val packageJsonFile = scalaJSBundlerPackageJson.value
-
-        val cachedActionFunction =
-          FileFunction.cached(
-            streams.value.cacheDirectory / "scalajsbundler-npm-update",
-            inStyle = FilesInfo.hash
-          ) { _ =>
-            log.info("Updating NPM dependencies")
-            if (useYarn.value) {
-              Yarn.run("install", "--non-interactive")(targetDir, log)
-            } else {
-              Npm.run("install")(targetDir, log)
-            }
-            jsResources.foreach { resource =>
-              IO.write(targetDir / resource.relativePath, resource.content)
-            }
-            Set.empty
-          }
-
-        cachedActionFunction(Set(packageJsonFile.file) ++
-          jsResources.collect { case f: FileVirtualJSFile => f.file }.to[Set])
-
-        targetDir
-      },
+      npmUpdate := NpmUpdateTasks.npmUpdate(
+	(crossTarget in npmUpdate).value,
+	scalaJSBundlerPackageJson.value.file,
+	useYarn.value,
+	scalaJSNativeLibraries.value.data,
+	streams.value),
 
       scalaJSBundlerPackageJson :=
         PackageJsonTasks.writePackageJson(
@@ -802,3 +780,4 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
     }
 
 }
+
