@@ -39,7 +39,7 @@
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/scalacenter/scalajs-bundler/blob/v0.10.0/sbt-scalajs-bundler/src/main/scala/scalajsbundler/sbtplugin/ScalaJSBundlerPlugin.scala" target="_blank">ScalaJSBundlerPlugin.scala</a></dd></dl><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/scalacenter/scalajs-bundler/blob/v0.11.0/sbt-scalajs-bundler/src/main/scala/scalajsbundler/sbtplugin/ScalaJSBundlerPlugin.scala" target="_blank">ScalaJSBundlerPlugin.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
@@ -512,7 +512,9 @@ refer to a same package but with different version numbers. In such a
 case, this setting defines which version should be used for the conflicting
 package. Example:</p><pre>npmResolutions in Compile := <span class="std">Map</span>(<span class="lit">"react"</span> -&gt; <span class="lit">"15.4.1"</span>)</pre><p>If several Scala.js projects depend on different versions of <code>react</code>, the version <code>15.4.1</code>
 will be picked. But if all the projects depend on the same version of <code>react</code>, the version
-given in <code>npmResolutions</code> will be ignored.</p><p>Note that this key must be scoped by a <code>Configuration</code> (either <code>Compile</code> or <code>Test</code>).
+given in <code>npmResolutions</code> will be ignored.</p><p>If different versions of the packages are referred but the package is NOT configured in <code>npmResolutions</code>,
+a version conflict resolution is delegated to npm/yarn. This behavior may reduce a need to configure
+<code>npmResolutions</code> explicitly. E.g. &quot;14.4.2&quot; can be automatically-picked for &quot;&gt;=14.0.0 14.4.2 ^14.4.1&quot;.</p><p>Note that this key must be scoped by a <code>Configuration</code> (either <code>Compile</code> or <code>Test</code>).
 </p></div></div>
     </li><li name="scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.autoImport#npmUpdate" visbl="pub" data-isabs="false" fullComment="yes" group="tasks">
       <a id="npmUpdate:sbt.TaskKey[sbt.File]"></a>
@@ -767,6 +769,20 @@ a given configuration (<code>Compile</code> or <code>Test</code>) and stage (<co
 of use:</p><pre>webpackEmitSourceMaps in (Compile, fullOptJS) := <span class="kw">false</span></pre><p>Note that, by default, this setting takes the same value as the Scala.js’ <code>emitSourceMaps</code>
 setting, so, to globally disable source maps you can just configure the <code>emitSourceMaps</code>
 setting:</p><pre>emitSourceMaps := <span class="kw">false</span></pre></div></div>
+    </li><li name="scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.autoImport#webpackExtraArgs" visbl="pub" data-isabs="false" fullComment="yes" group="settings">
+      <a id="webpackExtraArgs:sbt.SettingKey[Seq[String]]"></a>
+      <a id="webpackExtraArgs:SettingKey[Seq[String]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">webpackExtraArgs</span><span class="result">: <span class="extype" name="sbt.SettingKey">SettingKey</span>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Additional arguments to webpack</p><div class="fullcomment"><div class="comment cmt"><p>Additional arguments to webpack</p><p>Defaults to an empty list.
+</p></div></div>
     </li><li name="scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.autoImport#webpackMonitoredDirectories" visbl="pub" data-isabs="false" fullComment="yes" group="settings">
       <a id="webpackMonitoredDirectories:sbt.SettingKey[Seq[sbt.File]]"></a>
       <a id="webpackMonitoredDirectories:SettingKey[Seq[File]]"></a>

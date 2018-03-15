@@ -39,7 +39,7 @@
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/scalacenter/scalajs-bundler/blob/v0.10.0/sbt-scalajs-bundler/src/main/scala/scalajsbundler/PackageJson.scala" target="_blank">PackageJson.scala</a></dd></dl><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/scalacenter/scalajs-bundler/blob/v0.11.0/sbt-scalajs-bundler/src/main/scala/scalajsbundler/PackageJson.scala" target="_blank">PackageJson.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
@@ -317,7 +317,7 @@
         <span class="name">resolveDependencies</span><span class="params">(<span name="dependencies">dependencies: <span class="extype" name="scala.Seq">Seq</span>[(<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Predef.String">String</span>)]</span>, <span name="resolutions">resolutions: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="log">log: <span class="extype" name="sbt.Logger">Logger</span></span>)</span><span class="result">: <span class="extype" name="scala.List">List</span>[(<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Predef.String">String</span>)]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Resolves multiple occurrences of a dependency to a same package.</p><div class="fullcomment"><div class="comment cmt"><p>Resolves multiple occurrences of a dependency to a same package.</p><ul><li>If all the occurrences refer to the same version, pick this one ;</li><li>If they refer to different versions, pick the one defined in <code>resolutions</code> (or fail
+      <p class="shortcomment cmt">Resolves multiple occurrences of a dependency to a same package.</p><div class="fullcomment"><div class="comment cmt"><p>Resolves multiple occurrences of a dependency to a same package.</p><ul><li>If all the occurrences refer to the same version, pick this one ;</li><li>If they refer to different versions, pick the one defined in <code>resolutions</code> (or fail
    if there is no such resolution).
 </li></ul></div><dl class="paramcmts block"><dt class="param">dependencies</dt><dd class="cmt"><p>The dependencies to resolve</p></dd><dt class="param">resolutions</dt><dd class="cmt"><p>The resolutions to use in case of conflict (they will be ignored if there are no conflicts)</p></dd><dt class="param">log</dt><dd class="cmt"><p>Logger
 </p></dd><dt>returns</dt><dd class="cmt"><p>The resolved dependencies</p></dd></dl></div>
