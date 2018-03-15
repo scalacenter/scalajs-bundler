@@ -2,7 +2,7 @@
 
 ## Version 0.11.0
 
-> 2018 January 31
+> 2018 March 15
 
 - [#228](https://github.com/scalacenter/scalajs-bundler/pull/228): Implements npmUdpdate in a separate object;
 - [#225](https://github.com/scalacenter/scalajs-bundler/pull/225): Add --mutex to yarn command;
