@@ -1,5 +1,21 @@
 # Changelog
 
+## Version 0.11.0
+
+> 2018 March 15
+
+- [#228](https://github.com/scalacenter/scalajs-bundler/pull/228): Implements npmUdpdate in a separate object;
+- [#225](https://github.com/scalacenter/scalajs-bundler/pull/225): Add --mutex to yarn command;
+- [#222](https://github.com/scalacenter/scalajs-bundler/pull/222): Make library example work in OSX;
+- [#220](https://github.com/scalacenter/scalajs-bundler/pull/220): Support passing an extra list of arguments to webpack;
+- [#218](https://github.com/scalacenter/scalajs-bundler/pull/218): Fix [#136](https://github.com/scalacenter/scalajs-bundler/issues/136): Add more precise jsdom detection:
+- [#216](https://github.com/scalacenter/scalajs-bundler/pull/216): Fix [#200](https://github.com/scalacenter/scalajs-bundler/issues/200): current webpack devserver version does not accept watchOptions;
+- [#215](https://github.com/scalacenter/scalajs-bundler/pull/215): Fix [#99](https://github.com/scalacenter/scalajs-bundler/issues/99): Relax NPM dependency version conflict resolution;
+- [#213](https://github.com/scalacenter/scalajs-bundler/pull/213): Fix [#168](https://github.com/scalacenter/scalajs-bundler/issues/168): Update the snabbdom facade for Scala.js 1.0
+
+You can find the complete list of commits since the last release
+[here](https://github.com/scalacenter/scalajs-bundler/compare/v0.10.0...v0.11.0).
+
 ## Version 0.10.0
 
 > 2018 January 31
