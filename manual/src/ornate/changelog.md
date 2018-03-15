@@ -7,7 +7,6 @@
 - [#228](https://github.com/scalacenter/scalajs-bundler/pull/228): Implements npmUdpdate in a separate object;
 - [#225](https://github.com/scalacenter/scalajs-bundler/pull/225): Add --mutex to yarn command;
 - [#222](https://github.com/scalacenter/scalajs-bundler/pull/222): Make library example work in OSX;
-- [#221](https://github.com/scalacenter/scalajs-bundler/pull/221): Documentation for webpackExtraArgs;
 - [#220](https://github.com/scalacenter/scalajs-bundler/pull/220): Support passing an extra list of arguments to webpack;
 - [#218](https://github.com/scalacenter/scalajs-bundler/pull/218): Fix #136: Add more precise jsdom detection:
 - [#216](https://github.com/scalacenter/scalajs-bundler/pull/216): Fix #200: current webpack devserver version does not accept watchOptions;
