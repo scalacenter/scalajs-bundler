@@ -1,5 +1,14 @@
 # Changelog
 
+## Version 0.11.0
+
+> 2018 January 31
+
+- [#228](https://github.com/scalacenter/scalajs-bundler/pull/228): The npmUpdate method is accessible from a separate object;
+
+You can find the complete list of commits since the last release
+[here](https://github.com/scalacenter/scalajs-bundler/compare/v0.10.0...v0.11.0).
+
 ## Version 0.10.0
 
 > 2018 January 31
