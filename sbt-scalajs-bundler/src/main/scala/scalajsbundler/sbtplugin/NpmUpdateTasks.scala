@@ -29,7 +29,7 @@ object NpmUpdateTasks {
       ) { _ =>
         log.info("Updating NPM dependencies")
         if (useYarn) {
-          Yarn.run("install", "--non-interactive")(targetDir, log)
+          Yarn.run("install", "--non-interactive", "--mutex", "network")(targetDir, log)
         } else {
           Npm.run("install")(targetDir, log)
         }
