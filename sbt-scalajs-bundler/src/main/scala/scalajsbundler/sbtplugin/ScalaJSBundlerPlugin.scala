@@ -623,6 +623,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
                 val targetDir = npmUpdate.value
                 val sjsOutputName = sjsOutput.name.stripSuffix(".js")
                 val bundle = targetDir / s"$sjsOutputName-bundle.js"
+                val webpackVersion = (version in webpack).value
 
                 val customWebpackConfigFile = (webpackConfigFile in Test).value
 
@@ -640,7 +641,12 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
                         val customConfigFileCopy = Webpack.copyCustomWebpackConfigFiles(targetDir, webpackResources.value.get)(configFile)
                         Webpack.run("--config", customConfigFileCopy.getAbsolutePath, loader.absolutePath, bundle.absolutePath)(targetDir, logger)
                       case None =>
-                        Webpack.run(loader.absolutePath, bundle.absolutePath)(targetDir, logger)
+                        NpmPackage(webpackVersion).major match {
+                          case Some(4) =>
+                            Webpack.run("--bail", "--mode", "development", "--profile", "--progress", "--output-path", loader.getParent, s"${sjsOutputName}-bundle=${loader.absolutePath}")(targetDir, logger)
+                          case _ =>
+                            Webpack.run(loader.absolutePath, bundle.absolutePath)(targetDir, logger)
+                        }
                     }
 
                     Set.empty
