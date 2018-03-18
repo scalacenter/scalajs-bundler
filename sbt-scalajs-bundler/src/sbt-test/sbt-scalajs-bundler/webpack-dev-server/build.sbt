@@ -12,7 +12,7 @@ scalaJSUseMainModuleInitializer := true
 // Use a custom config file
 webpackConfigFile := Some(baseDirectory.value / "webpack.config.js")
 
-(npmDevDependencies in Compile) += ("html-webpack-plugin" -> "2.30.1")
+(npmDevDependencies in Compile) += ("html-webpack-plugin" -> "3.0.6")
 
 webpackDevServerPort := 7357
 
@@ -21,9 +21,9 @@ InputKey[Unit]("html") := {
   import complete.DefaultParsers._
   val ags = Def.spaceDelimited().parsed.toList
 
-  val (page, timeout) = 
+  val (page, timeout, shouldPass) =
     ags match {
-      case List(page, rawTimeout) => (page, rawTimeout.toInt)
+      case List(page, rawTimeout, pass) => (page, rawTimeout.toInt, pass.toBoolean)
       case _ => sys.error("expected: page timeout")
     }
 
@@ -34,7 +34,7 @@ InputKey[Unit]("html") := {
 
   println("Connecting to webpack-dev-server")
   println("")
-  
+
   while(totalTime < timeout && !connected) {
     val expected = "6051a036-bfb4-4158-a171-950416b5bd9a"
 
@@ -63,7 +63,7 @@ InputKey[Unit]("html") := {
       connected = true
     } catch {
       case ex: org.apache.http.conn.HttpHostConnectException => {
-        print("*")  
+        print("*")
       }
     } finally {
       client.close()
@@ -72,5 +72,5 @@ InputKey[Unit]("html") := {
     totalTime += dt
   }
 
-  assert(gotMessage, "Did not get println result")
+  assert(!shouldPass || gotMessage, "Did not get println result")
 }

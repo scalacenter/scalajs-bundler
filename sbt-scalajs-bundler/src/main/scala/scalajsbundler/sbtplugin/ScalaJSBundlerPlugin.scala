@@ -466,7 +466,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
     webpackCliVersion := "2.0.11",
 
     // NOTE Changed to verify tests
-    version in startWebpackDevServer := "3.1.0",
+    version in startWebpackDevServer := "3.1.1",
 
     version in installJsdom := "9.9.0",
 
@@ -799,4 +799,3 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
     }
 
 }
-

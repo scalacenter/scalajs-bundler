@@ -1,13 +1,13 @@
 # the server should properly start
 > fastOptJS::startWebpackDevServer
-> html index.html 20000
+> html index.html 20000 true
 
 # the server should properly stop
 > fastOptJS::stopWebpackDevServer
--> html index.html
+> html index.html 1000 false
 
 # the server should properly terminate on exit
 > fastOptJS::startWebpackDevServer
-> html index.html 20000
+> html index.html 20000 true
 -> exit
--> html index.html
+> html index.html 1000 false
