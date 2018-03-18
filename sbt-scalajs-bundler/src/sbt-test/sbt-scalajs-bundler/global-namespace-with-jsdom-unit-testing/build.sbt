@@ -15,9 +15,9 @@ npmDependencies in Compile ++= Seq(
 )
 
 npmDevDependencies in Compile ++= Seq(
-  "webpack-merge" -> "4.1.0",
-  "imports-loader" -> "0.7.0",
-  "expose-loader" -> "0.7.1"
+  "webpack-merge" -> "4.1.2",
+  "imports-loader" -> "0.8.0",
+  "expose-loader" -> "0.7.5"
 )
 
 webpackConfigFile in fastOptJS := Some(baseDirectory.value / "dev.webpack.config.js")
