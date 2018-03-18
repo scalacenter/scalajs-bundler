@@ -639,11 +639,16 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
                     customWebpackConfigFile match {
                       case Some(configFile) =>
                         val customConfigFileCopy = Webpack.copyCustomWebpackConfigFiles(targetDir, webpackResources.value.get)(configFile)
-                        Webpack.run("--config", customConfigFileCopy.getAbsolutePath, loader.absolutePath, bundle.absolutePath)(targetDir, logger)
+                        NpmPackage(webpackVersion).major match {
+                          case Some(4) =>
+                            Webpack.run("--config", customConfigFileCopy.getAbsolutePath, loader.absolutePath, "--output", bundle.absolutePath)(targetDir, logger)
+                          case _ =>
+                            Webpack.run("--config", customConfigFileCopy.getAbsolutePath, loader.absolutePath, bundle.absolutePath)(targetDir, logger)
+                        }
                       case None =>
                         NpmPackage(webpackVersion).major match {
                           case Some(4) =>
-                            Webpack.run("--bail", "--mode", "development", "--profile", "--progress", "--output-path", loader.getParent, s"${sjsOutputName}-bundle=${loader.absolutePath}")(targetDir, logger)
+                            Webpack.run("--bail", "--mode", "development", loader.absolutePath, "--output", bundle.absolutePath)(targetDir, logger)
                           case _ =>
                             Webpack.run(loader.absolutePath, bundle.absolutePath)(targetDir, logger)
                         }
