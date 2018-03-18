@@ -460,13 +460,11 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
 
     scalaJSLinkerConfig ~= { _.withModuleKind(ModuleKind.CommonJSModule) },
 
-    // NOTE Changed to verify tests
-    version in webpack := "4.1.1",
+    version in webpack := "3.5.5",
 
     webpackCliVersion := "2.0.11",
 
-    // NOTE Changed to verify tests
-    version in startWebpackDevServer := "3.1.1",
+    version in startWebpackDevServer := "2.11.1",
 
     version in installJsdom := "9.9.0",
 
@@ -641,7 +639,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
                         val customConfigFileCopy = Webpack.copyCustomWebpackConfigFiles(targetDir, webpackResources.value.get)(configFile)
                         NpmPackage(webpackVersion).major match {
                           case Some(4) =>
-                            Webpack.run("--config", customConfigFileCopy.getAbsolutePath, loader.absolutePath, "--output", bundle.absolutePath)(targetDir, logger)
+                            Webpack.run("--config", "--mode", "development", customConfigFileCopy.getAbsolutePath, loader.absolutePath, "--output", bundle.absolutePath)(targetDir, logger)
                           case _ =>
                             Webpack.run("--config", customConfigFileCopy.getAbsolutePath, loader.absolutePath, bundle.absolutePath)(targetDir, logger)
                         }

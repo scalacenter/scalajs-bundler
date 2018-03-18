@@ -2,7 +2,6 @@ package scalajsbundler.sbtplugin
 import sbt.Keys._
 import sbt.{Def, _}
 
-import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport.fastOptJS
 import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport.scalaJSLinkerConfig
 import scalajsbundler.sbtplugin.ScalaJSBundlerPlugin._
 import scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.autoImport._

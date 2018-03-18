@@ -13,7 +13,6 @@ import sbt.Keys._
 import sbt.{Def, _}
 
 import scalajsbundler.{BundlerFile, Webpack, WebpackEntryPoint}
-import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport.fastOptJS
 import scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.autoImport._
 import scalajsbundler.sbtplugin.ScalaJSBundlerPlugin._
 import scalajsbundler.util.{Caching, JSBundler, ScalaJSOutputAnalyzer}
