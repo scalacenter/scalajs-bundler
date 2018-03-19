@@ -79,9 +79,9 @@ object LibraryTasks {
       val cacheLocation = streams.value.cacheDirectory / s"${stage.key.label}-webpack-libraries"
       val extraArgs = (webpackExtraArgs in stage).value
       val webpackMode = if ((scalaJSLinkerConfig in stage).value.semantics.productionMode) {
-        Webpack.DevelopmentMode
-      } else {
         Webpack.ProductionMode
+      } else {
+        Webpack.DevelopmentMode
       }
 
       val cachedActionFunction =

@@ -31,9 +31,9 @@ object WebpackTasks {
       val monitoredFiles = (webpackMonitoredFiles in stage).value
       val extraArgs = (webpackExtraArgs in stage).value
       val webpackMode = if ((scalaJSLinkerConfig in stage).value.semantics.productionMode) {
-        Webpack.DevelopmentMode
-      } else {
         Webpack.ProductionMode
+      } else {
+        Webpack.DevelopmentMode
       }
 
       val cachedActionFunction =
