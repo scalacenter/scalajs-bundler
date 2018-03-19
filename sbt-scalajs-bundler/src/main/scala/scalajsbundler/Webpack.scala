@@ -3,6 +3,7 @@ package scalajsbundler
 import sbt._
 
 import scalajsbundler.util.{Commands, JS}
+import org.scalajs.core.tools.linker.StandardLinker.Config
 
 object Webpack {
   // Represents webpack 4 modes
@@ -14,6 +15,15 @@ object Webpack {
   }
   case object ProductionMode extends WebpackMode {
     val mode = "production"
+  }
+  object WebpackMode {
+    def apply(sjsConfig: Config): WebpackMode = {
+      if (sjsConfig.semantics.productionMode) {
+        ProductionMode
+      } else {
+        DevelopmentMode
+      }
+    }
   }
 
   /**
