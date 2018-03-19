@@ -11,6 +11,10 @@ libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "0.9.1"
 
 npmDependencies in Compile += "leaflet" -> "0.7.7"
 
+version in webpack                     := "4.1.1"
+
+version in startWebpackDevServer       := "3.1.1"
+
 npmDevDependencies in Compile ++= Seq(
   "webpack-merge" -> "4.1.2",
   "file-loader" -> "1.1.11",
