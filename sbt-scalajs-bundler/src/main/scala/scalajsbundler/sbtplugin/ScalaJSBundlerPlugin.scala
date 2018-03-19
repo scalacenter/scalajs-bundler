@@ -639,6 +639,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
                         val customConfigFileCopy = Webpack.copyCustomWebpackConfigFiles(targetDir, webpackResources.value.get)(configFile)
                         NpmPackage(webpackVersion).major match {
                           case Some(4) =>
+                            // TODO: It assumes tests are run on development mode. It should instead use build settings
                             Webpack.run("--mode", "development", "--config", customConfigFileCopy.getAbsolutePath, loader.absolutePath, "--output", bundle.absolutePath)(targetDir, logger)
                           case _ =>
                             Webpack.run("--config", customConfigFileCopy.getAbsolutePath, loader.absolutePath, bundle.absolutePath)(targetDir, logger)
@@ -646,6 +647,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
                       case None =>
                         NpmPackage(webpackVersion).major match {
                           case Some(4) =>
+                            // TODO: It assumes tests are run on development mode. It should instead use build settings
                             Webpack.run("--mode", "development", loader.absolutePath, "--output", bundle.absolutePath)(targetDir, logger)
                           case _ =>
                             Webpack.run(loader.absolutePath, bundle.absolutePath)(targetDir, logger)
