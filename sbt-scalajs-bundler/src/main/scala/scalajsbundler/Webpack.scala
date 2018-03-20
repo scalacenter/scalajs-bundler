@@ -3,8 +3,28 @@ package scalajsbundler
 import sbt._
 
 import scalajsbundler.util.{Commands, JS}
+import org.scalajs.core.tools.linker.StandardLinker.Config
 
 object Webpack {
+  // Represents webpack 4 modes
+  sealed trait WebpackMode {
+    def mode: String
+  }
+  case object DevelopmentMode extends WebpackMode {
+    val mode = "development"
+  }
+  case object ProductionMode extends WebpackMode {
+    val mode = "production"
+  }
+  object WebpackMode {
+    def apply(sjsConfig: Config): WebpackMode = {
+      if (sjsConfig.semantics.productionMode) {
+        ProductionMode
+      } else {
+        DevelopmentMode
+      }
+    }
+  }
 
   /**
     * Copies the custom webpack configuration file and the webpackResources to the target dir
@@ -40,6 +60,7 @@ object Webpack {
     entry: BundlerFile.WebpackInput,
     webpackConfigFile: BundlerFile.WebpackConfig,
     libraryBundleName: Option[String],
+    mode: WebpackMode,
     log: Logger
   ): Unit = {
     log.info("Writing scalajs.webpack.config.js")
@@ -109,6 +130,20 @@ object Webpack {
                   )
                 )
               )
+            case Some(4) =>
+              Seq(
+                "mode" -> JS.str(mode.mode),
+                "devtool" -> JS.str("source-map"),
+                "module" -> JS.obj(
+                  "rules" -> JS.arr(
+                    JS.obj(
+                      "test" -> JS.regex("\\.js$"),
+                      "enforce" -> JS.str("pre"),
+                      "use" -> JS.arr(JS.str("source-map-loader"))
+                    )
+                  )
+                )
+              )
             case Some(x) => sys.error(s"Unsupported webpack major version $x")
             case None => sys.error("No webpack version defined")
           }
@@ -126,6 +161,8 @@ object Webpack {
     * @param webpackResources Additional resources to be copied to the working folder
     * @param entry Scala.js application to bundle
     * @param targetDir Target directory (and working directory for Nodejs)
+    * @param extraArgs Extra arguments passed to webpack
+    * @param mode Mode for webpack 4
     * @param log Logger
     * @return The generated bundles
     */
@@ -137,9 +174,10 @@ object Webpack {
      entry: BundlerFile.Application,
      targetDir: File,
      extraArgs: Seq[String],
+     mode: WebpackMode,
      log: Logger
   ): BundlerFile.ApplicationBundle = {
-    writeConfigFile(emitSourceMaps, entry, generatedWebpackConfigFile, None, log)
+    writeConfigFile(emitSourceMaps, entry, generatedWebpackConfigFile, None, mode, log)
 
     val configFile = customWebpackConfigFile
       .map(Webpack.copyCustomWebpackConfigFiles(targetDir, webpackResources))
@@ -164,6 +202,8 @@ object Webpack {
     * @param webpackResources Additional webpack resources to include in the working directory
     * @param entryPointFile The entrypoint file to bundle dependencies for
     * @param libraryModuleName The library module name to assign the webpack bundle to
+    * @param extraArgs Extra arguments passed to webpack
+    * @param mode Mode for webpack 4
     * @param log Logger
     * @return The generated bundle
     */
@@ -175,6 +215,7 @@ object Webpack {
     entryPointFile: BundlerFile.EntryPoint,
     libraryModuleName: String,
     extraArgs: Seq[String],
+    mode: WebpackMode,
     log: Logger
   ): BundlerFile.Library = {
     writeConfigFile(
@@ -182,6 +223,7 @@ object Webpack {
       entryPointFile,
       generatedWebpackConfigFile,
       Some(libraryModuleName),
+      mode,
       log
     )
 

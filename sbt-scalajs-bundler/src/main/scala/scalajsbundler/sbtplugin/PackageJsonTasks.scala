@@ -30,6 +30,7 @@ object PackageJsonTasks {
     configuration: Configuration,
     webpackVersion: String,
     webpackDevServerVersion: String,
+    webpackCliVersion: String,
     streams: Keys.TaskStreams
   ): BundlerFile.PackageJson = {
 
@@ -40,7 +41,8 @@ object PackageJsonTasks {
       npmResolutions.toString,
       fullClasspath.map(_.data.name).toString,
       webpackVersion,
-      webpackDevServerVersion
+      webpackDevServerVersion,
+      webpackCliVersion
     ).mkString(",")
 
     val packageJsonFile = targetDir / "package.json"
@@ -60,7 +62,8 @@ object PackageJsonTasks {
         fullClasspath,
         configuration,
         webpackVersion,
-        webpackDevServerVersion
+        webpackDevServerVersion,
+        webpackCliVersion
       )
       ()
     }

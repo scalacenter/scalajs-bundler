@@ -2,6 +2,7 @@ package scalajsbundler.sbtplugin
 import sbt.Keys._
 import sbt.{Def, _}
 
+import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport.scalaJSLinkerConfig
 import scalajsbundler.sbtplugin.ScalaJSBundlerPlugin._
 import scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.autoImport._
 import scalajsbundler.Webpack
@@ -29,6 +30,7 @@ object WebpackTasks {
       val log = streams.value.log
       val monitoredFiles = (webpackMonitoredFiles in stage).value
       val extraArgs = (webpackExtraArgs in stage).value
+      val webpackMode = Webpack.WebpackMode((scalaJSLinkerConfig in stage).value)
 
       val cachedActionFunction =
         FileFunction.cached(
@@ -44,6 +46,7 @@ object WebpackTasks {
               entriesList,
               targetDir,
               extraArgs,
+              webpackMode,
               log
             ).file)
         }

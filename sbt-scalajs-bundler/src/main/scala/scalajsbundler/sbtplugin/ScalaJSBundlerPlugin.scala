@@ -377,6 +377,14 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
     )
 
     /**
+      * Version of webpack-cli
+      *
+      * @group settings
+      */
+    val webpackCliVersion: SettingKey[String] =
+      settingKey[String]("Version of webpack-cli to use")
+
+    /**
       * Start background webpack-dev-server process.
       *
       * If webpack-dev-server is already running, it will be restarted.
@@ -453,6 +461,8 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
     scalaJSLinkerConfig ~= { _.withModuleKind(ModuleKind.CommonJSModule) },
 
     version in webpack := "3.5.5",
+
+    webpackCliVersion := "2.0.11",
 
     version in startWebpackDevServer := "2.11.1",
 
@@ -543,6 +553,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
           configuration.value,
           (version in webpack).value,
           (version in startWebpackDevServer).value,
+          webpackCliVersion.value,
           streams.value
         ),
 
@@ -610,6 +621,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
                 val targetDir = npmUpdate.value
                 val sjsOutputName = sjsOutput.name.stripSuffix(".js")
                 val bundle = targetDir / s"$sjsOutputName-bundle.js"
+                val webpackVersion = (version in webpack).value
 
                 val customWebpackConfigFile = (webpackConfigFile in Test).value
 
@@ -625,9 +637,21 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
                     customWebpackConfigFile match {
                       case Some(configFile) =>
                         val customConfigFileCopy = Webpack.copyCustomWebpackConfigFiles(targetDir, webpackResources.value.get)(configFile)
-                        Webpack.run("--config", customConfigFileCopy.getAbsolutePath, loader.absolutePath, bundle.absolutePath)(targetDir, logger)
+                        NpmPackage(webpackVersion).major match {
+                          case Some(4) =>
+                            // TODO: It assumes tests are run on development mode. It should instead use build settings
+                            Webpack.run("--mode", "development", "--config", customConfigFileCopy.getAbsolutePath, loader.absolutePath, "--output", bundle.absolutePath)(targetDir, logger)
+                          case _ =>
+                            Webpack.run("--config", customConfigFileCopy.getAbsolutePath, loader.absolutePath, bundle.absolutePath)(targetDir, logger)
+                        }
                       case None =>
-                        Webpack.run(loader.absolutePath, bundle.absolutePath)(targetDir, logger)
+                        NpmPackage(webpackVersion).major match {
+                          case Some(4) =>
+                            // TODO: It assumes tests are run on development mode. It should instead use build settings
+                            Webpack.run("--mode", "development", loader.absolutePath, "--output", bundle.absolutePath)(targetDir, logger)
+                          case _ =>
+                            Webpack.run(loader.absolutePath, bundle.absolutePath)(targetDir, logger)
+                        }
                     }
 
                     Set.empty
@@ -780,4 +804,3 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
     }
 
 }
-
