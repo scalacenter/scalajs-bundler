@@ -2,9 +2,12 @@
 
 ## Version 0.12.0
 
-> 2018 March 20
+> 2018 March 27
 
-* [#223](https://github.com/scalacenter/scalajs-bundler/pull/223): Webpack4 support
+- [#223](https://github.com/scalacenter/scalajs-bundler/pull/223): Webpack4 support
+
+You can find the complete list of commits since the last release
+[here](https://github.com/scalacenter/scalajs-bundler/compare/v0.11.0...v0.12.0).
 
 ## Version 0.11.0
 
