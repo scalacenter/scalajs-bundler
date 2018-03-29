@@ -4,6 +4,8 @@ import sbt._
 
 import scalajsbundler.util.{Commands, JS}
 import org.scalajs.core.tools.linker.StandardLinker.Config
+import java.io.InputStream
+import java.time.LocalDateTime
 
 object Webpack {
   // Represents webpack 4 modes
@@ -239,6 +241,31 @@ object Webpack {
     library
   }
 
+  private def jsonOutput(logger: Logger)(in: InputStream): Unit = {
+    import play.api.libs.json._
+    // import play.api.libs.functional.syntax._
+    val parsed = Json.parse(in)
+
+    for {
+      errors <- (parsed \ "errors").validate[List[String]]
+      warnings <- (parsed \ "warnings").validate[List[String]]
+      version <- (parsed \ "version").validate[String]
+      hash <- (parsed \ "hash").validate[String]
+      time <- (parsed \ "time").validate[Long]
+    } yield {
+      // Emulate the regular output
+
+      logger.info(s"Hash: $hash")
+      logger.info(s"Version: webpack $version")
+      logger.info(s"Time: ${time}ms")
+      logger.info(s"Build at: ${LocalDateTime.now()}")
+      // Ouput errors and warnings
+      errors.foreach(x => logger.error(x))
+      warnings.foreach(x => logger.warn(x))
+    }
+    ()
+  }
+
   /**
     * Runs the webpack command.
     *
@@ -248,8 +275,8 @@ object Webpack {
     */
   def run(args: String*)(workingDir: File, log: Logger): Unit = {
     val webpackBin = workingDir / "node_modules" / "webpack" / "bin" / "webpack"
-    val cmd = Seq("node", webpackBin.absolutePath, "--bail") ++ args
-    Commands.run(cmd, workingDir, log)
+    val cmd = Seq("node", webpackBin.absolutePath, "--bail", "--profile", "--json") ++ args
+    Commands.run(cmd, workingDir, log, jsonOutput(log))
     ()
   }
 
