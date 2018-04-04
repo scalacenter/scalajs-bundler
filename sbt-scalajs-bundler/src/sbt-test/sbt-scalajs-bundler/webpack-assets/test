@@ -1,3 +1,3 @@
 # the server should properly start
--> fastOptJS::webpack
+> fastOptJS::webpack
 > html index.html

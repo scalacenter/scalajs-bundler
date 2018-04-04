@@ -64,10 +64,16 @@ object BundlerFile {
                 .resolve(Library.fileName(project))
                 .toFile)
 
-    def asApplicationBundle: ApplicationBundle =
+    def asDefaultApplicationBundle: ApplicationBundle =
+      ApplicationBundle(project,
+        file.getParentFile.toPath
+          .resolve(ApplicationBundle.fileName(project))
+          .toFile)
+
+    def asApplicationBundle(assetFile: String): ApplicationBundle =
       ApplicationBundle(project,
                         file.getParentFile.toPath
-                          .resolve(ApplicationBundle.fileName(project))
+                          .resolve(assetFile)
                           .toFile)
 
   }
@@ -161,7 +167,8 @@ object BundlerFile {
 
   object ApplicationBundle {
 
-    /** Filename of the generated bundle, given its module entry name */
+    /** Filename of the generated libraries bundle, given its module entry name */
     def fileName(entry: String): String = s"$entry-bundle.js"
   }
+
 }

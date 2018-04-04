@@ -6,6 +6,8 @@ import scalajsbundler.util.{Commands, JS}
 import org.scalajs.core.tools.linker.StandardLinker.Config
 import java.io.InputStream
 import java.time.LocalDateTime
+import play.api.libs.json._
+import Stats._
 
 object Webpack {
   // Represents webpack 4 modes
@@ -187,10 +189,13 @@ object Webpack {
 
     log.info("Bundling the application with its NPM dependencies")
     val args = extraArgs ++: Seq("--config", configFile.absolutePath)
-    Webpack.run(args: _*)(targetDir, log)
+    val stats = Webpack.run(args: _*)(targetDir, log)
+    stats.foreach(_.print(log))
 
-    // TODO Support custom webpack config file (the output may be overridden by users)
-    val bundle = generatedWebpackConfigFile.asApplicationBundle
+    // Attempt to discover the actual name produced by webpack indexing by chunk name and discarding maps
+    val producedName = stats.flatMap(_.assets.find(a => a.chunks.contains(generatedWebpackConfigFile.application.project) && a.name.endsWith(".js"))).map(_.name)
+    val bundle = producedName.fold(generatedWebpackConfigFile.asDefaultApplicationBundle)(generatedWebpackConfigFile.asApplicationBundle)
+    println("Expected bundle " + bundle.project)
     assert(bundle.file.exists(), "Webpack failed to create application bundle")
     bundle
   }
@@ -234,36 +239,23 @@ object Webpack {
       .getOrElse(generatedWebpackConfigFile.file)
 
     val args = extraArgs ++: Seq("--config", configFile.absolutePath)
-    Webpack.run(args: _*)(generatedWebpackConfigFile.targetDir, log)
+    val stats = Webpack.run(args: _*)(generatedWebpackConfigFile.targetDir, log)
+    stats.foreach(_.print(log))
 
     val library = generatedWebpackConfigFile.asLibrary
     assert(library.file.exists, "Webpack failed to create library file")
     library
   }
 
-  private def jsonOutput(logger: Logger)(in: InputStream): Unit = {
-    import play.api.libs.json._
-    // import play.api.libs.functional.syntax._
+  private def jsonOutput(logger: Logger)(in: InputStream): Option[WebpackStats] = {
+
     val parsed = Json.parse(in)
-
-    for {
-      errors <- (parsed \ "errors").validate[List[String]]
-      warnings <- (parsed \ "warnings").validate[List[String]]
-      version <- (parsed \ "version").validate[String]
-      hash <- (parsed \ "hash").validate[String]
-      time <- (parsed \ "time").validate[Long]
-    } yield {
-      // Emulate the regular output
-
-      logger.info(s"Hash: $hash")
-      logger.info(s"Version: webpack $version")
-      logger.info(s"Time: ${time}ms")
-      logger.info(s"Build at: ${LocalDateTime.now()}")
-      // Ouput errors and warnings
-      errors.foreach(x => logger.error(x))
-      warnings.foreach(x => logger.warn(x))
-    }
-    ()
+    // println("chunks "+ (parsed \ "assets" \\ "chunks"))
+    // println("chunkNames "+ (parsed \ "assets" \\ "chunkNames"))
+    println(Json.prettyPrint((parsed \ "assets").get))
+    // println(Json.prettyPrint((parsed \ "modules").get))
+    // println(parsed \ "chunks")
+    parsed.asOpt[WebpackStats]
   }
 
   /**
@@ -273,11 +265,10 @@ object Webpack {
     * @param workingDir Working directory in which the Nodejs will be run (where there is the `node_modules` subdirectory)
     * @param log Logger
     */
-  def run(args: String*)(workingDir: File, log: Logger): Unit = {
+  def run(args: String*)(workingDir: File, log: Logger): Option[WebpackStats] = {
     val webpackBin = workingDir / "node_modules" / "webpack" / "bin" / "webpack"
     val cmd = Seq("node", webpackBin.absolutePath, "--bail", "--profile", "--json") ++ args
-    Commands.run(cmd, workingDir, log, jsonOutput(log))
-    ()
+    Commands.run(cmd, workingDir, log, jsonOutput(log)).flatten
   }
 
 }

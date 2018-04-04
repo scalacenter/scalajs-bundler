@@ -51,6 +51,6 @@ object WebpackTasks {
             ).file)
         }
       cachedActionFunction(monitoredFiles.to[Set])
-      Seq(generatedWebpackConfigFile.asApplicationBundle.asAttributedFile)
+      Seq(generatedWebpackConfigFile.asDefaultApplicationBundle.asAttributedFile)
     }
 }
