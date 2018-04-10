@@ -14,6 +14,9 @@ object Stats {
   final case class Chunk(id: String, size: Long)
   final case class Asset(name: String, size: Long, emmited: Boolean, chunks: List[String], chunkNames: List[String])
   final case class WebpackStats(version: String, hash: String, time: Long, errors: List[String], warnings: List[String], assets: List[Asset], chunks: List[Chunk]) {
+    /**
+      * Prints to the log an output similar to what webpack pushes to stdout
+      */
     def print(log: Logger): Unit = {
       List(s"Version: $version", s"Hash: $hash", s"Time: ${time}ms", s"Built at ${LocalDateTime.now}").foreach(x => log.info(x))
       errors.foreach(x => log.error(x))
@@ -21,6 +24,13 @@ object Stats {
       warnings.filterNot(_.contains("https://raw.githubusercontent.com")).foreach(x => log.warn(x))
       log.warn(warnings.length.toString)
     }
+
+    /**
+      * Attempts to find the name of the asset for the project name
+      * Note that we only search on files ending on .js skipping e.g. map files
+      */
+    def assetName(project: String): Option[String] =
+      assets.find(a => a.chunks.contains(project) && a.name.endsWith(".js")).map(_.name)
   }
 
   implicit val chunkReads: Reads[Chunk] = (

@@ -104,7 +104,7 @@ object LibraryTasks {
 
         }
       cachedActionFunction(monitoredFiles.to[Set])
-      generatedWebpackConfigFile.asLibrary
+      generatedWebpackConfigFile.asDefaultLibrary
     }
 
   private[sbtplugin] def loader(

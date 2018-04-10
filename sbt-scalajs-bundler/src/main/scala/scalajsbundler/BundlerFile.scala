@@ -2,6 +2,8 @@ package scalajsbundler
 
 import java.io.File
 
+import scalajsbundler.Stats.WebpackStats
+
 /**
   * Files used in the `ScalaJSBundler` pipeline.
   */
@@ -54,15 +56,21 @@ object BundlerFile {
     */
   case class WebpackConfig(application: Application, file: java.io.File)
       extends Internal {
-    def project = application.project
+    def project: String = application.project
 
     def targetDir: File = file.getParentFile
 
-    def asLibrary: Library =
+    def asLibrary(stats: Option[WebpackStats]): Library =
       Library(project,
               file.getParentFile.toPath
-                .resolve(Library.fileName(project))
+                .resolve(stats.flatMap(_.assetName(project)).fold(Library.fileName(project))(identity))
                 .toFile)
+
+    def asDefaultLibrary: Library =
+      Library(project,
+        file.getParentFile.toPath
+          .resolve(Library.fileName(project))
+          .toFile)
 
     def asDefaultApplicationBundle: ApplicationBundle =
       ApplicationBundle(project,
@@ -70,10 +78,10 @@ object BundlerFile {
           .resolve(ApplicationBundle.fileName(project))
           .toFile)
 
-    def asApplicationBundle(assetFile: String): ApplicationBundle =
+    def asApplicationBundle(stats: Option[WebpackStats]): ApplicationBundle =
       ApplicationBundle(project,
                         file.getParentFile.toPath
-                          .resolve(assetFile)
+                          .resolve(stats.flatMap(_.assetName(project)).fold(ApplicationBundle.fileName(project))(identity))
                           .toFile)
 
   }

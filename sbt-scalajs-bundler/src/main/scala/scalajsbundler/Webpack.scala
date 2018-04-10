@@ -193,9 +193,7 @@ object Webpack {
     stats.foreach(_.print(log))
 
     // Attempt to discover the actual name produced by webpack indexing by chunk name and discarding maps
-    val producedName = stats.flatMap(_.assets.find(a => a.chunks.contains(generatedWebpackConfigFile.application.project) && a.name.endsWith(".js"))).map(_.name)
-    val bundle = producedName.fold(generatedWebpackConfigFile.asDefaultApplicationBundle)(generatedWebpackConfigFile.asApplicationBundle)
-    println("Expected bundle " + bundle.project)
+    val bundle = generatedWebpackConfigFile.asApplicationBundle(stats)
     assert(bundle.file.exists(), "Webpack failed to create application bundle")
     bundle
   }
@@ -241,8 +239,9 @@ object Webpack {
     val args = extraArgs ++: Seq("--config", configFile.absolutePath)
     val stats = Webpack.run(args: _*)(generatedWebpackConfigFile.targetDir, log)
     stats.foreach(_.print(log))
+    println(stats.map(_.assets))
 
-    val library = generatedWebpackConfigFile.asLibrary
+    val library = generatedWebpackConfigFile.asLibrary(stats)
     assert(library.file.exists, "Webpack failed to create library file")
     library
   }

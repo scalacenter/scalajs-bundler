@@ -3,8 +3,9 @@ const Merge = require("webpack-merge");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 const WebApp = Merge(ScalaJS, {
+  mode: "development",
   output: {
-    filename: "app.js"
+    filename: "library.js"
   },
   plugins: [new HtmlWebpackPlugin()]
 });
