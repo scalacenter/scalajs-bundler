@@ -239,7 +239,6 @@ object Webpack {
     val args = extraArgs ++: Seq("--config", configFile.absolutePath)
     val stats = Webpack.run(args: _*)(generatedWebpackConfigFile.targetDir, log)
     stats.foreach(_.print(log))
-    println(stats.map(_.assets))
 
     val library = generatedWebpackConfigFile.asLibrary(stats)
     assert(library.file.exists, "Webpack failed to create library file")
@@ -249,12 +248,15 @@ object Webpack {
   private def jsonOutput(logger: Logger)(in: InputStream): Option[WebpackStats] = {
 
     val parsed = Json.parse(in)
-    // println("chunks "+ (parsed \ "assets" \\ "chunks"))
-    // println("chunkNames "+ (parsed \ "assets" \\ "chunkNames"))
-    println(Json.prettyPrint((parsed \ "assets").get))
-    // println(Json.prettyPrint((parsed \ "modules").get))
-    // println(parsed \ "chunks")
-    parsed.asOpt[WebpackStats]
+    parsed.validate[WebpackStats] match {
+      case JsError(e) =>
+        // In case of error print the result and return None. it will be ignored upstream
+        e.foreach {
+          case (p, v) => logger.error(s"$p: ${v.mkString(",")}")
+        }
+        None
+      case JsSuccess(p, _) => Some(p)
+    }
   }
 
   /**

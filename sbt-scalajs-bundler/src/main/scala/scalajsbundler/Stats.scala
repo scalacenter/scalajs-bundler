@@ -11,9 +11,8 @@ import sbt.Logger
  * Webpack stats model and json parsers
  */
 object Stats {
-  final case class Chunk(id: String, size: Long)
-  final case class Asset(name: String, size: Long, emmited: Boolean, chunks: List[String], chunkNames: List[String])
-  final case class WebpackStats(version: String, hash: String, time: Long, errors: List[String], warnings: List[String], assets: List[Asset], chunks: List[Chunk]) {
+  final case class Asset(name: String, size: Long, emmited: Boolean, chunkNames: List[String])
+  final case class WebpackStats(version: String, hash: String, time: Long, errors: List[String], warnings: List[String], assets: List[Asset]) {
     /**
       * Prints to the log an output similar to what webpack pushes to stdout
       */
@@ -30,19 +29,13 @@ object Stats {
       * Note that we only search on files ending on .js skipping e.g. map files
       */
     def assetName(project: String): Option[String] =
-      assets.find(a => a.chunks.contains(project) && a.name.endsWith(".js")).map(_.name)
+      assets.find(a => a.chunkNames.contains(project) && a.name.endsWith(".js")).map(_.name)
   }
-
-  implicit val chunkReads: Reads[Chunk] = (
-    (JsPath \ "id").read[String] and
-    (JsPath \ "size").read[Long]
-  )(Chunk.apply _)
 
   implicit val assetsReads: Reads[Asset] = (
     (JsPath \ "name").read[String] and
     (JsPath \ "size").read[Long] and
     (JsPath \ "emitted").read[Boolean] and
-    (JsPath \\ "chunks").read[List[String]] and
     (JsPath \\ "chunkNames").read[List[String]]
   )(Asset.apply _)
 
@@ -52,8 +45,7 @@ object Stats {
     (JsPath \ "time").read[Long] and
     (JsPath \ "errors").read[List[String]] and
     (JsPath \ "warnings").read[List[String]] and
-    (JsPath \ "assets").read[List[Asset]] and
-    (JsPath \ "chunks").read[List[Chunk]]
+    (JsPath \ "assets").read[List[Asset]]
     )(WebpackStats.apply _)
 
 }
