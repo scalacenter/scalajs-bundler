@@ -175,8 +175,7 @@ object BundlerFile {
 
   object ApplicationBundle {
 
-    /** Filename of the generated libraries bundle, given its module entry name */
+    /** Filename of the generated bundle, given its module entry name */
     def fileName(entry: String): String = s"$entry-bundle.js"
   }
-
 }
