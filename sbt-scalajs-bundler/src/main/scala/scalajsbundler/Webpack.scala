@@ -251,6 +251,7 @@ object Webpack {
     val parsed = Json.parse(in)
     parsed.validate[WebpackStats] match {
       case JsError(e) =>
+        logger.error("Error parsing webpack stats output")
         // In case of error print the result and return None. it will be ignored upstream
         e.foreach {
           case (p, v) => logger.error(s"$p: ${v.mkString(",")}")
