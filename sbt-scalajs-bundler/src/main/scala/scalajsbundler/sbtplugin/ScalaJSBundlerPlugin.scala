@@ -536,11 +536,11 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       ),
 
       npmUpdate := NpmUpdateTasks.npmUpdate(
-	(crossTarget in npmUpdate).value,
-	scalaJSBundlerPackageJson.value.file,
-	useYarn.value,
-	scalaJSNativeLibraries.value.data,
-	streams.value),
+      (crossTarget in npmUpdate).value,
+      scalaJSBundlerPackageJson.value.file,
+      useYarn.value,
+      scalaJSNativeLibraries.value.data,
+      streams.value),
 
       scalaJSBundlerPackageJson :=
         PackageJsonTasks.writePackageJson(
@@ -731,9 +731,8 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
 
         val generatedFiles: Seq[File] = Seq(
           packageJsonFile.file,
-          generatedWebpackConfigFile.file ,
-          entry.file
-        )
+          generatedWebpackConfigFile.file,
+          entry.file)
         val additionalFiles: Seq[File] = dirs.flatMap(
           dir => (dir ** filter).get
         )

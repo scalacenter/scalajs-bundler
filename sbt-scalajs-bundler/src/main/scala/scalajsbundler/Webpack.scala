@@ -5,7 +5,6 @@ import sbt._
 import scalajsbundler.util.{Commands, JS}
 import org.scalajs.core.tools.linker.StandardLinker.Config
 import java.io.InputStream
-import java.time.LocalDateTime
 import play.api.libs.json._
 import Stats._
 
@@ -73,14 +72,14 @@ object Webpack {
     val output = libraryBundleName match {
       case Some(bundleName) =>
         JS.obj(
-          "path" -> JS.str(webpackConfigFile.targetDir.absolutePath),
+          "path" -> JS.str(webpackConfigFile.targetDir.toAbsolutePath.toString),
           "filename" -> JS.str(BundlerFile.Library.fileName("[name]")),
           "library" -> JS.str(bundleName),
           "libraryTarget" -> JS.str("var")
         )
       case None =>
         JS.obj(
-          "path" -> JS.str(webpackConfigFile.targetDir.absolutePath),
+          "path" -> JS.str(webpackConfigFile.targetDir.toAbsolutePath.toString),
           "filename" -> JS.str(BundlerFile.ApplicationBundle.fileName("[name]"))
         )
     }
@@ -94,7 +93,7 @@ object Webpack {
         "output" -> output
       ) ++ (
         if (emitSourceMaps) {
-          val webpackNpmPackage = NpmPackage.getForModule(webpackConfigFile.targetDir, "webpack")
+          val webpackNpmPackage = NpmPackage.getForModule(webpackConfigFile.targetDir.toFile, "webpack")
           webpackNpmPackage.flatMap(_.major) match {
             case Some(1) =>
               Seq(
@@ -195,6 +194,7 @@ object Webpack {
     // Attempt to discover the actual name produced by webpack indexing by chunk name and discarding maps
     val bundle = generatedWebpackConfigFile.asApplicationBundle(stats)
     assert(bundle.file.exists(), "Webpack failed to create application bundle")
+    assert(bundle.assets.forall(_.exists()), "Webpack failed to create application assets")
     bundle
   }
 
@@ -233,15 +233,16 @@ object Webpack {
     )
 
     val configFile = customWebpackConfigFile
-      .map(Webpack.copyCustomWebpackConfigFiles(generatedWebpackConfigFile.targetDir, webpackResources))
+      .map(Webpack.copyCustomWebpackConfigFiles(generatedWebpackConfigFile.targetDir.toFile, webpackResources))
       .getOrElse(generatedWebpackConfigFile.file)
 
     val args = extraArgs ++: Seq("--config", configFile.absolutePath)
-    val stats = Webpack.run(args: _*)(generatedWebpackConfigFile.targetDir, log)
+    val stats = Webpack.run(args: _*)(generatedWebpackConfigFile.targetDir.toFile, log)
     stats.foreach(_.print(log))
 
     val library = generatedWebpackConfigFile.asLibrary(stats)
     assert(library.file.exists, "Webpack failed to create library file")
+    assert(library.assets.forall(_.exists), "Webpack failed to create library assets")
     library
   }
 

@@ -1,6 +1,7 @@
 package scalajsbundler
 
 import java.io.File
+import java.nio.file.Path
 
 import scalajsbundler.Stats.WebpackStats
 
@@ -8,11 +9,10 @@ import scalajsbundler.Stats.WebpackStats
   * Files used in the `ScalaJSBundler` pipeline.
   */
 sealed trait BundlerFile extends Product with Serializable {
-  def file: java.io.File
+  def file: File
 }
 
 object BundlerFile {
-
   /**
     * Files that may be inputs to the webpack process
     */
@@ -33,7 +33,7 @@ object BundlerFile {
   case class EntryPoint(application: Application, file: java.io.File)
       extends Internal
       with WebpackInput {
-    def project = application.project
+    def project: String = application.project
   }
 
   object EntryPoint {
@@ -58,31 +58,28 @@ object BundlerFile {
       extends Internal {
     def project: String = application.project
 
-    def targetDir: File = file.getParentFile
+    def targetDir: Path = file.getParentFile.toPath
 
+    /**
+      * Returns the Library identifying the asset produced by scala.js through webpack stats
+      */
     def asLibrary(stats: Option[WebpackStats]): Library =
       Library(project,
-              file.getParentFile.toPath
+              targetDir
                 .resolve(stats.flatMap(_.assetName(project)).fold(Library.fileName(project))(identity))
-                .toFile)
+                .toFile,
+              stats.map(_.assets.map(a => targetDir.resolve(a.name).toFile)).getOrElse(Nil))
 
-    def asDefaultLibrary: Library =
-      Library(project,
-        file.getParentFile.toPath
-          .resolve(Library.fileName(project))
-          .toFile)
-
-    def asDefaultApplicationBundle: ApplicationBundle =
-      ApplicationBundle(project,
-        file.getParentFile.toPath
-          .resolve(ApplicationBundle.fileName(project))
-          .toFile)
-
+    /**
+      * Returns the Application for this configuration identifying the asset produced by scala.js through webpack stats
+      */
     def asApplicationBundle(stats: Option[WebpackStats]): ApplicationBundle =
       ApplicationBundle(project,
-                        file.getParentFile.toPath
-                          .resolve(stats.flatMap(_.assetName(project)).fold(ApplicationBundle.fileName(project))(identity))
-                          .toFile)
+                        targetDir
+                          .resolve(stats.flatMap(_.assetName(project))
+                            .fold(ApplicationBundle.fileName(project))(identity))
+                          .toFile,
+                        stats.map(_.assets.map(a => targetDir.resolve(a.name).toFile)).getOrElse(Nil))
 
   }
 
@@ -99,36 +96,42 @@ object BundlerFile {
     *
     * @param project The application project name
     * @param file The file containing the application javascript
+    * @param assets All the assets on the application
     */
-  case class Application(project: String, file: java.io.File)
+  case class Application(project: String, file: File, assets: List[java.io.File])
       extends Public
       with WebpackInput {
+
+    def targetDir: Path = file.getParentFile.toPath
+
     val `type`: BundlerFileType = BundlerFileType.Application
     def asLoader: Loader =
       Loader(this,
-             file.getParentFile.toPath
+             targetDir
                .resolve(Loader.fileName(project))
                .toFile)
 
     def asEntryPoint: EntryPoint =
       EntryPoint(this,
-                 file.getParentFile.toPath
+                 targetDir
                    .resolve(EntryPoint.fileName(project))
                    .toFile)
 
     def asApplicationBundle: ApplicationBundle =
       ApplicationBundle(project,
-                        file.getParentFile.toPath
+                        targetDir
                           .resolve(ApplicationBundle.fileName(project))
-                          .toFile)
+                          .toFile,
+                        assets)
   }
 
   /**
     * A webpack library bundle, containing only libraries
     * @param project The project the library bundle was generated for
-    * @param file The file containing the project libraries
+    * @param file The file containing the application javascript
+    * @param assets All the assets on the application
     */
-  case class Library(project: String, file: java.io.File) extends Public {
+  case class Library(project: String, file: File, assets: List[java.io.File]) extends Public {
     val `type`: BundlerFileType = BundlerFileType.Library
   }
 
@@ -144,8 +147,8 @@ object BundlerFile {
   /**
     * A webpack loader file. Allows an [[Application]] to access the dependencies bundled
     * into a [[Library]]
-    * @param application
-    * @param file
+    * @param application Application to be loaded
+    * @param file Loader file
     */
   case class Loader(application: Application, file: java.io.File)
       extends Public {
@@ -166,9 +169,10 @@ object BundlerFile {
     * A fully self-contained application bundle, including all dependencies.
     *
     * @param project The project name
-    * @param file The file containing the application bundle
+    * @param file The file containing the application javascript
+    * @param assets All the assets on the application
     */
-  case class ApplicationBundle(project: String, file: java.io.File)
+  case class ApplicationBundle(project: String, file: File, assets: List[java.io.File])
       extends Public {
     val `type`: BundlerFileType = BundlerFileType.ApplicationBundle
   }
