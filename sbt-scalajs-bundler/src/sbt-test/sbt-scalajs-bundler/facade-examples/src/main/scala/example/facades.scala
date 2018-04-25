@@ -13,6 +13,13 @@ object Obj extends js.Object {
   def bar(i: Int): Int = js.native
 }
 
+// --- Import a whole module as a function
+
+@JSImport("./function.js", JSImport.Default)
+@js.native
+object Func extends js.Function2[Int, Int, String] {
+  def apply(first: Int, second: Int): String = js.native
+}
 
 // --- Import just a module member, which is a function
 

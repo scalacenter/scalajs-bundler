@@ -12,6 +12,14 @@ class FacadesTest extends FreeSpec {
 
   }
 
+  "Func" - {
+
+    "acts as a function" in {
+      assert(Func(2, 5) == "Konrad says 2 plus 5 is 7")
+    }
+
+  }
+
   "Member" - {
 
     "can be called as a function" in {
