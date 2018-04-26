@@ -9,6 +9,7 @@ object Main extends JSApp {
     println(Member(42))
     val user = new User("Julien", 30)
     println(user.name)
+    println(Func(8, 12))
   }
 
 }
