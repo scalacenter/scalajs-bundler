@@ -4,6 +4,9 @@ import sbt._
 
 import scalajsbundler.util.{Commands, JS}
 import org.scalajs.core.tools.linker.StandardLinker.Config
+import java.io.InputStream
+import play.api.libs.json._
+import Stats._
 
 object Webpack {
   // Represents webpack 4 modes
@@ -69,14 +72,14 @@ object Webpack {
     val output = libraryBundleName match {
       case Some(bundleName) =>
         JS.obj(
-          "path" -> JS.str(webpackConfigFile.targetDir.absolutePath),
+          "path" -> JS.str(webpackConfigFile.targetDir.toAbsolutePath.toString),
           "filename" -> JS.str(BundlerFile.Library.fileName("[name]")),
           "library" -> JS.str(bundleName),
           "libraryTarget" -> JS.str("var")
         )
       case None =>
         JS.obj(
-          "path" -> JS.str(webpackConfigFile.targetDir.absolutePath),
+          "path" -> JS.str(webpackConfigFile.targetDir.toAbsolutePath.toString),
           "filename" -> JS.str(BundlerFile.ApplicationBundle.fileName("[name]"))
         )
     }
@@ -90,7 +93,7 @@ object Webpack {
         "output" -> output
       ) ++ (
         if (emitSourceMaps) {
-          val webpackNpmPackage = NpmPackage.getForModule(webpackConfigFile.targetDir, "webpack")
+          val webpackNpmPackage = NpmPackage.getForModule(webpackConfigFile.targetDir.toFile, "webpack")
           webpackNpmPackage.flatMap(_.major) match {
             case Some(1) =>
               Seq(
@@ -185,11 +188,13 @@ object Webpack {
 
     log.info("Bundling the application with its NPM dependencies")
     val args = extraArgs ++: Seq("--config", configFile.absolutePath)
-    Webpack.run(args: _*)(targetDir, log)
+    val stats = Webpack.run(args: _*)(targetDir, log)
+    stats.foreach(_.print(log))
 
-    // TODO Support custom webpack config file (the output may be overridden by users)
-    val bundle = generatedWebpackConfigFile.asApplicationBundle
+    // Attempt to discover the actual name produced by webpack indexing by chunk name and discarding maps
+    val bundle = generatedWebpackConfigFile.asApplicationBundle(stats)
     assert(bundle.file.exists(), "Webpack failed to create application bundle")
+    assert(bundle.assets.forall(_.exists()), "Webpack failed to create application assets")
     bundle
   }
 
@@ -228,15 +233,32 @@ object Webpack {
     )
 
     val configFile = customWebpackConfigFile
-      .map(Webpack.copyCustomWebpackConfigFiles(generatedWebpackConfigFile.targetDir, webpackResources))
+      .map(Webpack.copyCustomWebpackConfigFiles(generatedWebpackConfigFile.targetDir.toFile, webpackResources))
       .getOrElse(generatedWebpackConfigFile.file)
 
     val args = extraArgs ++: Seq("--config", configFile.absolutePath)
-    Webpack.run(args: _*)(generatedWebpackConfigFile.targetDir, log)
+    val stats = Webpack.run(args: _*)(generatedWebpackConfigFile.targetDir.toFile, log)
+    stats.foreach(_.print(log))
 
-    val library = generatedWebpackConfigFile.asLibrary
+    val library = generatedWebpackConfigFile.asLibrary(stats)
     assert(library.file.exists, "Webpack failed to create library file")
+    assert(library.assets.forall(_.exists), "Webpack failed to create library assets")
     library
+  }
+
+  private def jsonOutput(logger: Logger)(in: InputStream): Option[WebpackStats] = {
+
+    val parsed = Json.parse(in)
+    parsed.validate[WebpackStats] match {
+      case JsError(e) =>
+        logger.error("Error parsing webpack stats output")
+        // In case of error print the result and return None. it will be ignored upstream
+        e.foreach {
+          case (p, v) => logger.error(s"$p: ${v.mkString(",")}")
+        }
+        None
+      case JsSuccess(p, _) => Some(p)
+    }
   }
 
   /**
@@ -246,11 +268,10 @@ object Webpack {
     * @param workingDir Working directory in which the Nodejs will be run (where there is the `node_modules` subdirectory)
     * @param log Logger
     */
-  def run(args: String*)(workingDir: File, log: Logger): Unit = {
+  def run(args: String*)(workingDir: File, log: Logger): Option[WebpackStats] = {
     val webpackBin = workingDir / "node_modules" / "webpack" / "bin" / "webpack"
-    val cmd = Seq("node", webpackBin.absolutePath, "--bail") ++ args
-    Commands.run(cmd, workingDir, log)
-    ()
+    val cmd = Seq("node", webpackBin.absolutePath, "--bail", "--profile", "--json") ++ args
+    Commands.run(cmd, workingDir, log, jsonOutput(log)).flatten
   }
 
 }

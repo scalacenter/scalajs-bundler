@@ -12,7 +12,7 @@ object WebpackTasks {
   : Def.Initialize[Task[BundlerFile.Application]] =
     Def.task {
       val projectName = stage.value.data.name.stripSuffix(".js")
-      BundlerFile.Application(projectName, stage.value.data)
+      BundlerFile.Application(projectName, stage.value.data, Nil)
     }
 
   private[sbtplugin] def webpack(
@@ -51,6 +51,6 @@ object WebpackTasks {
             ).file)
         }
       cachedActionFunction(monitoredFiles.to[Set])
-      Seq(generatedWebpackConfigFile.asApplicationBundle.asAttributedFile)
+      Seq(generatedWebpackConfigFile.asApplicationBundle(None).asAttributedFile)
     }
 }
