@@ -27,7 +27,7 @@ webpackDevServerPort := 7357
 
 useYarn := true
 
-version in webpack                     := "4.5.0"
+version in webpack                     := "4.6.0"
 
 version in startWebpackDevServer       := "3.1.3"
 

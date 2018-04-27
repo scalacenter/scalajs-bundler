@@ -8,13 +8,17 @@ import scala.sys.process.ProcessLogger
 
 object Commands {
 
-  def run[A](cmd: Seq[String], cwd: File, logger: Logger, outputProcess: InputStream => A): Option[A] = {
-    val toErrorLog = (is: InputStream) => scala.io.Source.fromInputStream(is).getLines.foreach(msg => logger.error(msg))
+  def run[A](cmd: Seq[String], cwd: File, logger: Logger, outputProcess: InputStream => A): Either[String, Option[A]] = {
+    val toErrorLog = (is: InputStream) => {
+      scala.io.Source.fromInputStream(is).getLines.foreach(msg => logger.error(msg))
+      is.close()
+    }
 
     // Unfortunately a var is the only way to capture the result
     var result: Option[A] = None
     def outputCapture(o: InputStream): Unit = {
       result = Some(outputProcess(o))
+      o.close()
       ()
     }
 
@@ -23,15 +27,15 @@ object Commands {
     val processIO = BasicIO.standard(false).withOutput(outputCapture).withError(toErrorLog)
     val code: Int = process.run(processIO).exitValue()
     if (code != 0) {
-      sys.error(s"Non-zero exit code: $code")
+      Left(s"Non-zero exit code: $code")
+    } else {
+      Right(result)
     }
-    result
   }
 
   def run(cmd: Seq[String], cwd: File, logger: Logger): Unit = {
     val toInfoLog = (is: InputStream) => scala.io.Source.fromInputStream(is).getLines.foreach(msg => logger.error(msg))
-    run(cmd, cwd, logger, toInfoLog)
-    ()
+    run(cmd, cwd, logger, toInfoLog).fold(sys.error, _ => ())
   }
 
   def start(cmd: Seq[String], cwd: File, logger: Logger): Process =
