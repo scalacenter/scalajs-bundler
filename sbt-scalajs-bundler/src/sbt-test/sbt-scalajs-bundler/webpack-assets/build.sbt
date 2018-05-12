@@ -46,3 +46,19 @@ InputKey[Unit]("html") := {
     client.close()
   }
 }
+
+// Check that a HTML can be loaded on the output path specified
+InputKey[Unit]("htmlProd") := {
+  import complete.DefaultParsers._
+  import scala.sys.process._
+
+  val page = (Space ~> StringBasic).parsed
+  import com.gargoylesoftware.htmlunit.WebClient
+  val client = new WebClient()
+  try {
+    val demoDir = s"${new File((baseDirectory in Compile).value, "demo").absolutePath}"
+    client.getPage(s"file://$demoDir/$page")
+  } finally {
+    client.close()
+  }
+}

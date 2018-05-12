@@ -5,7 +5,7 @@
 
 # Now let's try optimized
 > fullOptJS::webpack
-> html index.html
+> htmlProd index.html
 
 # Error case 1
 > set webpackConfigFile in fastOptJS := Some(new File("badconfig1.js"))
