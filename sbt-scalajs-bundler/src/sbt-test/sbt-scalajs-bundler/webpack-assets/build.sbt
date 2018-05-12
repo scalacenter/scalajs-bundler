@@ -27,9 +27,9 @@ webpackDevServerPort := 7357
 
 useYarn := true
 
-version in webpack                     := "4.6.0"
+version in webpack                     := "4.8.1"
 
-version in startWebpackDevServer       := "3.1.3"
+version in startWebpackDevServer       := "3.1.4"
 
 // Check that a HTML can be loaded (and that its JavaScript can be executed) without errors
 InputKey[Unit]("html") := {
