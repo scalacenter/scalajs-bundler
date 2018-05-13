@@ -574,7 +574,10 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
     val prev = createdTestAdapters.get()
     val r = new TestAdapter(jsEnv, config)
     if (createdTestAdapters.compareAndSet(prev, r :: prev)) r
-    else newTestAdapter(jsEnv, config)
+    else {
+      r.close()
+      newTestAdapter(jsEnv, config)
+    }
   }
 
   private def closeAllTestAdapters(): Unit =
@@ -683,7 +686,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
           .withJSConsole(console)
           .withModuleSettings(moduleKind, moduleIdentifier)
 
-        val adapter = new TestAdapter(env, config)
+        val adapter = newTestAdapter(env, config)
         val frameworkAdapters = adapter.loadFrameworks(frameworkNames)
 
         frameworks.zip(frameworkAdapters).collect {
