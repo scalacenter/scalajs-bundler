@@ -23,7 +23,7 @@ object Stats {
 
       def leftPad: String =
         // String interpolation doesn't support dynamic padding
-        t.reverse.padTo(l, " ").reverse.mkString
+        t.reverse.padTo(l, ' ').reverse.mkString
     }
 
     object Part {

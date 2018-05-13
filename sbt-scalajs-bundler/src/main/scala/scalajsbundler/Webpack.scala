@@ -1,12 +1,14 @@
 package scalajsbundler
 
 import sbt._
-
 import scalajsbundler.util.{Commands, JS}
 import org.scalajs.core.tools.linker.StandardLinker.Config
 import java.io.InputStream
+
 import play.api.libs.json._
 import Stats._
+
+import scala.util.{Failure, Success, Try}
 
 object Webpack {
   // Represents webpack 4 modes
@@ -246,18 +248,31 @@ object Webpack {
     library
   }
 
-  private def jsonOutput(logger: Logger)(in: InputStream): Option[WebpackStats] = {
-
-    val parsed = Json.parse(in)
-    parsed.validate[WebpackStats] match {
-      case JsError(e) =>
-        logger.error("Error parsing webpack stats output")
-        // In case of error print the result and return None. it will be ignored upstream
-        e.foreach {
-          case (p, v) => logger.error(s"$p: ${v.mkString(",")}")
-        }
+  private def jsonOutput(cmd: Seq[String], logger: Logger)(in: InputStream): Option[WebpackStats] = {
+    Try {
+      val parsed = Json.parse(in)
+      parsed.validate[WebpackStats] match {
+        case JsError(e) =>
+          logger.error("Error parsing webpack stats output")
+          // In case of error print the result and return None. it will be ignored upstream
+          e.foreach {
+            case (p, v) => logger.error(s"$p: ${v.mkString(",")}")
+          }
+          None
+        case JsSuccess(p, _) => Some(p)
+      }
+    } match {
+      case Success(x) =>
+        x
+      case Failure(e) =>
+        // In same cases errors are not reported on the json output but comes on stdout
+        // where they cannot be parsed as json. The best we can do here is to suggest
+        // running the command manually
+        logger.error(s"Failure on parsing the output of webpack: ${e.getMessage}")
+        logger.error(s"You can try to manually execute the command")
+        logger.error(cmd.mkString(" "))
+        logger.error("\n")
         None
-      case JsSuccess(p, _) => Some(p)
     }
   }
 
@@ -271,7 +286,7 @@ object Webpack {
   def run(args: String*)(workingDir: File, log: Logger): Option[WebpackStats] = {
     val webpackBin = workingDir / "node_modules" / "webpack" / "bin" / "webpack"
     val cmd = Seq("node", webpackBin.absolutePath, "--bail", "--profile", "--json") ++ args
-    Commands.run(cmd, workingDir, log, jsonOutput(log)).flatten
+    Commands.run(cmd, workingDir, log, jsonOutput(cmd, log)).fold(sys.error, _.flatten)
   }
 
 }
