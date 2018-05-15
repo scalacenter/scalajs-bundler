@@ -11,3 +11,8 @@
 > set webpackConfigFile in fastOptJS := Some(new File("badconfig1.js"))
 > clean
 -> fastOptJS::webpack
+
+# Error case 2
+> set webpackConfigFile in fastOptJS := Some(new File("badconfig2.js"))
+> clean
+-> fastOptJS::webpack

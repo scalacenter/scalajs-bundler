@@ -66,9 +66,6 @@ object Stats {
         log.info(l.show)
       }
       log.info("")
-      // Filtering is a workaround for #111
-      warnings.filterNot(_.contains("https://raw.githubusercontent.com")).foreach(x => log.warn(x))
-      errors.foreach(x => log.error(x))
     }
 
     /**

@@ -259,7 +259,14 @@ object Webpack {
             case (p, v) => logger.error(s"$p: ${v.mkString(",")}")
           }
           None
-        case JsSuccess(p, _) => Some(p)
+        case JsSuccess(p, _) =>
+          if (p.warnings.nonEmpty || p.errors.nonEmpty) {
+            logger.info("")
+            // Filtering is a workaround for #111
+            p.warnings.filterNot(_.contains("https://raw.githubusercontent.com")).foreach(x => logger.warn(x))
+            p.errors.foreach(x => logger.error(x))
+          }
+          Some(p)
       }
     } match {
       case Success(x) =>
