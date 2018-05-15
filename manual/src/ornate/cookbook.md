@@ -299,14 +299,14 @@ webpackExtraArgs := Seq("--profile", "--progress", "true")
 **Note** Params are passed verbatim, they are not sanitized and could produce errors when passed to webpack.
 In particular, don't attempt to override the `--config` param.
 
-## How to use webpack 4 (Experimental)
+## How to use webpack 4
 
 `scalajs-bundler` (version 0.12.0 onwards) supports webpack 4. To enable webpack 4, set the correct versions in `build.sbt`
 
 -~~~ scala
-version in webpack := "4.1.1"
+version in webpack := "4.8.1"
 
-version in startWebpackDevServer := "3.1.1"
+version in startWebpackDevServer := "3.1.4"
 -~~~
 
 Additionally, you need to update any webpack plugins your config uses, to Webpack 4 compatible versions.
