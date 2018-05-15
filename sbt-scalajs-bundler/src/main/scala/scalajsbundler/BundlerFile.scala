@@ -65,22 +65,25 @@ object BundlerFile {
       */
     def asLibrary(stats: Option[WebpackStats]): Library =
       Library(project,
-              targetDir
-                .resolve(stats.flatMap(_.assetName(project)).fold(Library.fileName(project))(identity))
-                .toFile,
-              stats.map(_.assets.map(a => targetDir.resolve(a.name).toFile)).getOrElse(Nil))
+              stats.flatMap { s =>
+                s.resolveAsset(targetDir, project)
+              }.getOrElse(targetDir.resolve(Library.fileName(project)).toFile),
+              stats.map { s =>
+                s.resolveAllAssets(targetDir)
+              }.getOrElse(Nil)
+            )
 
     /**
       * Returns the Application for this configuration identifying the asset produced by scala.js through webpack stats
       */
     def asApplicationBundle(stats: Option[WebpackStats]): ApplicationBundle =
       ApplicationBundle(project,
-                        targetDir
-                          .resolve(stats.flatMap(_.assetName(project))
-                            .fold(ApplicationBundle.fileName(project))(identity))
-                          .toFile,
-                        stats.map(_.assets.map(a => targetDir.resolve(a.name).toFile)).getOrElse(Nil))
-
+                        stats.flatMap { s =>
+                          s.resolveAsset(targetDir, project)
+                        }.getOrElse(targetDir.resolve(ApplicationBundle.fileName(project)).toFile),
+                        stats.map{ s =>
+                          s.resolveAllAssets(targetDir)
+                        }.getOrElse(Nil))
   }
 
   /**
@@ -123,6 +126,7 @@ object BundlerFile {
                           .resolve(ApplicationBundle.fileName(project))
                           .toFile,
                         assets)
+
   }
 
   /**

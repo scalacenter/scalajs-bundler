@@ -27,9 +27,9 @@ webpackDevServerPort := 7357
 
 useYarn := true
 
-version in webpack                     := "4.6.0"
+version in webpack                     := "4.8.1"
 
-version in startWebpackDevServer       := "3.1.3"
+version in startWebpackDevServer       := "3.1.4"
 
 // Check that a HTML can be loaded (and that its JavaScript can be executed) without errors
 InputKey[Unit]("html") := {
@@ -42,6 +42,22 @@ InputKey[Unit]("html") := {
   try {
     val scalajsBundleDir = s"${(npmUpdate in Compile).value.absolutePath}"
     client.getPage(s"file://$scalajsBundleDir/$page")
+  } finally {
+    client.close()
+  }
+}
+
+// Check that a HTML can be loaded on the output path specified
+InputKey[Unit]("htmlProd") := {
+  import complete.DefaultParsers._
+  import scala.sys.process._
+
+  val page = (Space ~> StringBasic).parsed
+  import com.gargoylesoftware.htmlunit.WebClient
+  val client = new WebClient()
+  try {
+    val demoDir = s"${new File((baseDirectory in Compile).value, "demo").absolutePath}"
+    client.getPage(s"file://$demoDir/$page")
   } finally {
     client.close()
   }
