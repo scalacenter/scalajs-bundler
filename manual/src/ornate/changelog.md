@@ -1,5 +1,36 @@
 # Changelog
 
+## Version 0.13.0-RC1
+
+> 2018 May 15
+
+This is a release candidate containing an important revamp on the way webpack support works.
+Webpack produces a json [stats output](https://webpack.js.org/api/stats) which describes in detail the results of processing
+your application. Thus, parsing stats we can learn exactly what files are produced rather than guessing.
+
+Due to the very nature of parsing the output, and the wide variety of webpack configurations this process
+may not work in all cases. Please lets us know if you find any issues
+
+**Note:** In particular if your webpack produces any kind of std output, parsing stats will likely break.
+
+This fixes the following bugs:
+
+- [#192](https://github.com/scalacenter/scalajs-bundler/issues/192): Webpack failed to create application bundle
+- [#111](https://github.com/scalacenter/scalajs-bundler/issues/111): Lots of warnings about source map URLs
+
+The following PRs are included in this release
+
+- [#242](https://github.com/scalacenter/scalajs-bundler/pull/242): Better error display when the webpack call fails
+- [#241](https://github.com/scalacenter/scalajs-bundler/pull/241): Use Public path from webpack stats
+- [#240](https://github.com/scalacenter/scalajs-bundler/pull/240): Update concat-with-sourcemaps
+- [#239](https://github.com/scalacenter/scalajs-bundler/pull/239): Bugfix parsing errors on the output
+- [#238](https://github.com/scalacenter/scalajs-bundler/pull/238): Fix thread leak
+- [#237](https://github.com/scalacenter/scalajs-bundler/pull/237): add function as a module example
+- [#234](https://github.com/scalacenter/scalajs-bundler/pull/234): Read application asset name from stats
+
+You can find the complete list of commits since the last release
+[here](https://github.com/scalacenter/scalajs-bundler/compare/v0.12.0...v0.13.0-RC1).
+
 ## Version 0.12.0
 
 > 2018 March 27
