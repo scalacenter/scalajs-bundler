@@ -74,7 +74,7 @@
 <li><a href="cookbook.html#how-to-select-specific-files-from-the-bundlingmode.library-output">How to select specific files from the BundlingMode.Library output</a></li>
 <li><a href="cookbook.html#webpack-dev-server">How to rebuild and reload your page on code changes?</a></li>
 <li><a href="cookbook.html#how-to-pass-extra-parameters-to-webpack">How to pass extra parameters to webpack</a></li>
-<li><a href="cookbook.html#how-to-use-webpack-4-experimental">How to use webpack 4 (Experimental)</a></li>
+<li><a href="cookbook.html#how-to-use-webpack-4">How to use webpack 4</a></li>
 </ul>
 </li>
 </ul>
@@ -403,11 +403,11 @@ reload on every change:</p>
 </div></div>
 <p><strong>Note</strong> Params are passed verbatim, they are not sanitized and could produce errors when passed to webpack.
 In particular, don't attempt to override the <code class="hljs">--config</code> param.</p>
-<h2 id="how-to-use-webpack-4-experimental" class="a_section" data-magellan-target="how-to-use-webpack-4-experimental">How to use webpack 4 (Experimental)<a class="a_hlink" href="#how-to-use-webpack-4-experimental"></a></h2>
+<h2 id="how-to-use-webpack-4" class="a_section" data-magellan-target="how-to-use-webpack-4">How to use webpack 4<a class="a_hlink" href="#how-to-use-webpack-4"></a></h2>
 <p><code class="hljs">scalajs-bundler</code> (version 0.12.0 onwards) supports webpack 4. To enable webpack 4, set the correct versions in <code class="hljs">build.sbt</code></p>
 <p>-~~~ scala
-version in webpack := &quot;4.1.1&quot;</p>
-<p>version in startWebpackDevServer := &quot;3.1.1&quot;
+version in webpack := &quot;4.8.1&quot;</p>
+<p>version in startWebpackDevServer := &quot;3.1.4&quot;
 -~~~</p>
 <p>Additionally, you need to update any webpack plugins your config uses, to Webpack 4 compatible versions.</p>
 <p>Webpack 4 has the potential to substantially reduce your webpack compilation times (80% reductions have been observed but your mileage may vary)</p>
@@ -614,7 +614,7 @@ version in webpack := &quot;4.1.1&quot;</p>
   
     <li>
       
-         <a href="#how-to-use-webpack-4-experimental">How to use webpack 4 (Experimental)</a> 
+         <a href="#how-to-use-webpack-4">How to use webpack 4</a> 
       
       
     </li>

@@ -2,17 +2,17 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>NpmAssets - scalajsbundler.sbtplugin.NpmAssets</title>
-          <meta name="description" content="NpmAssets - scalajsbundler.sbtplugin.NpmAssets" />
-          <meta name="keywords" content="NpmAssets scalajsbundler.sbtplugin.NpmAssets" />
+          <title>Stats - scalajsbundler.Stats</title>
+          <meta name="description" content="Stats - scalajsbundler.Stats" />
+          <meta name="keywords" content="Stats scalajsbundler.Stats" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
-      <link href="../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
-      <link href="../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <link href="../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
       <script type="text/javascript">
          if(top === self) {
-            var url = '../../index.html';
-            var hash = 'scalajsbundler.sbtplugin.NpmAssets$';
+            var url = '../index.html';
+            var hash = 'scalajsbundler.Stats$';
             var anchor = window.location.hash;
             var anchor_opt = '';
             if (anchor.length >= 1)
@@ -24,9 +24,9 @@
         </head>
         <body class="value">
       <div id="definition">
-        <img src="../../lib/object_big.png" />
-        <p id="owner"><a href="../package.html" class="extype" name="scalajsbundler">scalajsbundler</a>.<a href="package.html" class="extype" name="scalajsbundler.sbtplugin">sbtplugin</a></p>
-        <h1>NpmAssets</h1>
+        <img src="../lib/object_big.png" />
+        <p id="owner"><a href="package.html" class="extype" name="scalajsbundler">scalajsbundler</a></p>
+        <h1>Stats</h1>
       </div>
 
       <h4 id="signature" class="signature">
@@ -35,11 +35,12 @@
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <span class="name">NpmAssets</span>
+        <span class="name">Stats</span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/scalacenter/scalajs-bundler/blob/v0.13.0-RC1/sbt-web-scalajs-bundler/src/main/scala/scalajsbundler/sbtplugin/NpmAssets.scala" target="_blank">NpmAssets.scala</a></dd></dl><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Webpack stats model and json parsers
+</p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/scalacenter/scalajs-bundler/blob/v0.13.0-RC1/sbt-scalajs-bundler/src/main/scala/scalajsbundler/Stats.scala" target="_blank">Stats.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
@@ -59,7 +60,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="scalajsbundler.sbtplugin.NpmAssets"><span>NpmAssets</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="scalajsbundler.Stats"><span>Stats</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -79,7 +80,36 @@
         <div id="allMembers">
         
 
-        
+        <div id="types" class="types members">
+              <h3>Type Members</h3>
+              <ol><li name="scalajsbundler.Stats.Asset" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="AssetextendsProductwithSerializable"></a>
+      <a id="Asset:Asset"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Stats$$Asset.html"><span class="name">Asset</span></a><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="size">size: <span class="extype" name="scala.Long">Long</span></span>, <span name="emmited">emmited: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="chunkNames">chunkNames: <span class="extype" name="scala.List">List</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="scalajsbundler.Stats.WebpackStats" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="WebpackStatsextendsProductwithSerializable"></a>
+      <a id="WebpackStats:WebpackStats"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Stats$$WebpackStats.html"><span class="name">WebpackStats</span></a><span class="params">(<span name="version">version: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="hash">hash: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="time">time: <span class="extype" name="scala.Long">Long</span></span>, <span name="outputPath">outputPath: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="java.nio.file.Path">Path</span>]</span>, <span name="errors">errors: <span class="extype" name="scala.List">List</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="warnings">warnings: <span class="extype" name="scala.List">List</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="assets">assets: <span class="extype" name="scala.List">List</span>[<a href="Stats$$Asset.html" class="extype" name="scalajsbundler.Stats.Asset">Asset</a>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li></ol>
+            </div>
 
         
 
@@ -163,6 +193,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="scalajsbundler.Stats#assetsReads" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="assetsReads:play.api.libs.json.Reads[scalajsbundler.Stats.Asset]"></a>
+      <a id="assetsReads:Reads[Asset]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">assetsReads</span><span class="result">: <span class="extype" name="play.api.libs.json.Reads">Reads</span>[<a href="Stats$$Asset.html" class="extype" name="scalajsbundler.Stats.Asset">Asset</a>]</span>
+      </span>
+      </h4>
+      
     </li><li name="scala.AnyRef#clone" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a>
       <a id="clone():AnyRef"></a>
@@ -175,7 +218,7 @@
         <span class="name">clone</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.AnyRef">AnyRef</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
       <span class="defval" name="classOf[java.lang.CloneNotSupportedException]">...</span>
@@ -220,13 +263,26 @@
         <span class="name">finalize</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
       <span class="symbol">classOf[java.lang.Throwable]</span>
     </span>)</span>
               
         </dd></dl></div>
+    </li><li name="scalajsbundler.Stats.formatting" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="formatting"></a>
+      <a id="formatting:formatting"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Stats$$formatting$.html"><span class="name">formatting</span></a>
+      </span>
+      </h4>
+      
     </li><li name="scala.AnyRef#getClass" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getClass():Class[_]"></a>
       <a id="getClass():Class[_]"></a>
@@ -305,21 +361,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="scalajsbundler.sbtplugin.NpmAssets#ofProject" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="ofProject(project:sbt.ProjectReference)(assets:sbt.File=&gt;sbt.PathFinder):sbt.Def.Initialize[sbt.Task[Seq[(java.io.File,String)]]]"></a>
-      <a id="ofProject(ProjectReference)((File)⇒PathFinder):sbt.Def.Initialize[Task[Seq[(File,String)]]]"></a>
+    </li><li name="scalajsbundler.Stats#statsReads" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="statsReads:play.api.libs.json.Reads[scalajsbundler.Stats.WebpackStats]"></a>
+      <a id="statsReads:Reads[WebpackStats]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
+        <span class="modifier">implicit </span>
+        <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">ofProject</span><span class="params">(<span name="project">project: <span class="extype" name="sbt.ProjectReference">ProjectReference</span></span>)</span><span class="params">(<span name="assets">assets: (<a href="../../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a>) ⇒ <span class="extype" name="sbt.PathFinder">PathFinder</span></span>)</span><span class="result">: <span class="extype" name="sbt.Init.Initialize">sbt.Def.Initialize</span>[<span class="extype" name="sbt.Task">Task</span>[<span class="extype" name="scala.Seq">Seq</span>[(<span class="extype" name="java.io.File">File</span>, <span class="extype" name="scala.Predef.String">String</span>)]]]</span>
+        <span class="name">statsReads</span><span class="result">: <span class="extype" name="play.api.libs.json.Reads">Reads</span>[<a href="Stats$$WebpackStats.html" class="extype" name="scalajsbundler.Stats.WebpackStats">WebpackStats</a>]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"><p></p><pre>npmAssets ++= NpmAssets.ofProject(client) { _ / <span class="lit">"some-package"</span> / <span class="lit">"some-relevant"</span> ** <span class="lit">"files"</span> }.value</pre></div><dl class="paramcmts block"><dt class="param">project</dt><dd class="cmt"><p>The project that depends on the NPM package containing the assets to publish.</p></dd><dt class="param">assets</dt><dd class="cmt"><p>A function that finds files given the <code>node_modules</code> directory of <code>project</code>
-</p></dd><dt>returns</dt><dd class="cmt"><p>A task producing a sequence of files paired with their path relative to the <code>node_modules</code> directory
-        of <code>project</code>.</p></dd></dl></div>
+      
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
@@ -432,6 +486,6 @@
       <div id="tooltip"></div>
 
       <div id="footer">  </div>
-      <script defer="defer" type="text/javascript" id="jquery-js" src="../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../lib/template.js"></script>
+      <script defer="defer" type="text/javascript" id="jquery-js" src="../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../lib/template.js"></script>
     </body>
       </html>

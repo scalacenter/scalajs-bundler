@@ -41,7 +41,7 @@
       
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>A webpack configuration file.
 </p></div><dl class="paramcmts block"><dt class="param">application</dt><dd class="cmt"><p>The <a href="BundlerFile$$Application.html" class="extype" name="scalajsbundler.BundlerFile.Application">Application</a> this file runs webpack for</p></dd><dt class="param">file</dt><dd class="cmt"><p>The webpack.config.js file reference
-</p></dd></dl><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/scalacenter/scalajs-bundler/blob/v0.12.0/sbt-scalajs-bundler/src/main/scala/scalajsbundler/BundlerFile.scala" target="_blank">BundlerFile.scala</a></dd></dl><div class="toggleContainer block">
+</p></dd></dl><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/scalacenter/scalajs-bundler/blob/v0.13.0-RC1/sbt-scalajs-bundler/src/main/scala/scalajsbundler/BundlerFile.scala" target="_blank">BundlerFile.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><a href="BundlerFile$$Internal.html" class="extype" name="scalajsbundler.BundlerFile.Internal">Internal</a>, <a href="BundlerFile.html" class="extype" name="scalajsbundler.BundlerFile">BundlerFile</a>, <span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
@@ -182,19 +182,20 @@
       </span>
       </h4>
       <p class="shortcomment cmt">The <a href="BundlerFile$$Application.html" class="extype" name="scalajsbundler.BundlerFile.Application">Application</a> this file runs webpack for</p>
-    </li><li name="scalajsbundler.BundlerFile.WebpackConfig#asApplicationBundle" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="asApplicationBundle:scalajsbundler.BundlerFile.ApplicationBundle"></a>
-      <a id="asApplicationBundle:ApplicationBundle"></a>
+    </li><li name="scalajsbundler.BundlerFile.WebpackConfig#asApplicationBundle" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="asApplicationBundle(stats:Option[scalajsbundler.Stats.WebpackStats]):scalajsbundler.BundlerFile.ApplicationBundle"></a>
+      <a id="asApplicationBundle(Option[WebpackStats]):ApplicationBundle"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">asApplicationBundle</span><span class="result">: <a href="BundlerFile$$ApplicationBundle.html" class="extype" name="scalajsbundler.BundlerFile.ApplicationBundle">ApplicationBundle</a></span>
+        <span class="name">asApplicationBundle</span><span class="params">(<span name="stats">stats: <span class="extype" name="scala.Option">Option</span>[<a href="Stats$$WebpackStats.html" class="extype" name="scalajsbundler.Stats.WebpackStats">WebpackStats</a>]</span>)</span><span class="result">: <a href="BundlerFile$$ApplicationBundle.html" class="extype" name="scalajsbundler.BundlerFile.ApplicationBundle">ApplicationBundle</a></span>
       </span>
       </h4>
-      
+      <p class="shortcomment cmt">Returns the Application for this configuration identifying the asset produced by scala.</p><div class="fullcomment"><div class="comment cmt"><p>Returns the Application for this configuration identifying the asset produced by scala.js through webpack stats
+</p></div></div>
     </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <a id="asInstanceOf[T0]:T0"></a>
@@ -208,19 +209,20 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="scalajsbundler.BundlerFile.WebpackConfig#asLibrary" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="asLibrary:scalajsbundler.BundlerFile.Library"></a>
-      <a id="asLibrary:Library"></a>
+    </li><li name="scalajsbundler.BundlerFile.WebpackConfig#asLibrary" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="asLibrary(stats:Option[scalajsbundler.Stats.WebpackStats]):scalajsbundler.BundlerFile.Library"></a>
+      <a id="asLibrary(Option[WebpackStats]):Library"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">asLibrary</span><span class="result">: <a href="BundlerFile$$Library.html" class="extype" name="scalajsbundler.BundlerFile.Library">Library</a></span>
+        <span class="name">asLibrary</span><span class="params">(<span name="stats">stats: <span class="extype" name="scala.Option">Option</span>[<a href="Stats$$WebpackStats.html" class="extype" name="scalajsbundler.Stats.WebpackStats">WebpackStats</a>]</span>)</span><span class="result">: <a href="BundlerFile$$Library.html" class="extype" name="scalajsbundler.BundlerFile.Library">Library</a></span>
       </span>
       </h4>
-      
+      <p class="shortcomment cmt">Returns the Library identifying the asset produced by scala.</p><div class="fullcomment"><div class="comment cmt"><p>Returns the Library identifying the asset produced by scala.js through webpack stats
+</p></div></div>
     </li><li name="scala.AnyRef#clone" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a>
       <a id="clone():AnyRef"></a>
@@ -378,15 +380,15 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
     </li><li name="scalajsbundler.BundlerFile.WebpackConfig#targetDir" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="targetDir:java.io.File"></a>
-      <a id="targetDir:File"></a>
+      <a id="targetDir:java.nio.file.Path"></a>
+      <a id="targetDir:Path"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">targetDir</span><span class="result">: <span class="extype" name="java.io.File">File</span></span>
+        <span class="name">targetDir</span><span class="result">: <span class="extype" name="java.nio.file.Path">Path</span></span>
       </span>
       </h4>
       

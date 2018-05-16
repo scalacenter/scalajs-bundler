@@ -35,13 +35,13 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">ApplicationBundle</span><span class="params">(<span name="project">project: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="file">file: <span class="extype" name="java.io.File">File</span></span>)</span><span class="result"> extends <a href="BundlerFile$$Public.html" class="extype" name="scalajsbundler.BundlerFile.Public">Public</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">ApplicationBundle</span><span class="params">(<span name="project">project: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="file">file: <span class="extype" name="java.io.File">File</span></span>, <span name="assets">assets: <span class="extype" name="scala.List">List</span>[<span class="extype" name="java.io.File">File</span>]</span>)</span><span class="result"> extends <a href="BundlerFile$$Public.html" class="extype" name="scalajsbundler.BundlerFile.Public">Public</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>A fully self-contained application bundle, including all dependencies.
-</p></div><dl class="paramcmts block"><dt class="param">project</dt><dd class="cmt"><p>The project name</p></dd><dt class="param">file</dt><dd class="cmt"><p>The file containing the application bundle
-</p></dd></dl><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/scalacenter/scalajs-bundler/blob/v0.12.0/sbt-scalajs-bundler/src/main/scala/scalajsbundler/BundlerFile.scala" target="_blank">BundlerFile.scala</a></dd></dl><div class="toggleContainer block">
+</p></div><dl class="paramcmts block"><dt class="param">project</dt><dd class="cmt"><p>The project name</p></dd><dt class="param">file</dt><dd class="cmt"><p>The file containing the application javascript</p></dd><dt class="param">assets</dt><dd class="cmt"><p>All the assets on the application
+</p></dd></dl><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/scalacenter/scalajs-bundler/blob/v0.13.0-RC1/sbt-scalajs-bundler/src/main/scala/scalajsbundler/BundlerFile.scala" target="_blank">BundlerFile.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><a href="BundlerFile$$Public.html" class="extype" name="scalajsbundler.BundlerFile.Public">Public</a>, <a href="BundlerFile.html" class="extype" name="scalajsbundler.BundlerFile">BundlerFile</a>, <span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
@@ -82,7 +82,7 @@
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="scalajsbundler.BundlerFile.ApplicationBundle#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="&lt;init&gt;(project:String,file:java.io.File):scalajsbundler.BundlerFile.ApplicationBundle"></a>
+      <a id="&lt;init&gt;(project:String,file:java.io.File,assets:List[java.io.File]):scalajsbundler.BundlerFile.ApplicationBundle"></a>
       <a id="&lt;init&gt;:ApplicationBundle"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -90,10 +90,10 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">ApplicationBundle</span><span class="params">(<span name="project">project: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="file">file: <span class="extype" name="java.io.File">File</span></span>)</span>
+        <span class="name">ApplicationBundle</span><span class="params">(<span name="project">project: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="file">file: <span class="extype" name="java.io.File">File</span></span>, <span name="assets">assets: <span class="extype" name="scala.List">List</span>[<span class="extype" name="java.io.File">File</span>]</span>)</span>
       </span>
       </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">project</dt><dd class="cmt"><p>The project name</p></dd><dt class="param">file</dt><dd class="cmt"><p>The file containing the application bundle
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">project</dt><dd class="cmt"><p>The project name</p></dd><dt class="param">file</dt><dd class="cmt"><p>The file containing the application javascript</p></dd><dt class="param">assets</dt><dd class="cmt"><p>All the assets on the application
 </p></dd></dl></div>
     </li></ol>
             </div>
@@ -182,6 +182,20 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="scalajsbundler.BundlerFile.ApplicationBundle#assets" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="assets:List[java.io.File]"></a>
+      <a id="assets:List[File]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">assets</span><span class="result">: <span class="extype" name="scala.List">List</span>[<span class="extype" name="java.io.File">File</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">All the assets on the application
+</p>
     </li><li name="scala.AnyRef#clone" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a>
       <a id="clone():AnyRef"></a>
@@ -226,9 +240,7 @@
         <span class="name">file</span><span class="result">: <span class="extype" name="java.io.File">File</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">The file containing the application bundle
-</p><div class="fullcomment"><div class="comment cmt"><p>The file containing the application bundle
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="scalajsbundler.BundlerFile.ApplicationBundle">ApplicationBundle</a> → <a href="BundlerFile.html" class="extype" name="scalajsbundler.BundlerFile">BundlerFile</a></dd></dl></div>
+      <p class="shortcomment cmt">The file containing the application javascript</p><div class="fullcomment"><div class="comment cmt"><p>The file containing the application javascript</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="scalajsbundler.BundlerFile.ApplicationBundle">ApplicationBundle</a> → <a href="BundlerFile.html" class="extype" name="scalajsbundler.BundlerFile">BundlerFile</a></dd></dl></div>
     </li><li name="scala.AnyRef#finalize" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="finalize():Unit"></a>
       <a id="finalize():Unit"></a>
