@@ -15,7 +15,7 @@ import java.nio.file.Path
  */
 object Stats {
 
-  final case class Asset(name: String, size: Long, emmited: Boolean, chunkNames: List[String])
+  final case class Asset(name: String, size: Long, emitted: Option[Boolean], chunkNames: List[String])
 
   object formatting {
 
@@ -55,7 +55,7 @@ object Stats {
       log.info("")
       // Print the assets
       assets.map { a =>
-        val emitted = if (a.emmited) "[emitted]" else ""
+        val emitted = a.emitted.fold("<unknown>")(a => if (a) "[emitted]" else "")
         AssetLine(Part(a.name), Part(a.size.toString), Part(emitted), Part(a.chunkNames.mkString("[", ",", "]")))
       }.foldLeft(List(AssetLine.Zero)) {
         case (lines, curr) =>
@@ -91,7 +91,7 @@ object Stats {
   implicit val assetsReads: Reads[Asset] = (
     (JsPath \ "name").read[String] and
     (JsPath \ "size").read[Long] and
-    (JsPath \ "emitted").read[Boolean] and
+    (JsPath \ "emitted").readNullable[Boolean] and
     (JsPath \\ "chunkNames").read[List[String]]
   )(Asset.apply _)
 
