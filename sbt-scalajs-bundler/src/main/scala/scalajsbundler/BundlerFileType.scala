@@ -27,4 +27,9 @@ object BundlerFileType {
     * Fully linked application bundle, containing [[Application]] and all it's dependencies
     */
   case object ApplicationBundle extends BundlerFileType
+
+  /**
+    * An asset of the bundled application
+    */
+  case object Asset extends BundlerFileType
 }

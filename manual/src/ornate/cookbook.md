@@ -303,12 +303,25 @@ In particular, don't attempt to override the `--config` param.
 
 `scalajs-bundler` (version 0.12.0 onwards) supports webpack 4. To enable webpack 4, set the correct versions in `build.sbt`
 
--~~~ scala
+~~~ scala
 version in webpack := "4.8.1"
 
 version in startWebpackDevServer := "3.1.4"
--~~~
+~~~
 
 Additionally, you need to update any webpack plugins your config uses, to Webpack 4 compatible versions.
 
 Webpack 4 has the potential to substantially reduce your webpack compilation times (80% reductions have been observed but your mileage may vary)
+
+## How to use get a list of assets
+
+`scalajs-bundler` (version 0.13.0 onwards) will export a list of all assets preduced by webpack. You can read that list on sbt
+
+~~~ scala
+val files = (webpack in (Compile, fullOptJS)).value
+~~~
+
+You can use it e.g. with `[sbt-native-packager](https://github.com/sbt/sbt-native-packager)` to add mappings as:
+~~~ scala
+mappings in (Compile, packageBin) ++= (webpack in (Compile, fullOptJS)).value.map { f => f.data -> f.data.getName() },
+~~~
