@@ -85,7 +85,7 @@ object Stats {
      * Resolve alles asset on the output path or the target dir if unavailable
      */
     def resolveAllAssets(altDir: Path): List[File] =
-      assets.flatMap(a => resolveAsset(altDir, a.name))
+      assets.map(a => outputPath.getOrElse(altDir).resolve(a.name).toFile)
   }
 
   implicit val assetsReads: Reads[Asset] = (

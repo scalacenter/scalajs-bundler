@@ -4,6 +4,8 @@ import java.io.File
 import java.nio.file.Path
 
 import scalajsbundler.Stats.WebpackStats
+import scalajsbundler.util.CachedBundleFiles
+import scala.collection.immutable.ListSet
 
 /**
   * Files used in the `ScalaJSBundler` pipeline.
@@ -74,6 +76,16 @@ object BundlerFile {
             )
 
     /**
+      * Returns library from a set of cached files
+      * By convention the first element is the `file` and the rest are the assets
+      */
+    def asLibraryFromCached(cached: Set[File]): Library = {
+      assert(cached.size >= 1)
+      val assets = if (cached.size == 1) Nil else cached.tail.toList
+      Library(project, cached.head, assets)
+    }
+
+    /**
       * Returns the Application for this configuration identifying the asset produced by scala.js through webpack stats
       */
     def asApplicationBundle(stats: Option[WebpackStats]): ApplicationBundle =
@@ -81,9 +93,19 @@ object BundlerFile {
                         stats.flatMap { s =>
                           s.resolveAsset(targetDir, project)
                         }.getOrElse(targetDir.resolve(ApplicationBundle.fileName(project)).toFile),
-                        stats.map{ s =>
+                        stats.map { s =>
                           s.resolveAllAssets(targetDir)
                         }.getOrElse(Nil))
+
+    /**
+      * Returns an application bundle from a set of cached files
+      * By convention the first element is the `file` and the rest are the assets
+      */
+    def asApplicationBundleFromCached(cached: Set[File]): ApplicationBundle = {
+      assert(cached.size >= 1)
+      val assets = if (cached.size == 1) Nil else cached.tail.toList
+      ApplicationBundle(project, cached.head, assets)
+    }
   }
 
   /**
@@ -91,6 +113,8 @@ object BundlerFile {
     */
   sealed abstract class Public extends BundlerFile {
     def project: String
+    // Attributed files, the first is the main file and the rest are assets
+    def attributedFiles: (File, Seq[File]) = (file, Seq.empty)
     def `type`: BundlerFileType
   }
 
@@ -127,6 +151,14 @@ object BundlerFile {
                           .toFile,
                         assets)
 
+    /**
+      * Returns an application bundle from a set of cached files
+      */
+    def asApplicationBundleFromCached(cached: Set[File]): ApplicationBundle = {
+      assert(cached.size >= 1)
+      val assets = if (cached.size == 1) Nil else cached.tail.toList
+      ApplicationBundle(project, cached.head, assets)
+    }
   }
 
   /**
@@ -137,6 +169,9 @@ object BundlerFile {
     */
   case class Library(project: String, file: File, assets: List[java.io.File]) extends Public {
     val `type`: BundlerFileType = BundlerFileType.Library
+    val cached: ListSet[File] = CachedBundleFiles.cached(file, assets)
+
+    override def attributedFiles: (File, Seq[File]) = (file, assets)
   }
 
   object Library {
@@ -179,6 +214,10 @@ object BundlerFile {
   case class ApplicationBundle(project: String, file: File, assets: List[java.io.File])
       extends Public {
     val `type`: BundlerFileType = BundlerFileType.ApplicationBundle
+
+    val cached: ListSet[File] = CachedBundleFiles.cached(file, assets)
+
+    override def attributedFiles: (File, Seq[File]) = (file, assets)
   }
 
   object ApplicationBundle {

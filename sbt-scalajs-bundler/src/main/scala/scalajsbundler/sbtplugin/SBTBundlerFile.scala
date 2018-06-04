@@ -12,11 +12,19 @@ import scalajsbundler.{BundlerFile, BundlerFileType}
 class SBTBundlerFile(f: BundlerFile.Public) {
     import SBTBundlerFile._
 
-    def asAttributedFile: sbt.Attributed[sbt.File] =
-      Attributed
-        .blank(f.file)
+    def asAttributedFiles: Seq[sbt.Attributed[sbt.File]] = {
+      val main = Attributed
+        .blank(f.attributedFiles._1)
         .put(ProjectNameAttr, f.project)
         .put(BundlerFileTypeAttr, f.`type`)
+      val assets = Attributed
+        .blankSeq(f.attributedFiles._2).map {
+          _
+          .put(ProjectNameAttr, f.project)
+          .put(BundlerFileTypeAttr, BundlerFileType.Asset)
+        }
+      main +: assets
+    }
 }
 
 object SBTBundlerFile {

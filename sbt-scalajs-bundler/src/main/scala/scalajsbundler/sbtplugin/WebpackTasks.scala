@@ -37,20 +37,19 @@ object WebpackTasks {
           cacheLocation,
           inStyle = FilesInfo.hash
         ) { _ =>
-          Set(Webpack
-            .bundle(
-              emitSourceMaps,
-              generatedWebpackConfigFile,
-              customWebpackConfigFile,
-              webpackResourceFiles,
-              entriesList,
-              targetDir,
-              extraArgs,
-              webpackMode,
-              log
-            ).file)
+          Webpack.bundle(
+            emitSourceMaps,
+            generatedWebpackConfigFile,
+            customWebpackConfigFile,
+            webpackResourceFiles,
+            entriesList,
+            targetDir,
+            extraArgs,
+            webpackMode,
+            log
+          ).cached
         }
-      cachedActionFunction(monitoredFiles.to[Set])
-      Seq(generatedWebpackConfigFile.asApplicationBundle(None).asAttributedFile)
+      val cached = cachedActionFunction(monitoredFiles.to[Set])
+      generatedWebpackConfigFile.asApplicationBundleFromCached(cached).asAttributedFiles
     }
 }

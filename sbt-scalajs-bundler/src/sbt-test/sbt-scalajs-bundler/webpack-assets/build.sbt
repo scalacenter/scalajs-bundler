@@ -27,6 +27,8 @@ npmDevDependencies in Compile += "style-loader" -> "0.21.0"
 
 npmDevDependencies in Compile += "css-loader" -> "0.28.11"
 
+npmDevDependencies in Compile += "mini-css-extract-plugin" -> "0.4.0"
+
 webpackDevServerPort := 7357
 
 useYarn := true
@@ -40,8 +42,18 @@ InputKey[Unit]("html") := {
   import complete.DefaultParsers._
   import scala.sys.process._
 
-  val page = (Space ~> StringBasic).parsed
+  val (page, assetsCount) = (token(Space ~> StringBasic) ~ token(Space ~> IntBasic)).parsed
   import com.gargoylesoftware.htmlunit.WebClient
+  val files = (webpack in (Compile, fastOptJS)).value
+  assert(files.length == assetsCount)
+  // Check all files are present
+  assert(files.map(_.data.exists).forall(_ == true))
+  // There is only one library file
+  assert(files.count(_.metadata.get(BundlerFileTypeAttr) == Some(BundlerFileType.Library)) == 1)
+  // And 2 assets, the css and its map
+  assert(files.count(_.metadata.get(BundlerFileTypeAttr) == Some(BundlerFileType.Asset)) == 2)
+  // The application is the first
+  assert(files.head.metadata.get(BundlerFileTypeAttr) == Some(BundlerFileType.Application))
   val client = new WebClient()
   try {
     val scalajsBundleDir = s"${(npmUpdate in Compile).value.absolutePath}"
@@ -56,11 +68,21 @@ InputKey[Unit]("htmlProd") := {
   import complete.DefaultParsers._
   import scala.sys.process._
 
-  val page = (Space ~> StringBasic).parsed
+  val ((page, path), assetsCount) = (token(Space ~> StringBasic) ~ token(Space ~> StringBasic) ~ token(Space ~> IntBasic)).parsed
+  val files = (webpack in (Compile, fullOptJS)).value
+  assert(files.length == assetsCount)
+  // Check all files are present
+  assert(files.map(_.data.exists).forall(_ == true))
+  // There is only one library file
+  assert(files.count(_.metadata.get(BundlerFileTypeAttr) == Some(BundlerFileType.ApplicationBundle)) == 1)
+  // The rest are assets
+  assert(files.count(_.metadata.get(BundlerFileTypeAttr) == Some(BundlerFileType.Asset)) == assetsCount - 1)
+  // The bundle is the first
+  assert(files.head.metadata.get(BundlerFileTypeAttr) == Some(BundlerFileType.ApplicationBundle))
   import com.gargoylesoftware.htmlunit.WebClient
   val client = new WebClient()
   try {
-    val demoDir = s"${new File((baseDirectory in Compile).value, "demo").absolutePath}"
+    val demoDir = s"${new File((baseDirectory in Compile).value, path).absolutePath}"
     client.getPage(s"file://$demoDir/$page")
   } finally {
     client.close()
