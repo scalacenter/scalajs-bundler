@@ -1,17 +1,22 @@
 # Changelog
 
-## Version 0.13.0-RC1
+## Version 0.13.0
 
-> 2018 May 15
+> 2018 Jun 5
 
-This is a release candidate containing an important revamp on the way webpack support works.
-Webpack produces a json [stats output](https://webpack.js.org/api/stats) which describes in detail the results of processing
-your application. Thus, parsing stats we can learn exactly what files are produced rather than guessing.
+This release contains an important revamp on the way webpack support works.
+Webpack produces a json [stats output](https://webpack.js.org/api/stats) which
+describes in detail the results of processing your application. Thus, parsing
+stats we can learn exactly what files are produced rather than guessing.
 
-Due to the very nature of parsing the output, and the wide variety of webpack configurations this process
-may not work in all cases. Please lets us know if you find any issues
+Due to the very nature of parsing the output, and the wide variety of webpack
+configurations this process may not work in all cases. Please lets us know if
+you find any issues.
 
-**Note:** In particular if your webpack produces any kind of std output, parsing stats will likely break.
+**Note:** `Stats` parsing has been tested mostly in Webpack 4. The results may vary with
+older versions.
+
+**Note:** If your webpack produces any kind of std output, parsing stats will likely break.
 
 This fixes the following bugs:
 
@@ -20,6 +25,7 @@ This fixes the following bugs:
 
 The following PRs are included in this release
 
+- [#247](https://github.com/scalacenter/scalajs-bundler/pull/247): Assets to sbt
 - [#242](https://github.com/scalacenter/scalajs-bundler/pull/242): Better error display when the webpack call fails
 - [#241](https://github.com/scalacenter/scalajs-bundler/pull/241): Use Public path from webpack stats
 - [#240](https://github.com/scalacenter/scalajs-bundler/pull/240): Update concat-with-sourcemaps
@@ -29,7 +35,7 @@ The following PRs are included in this release
 - [#234](https://github.com/scalacenter/scalajs-bundler/pull/234): Read application asset name from stats
 
 You can find the complete list of commits since the last release
-[here](https://github.com/scalacenter/scalajs-bundler/compare/v0.12.0...v0.13.0-RC1).
+[here](https://github.com/scalacenter/scalajs-bundler/compare/v0.12.0...v0.13.0).
 
 ## Version 0.12.0
 
