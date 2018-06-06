@@ -16,7 +16,7 @@ import sbt.Keys._
 import sbt._
 
 import scala.annotation.tailrec
-import scalajsbundler.ExternalCommand.install
+import scalajsbundler.ExternalCommand.addPackages
 import scalajsbundler._
 import scalajsbundler.util.JSON
 
@@ -508,13 +508,14 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
 
     installJsdom := {
       val installDir = target.value / "scalajs-bundler-jsdom"
+      val baseDir = baseDirectory.value
       val jsdomDir = installDir / "node_modules" / "jsdom"
       val log = streams.value.log
       val jsdomVersion = (version in installJsdom).value
       if (!jsdomDir.exists()) {
         log.info(s"Installing jsdom in ${installDir.absolutePath}")
         IO.createDirectory(installDir)
-        install(installDir, useYarn.value, log)(s"jsdom@$jsdomVersion")
+        addPackages(baseDir, installDir, useYarn.value, log)(s"jsdom@$jsdomVersion")
       }
       installDir
     }
@@ -536,6 +537,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       ),
 
       npmUpdate := NpmUpdateTasks.npmUpdate(
+      baseDirectory.value,
       (crossTarget in npmUpdate).value,
       scalaJSBundlerPackageJson.value.file,
       useYarn.value,

@@ -1,7 +1,8 @@
 package scalajsbundler
 
-import sbt._
+import java.io.File
 
+import sbt._
 import scalajsbundler.util.Commands
 
 /**
@@ -33,20 +34,47 @@ object Npm extends ExternalCommand("npm")
 object Yarn extends ExternalCommand("yarn")
 
 object ExternalCommand {
+  private val yarnOptions = List("--non-interactive", "--mutex", "network")
+  private def syncYarnLockfile(baseDir: File, installDir: File, logger: Logger)(yarnCommand: => Unit):Unit = {
+    val sourceLockFile = baseDir / "yarn.lock"
+    val targetLockFile = installDir / "yarn.lock"
+    if(sourceLockFile.exists()) {
+      logger.info("Using lockfile " + sourceLockFile)
+      IO.copyFile(sourceLockFile, targetLockFile)
+    }
+
+    yarnCommand
+
+    if(targetLockFile.exists()) {
+      logger.info("Wrote lockfile to " + sourceLockFile)
+      IO.copyFile(targetLockFile, sourceLockFile)
+    }
+  }
 
   /**
     * Locally install NPM packages
     *
+    * @param baseDir The (sub-)project directory which contains yarn.lock
     * @param installDir The directory in which to install the packages
     * @param useYarn Whether to use yarn or npm
     * @param logger sbt logger
     * @param npmPackages Packages to install (e.g. "webpack", "webpack@2.2.1")
     */
-  def install(installDir: File, useYarn: Boolean, logger: Logger)(npmPackages: String*): Unit =
+  def addPackages(baseDir:File, installDir: File, useYarn: Boolean, logger: Logger)(npmPackages: String*): Unit =
     if (useYarn) {
-      Yarn.run("add" +: "--mutex" +: "network" +: "--non-interactive" +: npmPackages: _*)(installDir, logger)
+      syncYarnLockfile(baseDir, installDir, logger) {
+        Yarn.run("add" +: (yarnOptions ++ npmPackages): _*)(installDir, logger)
+      }
     } else {
       Npm.run("install" +: npmPackages: _*)(installDir, logger)
     }
 
+  def install(baseDir:File, installDir: File, useYarn: Boolean, logger: Logger): Unit =
+    if (useYarn) {
+      syncYarnLockfile(baseDir, installDir, logger) {
+        Yarn.run("install" +: yarnOptions: _*)(installDir, logger)
+      }
+    } else {
+      Npm.run("install")(installDir, logger)
+    }
 }

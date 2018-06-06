@@ -62,6 +62,8 @@ By default, `npm` is used to fetch the dependencies but you can use [Yarn](https
 useYarn := true
 ~~~
 
+If your sbt (sub-)project directory contains a `yarn.lock`, it will be used. Else, a new one will be created. You should check `yarn.lock` into source control.
+
 Yarn 0.22.0+ must be available on the host platform.
 
 ### Bundling Mode {#bundling-mode}
