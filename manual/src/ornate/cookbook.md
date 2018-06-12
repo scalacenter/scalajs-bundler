@@ -315,7 +315,7 @@ Webpack 4 has the potential to substantially reduce your webpack compilation tim
 
 ## How to use get a list of assets
 
-`scalajs-bundler` (version 0.13.0 onwards) will export a list of all assets preduced by webpack. You can read that list on sbt
+`scalajs-bundler` (version 0.13.0 onwards) will export a list of all assets produced by webpack. You can read that list on sbt
 
 ~~~ scala
 val files = (webpack in (Compile, fullOptJS)).value
