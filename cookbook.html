@@ -75,6 +75,7 @@
 <li><a href="cookbook.html#webpack-dev-server">How to rebuild and reload your page on code changes?</a></li>
 <li><a href="cookbook.html#how-to-pass-extra-parameters-to-webpack">How to pass extra parameters to webpack</a></li>
 <li><a href="cookbook.html#how-to-use-webpack-4">How to use webpack 4</a></li>
+<li><a href="cookbook.html#how-to-use-get-a-list-of-assets">How to use get a list of assets</a></li>
 </ul>
 </li>
 </ul>
@@ -405,12 +406,25 @@ reload on every change:</p>
 In particular, don't attempt to override the <code class="hljs">--config</code> param.</p>
 <h2 id="how-to-use-webpack-4" class="a_section" data-magellan-target="how-to-use-webpack-4">How to use webpack 4<a class="a_hlink" href="#how-to-use-webpack-4"></a></h2>
 <p><code class="hljs">scalajs-bundler</code> (version 0.12.0 onwards) supports webpack 4. To enable webpack 4, set the correct versions in <code class="hljs">build.sbt</code></p>
-<p>-~~~ scala
-version in webpack := &quot;4.8.1&quot;</p>
-<p>version in startWebpackDevServer := &quot;3.1.4&quot;
--~~~</p>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala">version in webpack := <span class="hljs-string">"4.8.1"</span>
+
+version in startWebpackDevServer := <span class="hljs-string">"3.1.4"</span>
+</code></pre>
+</div></div>
 <p>Additionally, you need to update any webpack plugins your config uses, to Webpack 4 compatible versions.</p>
 <p>Webpack 4 has the potential to substantially reduce your webpack compilation times (80% reductions have been observed but your mileage may vary)</p>
+<h2 id="how-to-use-get-a-list-of-assets" class="a_section" data-magellan-target="how-to-use-get-a-list-of-assets">How to use get a list of assets<a class="a_hlink" href="#how-to-use-get-a-list-of-assets"></a></h2>
+<p><code class="hljs">scalajs-bundler</code> (version 0.13.0 onwards) will export a list of all assets preduced by webpack. You can read that list on sbt</p>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala"><span class="hljs-keyword">val</span> files = (webpack in (<span class="hljs-type">Compile</span>, fullOptJS)).value
+</code></pre>
+</div></div>
+<p>You can use it e.g. with <code class="hljs">[sbt-native-packager](https://github.com/sbt/sbt-native-packager)</code> to add mappings as:</p>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala">mappings in (<span class="hljs-type">Compile</span>, packageBin) ++= (webpack in (<span class="hljs-type">Compile</span>, fullOptJS)).value.map { f =&gt; f.data -&gt; f.data.getName() },
+</code></pre>
+</div></div>
 
                  
   <ul class="menu align-right simple a_navbar a_navbar_bottom">
@@ -615,6 +629,15 @@ version in webpack := &quot;4.8.1&quot;</p>
     <li>
       
          <a href="#how-to-use-webpack-4">How to use webpack 4</a> 
+      
+      
+    </li>
+  
+  
+  
+    <li>
+      
+         <a href="#how-to-use-get-a-list-of-assets">How to use get a list of assets</a> 
       
       
     </li>

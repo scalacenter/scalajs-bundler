@@ -2,9 +2,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>JSON - scalajsbundler.util.JSON</title>
-          <meta name="description" content="JSON - scalajsbundler.util.JSON" />
-          <meta name="keywords" content="JSON scalajsbundler.util.JSON" />
+          <title>CachedBundleFiles - scalajsbundler.util.CachedBundleFiles</title>
+          <meta name="description" content="CachedBundleFiles - scalajsbundler.util.CachedBundleFiles" />
+          <meta name="keywords" content="CachedBundleFiles scalajsbundler.util.CachedBundleFiles" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -12,7 +12,7 @@
       <script type="text/javascript">
          if(top === self) {
             var url = '../../index.html';
-            var hash = 'scalajsbundler.util.JSON';
+            var hash = 'scalajsbundler.util.CachedBundleFiles$';
             var anchor = window.location.hash;
             var anchor_opt = '';
             if (anchor.length >= 1)
@@ -22,26 +22,26 @@
    	  </script>
     
         </head>
-        <body class="type">
+        <body class="value">
       <div id="definition">
-        <a href="JSON$.html" title="Go to companion"><img src="../../lib/class_to_object_big.png" /></a>
+        <img src="../../lib/object_big.png" />
         <p id="owner"><a href="../package.html" class="extype" name="scalajsbundler">scalajsbundler</a>.<a href="package.html" class="extype" name="scalajsbundler.util">util</a></p>
-        <h1><a href="JSON$.html" title="Go to companion">JSON</a></h1>
+        <h1>CachedBundleFiles</h1>
       </div>
 
       <h4 id="signature" class="signature">
       <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">class</span>
+        <span class="modifier"></span>
+        <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <span class="name">JSON</span><span class="result"> extends <span class="extype" name="scalajsbundler.util.JSLike">JSLike</span></span>
+        <span class="name">CachedBundleFiles</span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/scalacenter/scalajs-bundler/blob/v0.13.0/sbt-scalajs-bundler/src/main/scala/scalajsbundler/util/JS.scala" target="_blank">JS.scala</a></dd></dl><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/scalacenter/scalajs-bundler/blob/v0.13.0/sbt-scalajs-bundler/src/main/scala-sbt-0.13/scala/scalajsbundler/util/CachedBundleFiles.scala" target="_blank">CachedBundleFiles.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span class="extype" name="scalajsbundler.util.JSLike">JSLike</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -59,7 +59,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="scalajsbundler.util.JSON"><span>JSON</span></li><li class="in" name="scalajsbundler.util.JSLike"><span>JSLike</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="scalajsbundler.util.CachedBundleFiles"><span>CachedBundleFiles</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -163,6 +163,23 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="scalajsbundler.util.CachedBundleFiles#cached" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="cached(file:java.io.File,assets:List[java.io.File]):scala.collection.immutable.ListSet[java.io.File]"></a>
+      <a id="cached(File,List[File]):ListSet[File]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">cached</span><span class="params">(<span name="file">file: <span class="extype" name="java.io.File">File</span></span>, <span name="assets">assets: <span class="extype" name="scala.List">List</span>[<span class="extype" name="java.io.File">File</span>]</span>)</span><span class="result">: <span class="extype" name="scala.collection.immutable.ListSet">ListSet</span>[<span class="extype" name="java.io.File">File</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Returns a &quot;sorted&quot; list of files containing first the main file
+and then the rest of the assets.</p><div class="fullcomment"><div class="comment cmt"><p>Returns a &quot;sorted&quot; list of files containing first the main file
+and then the rest of the assets. While weak this convention lets us
+work around the design of sbt file caching
+</p></div></div>
     </li><li name="scala.AnyRef#clone" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a>
       <a id="clone():AnyRef"></a>
@@ -305,32 +322,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="scalajsbundler.util.JSLike#show" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="show(isStat:Boolean):String"></a>
-      <a id="show(Boolean):String"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">show</span><span class="params">(<span name="isStat">isStat: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">true</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>JSLike</dd></dl></div>
-    </li><li name="scalajsbundler.util.JSLike#show" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="show:String"></a>
-      <a id="show:String"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">show</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>JSLike</dd></dl></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
@@ -344,19 +335,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="scalajsbundler.util.JSLike#toJson" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="toJson:String"></a>
-      <a id="toJson:String"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">toJson</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>JSLike</dd></dl></div>
     </li><li name="scala.AnyRef#toString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="toString():String"></a>
       <a id="toString():String"></a>
@@ -436,9 +414,7 @@
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="scalajsbundler.util.JSLike">
-              <h3>Inherited from <span class="extype" name="scalajsbundler.util.JSLike">JSLike</span></h3>
-            </div><div class="parent" name="scala.AnyRef">
+        <div class="parent" name="scala.AnyRef">
               <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
             </div><div class="parent" name="scala.Any">
               <h3>Inherited from <span class="extype" name="scala.Any">Any</span></h3>
