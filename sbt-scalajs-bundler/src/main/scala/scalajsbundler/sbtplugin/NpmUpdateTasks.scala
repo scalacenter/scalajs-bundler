@@ -1,7 +1,7 @@
 package scalajsbundler.sbtplugin
 
 import org.scalajs.core.tools.io.{FileVirtualJSFile, RelativeVirtualFile, VirtualJSFile}
-import scalajsbundler.{Npm, Yarn}
+import scalajsbundler.{ExternalCommand}
 import sbt._
 
 object NpmUpdateTasks {
@@ -28,11 +28,9 @@ object NpmUpdateTasks {
         inStyle = FilesInfo.hash
       ) { _ =>
         log.info("Updating NPM dependencies")
-        if (useYarn) {
-          Yarn.run("install", "--non-interactive", "--mutex", "network")(targetDir, log)
-        } else {
-          Npm.run("install")(targetDir, log)
-        }
+        
+        ExternalCommand.install(targetDir, useYarn, log)()
+
         jsResources.foreach { resource =>
           IO.write(targetDir / resource.relativePath, resource.content)
         }
