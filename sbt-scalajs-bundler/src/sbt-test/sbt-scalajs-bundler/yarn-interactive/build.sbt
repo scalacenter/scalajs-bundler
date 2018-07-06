@@ -1,4 +1,7 @@
 useYarn := true
-npmDependencies in Compile += "neat" -> "1.8.0"
+
+yarnExtraArgs in Compile := Seq("--verbose")
+
+npmDependencies in Compile += "neat" -> "1.1.2"
 
 enablePlugins(ScalaJSBundlerPlugin)

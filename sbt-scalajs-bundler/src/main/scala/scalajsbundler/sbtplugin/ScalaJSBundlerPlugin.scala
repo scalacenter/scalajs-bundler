@@ -376,6 +376,17 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
     )
 
     /**
+      * Additional arguments for yarn
+      *
+      * Defaults to an empty list.
+      *
+      * @group settings
+      */
+    val yarnExtraArgs = SettingKey[Seq[String]](
+      "yarnExtraArgs",
+      "Custom arguments for yarn"
+    )
+    /**
       * Additional arguments to webpack-dev-server.
       *
       * Defaults to an empty list.
@@ -504,6 +515,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
     webpackExtraArgs := Seq(),
 
     npmExtraArgs := Seq.empty,
+    yarnExtraArgs := Seq.empty,
 
     // The defaults are specified at top level.
     webpackDevServerPort := 8080,
@@ -529,7 +541,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       if (!jsdomDir.exists()) {
         log.info(s"Installing jsdom in ${installDir.absolutePath}")
         IO.createDirectory(installDir)
-        addPackages(baseDir, installDir, useYarn.value, log, npmExtraArgs.value)(s"jsdom@$jsdomVersion")
+        addPackages(baseDir, installDir, useYarn.value, log, npmExtraArgs.value, yarnExtraArgs.value)(s"jsdom@$jsdomVersion")
       }
       installDir
     }
@@ -547,6 +559,8 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
 
       npmExtraArgs := Seq.empty,
 
+      yarnExtraArgs := Seq.empty,
+
       additionalNpmConfig := Map(
         "private" -> JSON.bool(true),
         "license" -> JSON.str("UNLICENSED")
@@ -559,7 +573,8 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       useYarn.value,
       scalaJSNativeLibraries.value.data,
       streams.value,
-      npmExtraArgs.value),
+      npmExtraArgs.value,
+      yarnExtraArgs.value),
 
       scalaJSBundlerPackageJson :=
         PackageJsonTasks.writePackageJson(

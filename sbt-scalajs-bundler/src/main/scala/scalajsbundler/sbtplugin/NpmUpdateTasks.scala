@@ -13,6 +13,7 @@ object NpmUpdateTasks {
     * @param jsResources A sequence of javascript resources
     * @param stream A sbt TaskStream
     * @param npmExtraArgs Additional arguments to pass to npm
+    * @param yarnExtraArgs Additional arguments to pass to yarn
     * @return The written npm directory
     */
   def npmUpdate(baseDir: File,
@@ -21,7 +22,8 @@ object NpmUpdateTasks {
                 useYarn: Boolean,
                 jsResources: Seq[VirtualJSFile with RelativeVirtualFile],
                 streams: Keys.TaskStreams,
-                npmExtraArgs: Seq[String]
+                npmExtraArgs: Seq[String],
+                yarnExtraArgs: Seq[String]
                 ) = {
     val log = streams.log
 
@@ -31,7 +33,7 @@ object NpmUpdateTasks {
         inStyle = FilesInfo.hash
       ) { _ =>
         log.info("Updating NPM dependencies")
-        ExternalCommand.install(baseDir, targetDir, useYarn, npmExtraArgs, log)
+        ExternalCommand.install(baseDir, targetDir, useYarn, npmExtraArgs, yarnExtraArgs, log)
         jsResources.foreach { resource =>
           IO.write(targetDir / resource.relativePath, resource.content)
         }
