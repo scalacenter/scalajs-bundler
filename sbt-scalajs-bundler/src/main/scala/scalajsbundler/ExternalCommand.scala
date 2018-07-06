@@ -58,6 +58,7 @@ object ExternalCommand {
     * @param installDir The directory in which to install the packages
     * @param useYarn Whether to use yarn or npm
     * @param logger sbt logger
+    * @param npmExtraArgs Additional arguments to pass to npm
     * @param npmPackages Packages to install (e.g. "webpack", "webpack@2.2.1")
     */
   def addPackages(baseDir:File, installDir: File, useYarn: Boolean, logger: Logger)(npmPackages: String*): Unit =
@@ -66,13 +67,13 @@ object ExternalCommand {
         Yarn.run("add" +: (yarnOptions ++ npmPackages): _*)(installDir, logger)
       }
     } else {
-      Npm.run("install" +: npmPackages: _*)(installDir, logger)
+      Npm.run("install" +: (npmPackages ++ npmExtraArgs) : _*)(installDir, logger)
     }
 
-  def install(baseDir:File, installDir: File, useYarn: Boolean, logger: Logger): Unit =
+  def install(installDir: File, useYarn: Boolean, logger: Logger, npmExtraArgs: Seq[String])(npmPackages: String*): Unit =
     if (useYarn) {
       syncYarnLockfile(baseDir, installDir, logger) {
-        Yarn.run("install" +: yarnOptions: _*)(installDir, logger)
+        Yarn.run("add" +: "--mutex" +: "network" +: "--non-interactive" +: npmPackages: _*)(installDir, logger)
       }
     } else {
       Npm.run("install")(installDir, logger)

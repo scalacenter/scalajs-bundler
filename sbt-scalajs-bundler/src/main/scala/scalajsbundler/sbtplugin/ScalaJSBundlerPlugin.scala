@@ -175,6 +175,18 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       settingKey[Map[String, JSON]]("Additional option to include in the generated 'package.json'")
 
     /**
+      * Additional arguments for npm
+      *
+      * Defaults to an empty list.
+      *
+      * @group settings
+      */
+    val npmExtraArgs = SettingKey[Seq[String]](
+      "npmExtraArgs",
+      "Custom arguments for npm"
+    )
+
+    /**
       * [[scalajsbundler.BundlingMode]] to use.
       *
       * Must be one of:
@@ -491,6 +503,8 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
     (includeFilter in webpackMonitoredFiles) := AllPassFilter,
     webpackExtraArgs := Seq(),
 
+    npmExtraArgs := Seq.empty,
+
     // The defaults are specified at top level.
     webpackDevServerPort := 8080,
     webpackDevServerExtraArgs := Seq(),
@@ -515,7 +529,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       if (!jsdomDir.exists()) {
         log.info(s"Installing jsdom in ${installDir.absolutePath}")
         IO.createDirectory(installDir)
-        addPackages(baseDir, installDir, useYarn.value, log)(s"jsdom@$jsdomVersion")
+        addPackages(baseDir, installDir, useYarn.value, log, npmExtraArgs.value)(s"jsdom@$jsdomVersion")
       }
       installDir
     }
@@ -531,6 +545,8 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
 
       npmResolutions := Map.empty,
 
+      npmExtraArgs := Seq.empty,
+
       additionalNpmConfig := Map(
         "private" -> JSON.bool(true),
         "license" -> JSON.str("UNLICENSED")
@@ -542,7 +558,8 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       scalaJSBundlerPackageJson.value.file,
       useYarn.value,
       scalaJSNativeLibraries.value.data,
-      streams.value),
+      streams.value,
+      npmExtraArgs.value),
 
       scalaJSBundlerPackageJson :=
         PackageJsonTasks.writePackageJson(
