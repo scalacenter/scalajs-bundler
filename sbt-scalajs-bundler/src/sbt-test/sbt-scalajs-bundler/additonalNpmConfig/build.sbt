@@ -8,7 +8,7 @@ lazy val npmConfig =
     .settings(
       scalaVersion := "2.11.8",
       npmDependencies in Compile += "react" -> "15.5.4",
-      npmExtraArgs in Compile := Seq("-verbose"),
+      npmExtraArgs in Compile := Seq("-silent"),
       additionalNpmConfig in Compile := Map(
         "name" -> str("foo"),
         "version" -> str("1.0.0"),

@@ -1,6 +1,6 @@
 useYarn := true
 
-yarnExtraArgs in Compile := Seq("--verbose")
+yarnExtraArgs in Compile := Seq("--silent")
 
 npmDependencies in Compile += "neat" -> "1.1.2"
 
