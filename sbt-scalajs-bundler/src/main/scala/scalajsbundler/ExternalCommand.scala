@@ -46,7 +46,7 @@ object ExternalCommand {
     yarnCommand
 
     if(targetLockFile.exists()) {
-      logger.info("Wrote lockfile to " + sourceLockFile)
+      logger.debug("Wrote lockfile to " + sourceLockFile)
       IO.copyFile(targetLockFile, sourceLockFile)
     }
   }
