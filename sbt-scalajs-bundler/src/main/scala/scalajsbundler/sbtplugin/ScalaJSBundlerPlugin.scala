@@ -557,10 +557,6 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
 
       npmResolutions := Map.empty,
 
-      npmExtraArgs := Seq.empty,
-
-      yarnExtraArgs := Seq.empty,
-
       additionalNpmConfig := Map(
         "private" -> JSON.bool(true),
         "license" -> JSON.str("UNLICENSED")
