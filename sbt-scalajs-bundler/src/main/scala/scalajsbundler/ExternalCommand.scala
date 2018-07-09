@@ -61,21 +61,21 @@ object ExternalCommand {
     * @param npmExtraArgs Additional arguments to pass to npm
     * @param npmPackages Packages to install (e.g. "webpack", "webpack@2.2.1")
     */
-  def addPackages(baseDir:File, installDir: File, useYarn: Boolean, logger: Logger, npmExtraArgs: Seq[String], yarnExtraArgs: Seq[String])(npmPackages: String*): Unit =
+  def addPackages(baseDir: File, installDir: File, useYarn: Boolean, logger: Logger, npmExtraArgs: Seq[String], yarnExtraArgs: Seq[String])(npmPackages: String*): Unit =
     if (useYarn) {
       syncYarnLockfile(baseDir, installDir, logger) {
-        Yarn.run("add" +: (yarnOptions ++ (npmPackages ++ yarnExtraArgs): _*)(installDir, logger)
+        Yarn.run("add" +: (yarnOptions ++ yarnExtraArgs ++ npmPackages ): _*)(installDir, logger)
       }
     } else {
       Npm.run("install" +: (npmPackages ++ npmExtraArgs) : _*)(installDir, logger)
     }
 
-  def install(installDir: File, useYarn: Boolean, logger: Logger, npmExtraArgs: Seq[String])(npmPackages: String*): Unit =
+  def install(baseDir: File, installDir: File, useYarn: Boolean, logger: Logger, npmExtraArgs: Seq[String], yarnExtraArgs: Seq[String]): Unit =
     if (useYarn) {
       syncYarnLockfile(baseDir, installDir, logger) {
-        Yarn.run("add" +: "--mutex" +: "network" +: "--non-interactive" +: npmPackages: _*)(installDir, logger)
+        Yarn.run("install" +: (yarnOptions ++ yarnExtraArgs): _*)(installDir, logger)
       }
     } else {
-      Npm.run("install")(installDir, logger)
+      Npm.run(("install" +: npmExtraArgs): _*)(installDir, logger)
     }
 }

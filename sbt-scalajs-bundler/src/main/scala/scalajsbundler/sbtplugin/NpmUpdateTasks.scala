@@ -33,7 +33,7 @@ object NpmUpdateTasks {
         inStyle = FilesInfo.hash
       ) { _ =>
         log.info("Updating NPM dependencies")
-        ExternalCommand.install(baseDir, targetDir, useYarn, npmExtraArgs, yarnExtraArgs, log)
+        ExternalCommand.install(baseDir, targetDir, useYarn, log, npmExtraArgs, yarnExtraArgs)
         jsResources.foreach { resource =>
           IO.write(targetDir / resource.relativePath, resource.content)
         }
