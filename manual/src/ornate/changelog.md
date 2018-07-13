@@ -1,5 +1,19 @@
 # Changelog
 
+## Version 0.13.1
+
+> 2018 Jul 13
+
+This fixes the following bugs:
+
+  - [#224](https://github.com/scalacenter/scalajs-bundler/issues/224): Use project-level custom NPM registry
+
+The following PRs are included in this release
+
+- [#254](https://github.com/scalacenter/scalajs-bundler/pull/254): Npm/yarn args
+- [#251](https://github.com/scalacenter/scalajs-bundler/pull/251): Fix typo
+- [#249](https://github.com/scalacenter/scalajs-bundler/pull/249): Sync yarn.lock between baseDir and installDir
+
 ## Version 0.13.0
 
 > 2018 Jun 5
