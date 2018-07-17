@@ -39,7 +39,7 @@
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/scalacenter/scalajs-bundler/blob/v0.13.0/sbt-scalajs-bundler/src/main/scala/scalajsbundler/sbtplugin/ScalaJSBundlerPlugin.scala" target="_blank">ScalaJSBundlerPlugin.scala</a></dd></dl><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/scalacenter/scalajs-bundler/blob/v0.13.1/sbt-scalajs-bundler/src/main/scala/scalajsbundler/sbtplugin/ScalaJSBundlerPlugin.scala" target="_blank">ScalaJSBundlerPlugin.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
@@ -494,6 +494,20 @@ You can use [semver](https://docs.npmjs.com/misc/semver) versions:</p><pre>npmDe
       </span>
       </h4>
       <p class="shortcomment cmt"></p>
+    </li><li name="scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.autoImport#npmExtraArgs" visbl="pub" data-isabs="false" fullComment="yes" group="settings">
+      <a id="npmExtraArgs:sbt.SettingKey[Seq[String]]"></a>
+      <a id="npmExtraArgs:SettingKey[Seq[String]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">npmExtraArgs</span><span class="result">: <span class="extype" name="sbt.SettingKey">SettingKey</span>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Additional arguments for npm</p><div class="fullcomment"><div class="comment cmt"><p>Additional arguments for npm</p><p>Defaults to an empty list.
+</p></div></div>
     </li><li name="scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.autoImport#npmResolutions" visbl="pub" data-isabs="false" fullComment="yes" group="settings">
       <a id="npmResolutions:sbt.SettingKey[Map[String,String]]"></a>
       <a id="npmResolutions:SettingKey[Map[String,String]]"></a>
@@ -845,6 +859,20 @@ setting:</p><pre>emitSourceMaps := <span class="kw">false</span></pre></div></di
       <p class="shortcomment cmt">Webpack configuration files to copy to the target directory.</p><div class="fullcomment"><div class="comment cmt"><p>Webpack configuration files to copy to the target directory. These files can be merged into the main
 configuration file.</p><p>By default all .js files in the project base directory are copied:</p><pre>baseDirectory.value * <span class="lit">"*.js"</span></pre><p>How to share these configuration files among your webpack config files is documented in the
 <a href="http://scalacenter.github.io/scalajs-bundler/cookbook.html#shared-config" target="_blank">cookbook</a>.
+</p></div></div>
+    </li><li name="scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.autoImport#yarnExtraArgs" visbl="pub" data-isabs="false" fullComment="yes" group="settings">
+      <a id="yarnExtraArgs:sbt.SettingKey[Seq[String]]"></a>
+      <a id="yarnExtraArgs:SettingKey[Seq[String]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">yarnExtraArgs</span><span class="result">: <span class="extype" name="sbt.SettingKey">SettingKey</span>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Additional arguments for yarn</p><div class="fullcomment"><div class="comment cmt"><p>Additional arguments for yarn</p><p>Defaults to an empty list.
 </p></div></div>
     </li></ol>
             </div>

@@ -110,6 +110,7 @@ their execution so that they can be loaded by jsdom.</p>
 <pre class="hljs"><code class="language-scala">useYarn := <span class="hljs-literal">true</span>
 </code></pre>
 </div></div>
+<p>If your sbt (sub-)project directory contains a <code class="hljs">yarn.lock</code>, it will be used. Else, a new one will be created. You should check <code class="hljs">yarn.lock</code> into source control.</p>
 <p>Yarn 0.22.0+ must be available on the host platform.</p>
 <h3 id="bundling-mode" class="a_section" data-magellan-target="bundling-mode">Bundling Mode<a class="a_hlink" href="#bundling-mode"></a></h3>
 <p>Each time you change something in your application source code and compile the project, Scala.js emits a new .js

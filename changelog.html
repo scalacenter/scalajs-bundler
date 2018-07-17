@@ -61,16 +61,20 @@
  
                 
                 <h1 id="changelog" class="a_section" data-magellan-target="changelog">Changelog<a class="a_hlink" href="#changelog"></a></h1>
-<h2 id="version-0.13.0-rc1" class="a_section" data-magellan-target="version-0.13.0-rc1">Version 0.13.0-RC1<a class="a_hlink" href="#version-0.13.0-rc1"></a></h2>
+<h2 id="version-0.13.0" class="a_section" data-magellan-target="version-0.13.0">Version 0.13.0<a class="a_hlink" href="#version-0.13.0"></a></h2>
 <blockquote>
-<p>2018 May 15</p>
+<p>2018 Jun 5</p>
 </blockquote>
-<p>This is a release candidate containing an important revamp on the way webpack support works.
-Webpack produces a json <a href="https://webpack.js.org/api/stats">stats output</a> which describes in detail the results of processing
-your application. Thus, parsing stats we can learn exactly what files are produced rather than guessing.</p>
-<p>Due to the very nature of parsing the output, and the wide variety of webpack configurations this process
-may not work in all cases. Please lets us know if you find any issues</p>
-<p><strong>Note:</strong> In particular if your webpack produces any kind of std output, parsing stats will likely break.</p>
+<p>This release contains an important revamp on the way webpack support works.
+Webpack produces a json <a href="https://webpack.js.org/api/stats">stats output</a> which
+describes in detail the results of processing your application. Thus, parsing
+stats we can learn exactly what files are produced rather than guessing.</p>
+<p>Due to the very nature of parsing the output, and the wide variety of webpack
+configurations this process may not work in all cases. Please lets us know if
+you find any issues.</p>
+<p><strong>Note:</strong> <code class="hljs">Stats</code> parsing has been tested mostly in Webpack 4. The results may vary with
+older versions.</p>
+<p><strong>Note:</strong> If your webpack produces any kind of std output, parsing stats will likely break.</p>
 <p>This fixes the following bugs:</p>
 <ul>
 <li><a href="https://github.com/scalacenter/scalajs-bundler/issues/192">#192</a>: Webpack failed to create application bundle</li>
@@ -78,6 +82,7 @@ may not work in all cases. Please lets us know if you find any issues</p>
 </ul>
 <p>The following PRs are included in this release</p>
 <ul>
+<li><a href="https://github.com/scalacenter/scalajs-bundler/pull/247">#247</a>: Assets to sbt</li>
 <li><a href="https://github.com/scalacenter/scalajs-bundler/pull/242">#242</a>: Better error display when the webpack call fails</li>
 <li><a href="https://github.com/scalacenter/scalajs-bundler/pull/241">#241</a>: Use Public path from webpack stats</li>
 <li><a href="https://github.com/scalacenter/scalajs-bundler/pull/240">#240</a>: Update concat-with-sourcemaps</li>
@@ -87,7 +92,7 @@ may not work in all cases. Please lets us know if you find any issues</p>
 <li><a href="https://github.com/scalacenter/scalajs-bundler/pull/234">#234</a>: Read application asset name from stats</li>
 </ul>
 <p>You can find the complete list of commits since the last release
-<a href="https://github.com/scalacenter/scalajs-bundler/compare/v0.12.0...v0.13.0-RC1">here</a>.</p>
+<a href="https://github.com/scalacenter/scalajs-bundler/compare/v0.12.0...v0.13.0">here</a>.</p>
 <h2 id="version-0.12.0" class="a_section" data-magellan-target="version-0.12.0">Version 0.12.0<a class="a_hlink" href="#version-0.12.0"></a></h2>
 <blockquote>
 <p>2018 March 27</p>
@@ -385,7 +390,7 @@ the classpath can be <code class="hljs">@JSImport</code>ed by your Scala facades
   
     <li>
       
-         <a href="#version-0.13.0-rc1">Version 0.13.0-RC1</a> 
+         <a href="#version-0.13.0">Version 0.13.0</a> 
       
       
     </li>

@@ -415,7 +415,7 @@ version in startWebpackDevServer := <span class="hljs-string">"3.1.4"</span>
 <p>Additionally, you need to update any webpack plugins your config uses, to Webpack 4 compatible versions.</p>
 <p>Webpack 4 has the potential to substantially reduce your webpack compilation times (80% reductions have been observed but your mileage may vary)</p>
 <h2 id="how-to-use-get-a-list-of-assets" class="a_section" data-magellan-target="how-to-use-get-a-list-of-assets">How to use get a list of assets<a class="a_hlink" href="#how-to-use-get-a-list-of-assets"></a></h2>
-<p><code class="hljs">scalajs-bundler</code> (version 0.13.0 onwards) will export a list of all assets preduced by webpack. You can read that list on sbt</p>
+<p><code class="hljs">scalajs-bundler</code> (version 0.13.0 onwards) will export a list of all assets produced by webpack. You can read that list on sbt</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
 <pre class="hljs"><code class="language-scala"><span class="hljs-keyword">val</span> files = (webpack in (<span class="hljs-type">Compile</span>, fullOptJS)).value
 </code></pre>

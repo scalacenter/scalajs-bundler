@@ -39,7 +39,7 @@
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/scalacenter/scalajs-bundler/blob/v0.13.0/sbt-scalajs-bundler/src/main/scala/scalajsbundler/sbtplugin/NpmUpdateTasks.scala" target="_blank">NpmUpdateTasks.scala</a></dd></dl><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/scalacenter/scalajs-bundler/blob/v0.13.1/sbt-scalajs-bundler/src/main/scala/scalajsbundler/sbtplugin/NpmUpdateTasks.scala" target="_blank">NpmUpdateTasks.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
@@ -306,18 +306,18 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
     </li><li name="scalajsbundler.sbtplugin.NpmUpdateTasks#npmUpdate" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="npmUpdate(targetDir:sbt.File,packageJsonFile:sbt.File,useYarn:Boolean,jsResources:Seq[org.scalajs.core.tools.io.VirtualJSFilewithorg.scalajs.core.tools.io.RelativeVirtualFile],streams:sbt.Keys.TaskStreams):sbt.File"></a>
-      <a id="npmUpdate(File,File,Boolean,Seq[VirtualJSFilewithRelativeVirtualFile],TaskStreams):File"></a>
+      <a id="npmUpdate(baseDir:sbt.File,targetDir:sbt.File,packageJsonFile:sbt.File,useYarn:Boolean,jsResources:Seq[org.scalajs.core.tools.io.VirtualJSFilewithorg.scalajs.core.tools.io.RelativeVirtualFile],streams:sbt.Keys.TaskStreams,npmExtraArgs:Seq[String],yarnExtraArgs:Seq[String]):sbt.File"></a>
+      <a id="npmUpdate(File,File,File,Boolean,Seq[VirtualJSFilewithRelativeVirtualFile],TaskStreams,Seq[String],Seq[String]):File"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">npmUpdate</span><span class="params">(<span name="targetDir">targetDir: <a href="../../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a></span>, <span name="packageJsonFile">packageJsonFile: <a href="../../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a></span>, <span name="useYarn">useYarn: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="jsResources">jsResources: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="org.scalajs.core.tools.io.VirtualJSFile">VirtualJSFile</span> with <span class="extype" name="org.scalajs.core.tools.io.RelativeVirtualFile">RelativeVirtualFile</span>]</span>, <span name="streams">streams: <span class="extype" name="sbt.Keys.TaskStreams">TaskStreams</span></span>)</span><span class="result">: <a href="../../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a></span>
+        <span class="name">npmUpdate</span><span class="params">(<span name="baseDir">baseDir: <a href="../../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a></span>, <span name="targetDir">targetDir: <a href="../../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a></span>, <span name="packageJsonFile">packageJsonFile: <a href="../../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a></span>, <span name="useYarn">useYarn: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="jsResources">jsResources: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="org.scalajs.core.tools.io.VirtualJSFile">VirtualJSFile</span> with <span class="extype" name="org.scalajs.core.tools.io.RelativeVirtualFile">RelativeVirtualFile</span>]</span>, <span name="streams">streams: <span class="extype" name="sbt.Keys.TaskStreams">TaskStreams</span></span>, <span name="npmExtraArgs">npmExtraArgs: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="yarnExtraArgs">yarnExtraArgs: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result">: <a href="../../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Runs the Npm or Yarn</p><div class="fullcomment"><div class="comment cmt"><p>Runs the Npm or Yarn</p></div><dl class="paramcmts block"><dt class="param">targetDir</dt><dd class="cmt"><p>npm Directory</p></dd><dt class="param">packageJsonFile</dt><dd class="cmt"><p>Json file containing NPM dependencies</p></dd><dt class="param">useYarn</dt><dd class="cmt"><p>Whether to use yarn or npm</p></dd><dt class="param">jsResources</dt><dd class="cmt"><p>A sequence of javascript resources</p></dd><dt>returns</dt><dd class="cmt"><p>The written npm directory
+      <p class="shortcomment cmt">Runs the Npm or Yarn</p><div class="fullcomment"><div class="comment cmt"><p>Runs the Npm or Yarn</p></div><dl class="paramcmts block"><dt class="param">targetDir</dt><dd class="cmt"><p>npm Directory</p></dd><dt class="param">packageJsonFile</dt><dd class="cmt"><p>Json file containing NPM dependencies</p></dd><dt class="param">useYarn</dt><dd class="cmt"><p>Whether to use yarn or npm</p></dd><dt class="param">jsResources</dt><dd class="cmt"><p>A sequence of javascript resources</p></dd><dt class="param">npmExtraArgs</dt><dd class="cmt"><p>Additional arguments to pass to npm</p></dd><dt class="param">yarnExtraArgs</dt><dd class="cmt"><p>Additional arguments to pass to yarn</p></dd><dt>returns</dt><dd class="cmt"><p>The written npm directory
 </p></dd></dl></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
