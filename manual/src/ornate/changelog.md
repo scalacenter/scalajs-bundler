@@ -1,5 +1,19 @@
 # Changelog
 
+## Version 0.13.2
+
+> 2018 Oct 27
+
+This release modifies the `npmUpdate` task and splits the logic into two separate tasks; `npmInstallDependencies` and
+`npmInstallJSResources`. `npmUpdate` has a less obvious side effect that, not only does it run `npm install`, it would
+also copy all the JavaScript resources to the `node_modules` directory. This behaviour is fine except that it is not
+suitable for use in `sourceGenerators` and would cause a cycle in the tasks. `npmInstallDependencies` should be used in
+cases where you want to want to use a npm module from a sbt task.
+
+This fixes the following bugs:
+
+- [#258](https://github.com/scalacenter/scalajs-bundler/issues/258): Unable to use npmUpdate in sourceGenerators
+
 ## Version 0.13.1
 
 > 2018 Jul 13

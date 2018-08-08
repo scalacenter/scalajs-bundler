@@ -80,7 +80,30 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
     implicit class RichBundlerFile(f: BundlerFile.Public) extends SBTBundlerFile(f)
 
     /**
-      * Fetches NPM dependencies. Returns the directory in which the `npm install` command has been run.
+      * Installs NPM dependencies and all JavaScript resources found on the classpath as node packages.
+      *
+      * The JavaScript resources are installed locally in `node_modules` and can be used any other node package,
+      * such as to load a module using `require()`.
+      *
+      * Do not use this from `sourceGenerators` or any other task that is used either directly or indirectly by
+      * `fullClasspath` otherwise it will result in a deadlock. For this, use [[npmInstallDependencies]] instead.
+      *
+      * The plugin uses different directories according to the configuration (`Compile` or `Test`). Thus,
+      * this setting is scoped by a `Configuration`.
+      *
+      * The task returns the directory in which the dependencies have been fetched (the directory
+      * that contains the `node_modules` directory).
+      *
+      * @group tasks
+      */
+    val npmUpdate: TaskKey[File] =
+      taskKey[File]("Install NPM dependencies and JavaScript resources")
+
+    /**
+      * Installs NPM dependencies.
+      *
+      * Unlike [[npmUpdate]] this does not stage the javascript resources and so is safe to use in `sourceGenerators`
+      * or any other task that is used by `fullClasspath`.
       *
       * The plugin uses different directories according to the configuration (`Compile` or `Test`). Thus,
       * this setting is scoped by a `Configuration`.
@@ -90,7 +113,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       *
       * {{{
       *   myCustomTask := {
-      *     val npmDirectory = (npmUpdate in Compile).value
+      *     val npmDirectory = (npmInstallDependencies in Compile).value
       *     doSomething(npmDirectory / "node_modules" / "some-package")
       *   }
       * }}}
@@ -100,8 +123,24 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       *
       * @group tasks
       */
-    val npmUpdate: TaskKey[File] =
-      taskKey[File]("Fetch NPM dependencies")
+    val npmInstallDependencies: TaskKey[File] =
+      taskKey[File]("Install NPM dependencies")
+
+    /**
+      * Installs all JavaScript resources found on the classpath as node packages.
+      *
+      * The JavaScript resources are installed locally in `node_modules` and can be used any other node package,
+      * such as to load a module using `require()`.
+      *
+      * The plugin uses different directories according to the configuration (`Compile` or `Test`). Thus,
+      * this setting is scoped by a `Configuration`.
+      *
+      * The task returns the path to each JavaScript resource within the `node_modules` directory.
+      *
+      * @group tasks
+      */
+    val npmInstallJSResources: TaskKey[Seq[File]] =
+      taskKey[Seq[File]]("Install JavaScript resources found on the classpath")
 
     /**
       * List of the NPM packages (name and version) your application depends on.
@@ -575,15 +614,24 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
         "license" -> JSON.str("UNLICENSED")
       ),
 
-      npmUpdate := NpmUpdateTasks.npmUpdate(
-      baseDirectory.value,
-      (crossTarget in npmUpdate).value,
-      scalaJSBundlerPackageJson.value.file,
-      useYarn.value,
-      scalaJSNativeLibraries.value.data,
-      streams.value,
-      npmExtraArgs.value,
-      yarnExtraArgs.value),
+      npmUpdate := {
+        val _ = npmInstallJSResources.value
+        npmInstallDependencies.value
+      },
+
+      npmInstallDependencies := NpmUpdateTasks.npmInstallDependencies(
+        baseDirectory.value,
+        (crossTarget in npmUpdate).value,
+        scalaJSBundlerPackageJson.value.file,
+        useYarn.value,
+        streams.value,
+        npmExtraArgs.value,
+        yarnExtraArgs.value),
+
+      npmInstallJSResources := NpmUpdateTasks.npmInstallJSResources(
+        (crossTarget in npmUpdate).value,
+        scalaJSNativeLibraries.value.data,
+        streams.value),
 
       scalaJSBundlerPackageJson :=
         PackageJsonTasks.writePackageJson(
@@ -592,13 +640,15 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
           npmDevDependencies.value,
           npmResolutions.value,
           additionalNpmConfig.value,
-          fullClasspath.value,
+          dependencyClasspath.value,
           configuration.value,
           (version in webpack).value,
           (version in startWebpackDevServer).value,
           webpackCliVersion.value,
           streams.value
         ),
+
+      crossTarget in npmUpdate := (crossTarget in npmUpdate).value,
 
       crossTarget in npmUpdate := {
         crossTarget.value / "scalajs-bundler" / (if (configuration.value == Compile) "main" else "test")
