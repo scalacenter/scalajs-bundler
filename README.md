@@ -11,6 +11,8 @@ More information on how to use it in the [documentation](https://scalacenter.git
 
 ## Contributing
 
+scalajs-bundler is community-maintained.
+
 Contributions are welcome! See the [open issues](https://github.com/scalacenter/scalajs-bundler/issues) and
 the [CONTRIBUTING.md](CONTRIBUTING.md) file.
 
