@@ -313,7 +313,7 @@ Additionally, you need to update any webpack plugins your config uses, to Webpac
 
 Webpack 4 has the potential to substantially reduce your webpack compilation times (80% reductions have been observed but your mileage may vary)
 
-## How to use get a list of assets
+## How to get and use a list of assets
 
 `scalajs-bundler` (version 0.13.0 onwards) will export a list of all assets produced by webpack. You can read that list on sbt
 
@@ -323,5 +323,38 @@ val files = (webpack in (Compile, fullOptJS)).value
 
 You can use it e.g. with `[sbt-native-packager](https://github.com/sbt/sbt-native-packager)` to add mappings as:
 ~~~ scala
-mappings in (Compile, packageBin) ++= (webpack in (Compile, fullOptJS)).value.map { f => f.data -> f.data.getName() },
+Universal/mappings ++= (Compile/fullOptJS/webpack).value.map{ f =>
+  f.data -> s"assets/${f.data.getName()}"
+},
 ~~~
+
+This will add all artifacts produced by the fully optimized Scala.JS run to the target archive. If you needtoo package additional libraries that have been aquired by scalajs-bundler, you can do something like:
+~~~
+    Universal/mappings ++= (Compile/fullOptJS/webpack).value.map{ f =>
+      f.data -> s"assets/${f.data.getName()}"
+    } ++ Seq(
+      target.value / ("scala-" + scalaBinaryVersion.value) / "scalajs-bundler" / "main" / "node_modules" / "react" / "cjs" / "react.production.min.js" -> "assets/react.production.min.js",
+      target.value / ("scala-" + scalaBinaryVersion.value) / "scalajs-bundler" / "main" / "node_modules" / "react-dom" / "cjs" / "react-dom.production.min.js" -> "assets/react-dom.production.min.js"
+    ),
+~~~
+Also, any static resources that you would like to have in the resulting archive (i.e. `index.html`), should live inside the `src/universal` directory of your project. 
+
+An example of complete settings to also publish the resulting archive would be 
+~~~
+    topLevelDirectory := None,
+
+    Universal/mappings ++= (Compile/fullOptJS/webpack).value.map{ f =>
+      f.data -> s"assets/${f.data.getName()}"
+    } ++ Seq(
+      target.value / ("scala-" + scalaBinaryVersion.value) / "scalajs-bundler" / "main" / "node_modules" / "react" / "cjs" / "react.production.min.js" -> "assets/react.production.min.js",
+      target.value / ("scala-" + scalaBinaryVersion.value) / "scalajs-bundler" / "main" / "node_modules" / "react-dom" / "cjs" / "react-dom.production.min.js" -> "assets/react-dom.production.min.js"
+    ),
+
+    makeDeploymentSettings(Universal, Universal/packageBin, "zip"),
+    addArtifact(Universal/packageBin/artifact, Universal/packageBin),
+
+    publish := publish.dependsOn(Universal/publish).value,
+    publishM2 := publishM2.dependsOn(Universal/publishM2).value,
+    publishLocal := publishLocal.dependsOn(Universal/publishLocal).value
+~~~
+This only works, if you have `import com.typesafe.sbt.packager.SettingsHelper._` as an import in the beginning of the `build.sbt`file.
