@@ -321,14 +321,14 @@ Webpack 4 has the potential to substantially reduce your webpack compilation tim
 val files = (webpack in (Compile, fullOptJS)).value
 ~~~
 
-You can use it e.g. with `[sbt-native-packager](https://github.com/sbt/sbt-native-packager)` to add mappings as:
+You can use it e.g. with [sbt-native-packager](https://github.com/sbt/sbt-native-packager)` to add mappings as:
 ~~~ scala
 Universal/mappings ++= (Compile/fullOptJS/webpack).value.map{ f =>
   f.data -> s"assets/${f.data.getName()}"
 },
 ~~~
 
-This will add all artifacts produced by the fully optimized Scala.JS run to the target archive. If you needtoo package additional libraries that have been aquired by scalajs-bundler, you can do something like:
+This will add all artifacts produced by the fully optimized Scala.JS run to the target archive. If you need to package additional libraries that have been aquired by `scalajs-bundler`, you can do something like:
 ~~~
     Universal/mappings ++= (Compile/fullOptJS/webpack).value.map{ f =>
       f.data -> s"assets/${f.data.getName()}"
