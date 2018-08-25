@@ -29,7 +29,7 @@ enablePlugins(ScalaJSBundlerPlugin, UniversalPlugin, UniversalDeployPlugin)
 // the module name
 topLevelDirectory := None
 
-// Map all aassets produced by the ScalaJs Bundler to their location within the archive
+// Map all assets produced by the ScalaJs Bundler to their location within the archive
 mappings.in(Universal) ++= webpack.in(Compile, fullOptJS).value.map { f =>
   f.data -> s"assets/${f.data.getName()}"
 }
