@@ -8,8 +8,6 @@ scalaVersion := "2.12.6"
 
 scalaJSUseMainModuleInitializer := true
 
-enablePlugins(ScalaJSBundlerPlugin, UniversalPlugin, UniversalDeployPlugin)
-
 resolvers += Resolver.sonatypeRepo("snapshots")
 
 npmDependencies.in(Compile) := Seq(
@@ -23,14 +21,27 @@ libraryDependencies ++= Seq(
   "com.github.ahnfelt" %%% "react4s" % "0.9.15-SNAPSHOT"
 )
 
+//#scalajs-files
+// Use ScalaJs and the sbt native packager
+enablePlugins(ScalaJSBundlerPlugin, UniversalPlugin, UniversalDeployPlugin)
+
+// All files shall go directly into the archive rather than having a top level directory matching
+// the module name
 topLevelDirectory := None
 
+// Map all aassets produced by the ScalaJs Bundler to their location within the archive
 mappings.in(Universal) ++= webpack.in(Compile, fullOptJS).value.map { f =>
   f.data -> s"assets/${f.data.getName()}"
-} ++ Seq(
+}
+//#scalajs-files
+
+//#additional-files
+// Add any other required files to the archive
+mappings.in(Universal) ++= Seq(
   target.value / ("scala-" + scalaBinaryVersion.value) / "scalajs-bundler" / "main" / "node_modules" / "react" / "umd" / "react.production.min.js" -> "assets/react.production.min.js",
   target.value / ("scala-" + scalaBinaryVersion.value) / "scalajs-bundler" / "main" / "node_modules" / "react-dom" / "umd" / "react-dom.production.min.js" -> "assets/react-dom.production.min.js"
 )
+//#additional-files
 
 makeDeploymentSettings(Universal, packageBin.in(Universal), "zip")
 
