@@ -179,7 +179,7 @@ object Webpack {
      entry: BundlerFile.Application,
      targetDir: File,
      extraArgs: Seq[String],
-     nodeFlags: Seq[String],
+     nodeArgs: Seq[String],
      mode: WebpackMode,
      log: Logger
   ): BundlerFile.ApplicationBundle = {
@@ -191,7 +191,7 @@ object Webpack {
 
     log.info("Bundling the application with its NPM dependencies")
     val args = extraArgs ++: Seq("--config", configFile.absolutePath)
-    val stats = Webpack.run(nodeFlags: _*)(args: _*)(targetDir, log)
+    val stats = Webpack.run(nodeArgs: _*)(args: _*)(targetDir, log)
     stats.foreach(_.print(log))
 
     // Attempt to discover the actual name produced by webpack indexing by chunk name and discarding maps
@@ -223,7 +223,7 @@ object Webpack {
     entryPointFile: BundlerFile.EntryPoint,
     libraryModuleName: String,
     extraArgs: Seq[String],
-    nodeFlags: Seq[String],
+    nodeArgs: Seq[String],
     mode: WebpackMode,
     log: Logger
   ): BundlerFile.Library = {
@@ -241,7 +241,7 @@ object Webpack {
       .getOrElse(generatedWebpackConfigFile.file)
 
     val args = extraArgs ++: Seq("--config", configFile.absolutePath)
-    val stats = Webpack.run(nodeFlags: _*)(args: _*)(generatedWebpackConfigFile.targetDir.toFile, log)
+    val stats = Webpack.run(nodeArgs: _*)(args: _*)(generatedWebpackConfigFile.targetDir.toFile, log)
     stats.foreach(_.print(log))
 
     val library = generatedWebpackConfigFile.asLibrary(stats)
@@ -288,14 +288,15 @@ object Webpack {
   /**
     * Runs the webpack command.
     *
-    * @param nodeFlags node.js cli flags
+    * @param nodeArgs node.js cli flags
     * @param args Arguments to pass to the webpack command
     * @param workingDir Working directory in which the Nodejs will be run (where there is the `node_modules` subdirectory)
     * @param log Logger
     */
-  def run(nodeFlags: String*)(args: String*)(workingDir: File, log: Logger): Option[WebpackStats] = {
+  def run(nodeArgs: String*)(args: String*)(workingDir: File, log: Logger): Option[WebpackStats] = {
     val webpackBin = workingDir / "node_modules" / "webpack" / "bin" / "webpack"
-    val cmd = Seq("node") ++ nodeFlags ++ Seq(webpackBin.absolutePath, "--bail", "--profile", "--json") ++ args
+    val params = nodeArgs ++ Seq(webpackBin.absolutePath, "--bail", "--profile", "--json") ++ args
+    val cmd = "node" +: params
     Commands.run(cmd, workingDir, log, jsonOutput(cmd, log)).fold(sys.error, _.flatten)
   }
 

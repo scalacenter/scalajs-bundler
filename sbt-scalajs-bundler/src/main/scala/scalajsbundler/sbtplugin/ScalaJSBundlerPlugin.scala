@@ -349,15 +349,15 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
     )
 
     /**
-      * node.js cli flags https://nodejs.org/api/cli.html
+      * node.js cli custom arguments as described in https://nodejs.org/api/cli.html
       *
       * Defaults to an empty list.
       *
       * @group settings
       */
-    val webpackNodeFlags = SettingKey[Seq[String]](
-      "webpackNodeFlags",
-      "Custom arguments to webpack"
+    val webpackNodeArgs = SettingKey[Seq[String]](
+      "webpackNodeArgs",
+      "Custom arguments to node.js when running webpack tasks"
     )
 
     /**
@@ -525,7 +525,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
     webpackMonitoredDirectories := Seq(),
     (includeFilter in webpackMonitoredFiles) := AllPassFilter,
     webpackExtraArgs := Seq.empty,
-    webpackNodeFlags := Seq.empty,
+    webpackNodeArgs := Seq.empty,
 
     npmExtraArgs := Seq.empty,
     yarnExtraArgs := Seq.empty,
@@ -670,7 +670,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
                 val webpackVersion = (version in webpack).value
 
                 val customWebpackConfigFile = (webpackConfigFile in Test).value
-                val nodeFlags = (webpackNodeFlags in Test).value
+                val nodeArgs = (webpackNodeArgs in Test).value
 
                 val writeTestBundleFunction =
                   FileFunction.cached(
@@ -687,17 +687,17 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
                         NpmPackage(webpackVersion).major match {
                           case Some(4) =>
                             // TODO: It assumes tests are run on development mode. It should instead use build settings
-                            Webpack.run(nodeFlags: _*)("--mode", "development", "--config", customConfigFileCopy.getAbsolutePath, loader.absolutePath, "--output", bundle.absolutePath)(targetDir, logger)
+                            Webpack.run(nodeArgs: _*)("--mode", "development", "--config", customConfigFileCopy.getAbsolutePath, loader.absolutePath, "--output", bundle.absolutePath)(targetDir, logger)
                           case _ =>
-                            Webpack.run(nodeFlags: _*)("--config", customConfigFileCopy.getAbsolutePath, loader.absolutePath, bundle.absolutePath)(targetDir, logger)
+                            Webpack.run(nodeArgs: _*)("--config", customConfigFileCopy.getAbsolutePath, loader.absolutePath, bundle.absolutePath)(targetDir, logger)
                         }
                       case None =>
                         NpmPackage(webpackVersion).major match {
                           case Some(4) =>
                             // TODO: It assumes tests are run on development mode. It should instead use build settings
-                            Webpack.run(nodeFlags: _*)("--mode", "development", loader.absolutePath, "--output", bundle.absolutePath)(targetDir, logger)
+                            Webpack.run(nodeArgs: _*)("--mode", "development", loader.absolutePath, "--output", bundle.absolutePath)(targetDir, logger)
                           case _ =>
-                            Webpack.run(nodeFlags: _*)(loader.absolutePath, bundle.absolutePath)(targetDir, logger)
+                            Webpack.run(nodeArgs: _*)(loader.absolutePath, bundle.absolutePath)(targetDir, logger)
                         }
                     }
 
