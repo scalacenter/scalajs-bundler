@@ -313,7 +313,7 @@ Additionally, you need to update any webpack plugins your config uses, to Webpac
 
 Webpack 4 has the potential to substantially reduce your webpack compilation times (80% reductions have been observed but your mileage may vary)
 
-## How to use get a list of assets
+## How to get and use a list of assets
 
 `scalajs-bundler` (version 0.13.0 onwards) will export a list of all assets produced by webpack. You can read that list on sbt
 
@@ -321,7 +321,13 @@ Webpack 4 has the potential to substantially reduce your webpack compilation tim
 val files = (webpack in (Compile, fullOptJS)).value
 ~~~
 
-You can use it e.g. with `[sbt-native-packager](https://github.com/sbt/sbt-native-packager)` to add mappings as:
-~~~ scala
-mappings in (Compile, packageBin) ++= (webpack in (Compile, fullOptJS)).value.map { f => f.data -> f.data.getName() },
+You can this list e.g. with [sbt-native-packager](https://github.com/sbt/sbt-native-packager)` to add mappings as:
+~~~ scala src="../../../sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler/webpack-assets-cookbook/build.sbt#scalajs-files"
 ~~~
+
+This will add all artifacts produced by the fully optimized Scala.JS run to the 'assets' directory of the target archive. 
+
+If you need to package additional libraries that have been downloaded by `scalajs-bundler`, you can do something like:
+~~~ scala src="../../../sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler/webpack-assets-cookbook/build.sbt#additional-files"
+~~~
+Also, any static resources that you would like to have in the resulting archive (i.e. `index.html`), should live inside the `src/universal` directory of your project. 
