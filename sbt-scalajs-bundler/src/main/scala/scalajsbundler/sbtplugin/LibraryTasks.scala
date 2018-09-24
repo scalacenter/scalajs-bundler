@@ -78,6 +78,7 @@ object LibraryTasks {
         webpackResourceFiles ++ compileResources
       val cacheLocation = streams.value.cacheDirectory / s"${stage.key.label}-webpack-libraries"
       val extraArgs = (webpackExtraArgs in stage).value
+      val nodeArgs = (webpackNodeArgs in stage).value
       val webpackMode = Webpack.WebpackMode((scalaJSLinkerConfig in stage).value)
 
       val cachedActionFunction =
@@ -85,8 +86,7 @@ object LibraryTasks {
           cacheLocation,
           inStyle = FilesInfo.hash
         ) { _ =>
-          log.info(
-            s"Building webpack library bundles for ${entryPointFile.project} in $cacheLocation")
+          log.info(s"Building webpack library bundles for ${entryPointFile.project} in $cacheLocation")
 
           Webpack.bundleLibraries(
             emitSourceMaps,
@@ -96,6 +96,7 @@ object LibraryTasks {
             entryPointFile,
             mode.exportedName,
             extraArgs,
+            nodeArgs,
             webpackMode,
             log
           ).cached
