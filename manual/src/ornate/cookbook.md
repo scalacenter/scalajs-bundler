@@ -192,16 +192,16 @@ dependency on the facade and to enable the `ScalaJSBundlerPlugin` plugin.
 
 ## How to use an existing facade assuming the JS library to be exposed to the global namespace? {#global-namespace}
 
-Webpack is able to require external modules by using [imports-loader](https://github.com/webpack-contrib/imports-loader) 
-and expose them to the global namespace by using [expose-loader](https://github.com/webpack/expose-loader). 
-Thus, you can write a custom webpack configuration file that uses this loaders to expose the required 
+Webpack is able to require external modules by using [imports-loader](https://github.com/webpack-contrib/imports-loader)
+and expose them to the global namespace by using [expose-loader](https://github.com/webpack/expose-loader).
+Thus, you can write a custom webpack configuration file that uses this loaders to expose the required
 modules to the global namespace. Typically, this file will look like this:
 
 ~~~ javascript src=../../../sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler/global-namespace-with-jsdom-unit-testing/common.webpack.config.js
 ~~~
 
 Also, tweak your `build.sbt` to add the corresponding NPM dependencies and to use the
-custom webpack configuration file: 
+custom webpack configuration file:
 
 ~~~ scala src=../../../sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler/global-namespace-with-jsdom-unit-testing/build.sbt#relevant-settings
 ~~~
@@ -236,16 +236,16 @@ You can call its methods as follows from your JavaScript code:
 You can enable the [library-only bundling mode](reference.md#bundling-mode-library-only) and disable source maps:
 
 ~~~ scala
-webpackBundlingMode := BundlingMode.LibraryOnly() 
+webpackBundlingMode := BundlingMode.LibraryOnly()
 emitSourceMaps := false
 ~~~
 
 ## How to select specific files from the `BundlingMode.Library` output
 
-In [library-only bundling mode](reference.md#bundling-mode-library-only) and 
+In [library-only bundling mode](reference.md#bundling-mode-library-only) and
 [library with application bundling mode](reference.md#bundling-mode-library-and-application), the `webpack` task
-produces multiple files. In order to determine which of these files is, for instance, the 
-[BundlerFileType.Application](api:scalajsbundler.BundlerFileType$$Application$), you 
+produces multiple files. In order to determine which of these files is, for instance, the
+[BundlerFileType.Application](api:scalajsbundler.BundlerFileType$$Application$), you
 can use the `_.metadata` property of the files, like this:
 
 ~~~ scala src="../../../sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler/static/build.sbt#filter-files"
@@ -325,3 +325,32 @@ You can use it e.g. with `[sbt-native-packager](https://github.com/sbt/sbt-nativ
 ~~~ scala
 mappings in (Compile, packageBin) ++= (webpack in (Compile, fullOptJS)).value.map { f => f.data -> f.data.getName() },
 ~~~
+
+## How to package for [Electron](https://electronjs.org)
+
+Packaging for Electron is actually not that hard either (but some more manual steps are needed to fully
+get this to work - e.g., writing Facades for Electron's built-in types.)
+
+### Add an extra Webpack configuration to your project
+
+A suggested location is `src/main/resources`. Create a file named `electron.webpack.config.js` there and add these lines:
+
+~~~ javascript
+module.exports = require('./scalajs.webpack.config');
+module.exports.target = 'electron';
+~~~
+
+Now, add to your `build.sbt`:
+
+~~~ scala
+webpackConfigFile :=
+Some(baseDirectory.value / "src" / "main" / "resources" / "electron.webpack.config.js")
+~~~
+
+**DON'T** add any `electron` dependencies to your `npmDependencies`!
+
+When you now run `fastOptJS` or `fullOptJS`, you get an appropriate webpack configuration
+and the generated JS files will be packaged correctly.
+
+You still have to add the generated JavaScript file to the `package.json` manually
+to have it started automatically. You could also create a build task that does this for you.
