@@ -28,6 +28,8 @@ webpackConfigFile in Test := Some(baseDirectory.value / "test.webpack.config.js"
 requiresDOM in Test := true
 //#relevant-settings
 
+version in installJsdom := "12.0.0"
+
 libraryDependencies += "org.scalatest" %%% "scalatest" % "3.0.0" % Test
 
 useYarn := true
