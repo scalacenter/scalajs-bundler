@@ -44,7 +44,7 @@ your Scala facades (you can see an example
 If your tests execution environment require the DOM, add the following line to your build:
 
 ~~~ scala
-requiresDOM in Test := true
+jsEnv := new org.scalajs.jsenv.jsdomnodejs.JSDOMNodeJSEnv
 ~~~
 
 Then, `ScalaJSBundlerPlugin` will automatically download jsdom and bundle the tests before
