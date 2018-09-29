@@ -2,7 +2,7 @@ name := "library"
 
 enablePlugins(ScalaJSBundlerPlugin)
 
-scalaVersion := "2.11.8"
+scalaVersion := "2.11.12"
 
 npmDependencies in Compile += "uuid" -> "3.1.0"
 

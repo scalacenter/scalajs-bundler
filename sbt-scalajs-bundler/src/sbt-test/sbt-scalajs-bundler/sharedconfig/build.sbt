@@ -3,7 +3,7 @@ name := "sharedconfig"
 
 enablePlugins(ScalaJSBundlerPlugin)
 
-scalaVersion := "2.11.8"
+scalaVersion := "2.11.12"
 
 scalaJSUseMainModuleInitializer := true
 

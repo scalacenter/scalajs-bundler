@@ -2,7 +2,7 @@ val client =
   project.in(file("client"))
     .enablePlugins(ScalaJSBundlerPlugin, ScalaJSWeb)
     .settings(
-      scalaVersion := "2.11.8",
+      scalaVersion := "2.11.12",
       scalaJSUseMainModuleInitializer := true,
       libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "0.9.1",
       npmDependencies in Compile ++= Seq(
@@ -17,7 +17,7 @@ val server =
     .enablePlugins(PlayScala, WebScalaJSBundlerPlugin)
     .disablePlugins(PlayLayoutPlugin)
     .settings(
-      scalaVersion := "2.11.8",
+      scalaVersion := "2.11.12",
       libraryDependencies += "com.typesafe.play" %% "twirl-api" % "1.2.0",
       libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "1.5.1" % Test,
       scalaJSProjects := Seq(client),
