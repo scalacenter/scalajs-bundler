@@ -21,5 +21,5 @@ lazy val facade =
     )
 
 lazy val commonSettings = Seq(
-  scalaVersion := "2.11.8"
+  scalaVersion := "2.11.12"
 )

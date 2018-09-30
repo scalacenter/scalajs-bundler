@@ -52,7 +52,7 @@ val manual =
     .enablePlugins(OrnatePlugin)
     .settings(noPublishSettings ++ ghpages.settings: _*)
     .settings(
-      scalaVersion := "2.11.8",
+      scalaVersion := "2.11.12",
       git.remoteRepo := "git@github.com:scalacenter/scalajs-bundler.git",
       ornateSourceDir := Some(sourceDirectory.value / "ornate"),
       ornateTargetDir := Some(ornateTarget.value),
@@ -111,10 +111,10 @@ lazy val commonSettings = ScriptedPlugin.scriptedSettings ++ List(
   runScripted := runScriptedTask.value,
   scriptedLaunchOpts += "-Dplugin.version=" + version.value,
   scriptedBufferLog := false,
-  crossSbtVersions := List("0.13.16", "1.0.2"),
+  crossSbtVersions := List("0.13.17", "1.0.2"),
   scalaVersion := {
     (sbtBinaryVersion in pluginCrossBuild).value match {
-      case "0.13" => "2.10.6"
+      case "0.13" => "2.10.7"
       case _ => "2.12.3"
     }
   },

@@ -6,7 +6,7 @@ lazy val npmConfig =
   Project("npmConfig", file("npmConfig"))
     .enablePlugins(ScalaJSBundlerPlugin)
     .settings(
-      scalaVersion := "2.11.8",
+      scalaVersion := "2.11.12",
       npmDependencies in Compile += "react" -> "15.5.4",
       npmExtraArgs in Compile := Seq("-silent"),
       additionalNpmConfig in Compile := Map(
