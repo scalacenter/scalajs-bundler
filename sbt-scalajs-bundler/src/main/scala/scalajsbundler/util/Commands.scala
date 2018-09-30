@@ -10,7 +10,7 @@ object Commands {
 
   def run[A](cmd: Seq[String], cwd: File, logger: Logger, outputProcess: InputStream => A): Either[String, Option[A]] = {
     val toErrorLog = (is: InputStream) => {
-      scala.io.Source.fromInputStream(is).getLines.foreach(msg => logger.error(msg))
+      scala.io.Source.fromInputStream(is).getLines.foreach(warnOrError(logger))
       is.close()
     }
 
@@ -34,7 +34,7 @@ object Commands {
   }
 
   def run(cmd: Seq[String], cwd: File, logger: Logger): Unit = {
-    val toInfoLog = (is: InputStream) => scala.io.Source.fromInputStream(is).getLines.foreach(msg => logger.error(msg))
+    val toInfoLog = (is: InputStream) => scala.io.Source.fromInputStream(is).getLines.foreach(warnOrError(logger))
     run(cmd, cwd, logger, toInfoLog).fold(sys.error, _ => ())
   }
 
@@ -42,6 +42,14 @@ object Commands {
     Process(cmd, cwd).run(toProcessLogger(logger))
 
   private def toProcessLogger(logger: Logger): ProcessLogger =
-    ProcessLogger(msg => logger.info(msg), msg => logger.error(msg))
+    ProcessLogger(msg => logger.info(msg), warnOrError(logger))
 
+  private def warnOrError(logger:Logger)(msg: String): Unit = {
+    val lower = msg.toLowerCase()
+    if (lower.startsWith("npm notice")|| lower.startsWith("npm warn")) {
+      logger.warn(msg)
+    } else {
+      logger.error(msg)
+    }
+  }
 }
