@@ -10,7 +10,8 @@ assertWarning := check().value
 
 def check() = Def.task[Unit] {
   val lastLog: File = BuiltinCommands.lastLogFile(state.value).get
-  val last: String = IO.read(lastLog)
+  val colorCodes = "\u001B\\[[;\\d]*m"
+  val last: String = IO.read(lastLog).replaceAll(colorCodes, "")
   val contains = last.contains("[warn] npm")
   if (!contains) {
     sys.error("Expected `[warn] npm`, but not found")
