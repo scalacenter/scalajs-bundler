@@ -186,9 +186,11 @@ as sbt-web assets as follows:
 
 ~~~ scala
 npmAssets ++= NpmAssets.ofProject(client) { nodeModules =>
-  (nodeModules / "font-awesome").***
+  (nodeModules / "font-awesome").allPaths // sbt 1.0.0+
 }.value
 ~~~
+
+> Note: for older sbt versions use `(nodeModules / "font-awesome").***` instead.
 
 Where `client` is the identifier of an sbt project that uses the `ScalaJSBundlerPlugin`. The above configuration
 makes all the files within the `font-awesome` package available as sbt-web assets.
