@@ -568,7 +568,8 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       installDir
     },
 
-    requireJsDomEnv := false
+    // Default to deprecated requiresDOM to not break old build.
+    requireJsDomEnv := requiresDOM.value
   ) ++
     inConfig(Compile)(perConfigSettings) ++
     inConfig(Test)(perConfigSettings ++ testSettings)
