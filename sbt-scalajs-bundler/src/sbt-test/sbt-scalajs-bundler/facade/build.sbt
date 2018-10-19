@@ -23,3 +23,5 @@ lazy val facade =
 lazy val commonSettings = Seq(
   scalaVersion := "2.11.12"
 )
+
+ivyLoggingLevel in ThisBuild := UpdateLogging.Quiet

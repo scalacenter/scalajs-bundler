@@ -22,3 +22,5 @@ InputKey[Unit]("html") := {
     client.close()
   }
 }
+
+ivyLoggingLevel in ThisBuild := UpdateLogging.Quiet

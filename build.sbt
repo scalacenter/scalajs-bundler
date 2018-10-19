@@ -161,3 +161,5 @@ def runScriptedTask = Def.taskDyn {
   else
     Def.task(streams.value.log.warn("No tests can be run for this sbt version"))
 }
+
+ivyLoggingLevel in ThisBuild := UpdateLogging.Quiet

@@ -63,3 +63,5 @@ TaskKey[Unit]("checkSize") := {
   // Account for minor variance in size due to transitive dependency updates
   assert(artifactSize > 150000 && artifactSize < 200000)
 }
+
+ivyLoggingLevel in ThisBuild := UpdateLogging.Quiet

@@ -35,3 +35,5 @@ npmDependencies in Compile ++= Seq(
   "react"     -> reactJS,
   "react-dom" -> reactJS
 )
+
+ivyLoggingLevel in ThisBuild := UpdateLogging.Quiet
