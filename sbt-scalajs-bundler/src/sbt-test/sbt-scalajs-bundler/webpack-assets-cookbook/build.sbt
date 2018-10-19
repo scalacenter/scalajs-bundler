@@ -66,3 +66,5 @@ TaskKey[Unit]("checkArchive") := {
   assert(expected.size == entries.size)
   assert(expected.forall(e => entries.contains(e)))
 }
+
+ivyLoggingLevel in ThisBuild := UpdateLogging.Quiet

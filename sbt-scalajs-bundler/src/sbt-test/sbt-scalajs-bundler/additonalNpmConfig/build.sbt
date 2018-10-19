@@ -42,3 +42,5 @@ def findPackageJsonLine(lines: Array[String], keyValue: (String, String)) = {
     s"'package.json' missing expected key/value: ($key, $value)"
   )
 }
+
+ivyLoggingLevel in ThisBuild := UpdateLogging.Quiet

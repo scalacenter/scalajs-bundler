@@ -88,3 +88,5 @@ InputKey[Unit]("htmlProd") := {
     client.close()
   }
 }
+
+ivyLoggingLevel in ThisBuild := UpdateLogging.Quiet

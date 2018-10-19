@@ -55,3 +55,5 @@ TaskKey[Unit]("checkSize") := {
     s"expected: [$sizeLow, $sizeHigh], got: $artifactSize"
   )
 }
+
+ivyLoggingLevel in ThisBuild := UpdateLogging.Quiet

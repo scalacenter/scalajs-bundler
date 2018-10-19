@@ -44,3 +44,5 @@ TaskKey[Unit]("checkSize") := {
   val expected = 20163
   assert(artifactSize == expected, s"expected: $expected, got: $artifactSize")
 }
+
+ivyLoggingLevel in ThisBuild := UpdateLogging.Quiet

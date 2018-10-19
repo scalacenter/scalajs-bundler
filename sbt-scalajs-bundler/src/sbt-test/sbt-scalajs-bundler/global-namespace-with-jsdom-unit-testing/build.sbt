@@ -33,3 +33,5 @@ version in installJsdom := "12.0.0"
 libraryDependencies += "org.scalatest" %%% "scalatest" % "3.0.0" % Test
 
 useYarn := true
+
+ivyLoggingLevel in ThisBuild := UpdateLogging.Quiet
