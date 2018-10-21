@@ -653,7 +653,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       npmDevDependencies ++= (npmDevDependencies in Compile).value,
 
       // Default to deprecated requiresDOM to not break old build.
-      requireJsDomEnv := (requiresDOM in Compile).value,
+      requireJsDomEnv := requiresDOM.?.value.getOrElse(false),
 
       // Override Scala.js setting, which does not support the combination of jsdom and CommonJS module output kind
       loadedTestFrameworks := Def.task {
