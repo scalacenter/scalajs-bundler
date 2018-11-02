@@ -462,6 +462,15 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       * @group tasks
       */
     val installJsdom = taskKey[File]("Locally install jsdom")
+
+    /**
+      * A flag to indicate the need to use a DOM enabled JS environment in test.
+      *
+      * Default is false.
+      *
+      * @group tasks
+      */
+    val requireJsDomEnv = taskKey[Boolean]("Require DOM enabled environment in test")
   }
 
   private val scalaJSBundlerPackageJson =
@@ -643,6 +652,9 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
 
       npmDevDependencies ++= (npmDevDependencies in Compile).value,
 
+      // Default to deprecated requiresDOM to not break old build.
+      requireJsDomEnv := requiresDOM.?.value.getOrElse(false),
+
       // Override Scala.js setting, which does not support the combination of jsdom and CommonJS module output kind
       loadedTestFrameworks := Def.task {
         // use assert to prevent warning about pure expr in stat pos
@@ -662,7 +674,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
               assert(ensureModuleKindIsCommonJSModule.value)
               val sjsOutput = fastOptJS.value.data
               // If jsdom is going to be used, then we should bundle the test module into a file that exports the tests to the global namespace
-              if ((scalaJSRequestsDOM in fastOptJS).value) Def.task {
+              if (requireJsDomEnv.value) Def.task {
                 val logger = streams.value.log
                 val targetDir = npmUpdate.value
                 val sjsOutputName = sjsOutput.name.stripSuffix(".js")
@@ -719,7 +731,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
         val (moduleKind, moduleIdentifier) = {
           val withoutDom = (scalaJSModuleKind.value, scalaJSModuleIdentifier.value)
 
-          if ((scalaJSRequestsDOM in fastOptJS).value) (ModuleKind.NoModule, None)
+          if (requireJsDomEnv.value) (ModuleKind.NoModule, None)
           else withoutDom
         }
 

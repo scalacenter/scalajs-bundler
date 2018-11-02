@@ -1,5 +1,16 @@
 # Changelog
 
+## Version 0.14.0
+> Unreleased
+
+This fixes the following bugs:
+ - [#261](https://github.com/scalacenter/scalajs-bundler/issues/261): Support jsdom v12.x
+ - [#267](https://github.com/scalacenter/scalajs-bundler/issues/267): Support JDK9+
+ 
+New features:
+  - [#264](https://github.com/scalacenter/scalajs-bundler/issues/264): Ability to set `node` [flags](https://nodejs.org/api/cli.html)
+  - [#266](https://github.com/scalacenter/scalajs-bundler/issues/266): Custom setting for DOM enabled `JSEnv` in `test`. (`requiresDOM` is deprecated)
+
 ## Version 0.13.1
 
 > 2018 Jul 13
