@@ -25,7 +25,7 @@ webpackConfigFile in fastOptJS := Some(baseDirectory.value / "dev.webpack.config
 webpackConfigFile in Test := Some(baseDirectory.value / "test.webpack.config.js")
 
 // Execute the tests in browser-like environment
-requiresDOM in Test := true
+requireJsDomEnv in Test := true
 //#relevant-settings
 
 version in installJsdom := "12.0.0"
