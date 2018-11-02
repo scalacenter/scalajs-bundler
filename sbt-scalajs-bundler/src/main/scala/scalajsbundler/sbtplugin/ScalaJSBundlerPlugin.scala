@@ -648,7 +648,6 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
           streams.value
         ),
 
-      crossTarget in npmUpdate := (crossTarget in npmUpdate).value,
 
       crossTarget in npmUpdate := {
         crossTarget.value / "scalajs-bundler" / (if (configuration.value == Compile) "main" else "test")
