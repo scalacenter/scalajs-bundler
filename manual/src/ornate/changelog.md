@@ -2,7 +2,7 @@
 
 ## Version 0.14.0
 
-> Unreleased
+> 2018 Nov 5
 
 This release modifies the `npmUpdate` task and splits the logic into two separate tasks; `npmInstallDependencies` and
 `npmInstallJSResources`. `npmUpdate` has a less obvious side effect that, not only does it run `npm install`, it would
@@ -14,10 +14,13 @@ This fixes the following bugs:
  - [#258](https://github.com/scalacenter/scalajs-bundler/issues/258): Unable to use npmUpdate in sourceGenerators
  - [#261](https://github.com/scalacenter/scalajs-bundler/issues/261): Support jsdom v12.x
  - [#267](https://github.com/scalacenter/scalajs-bundler/issues/267): Support JDK9+
- 
+
 New features:
   - [#264](https://github.com/scalacenter/scalajs-bundler/issues/264): Ability to set `node` [flags](https://nodejs.org/api/cli.html)
   - [#266](https://github.com/scalacenter/scalajs-bundler/issues/266): Custom setting for DOM enabled `JSEnv` in `test`. (`requiresDOM` is deprecated)
+
+And documentation fixes:
+  - [#269](https://github.com/scalacenter/scalajs-bundler/issues/269): Update docs
 
 ## Version 0.13.1
 
