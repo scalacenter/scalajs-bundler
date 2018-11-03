@@ -109,7 +109,10 @@ inScope(ThisScope.copy(project = Global))(List(
 
 lazy val commonSettings = ScriptedPlugin.scriptedSettings ++ List(
   runScripted := runScriptedTask.value,
-  scriptedLaunchOpts += "-Dplugin.version=" + version.value,
+  scriptedLaunchOpts ++= Seq(
+    "-Dplugin.version=" + version.value,
+    "-Dsbt.execute.extrachecks=true" // Avoid any deadlocks.
+  ),
   scriptedBufferLog := false,
   crossSbtVersions := List("0.13.17", "1.0.2"),
   scalaVersion := {
