@@ -75,7 +75,7 @@
 <li><a href="cookbook.html#webpack-dev-server">How to rebuild and reload your page on code changes?</a></li>
 <li><a href="cookbook.html#how-to-pass-extra-parameters-to-webpack">How to pass extra parameters to webpack</a></li>
 <li><a href="cookbook.html#how-to-use-webpack-4">How to use webpack 4</a></li>
-<li><a href="cookbook.html#how-to-use-get-a-list-of-assets">How to use get a list of assets</a></li>
+<li><a href="cookbook.html#how-to-get-and-use-a-list-of-assets">How to get and use a list of assets</a></li>
 </ul>
 </li>
 </ul>
@@ -307,7 +307,7 @@ webpackConfigFile in fastOptJS := <span class="hljs-type">Some</span>(baseDirect
 webpackConfigFile in <span class="hljs-type">Test</span> := <span class="hljs-type">Some</span>(baseDirectory.value / <span class="hljs-string">"test.webpack.config.js"</span>)
 
 <span class="hljs-comment">// Execute the tests in browser-like environment</span>
-requiresDOM in <span class="hljs-type">Test</span> := <span class="hljs-literal">true</span></code></pre>
+requireJsDomEnv in <span class="hljs-type">Test</span> := <span class="hljs-literal">true</span></code></pre>
 </div></div>
 <p>You can find a fully working example
 <a href="https://github.com/scalacenter/scalajs-bundler/blob/master/sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler/global-namespace-with-jsdom-unit-testing">here</a>.</p>
@@ -414,17 +414,36 @@ version in startWebpackDevServer := <span class="hljs-string">"3.1.4"</span>
 </div></div>
 <p>Additionally, you need to update any webpack plugins your config uses, to Webpack 4 compatible versions.</p>
 <p>Webpack 4 has the potential to substantially reduce your webpack compilation times (80% reductions have been observed but your mileage may vary)</p>
-<h2 id="how-to-use-get-a-list-of-assets" class="a_section" data-magellan-target="how-to-use-get-a-list-of-assets">How to use get a list of assets<a class="a_hlink" href="#how-to-use-get-a-list-of-assets"></a></h2>
+<h2 id="how-to-get-and-use-a-list-of-assets" class="a_section" data-magellan-target="how-to-get-and-use-a-list-of-assets">How to get and use a list of assets<a class="a_hlink" href="#how-to-get-and-use-a-list-of-assets"></a></h2>
 <p><code class="hljs">scalajs-bundler</code> (version 0.13.0 onwards) will export a list of all assets produced by webpack. You can read that list on sbt</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
 <pre class="hljs"><code class="language-scala"><span class="hljs-keyword">val</span> files = (webpack in (<span class="hljs-type">Compile</span>, fullOptJS)).value
 </code></pre>
 </div></div>
-<p>You can use it e.g. with <code class="hljs">[sbt-native-packager](https://github.com/sbt/sbt-native-packager)</code> to add mappings as:</p>
+<p>You can this list e.g. with <a href="https://github.com/sbt/sbt-native-packager">sbt-native-packager</a>` to add mappings as:</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
-<pre class="hljs"><code class="language-scala">mappings in (<span class="hljs-type">Compile</span>, packageBin) ++= (webpack in (<span class="hljs-type">Compile</span>, fullOptJS)).value.map { f =&gt; f.data -&gt; f.data.getName() },
-</code></pre>
+<pre class="hljs"><code class="language-scala"><span class="hljs-comment">// Use ScalaJs and the sbt native packager</span>
+enablePlugins(<span class="hljs-type">ScalaJSBundlerPlugin</span>, <span class="hljs-type">UniversalPlugin</span>, <span class="hljs-type">UniversalDeployPlugin</span>)
+
+<span class="hljs-comment">// All files shall go directly into the archive rather than having a top level directory matching</span>
+<span class="hljs-comment">// the module name</span>
+topLevelDirectory := <span class="hljs-type">None</span>
+
+<span class="hljs-comment">// Map all assets produced by the ScalaJs Bundler to their location within the archive</span>
+mappings.in(<span class="hljs-type">Universal</span>) ++= webpack.in(<span class="hljs-type">Compile</span>, fullOptJS).value.map { f =&gt;
+  f.data -&gt; <span class="hljs-string">s"assets/<span class="hljs-subst">${f.data.getName()}</span>"</span>
+}</code></pre>
 </div></div>
+<p>This will add all artifacts produced by the fully optimized Scala.JS run to the 'assets' directory of the target archive.</p>
+<p>If you need to package additional libraries that have been downloaded by <code class="hljs">scalajs-bundler</code>, you can do something like:</p>
+<div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
+<pre class="hljs"><code class="language-scala"><span class="hljs-comment">// Add any other required files to the archive</span>
+mappings.in(<span class="hljs-type">Universal</span>) ++= <span class="hljs-type">Seq</span>(
+  target.value / (<span class="hljs-string">"scala-"</span> + scalaBinaryVersion.value) / <span class="hljs-string">"scalajs-bundler"</span> / <span class="hljs-string">"main"</span> / <span class="hljs-string">"node_modules"</span> / <span class="hljs-string">"react"</span> / <span class="hljs-string">"umd"</span> / <span class="hljs-string">"react.production.min.js"</span> -&gt; <span class="hljs-string">"assets/react.production.min.js"</span>,
+  target.value / (<span class="hljs-string">"scala-"</span> + scalaBinaryVersion.value) / <span class="hljs-string">"scalajs-bundler"</span> / <span class="hljs-string">"main"</span> / <span class="hljs-string">"node_modules"</span> / <span class="hljs-string">"react-dom"</span> / <span class="hljs-string">"umd"</span> / <span class="hljs-string">"react-dom.production.min.js"</span> -&gt; <span class="hljs-string">"assets/react-dom.production.min.js"</span>
+)</code></pre>
+</div></div>
+<p>Also, any static resources that you would like to have in the resulting archive (i.e. <code class="hljs">index.html</code>), should live inside the <code class="hljs">src/universal</code> directory of your project.</p>
 
                  
   <ul class="menu align-right simple a_navbar a_navbar_bottom">
@@ -637,7 +656,7 @@ version in startWebpackDevServer := <span class="hljs-string">"3.1.4"</span>
   
     <li>
       
-         <a href="#how-to-use-get-a-list-of-assets">How to use get a list of assets</a> 
+         <a href="#how-to-get-and-use-a-list-of-assets">How to get and use a list of assets</a> 
       
       
     </li>

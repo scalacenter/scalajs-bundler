@@ -39,7 +39,7 @@
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/scalacenter/scalajs-bundler/blob/v0.13.1/sbt-scalajs-bundler/src/main/scala/scalajsbundler/sbtplugin/ScalaJSBundlerPlugin.scala" target="_blank">ScalaJSBundlerPlugin.scala</a></dd></dl><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/scalacenter/scalajs-bundler/blob/v0.14.0/sbt-scalajs-bundler/src/main/scala/scalajsbundler/sbtplugin/ScalaJSBundlerPlugin.scala" target="_blank">ScalaJSBundlerPlugin.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
@@ -508,6 +508,43 @@ You can use [semver](https://docs.npmjs.com/misc/semver) versions:</p><pre>npmDe
       </h4>
       <p class="shortcomment cmt">Additional arguments for npm</p><div class="fullcomment"><div class="comment cmt"><p>Additional arguments for npm</p><p>Defaults to an empty list.
 </p></div></div>
+    </li><li name="scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.autoImport#npmInstallDependencies" visbl="pub" data-isabs="false" fullComment="yes" group="tasks">
+      <a id="npmInstallDependencies:sbt.TaskKey[sbt.File]"></a>
+      <a id="npmInstallDependencies:TaskKey[File]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">npmInstallDependencies</span><span class="result">: <span class="extype" name="sbt.TaskKey">TaskKey</span>[<a href="../../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Installs NPM dependencies.</p><div class="fullcomment"><div class="comment cmt"><p>Installs NPM dependencies.</p><p>Unlike <a href="#npmUpdate:sbt.TaskKey[sbt.File]" class="extmbr" name="scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.autoImport#npmUpdate">npmUpdate</a> this does not stage the javascript resources and so is safe to use in <code>sourceGenerators</code>
+or any other task that is used by <code>fullClasspath</code>.</p><p>The plugin uses different directories according to the configuration (<code>Compile</code> or <code>Test</code>). Thus,
+this setting is scoped by a <code>Configuration</code>.</p><p>Typically, if you want to define a task that uses the downloaded NPM packages you should
+specify the <code>Configuration</code> you are interested in:</p><pre>myCustomTask := {
+<span class="kw">val</span> npmDirectory = (npmInstallDependencies in Compile).value
+doSomething(npmDirectory / <span class="lit">"node_modules"</span> / <span class="lit">"some-package"</span>)
+}</pre><p>The task returns the directory in which the dependencies have been fetched (the directory
+that contains the <code>node_modules</code> directory).
+</p></div></div>
+    </li><li name="scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.autoImport#npmInstallJSResources" visbl="pub" data-isabs="false" fullComment="yes" group="tasks">
+      <a id="npmInstallJSResources:sbt.TaskKey[Seq[sbt.File]]"></a>
+      <a id="npmInstallJSResources:TaskKey[Seq[File]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">npmInstallJSResources</span><span class="result">: <span class="extype" name="sbt.TaskKey">TaskKey</span>[<span class="extype" name="scala.Seq">Seq</span>[<a href="../../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a>]]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Installs all JavaScript resources found on the classpath as node packages.</p><div class="fullcomment"><div class="comment cmt"><p>Installs all JavaScript resources found on the classpath as node packages.</p><p>The JavaScript resources are installed locally in <code>node_modules</code> and can be used any other node package,
+such as to load a module using <code>require()</code>.</p><p>The plugin uses different directories according to the configuration (<code>Compile</code> or <code>Test</code>). Thus,
+this setting is scoped by a <code>Configuration</code>.</p><p>The task returns the path to each JavaScript resource within the <code>node_modules</code> directory.
+</p></div></div>
     </li><li name="scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.autoImport#npmResolutions" visbl="pub" data-isabs="false" fullComment="yes" group="settings">
       <a id="npmResolutions:sbt.SettingKey[Map[String,String]]"></a>
       <a id="npmResolutions:SettingKey[Map[String,String]]"></a>
@@ -542,13 +579,25 @@ a version conflict resolution is delegated to npm/yarn. This behavior may reduce
         <span class="name">npmUpdate</span><span class="result">: <span class="extype" name="sbt.TaskKey">TaskKey</span>[<a href="../../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a>]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Fetches NPM dependencies.</p><div class="fullcomment"><div class="comment cmt"><p>Fetches NPM dependencies. Returns the directory in which the <code>npm install</code> command has been run.</p><p>The plugin uses different directories according to the configuration (<code>Compile</code> or <code>Test</code>). Thus,
-this setting is scoped by a <code>Configuration</code>.</p><p>Typically, if you want to define a task that uses the downloaded NPM packages you should
-specify the <code>Configuration</code> you are interested in:</p><pre>myCustomTask := {
-<span class="kw">val</span> npmDirectory = (npmUpdate in Compile).value
-doSomething(npmDirectory / <span class="lit">"node_modules"</span> / <span class="lit">"some-package"</span>)
-}</pre><p>The task returns the directory in which the dependencies have been fetched (the directory
+      <p class="shortcomment cmt">Installs NPM dependencies and all JavaScript resources found on the classpath as node packages.</p><div class="fullcomment"><div class="comment cmt"><p>Installs NPM dependencies and all JavaScript resources found on the classpath as node packages.</p><p>The JavaScript resources are installed locally in <code>node_modules</code> and can be used any other node package,
+such as to load a module using <code>require()</code>.</p><p>Do not use this from <code>sourceGenerators</code> or any other task that is used either directly or indirectly by
+<code>fullClasspath</code> otherwise it will result in a deadlock. For this, use <a href="#npmInstallDependencies:sbt.TaskKey[sbt.File]" class="extmbr" name="scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.autoImport#npmInstallDependencies">npmInstallDependencies</a> instead.</p><p>The plugin uses different directories according to the configuration (<code>Compile</code> or <code>Test</code>). Thus,
+this setting is scoped by a <code>Configuration</code>.</p><p>The task returns the directory in which the dependencies have been fetched (the directory
 that contains the <code>node_modules</code> directory).
+</p></div></div>
+    </li><li name="scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.autoImport#requireJsDomEnv" visbl="pub" data-isabs="false" fullComment="yes" group="tasks">
+      <a id="requireJsDomEnv:sbt.TaskKey[Boolean]"></a>
+      <a id="requireJsDomEnv:TaskKey[Boolean]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">requireJsDomEnv</span><span class="result">: <span class="extype" name="sbt.TaskKey">TaskKey</span>[<span class="extype" name="scala.Boolean">Boolean</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">A flag to indicate the need to use a DOM enabled JS environment in test.</p><div class="fullcomment"><div class="comment cmt"><p>A flag to indicate the need to use a DOM enabled JS environment in test.</p><p>Default is false.
 </p></div></div>
     </li><li name="scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.autoImport#startWebpackDevServer" visbl="pub" data-isabs="false" fullComment="yes" group="tasks">
       <a id="startWebpackDevServer:sbt.TaskKey[Unit]"></a>
@@ -844,6 +893,20 @@ setting:</p><pre>emitSourceMaps := <span class="kw">false</span></pre></div></di
    <code>includeFilter</code>
 </li></ul></div><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p><a href="#webpack:sbt.TaskKey[Seq[sbt.Attributed[sbt.File]]]" class="extmbr" name="scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.autoImport#webpack">webpack</a>
 </p></span><span class="cmt"><p><a href="#webpackMonitoredDirectories:sbt.SettingKey[Seq[sbt.File]]" class="extmbr" name="scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.autoImport#webpackMonitoredDirectories">webpackMonitoredDirectories</a></p></span></dd></dl></div>
+    </li><li name="scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.autoImport#webpackNodeArgs" visbl="pub" data-isabs="false" fullComment="yes" group="settings">
+      <a id="webpackNodeArgs:sbt.SettingKey[Seq[String]]"></a>
+      <a id="webpackNodeArgs:SettingKey[Seq[String]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">webpackNodeArgs</span><span class="result">: <span class="extype" name="sbt.SettingKey">SettingKey</span>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">node.</p><div class="fullcomment"><div class="comment cmt"><p>node.js cli custom arguments as described in https://nodejs.org/api/cli.html</p><p>Defaults to an empty list.
+</p></div></div>
     </li><li name="scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.autoImport#webpackResources" visbl="pub" data-isabs="false" fullComment="yes" group="settings">
       <a id="webpackResources:sbt.SettingKey[sbt.PathFinder]"></a>
       <a id="webpackResources:SettingKey[PathFinder]"></a>

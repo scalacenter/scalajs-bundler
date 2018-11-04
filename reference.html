@@ -96,7 +96,7 @@ your Scala facades (you can see an example
 <h3 id="jsdom" class="a_section" data-magellan-target="jsdom">jsdom Support for Tests<a class="a_hlink" href="#jsdom"></a></h3>
 <p>If your tests execution environment require the DOM, add the following line to your build:</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
-<pre class="hljs"><code class="language-scala">requiresDOM in <span class="hljs-type">Test</span> := <span class="hljs-literal">true</span>
+<pre class="hljs"><code class="language-scala">requireJsDomEnv in <span class="hljs-type">Test</span> := <span class="hljs-literal">true</span>
 </code></pre>
 </div></div>
 <p>Then, <code class="hljs">ScalaJSBundlerPlugin</code> will automatically download jsdom and bundle the tests before
@@ -205,10 +205,13 @@ how to include the correct .js file.</p>
 as sbt-web assets as follows:</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
 <pre class="hljs"><code class="language-scala">npmAssets ++= <span class="hljs-type">NpmAssets</span>.ofProject(client) { nodeModules =&gt;
-  (nodeModules / <span class="hljs-string">"font-awesome"</span>).***
+  (nodeModules / <span class="hljs-string">"font-awesome"</span>).allPaths <span class="hljs-comment">// sbt 1.0.0+</span>
 }.value
 </code></pre>
 </div></div>
+<blockquote>
+<p>Note: for older sbt versions use <code class="hljs">(nodeModules / &quot;font-awesome&quot;).***</code> instead.</p>
+</blockquote>
 <p>Where <code class="hljs">client</code> is the identifier of an sbt project that uses the <code class="hljs">ScalaJSBundlerPlugin</code>. The above configuration
 makes all the files within the <code class="hljs">font-awesome</code> package available as sbt-web assets.
 These assets keep their path prefix relative to the <code class="hljs">node_modules</code> directory: for instance the asset path of the

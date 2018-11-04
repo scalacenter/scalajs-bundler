@@ -61,6 +61,44 @@
  
                 
                 <h1 id="changelog" class="a_section" data-magellan-target="changelog">Changelog<a class="a_hlink" href="#changelog"></a></h1>
+<h2 id="version-0.14.0" class="a_section" data-magellan-target="version-0.14.0">Version 0.14.0<a class="a_hlink" href="#version-0.14.0"></a></h2>
+<blockquote>
+<p>2018 Nov 5</p>
+</blockquote>
+<p>This release modifies the <code class="hljs">npmUpdate</code> task and splits the logic into two separate tasks; <code class="hljs">npmInstallDependencies</code> and
+<code class="hljs">npmInstallJSResources</code>. <code class="hljs">npmUpdate</code> has a less obvious side effect that, not only does it run <code class="hljs">npm install</code>, it would
+also copy all the JavaScript resources to the <code class="hljs">node_modules</code> directory. This behaviour is fine except that it is not
+suitable for use in <code class="hljs">sourceGenerators</code> and would cause a cycle in the tasks. <code class="hljs">npmInstallDependencies</code> should be used in
+cases where you want to want to use a npm module from a sbt task.</p>
+<p>This fixes the following bugs:</p>
+<ul>
+<li><a href="https://github.com/scalacenter/scalajs-bundler/issues/258">#258</a>: Unable to use npmUpdate in sourceGenerators</li>
+<li><a href="https://github.com/scalacenter/scalajs-bundler/issues/261">#261</a>: Support jsdom v12.x</li>
+<li><a href="https://github.com/scalacenter/scalajs-bundler/issues/267">#267</a>: Support JDK9+</li>
+</ul>
+<p>New features:</p>
+<ul>
+<li><a href="https://github.com/scalacenter/scalajs-bundler/issues/264">#264</a>: Ability to set <code class="hljs">node</code> <a href="https://nodejs.org/api/cli.html">flags</a></li>
+<li><a href="https://github.com/scalacenter/scalajs-bundler/issues/266">#266</a>: Custom setting for DOM enabled <code class="hljs">JSEnv</code> in <code class="hljs">test</code>. (<code class="hljs">requiresDOM</code> is deprecated)</li>
+</ul>
+<p>And documentation fixes:</p>
+<ul>
+<li><a href="https://github.com/scalacenter/scalajs-bundler/issues/269">#269</a>: Update docs</li>
+</ul>
+<h2 id="version-0.13.1" class="a_section" data-magellan-target="version-0.13.1">Version 0.13.1<a class="a_hlink" href="#version-0.13.1"></a></h2>
+<blockquote>
+<p>2018 Jul 13</p>
+</blockquote>
+<p>This fixes the following bugs:</p>
+<ul>
+<li><a href="https://github.com/scalacenter/scalajs-bundler/issues/224">#224</a>: Use project-level custom NPM registry</li>
+</ul>
+<p>The following PRs are included in this release</p>
+<ul>
+<li><a href="https://github.com/scalacenter/scalajs-bundler/pull/254">#254</a>: Npm/yarn args</li>
+<li><a href="https://github.com/scalacenter/scalajs-bundler/pull/251">#251</a>: Fix typo</li>
+<li><a href="https://github.com/scalacenter/scalajs-bundler/pull/249">#249</a>: Sync yarn.lock between baseDir and installDir</li>
+</ul>
 <h2 id="version-0.13.0" class="a_section" data-magellan-target="version-0.13.0">Version 0.13.0<a class="a_hlink" href="#version-0.13.0"></a></h2>
 <blockquote>
 <p>2018 Jun 5</p>
@@ -387,6 +425,24 @@ the classpath can be <code class="hljs">@JSImport</code>ed by your Scala facades
       
       
         <ul class="vertical menu">  
+  
+    <li>
+      
+         <a href="#version-0.14.0">Version 0.14.0</a> 
+      
+      
+    </li>
+  
+  
+  
+    <li>
+      
+         <a href="#version-0.13.1">Version 0.13.1</a> 
+      
+      
+    </li>
+  
+  
   
     <li>
       
