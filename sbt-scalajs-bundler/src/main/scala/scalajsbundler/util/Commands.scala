@@ -34,7 +34,7 @@ object Commands {
   }
 
   def run(cmd: Seq[String], cwd: File, logger: Logger): Unit = {
-    val toInfoLog = (is: InputStream) => scala.io.Source.fromInputStream(is).getLines.foreach(msg => logger.error(msg))
+    val toInfoLog = (is: InputStream) => scala.io.Source.fromInputStream(is).getLines.foreach(msg => logger.info(msg))
     run(cmd, cwd, logger, toInfoLog).fold(sys.error, _ => ())
   }
 
