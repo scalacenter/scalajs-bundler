@@ -78,3 +78,5 @@ InputKey[Unit]("html") := {
 
   assert(!shouldPass || gotMessage, "Did not get println result")
 }
+
+ivyLoggingLevel in ThisBuild := UpdateLogging.Quiet

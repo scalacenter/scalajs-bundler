@@ -18,7 +18,7 @@ webpackConfigFile in fullOptJS := Some(baseDirectory.value / "prod.webpack.confi
 libraryDependencies += "org.scalatest" %%% "scalatest" % "3.0.0" % Test
 
 // Execute the tests in browser-like environment
-requiresDOM in Test := true
+requireJsDomEnv in Test := true
 
 webpackBundlingMode := BundlingMode.LibraryAndApplication()
 
@@ -55,3 +55,5 @@ TaskKey[Unit]("checkSize") := {
     s"expected: [$sizeLow, $sizeHigh], got: $artifactSize"
   )
 }
+
+ivyLoggingLevel in ThisBuild := UpdateLogging.Quiet

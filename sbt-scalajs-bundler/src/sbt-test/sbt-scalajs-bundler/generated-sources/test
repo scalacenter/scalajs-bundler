@@ -1,0 +1,3 @@
+# Tests that it is possible to use npm dev dependencies to generate sources
+# without creating a cycle in the tasks.
+> sources

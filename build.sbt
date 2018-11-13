@@ -11,7 +11,7 @@ val `sbt-scalajs-bundler` =
       name := "sbt-scalajs-bundler",
       description := "Module bundler for Scala.js projects",
       libraryDependencies += "com.typesafe.play" %% "play-json" % "2.6.7",
-      addSbtPlugin("org.scala-js" % "sbt-scalajs" % "0.6.22")
+      addSbtPlugin("org.scala-js" % "sbt-scalajs" % "0.6.25")
     )
 
 val `sbt-web-scalajs-bundler` =
@@ -26,7 +26,7 @@ val `sbt-web-scalajs-bundler` =
       },
       name := "sbt-web-scalajs-bundler",
       description := "Module bundler for Scala.js projects (integration with sbt-web-scalajs)",
-      addSbtPlugin("com.vmunier" % "sbt-web-scalajs" % "1.0.6")
+      addSbtPlugin("com.vmunier" % "sbt-web-scalajs" % "1.0.8-0.6")
     )
     .dependsOn(`sbt-scalajs-bundler`)
 
@@ -109,7 +109,10 @@ inScope(ThisScope.copy(project = Global))(List(
 
 lazy val commonSettings = ScriptedPlugin.scriptedSettings ++ List(
   runScripted := runScriptedTask.value,
-  scriptedLaunchOpts += "-Dplugin.version=" + version.value,
+  scriptedLaunchOpts ++= Seq(
+    "-Dplugin.version=" + version.value,
+    "-Dsbt.execute.extrachecks=true" // Avoid any deadlocks.
+  ),
   scriptedBufferLog := false,
   crossSbtVersions := List("0.13.17", "1.0.2"),
   scalaVersion := {
@@ -161,3 +164,5 @@ def runScriptedTask = Def.taskDyn {
   else
     Def.task(streams.value.log.warn("No tests can be run for this sbt version"))
 }
+
+ivyLoggingLevel in ThisBuild := UpdateLogging.Quiet

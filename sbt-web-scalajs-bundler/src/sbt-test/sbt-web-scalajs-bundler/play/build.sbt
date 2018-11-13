@@ -10,7 +10,8 @@ val client =
         "snabbdom" -> "0.5.3",
         "font-awesome" -> "4.7.0",
         "url-loader" -> "0.5.9"
-      )
+      ),
+      ivyLoggingLevel := UpdateLogging.Quiet
     )
 
 val server =
@@ -25,9 +26,13 @@ val server =
       pipelineStages in Assets := Seq(scalaJSPipeline),
       pipelineStages := Seq(digest, gzip),
       // Expose as sbt-web assets some files retrieved from the NPM packages of the `client` project
-      npmAssets ++= NpmAssets.ofProject(client) { modules => (modules / "font-awesome").allPaths }.value
+      npmAssets ++= NpmAssets.ofProject(client) { modules => (modules / "font-awesome").allPaths }.value,
+      ivyLoggingLevel := UpdateLogging.Quiet
     )
 
 val play =
   project.in(file("."))
     .aggregate(client, server)
+    .settings(
+      ivyLoggingLevel := UpdateLogging.Quiet
+    )

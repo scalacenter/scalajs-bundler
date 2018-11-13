@@ -52,3 +52,5 @@ def proj(id: String): Project =
   Project(id, file(id))
     .enablePlugins(ScalaJSBundlerPlugin)
     .settings(scalaVersion := "2.11.12")
+
+ivyLoggingLevel in ThisBuild := UpdateLogging.Quiet

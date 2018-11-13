@@ -35,7 +35,7 @@ webpackConfigFile in Test := Some(baseDirectory.value / "common.webpack.config.j
 libraryDependencies += "org.scalatest" %%% "scalatest" % "3.0.0" % Test
 
 // Execute the tests in browser-like environment
-requiresDOM in Test := true
+requireJsDomEnv in Test := true
 
 webpackBundlingMode := BundlingMode.LibraryAndApplication()
 
@@ -63,3 +63,5 @@ TaskKey[Unit]("checkSize") := {
   // Account for minor variance in size due to transitive dependency updates
   assert(artifactSize > 150000 && artifactSize < 200000)
 }
+
+ivyLoggingLevel in ThisBuild := UpdateLogging.Quiet

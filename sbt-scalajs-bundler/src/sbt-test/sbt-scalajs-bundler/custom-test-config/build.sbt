@@ -21,6 +21,7 @@ webpackConfigFile in Test := Some(baseDirectory.value / "test.webpack.config.js"
 testFrameworks += new TestFramework("utest.runner.Framework")
 
 // Execute the tests in browser-like environment
+// Normally, the build should use requireJsDomEnv setting instead but old, deprecated requiresDOM should also work
 requiresDOM in Test := true
 
 webpackBundlingMode := BundlingMode.LibraryAndApplication()
@@ -35,3 +36,5 @@ npmDependencies in Compile ++= Seq(
   "react"     -> reactJS,
   "react-dom" -> reactJS
 )
+
+ivyLoggingLevel in ThisBuild := UpdateLogging.Quiet
