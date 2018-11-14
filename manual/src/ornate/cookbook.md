@@ -330,4 +330,22 @@ This will add all artifacts produced by the fully optimized Scala.JS run to the 
 If you need to package additional libraries that have been downloaded by `scalajs-bundler`, you can do something like:
 ~~~ scala src="../../../sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler/webpack-assets-cookbook/build.sbt#additional-files"
 ~~~
-Also, any static resources that you would like to have in the resulting archive (i.e. `index.html`), should live inside the `src/universal` directory of your project. 
+Also, any static resources that you would like to have in the resulting archive (i.e. `index.html`), should live inside the `src/universal` directory of your project.
+
+## How to use a forked npm dependencies
+
+Often npm dependencies are forked and you may want to use them instead.
+For example `react-sortable-hoc` hasn't been updated in a while and there are forks with useful improvements.
+To use the in `yarn` you often would do
+
+~~~
+yarn add DataDog/react-sortable-hoc
+~~~
+
+You can do the same with `scalajs-bundler` putting the fork name on the version, as follows:
+
+~~~ scala
+npmDependencies in Compile ++= Seq(
+  "react-sortable-hoc" -> "DataDog/react-sortable-hoc#0.9.9"
+)
+~~~
