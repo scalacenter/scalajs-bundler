@@ -336,7 +336,7 @@ Also, any static resources that you would like to have in the resulting archive 
 
 Often npm dependencies are forked and you may want to use them instead.
 For example `react-sortable-hoc` hasn't been updated in a while and there are forks with useful improvements.
-To use the in `yarn` you often would do
+To use them in `yarn` you often would do:
 
 ~~~
 yarn add DataDog/react-sortable-hoc
