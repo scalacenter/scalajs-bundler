@@ -27,7 +27,7 @@ object NpmUpdateTasks {
                 npmExtraArgs: Seq[String],
                 yarnExtraArgs: Seq[String]): File = {
     val dir = npmInstallDependencies(baseDir, targetDir, packageJsonFile, useYarn, streams, npmExtraArgs, yarnExtraArgs)
-    npmInstallJSResources(targetDir, jsResources, streams)
+    npmInstallJSResources(targetDir, jsResources, Seq.empty, streams)
     dir
   }
 
@@ -73,21 +73,23 @@ object NpmUpdateTasks {
     */
   def npmInstallJSResources(targetDir: File,
                             jsResources: Seq[VirtualJSFile with RelativeVirtualFile],
+                            jsSourceDirectories: Seq[File],
                             streams: Keys.TaskStreams): Seq[File] = {
-    val jsFileResources = jsResources.collect {
-      case file: FileVirtualJSFile => file
-    }.toSet
+    val jsFileResources =   jsResources.collect {
+      case jsfile: FileVirtualJSFile with RelativeVirtualFile => jsfile.file -> jsfile.relativePath
+    }.toSet ++ jsSourceDirectories.flatMap(f => if (f.isDirectory) Path.allSubpaths(f) else Seq.empty).toSet
+
     val cachedActionFunction = FileFunction.cached(
         streams.cacheDirectory / "scalajsbundler-npm-install-resources",
         inStyle = FilesInfo.hash
       ) { _ =>
-        jsFileResources.map { resource =>
-          val resourcePath = targetDir / resource.relativePath
-          IO.write(resourcePath, resource.content)
-          resourcePath
+      jsFileResources.map { case (file, relativePath) =>
+        val resourcePath = targetDir / relativePath
+        IO.copyFile(file, resourcePath)
+        resourcePath
         }
       }
-    val files = jsFileResources.map(_.file)
+    val files = jsFileResources.map { case (rFile, _) => rFile }
     cachedActionFunction(files).toSeq
   }
 }

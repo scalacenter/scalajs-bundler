@@ -20,6 +20,8 @@ import scalajsbundler.ExternalCommand.addPackages
 import scalajsbundler._
 import scalajsbundler.util.JSON
 
+
+
 /**
   * This plugin enables `ScalaJSPlugin` and sets the `scalaJSModuleKind` to `CommonJSModule`. It also makes it
   * possible to define dependencies to NPM packages and provides tasks to fetch them or to bundle the application
@@ -128,6 +130,8 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
 
     /**
       * Installs all JavaScript resources found on the classpath as node packages.
+      *
+      * Additionally, it installs also the resources found under [[jsSourceDirectories]]
       *
       * The JavaScript resources are installed locally in `node_modules` and can be used any other node package,
       * such as to load a module using `require()`.
@@ -510,6 +514,15 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       * @group tasks
       */
     val requireJsDomEnv = taskKey[Boolean]("Require DOM enabled environment in test")
+
+    /**
+      * Local js source directories to be collected by the bundler
+      *
+      * Default is `src/main/js`
+      *
+      * @group settings
+      */
+    val jsSourceDirectories = settingKey[Seq[File]]("Local js source directories to be collected by the bundler")
   }
 
   private val scalaJSBundlerPackageJson =
@@ -623,6 +636,8 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
         "license" -> JSON.str("UNLICENSED")
       ),
 
+      jsSourceDirectories := Seq(sourceDirectory.value  / "js"),
+
       npmUpdate := {
         val _ = npmInstallJSResources.value
         npmInstallDependencies.value
@@ -640,6 +655,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       npmInstallJSResources := NpmUpdateTasks.npmInstallJSResources(
         (crossTarget in npmUpdate).value,
         scalaJSNativeLibraries.value.data,
+        jsSourceDirectories.value,
         streams.value),
 
       scalaJSBundlerPackageJson :=
@@ -700,6 +716,8 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       npmDependencies ++= (npmDependencies in Compile).value,
 
       npmDevDependencies ++= (npmDevDependencies in Compile).value,
+
+      jsSourceDirectories ++= (jsSourceDirectories in Compile).value,
 
       // Default to deprecated requiresDOM to not break old build.
       requireJsDomEnv := requiresDOM.?.value.getOrElse(false),
