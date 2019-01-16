@@ -96,7 +96,7 @@ parameter provided to `BundlingMode.LibraryOnly`.
 It then uses a special "loader" to resolve these dependencies for the actual Scala.js application.
 
 In order to use this mode, instead of including `yourapp-bundle.js` in your page, you will need to include
-`yourapp-library.js`, `yourapp-loader.js`, `yourapp-fastopt.js` or `yourapp-opt.js`. If you're using Play 
+`yourapp-fastopt-library.js`, `yourapp-fastopt-loader.js` and `yourapp-fastopt.js`. If you're using Play 
 Framework, you could use a twirl template similar to this one:
 
 ~~~ html
