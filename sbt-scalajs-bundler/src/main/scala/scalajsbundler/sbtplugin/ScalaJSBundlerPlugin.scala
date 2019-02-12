@@ -721,7 +721,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
 
       // Default to deprecated scalaJSRequestsDOM to not break old builds.
       // i.e. `requiresDOM := true` or `jsDependencies += RuntimeDOM`
-      requireJsDomEnv := scalaJSRequestsDOM.?.value.getOrElse(false),
+      requireJsDomEnv := scalaJSRequestsDOM.value,
 
       // Override Scala.js setting, which does not support the combination of jsdom and CommonJS module output kind
       loadedTestFrameworks := Def.task {
