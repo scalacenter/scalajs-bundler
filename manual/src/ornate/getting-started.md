@@ -61,7 +61,7 @@ lazy val server = project
   )
   .enablePlugins(WebScalaJSBundlerPlugin)
 
-lazy val client = project.enablePlugins(ScalaJSBundlerPlugin, ScalaJSWeb)
+lazy val client = project.enablePlugins(ScalaJSBundlerPlugin)
 ~~~
 
 You also need to setup the `ScalaJSBundlerPlugin` on the Scala.js project, as described in the preceding section, and
