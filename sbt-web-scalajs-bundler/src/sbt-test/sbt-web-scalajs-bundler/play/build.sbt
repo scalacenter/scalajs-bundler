@@ -1,6 +1,6 @@
 val client =
   project.in(file("client"))
-    .enablePlugins(ScalaJSBundlerPlugin, ScalaJSWeb)
+    .enablePlugins(ScalaJSBundlerPlugin)
     .settings(
       scalaVersion := "2.11.12",
       scalaJSUseMainModuleInitializer := true,
