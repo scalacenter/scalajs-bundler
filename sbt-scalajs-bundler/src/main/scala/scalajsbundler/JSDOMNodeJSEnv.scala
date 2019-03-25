@@ -94,6 +94,7 @@ class JSDOMNodeJSEnv(
            |    var window = dom.window;
            |    window["__ScalaJSEnv"] = __ScalaJSEnv;
            |    window["scalajsCom"] = global.scalajsCom;
+           |    window["global"] = global;
            |
            |    var scriptsSrcs = $scriptsURIsJSArray;
            |    for (var i = 0; i < scriptsSrcs.length; i++) {
@@ -112,6 +113,7 @@ class JSDOMNodeJSEnv(
            |        if (error == null) {
            |          window["__ScalaJSEnv"] = __ScalaJSEnv;
            |          window["scalajsCom"] = global.scalajsCom;
+           |          window["global"] = global;
            |          windowKeys = Object.keys(window);
            |        } else {
            |          console.log(error);
