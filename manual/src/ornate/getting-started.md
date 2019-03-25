@@ -61,11 +61,12 @@ lazy val server = project
   )
   .enablePlugins(WebScalaJSBundlerPlugin)
 
-lazy val client = project.enablePlugins(ScalaJSBundlerPlugin, ScalaJSWeb)
+lazy val client = project.enablePlugins(ScalaJSBundlerPlugin)
 ~~~
 
 You also need to setup the `ScalaJSBundlerPlugin` on the Scala.js project, as described in the preceding section, and
 the `sbt-web-scalajs` plugins as described in [their documentation](https://github.com/vmunier/sbt-web-scalajs).
+Note that `sbt-web-scalajs`'s `ScalaJSWeb` plugin must not be enabled, because `ScalaJSWeb` will create source mappings to source files copied to a hash path, which conflict with `ScalaJSBundlerPlugin`'s webpack-based source mappings.
 
 The `WebScalaJSBundlerPlugin` plugin automatically configures the `scalaJSPipeline` task to use
 the bundles rather than the output of the Scala.js compilation.
