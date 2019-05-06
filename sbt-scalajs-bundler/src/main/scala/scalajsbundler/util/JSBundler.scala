@@ -74,11 +74,9 @@ object JSBundler {
                     .apply(JS.str(entry.file.absolutePath ++ ".map"),
                            JS.str("utf-8"))
                 ),
-              JS.let(JS.`new`(
-                JS.ref("Buffer"),
-                JS.str(
-                  s"\n//# sourceMappingURL=${bundleFile.file.name ++ ".map"}\n"))) {
-                endBuffer =>
+              JS.let(JS.ref("Buffer").dot("from").apply(
+                JS.str(s"\n//# sourceMappingURL=${bundleFile.file.name ++ ".map"}\n"))
+              ) { endBuffer =>
                   JS.let(
                     JS.ref("Buffer")
                       .dot("concat")
