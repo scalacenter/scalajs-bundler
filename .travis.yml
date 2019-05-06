@@ -30,7 +30,7 @@ script:
 - sbt -no-colors ";^^$TRAVIS_SBT_VERSION;test;runScripted"
 after_success:
 - if [ $TRAVIS_PULL_REQUEST = 'false' ] && [ -n "$TRAVIS_TAG" ]; then
-   sbt ";^^$TRAVIS_SBT_VERSION; publishSigned; sonatypeReleaseAll; manual/ghpagesPushSite";
+   sbt ";^^$TRAVIS_SBT_VERSION; publishSigned; sonatypeReleaseAll; manual/makeSite; manual/ghpagesPushSite";
   fi
 cache:
   yarn: true

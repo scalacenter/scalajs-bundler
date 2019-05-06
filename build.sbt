@@ -11,7 +11,7 @@ val `sbt-scalajs-bundler` =
       name := "sbt-scalajs-bundler",
       description := "Module bundler for Scala.js projects",
       libraryDependencies += "com.typesafe.play" %% "play-json" % "2.6.7",
-      addSbtPlugin("org.scala-js" % "sbt-scalajs" % "0.6.25")
+      addSbtPlugin("org.scala-js" % "sbt-scalajs" % "0.6.27")
     )
 
 val `sbt-web-scalajs-bundler` =

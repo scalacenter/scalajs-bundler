@@ -7,7 +7,7 @@ lazy val npmConfig =
     .enablePlugins(ScalaJSBundlerPlugin)
     .settings(
       scalaVersion := "2.11.12",
-      npmDependencies in Compile += "react" -> "15.5.4",
+      npmDependencies in Compile += "react" -> "16.8.6",
       npmExtraArgs in Compile := Seq("-silent"),
       additionalNpmConfig in Compile := Map(
         "name" -> str("foo"),
@@ -23,7 +23,7 @@ lazy val npmConfig =
         val json = IO.read((npmUpdate in Compile).value / "package.json")
         val jsonLines = json.split("\n")
 
-        findPackageJsonLine(jsonLines, "react" -> "15.5.4")
+        findPackageJsonLine(jsonLines, "react" -> "16.8.6")
 
         findPackageJsonLine(jsonLines, "name" -> "foo")
         findPackageJsonLine(jsonLines, "version" -> "1.0.0")
