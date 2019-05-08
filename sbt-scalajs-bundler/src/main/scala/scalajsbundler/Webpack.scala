@@ -2,7 +2,7 @@ package scalajsbundler
 
 import sbt._
 import scalajsbundler.util.{Commands, JS}
-import org.scalajs.core.tools.linker.StandardLinker.Config
+import scalajsbundler.scalajs.compat.linker.Config
 import java.io.InputStream
 
 import play.api.libs.json._

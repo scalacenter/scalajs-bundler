@@ -1,10 +1,8 @@
 package example
 
-import scala.scalajs.js.JSApp
+object Main {
 
-object Main extends JSApp {
-
-  def main(): Unit = {
+  def main(args: Array[String]): Unit = {
     println(Obj.bar(42))
     println(Member(42))
     val user = new User("Julien", 30)

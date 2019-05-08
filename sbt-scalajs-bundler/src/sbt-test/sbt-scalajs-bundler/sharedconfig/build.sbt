@@ -7,7 +7,7 @@ scalaVersion := "2.11.12"
 
 scalaJSUseMainModuleInitializer := true
 
-libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "0.9.1"
+libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "0.9.7"
 
 npmDependencies in Compile += "leaflet" -> "0.7.7"
 
@@ -32,12 +32,12 @@ webpackConfigFile in fullOptJS := Some(baseDirectory.value / "prod.webpack.confi
 // Use the shared Webpack configuration file for reload workflow and for running the tests
 webpackConfigFile in Test := Some(baseDirectory.value / "common.webpack.config.js")
 
-libraryDependencies += "org.scalatest" %%% "scalatest" % "3.0.0" % Test
+libraryDependencies += "org.scalatest" %%% "scalatest" % "3.1.0-SNAP9" % Test
 
 // Execute the tests in browser-like environment
 requireJsDomEnv in Test := true
 
-webpackBundlingMode := BundlingMode.LibraryAndApplication()
+webpackBundlingMode in fastOptJS := BundlingMode.LibraryAndApplication()
 
 useYarn := true
 
@@ -61,7 +61,7 @@ TaskKey[Unit]("checkSize") := {
     .get.data
   val artifactSize = IO.readBytes(bundleFile).length
   // Account for minor variance in size due to transitive dependency updates
-  assert(artifactSize > 150000 && artifactSize < 200000)
+  assert(artifactSize > 150000 && artifactSize < 170000)
 }
 
 ivyLoggingLevel in ThisBuild := UpdateLogging.Quiet

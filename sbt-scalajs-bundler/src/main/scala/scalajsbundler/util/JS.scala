@@ -2,9 +2,9 @@ package scalajsbundler.util
 
 import java.util.concurrent.atomic.AtomicInteger
 
-import org.scalajs.core.ir.Position
-import org.scalajs.core.tools.javascript.Printers
-import org.scalajs.core.tools.javascript.Trees._
+import scalajsbundler.scalajs.compat.ir.Position
+import scalajsbundler.scalajs.compat.backend.{Printers, function}
+import scalajsbundler.scalajs.compat.backend.Trees._
 
 private[util] sealed abstract class JSLike(val tree: Tree) {
   def show: String = tree.show
@@ -76,7 +76,7 @@ object JS {
   /** Anonymous function definition */
   def fun(body: JS => JSLike): JS = {
     val param = freshIdentifier()
-    JS(Function(List(ParamDef(Ident(param), rest = false)), Return(body(ref(param)).tree)))
+    JS(function(List(ParamDef(Ident(param), rest = false)), Return(body(ref(param)).tree)))
   }
 
   /** Name binding */

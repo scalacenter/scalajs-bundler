@@ -3,7 +3,13 @@ os: Windows Server 2012
 environment:
   matrix:
     - CI_SBT_VERSION: 0.13.17
+      SCALAJS_VERSION: 1.0.0-M7
+    - CI_SBT_VERSION: 0.13.17
+      SCALAJS_VERSION: 0.6.27
     - CI_SBT_VERSION: 1.0.2
+      SCALAJS_VERSION: 0.6.27
+    - CI_SBT_VERSION: 1.0.2
+      SCALAJS_VERSION: 1.0.0-M7
 install:
   - ps: Install-Product node 6
   - cmd: choco install sbt --version 0.13.15 -ia "INSTALLDIR=""C:\sbt"""

@@ -10,7 +10,7 @@ version in webpack := "2.2.1"
 
 version in startWebpackDevServer := "2.11.1"
 
-libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "0.9.1"
+libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "0.9.7"
 
 npmDependencies in Compile += "snabbdom" -> "0.5.3"
 
@@ -19,7 +19,7 @@ npmDevDependencies in Compile += "uglifyjs-webpack-plugin" -> "0.4.3"
 // Use a different Webpack configuration file for production
 webpackConfigFile in fullOptJS := Some(baseDirectory.value / "prod.webpack.config.js")
 
-libraryDependencies += "org.scalatest" %%% "scalatest" % "3.0.0" % Test
+libraryDependencies += "org.scalatest" %%% "scalatest" % "3.1.0-SNAP9" % Test
 
 // Execute the tests in browser-like environment
 requireJsDomEnv in Test := true
@@ -41,8 +41,12 @@ InputKey[Unit]("html") := {
 
 TaskKey[Unit]("checkSize") := {
   val artifactSize = IO.readBytes((webpack in (Compile, fullOptJS)).value.head.data).length
-  val expected = 20163
-  assert(artifactSize == expected, s"expected: $expected, got: $artifactSize")
+  val sizeLow = 18000
+  val sizeHigh = 21000
+  assert(
+    artifactSize >= sizeLow && artifactSize <= sizeHigh,
+    s"expected: [$sizeLow, $sizeHigh], got: $artifactSize"
+  )
 }
 
 ivyLoggingLevel in ThisBuild := UpdateLogging.Quiet

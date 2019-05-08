@@ -1,6 +1,6 @@
 package scalajsbundler.sbtplugin
 
-import org.scalajs.core.tools.io.{FileVirtualJSFile, RelativeVirtualFile, VirtualJSFile}
+import scalajsbundler.scalajs.compat.io.{FileVirtualBinaryFile, VirtualBinaryFile}
 import scalajsbundler.ExternalCommand
 import sbt._
 
@@ -22,7 +22,7 @@ object NpmUpdateTasks {
                 targetDir: File,
                 packageJsonFile: File,
                 useYarn: Boolean,
-                jsResources: Seq[VirtualJSFile with RelativeVirtualFile],
+                jsResources: Seq[(String, VirtualBinaryFile)],
                 streams: Keys.TaskStreams,
                 npmExtraArgs: Seq[String],
                 yarnExtraArgs: Seq[String]): File = {
@@ -72,11 +72,11 @@ object NpmUpdateTasks {
     * @return The paths to the node packages
     */
   def npmInstallJSResources(targetDir: File,
-                            jsResources: Seq[VirtualJSFile with RelativeVirtualFile],
+                            jsResources: Seq[(String, VirtualBinaryFile)],
                             jsSourceDirectories: Seq[File],
                             streams: Keys.TaskStreams): Seq[File] = {
     val jsFileResources =   jsResources.collect {
-      case jsfile: FileVirtualJSFile with RelativeVirtualFile => jsfile.file -> jsfile.relativePath
+      case (relativePath, jsfile: FileVirtualBinaryFile) => jsfile.file -> relativePath
     }.toSet ++ jsSourceDirectories.flatMap(f => if (f.isDirectory) Path.allSubpaths(f) else Seq.empty).toSet
 
     val cachedActionFunction = FileFunction.cached(

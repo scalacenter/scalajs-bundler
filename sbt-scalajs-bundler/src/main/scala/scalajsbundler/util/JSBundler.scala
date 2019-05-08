@@ -92,7 +92,7 @@ object JSBundler {
             )
           }
         }
-      val concatFile = targetDir / s"scalajsbundler-concat-${bundleFile.file.name}.js"
+      val concatFile = targetDir / s"scalajsbundler-concat-${bundleFile.file.name}"
       IO.write(concatFile, concatContent.show)
       Commands.run(Seq("node", concatFile.absolutePath), targetDir, logger)
     } else {

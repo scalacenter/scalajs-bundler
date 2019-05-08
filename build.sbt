@@ -3,6 +3,10 @@ import sbtunidoc.Plugin.UnidocKeys.unidoc
 
 val runScripted = taskKey[Unit]("Run supported sbt scripted tests")
 
+val scalaJSVersion = sys.env.getOrElse("SCALAJS_VERSION", "0.6.27")
+val isScalaJS1x = scalaJSVersion.startsWith("1.")
+val scalaJSSourceDirectorySuffix = if (isScalaJS1x) "sjs-1.x" else "sjs-0.6"
+
 val `sbt-scalajs-bundler` =
   project.in(file("sbt-scalajs-bundler"))
     .settings(commonSettings)
@@ -11,7 +15,8 @@ val `sbt-scalajs-bundler` =
       name := "sbt-scalajs-bundler",
       description := "Module bundler for Scala.js projects",
       libraryDependencies += "com.typesafe.play" %% "play-json" % "2.6.7",
-      addSbtPlugin("org.scala-js" % "sbt-scalajs" % "0.6.27")
+      addSbtPlugin("org.scala-js" % "sbt-scalajs" % scalaJSVersion),
+      unmanagedSourceDirectories in Compile += (sourceDirectory in Compile).value / s"scala-$scalaJSSourceDirectorySuffix"
     )
 
 val `sbt-web-scalajs-bundler` =
@@ -26,7 +31,7 @@ val `sbt-web-scalajs-bundler` =
       },
       name := "sbt-web-scalajs-bundler",
       description := "Module bundler for Scala.js projects (integration with sbt-web-scalajs)",
-      addSbtPlugin("com.vmunier" % "sbt-web-scalajs" % "1.0.8-0.6")
+      addSbtPlugin("com.vmunier" % "sbt-web-scalajs" % (if (isScalaJS1x) "1.0.9" else "1.0.9-0.6"))
     )
     .dependsOn(`sbt-scalajs-bundler`)
 
@@ -111,6 +116,7 @@ lazy val commonSettings = ScriptedPlugin.scriptedSettings ++ List(
   runScripted := runScriptedTask.value,
   scriptedLaunchOpts ++= Seq(
     "-Dplugin.version=" + version.value,
+    s"-Dscalajs.version=$scalaJSVersion",
     "-Dsbt.execute.extrachecks=true" // Avoid any deadlocks.
   ),
   scriptedBufferLog := false,
@@ -118,11 +124,9 @@ lazy val commonSettings = ScriptedPlugin.scriptedSettings ++ List(
   scalaVersion := {
     (sbtBinaryVersion in pluginCrossBuild).value match {
       case "0.13" => "2.10.7"
-      case _ => "2.12.3"
+      case _ => "2.12.8"
     }
-  },
-  // fixed in https://github.com/sbt/sbt/pull/3397 (for sbt 0.13.17)
-  sbtBinaryVersion in update := (sbtBinaryVersion in pluginCrossBuild).value
+  }
 )
 
 lazy val noPublishSettings =
@@ -132,6 +136,8 @@ lazy val noPublishSettings =
     publishLocal := ()
   )
 
+// Run all the sbt-scripted tests that are compatible with both the selected sbt version
+// and the selected Scala.js version
 def runScriptedTask = Def.taskDyn {
   val sbtBinVersion = (sbtBinaryVersion in pluginCrossBuild).value
   val base = sbtTestDirectory.value
@@ -139,17 +145,25 @@ def runScriptedTask = Def.taskDyn {
   def isCompatible(directory: File): Boolean = {
     val buildProps = new java.util.Properties()
     IO.load(buildProps, directory / "project" / "build.properties")
-    Option(buildProps.getProperty("sbt.version"))
-      .map { version =>
+    val sbtIncompatibility =
+      Option(buildProps.getProperty("sbt.version"))
+      .flatMap { version =>
         val requiredBinVersion = CrossVersion.binarySbtVersion(version)
-        val compatible = requiredBinVersion == sbtBinVersion
-        if (!compatible) {
-          val testName = directory.relativeTo(base).getOrElse(directory)
-          streams.value.log.warn(s"Skipping $testName since it requires sbt $requiredBinVersion")
-        }
-        compatible
+        if (requiredBinVersion == sbtBinVersion) None
+        else Some(s"it requires sbt $requiredBinVersion")
       }
-      .getOrElse(true)
+    val scalaJSIncompatibility =
+      if (directory.name.endsWith("_sjs-0.6") && !scalaJSVersion.startsWith("0.6")) Some(s"it requires Scala.js 0.6")
+      else None
+
+    sbtIncompatibility.orElse(scalaJSIncompatibility) match {
+      case Some(reason) =>
+        val testName = directory.relativeTo(base).getOrElse(directory)
+        streams.value.log.info(s"Skipping $testName since $reason")
+        false
+      case None =>
+        true
+    }
   }
 
   val testDirectoryFinder = base * AllPassFilter * AllPassFilter filter { _.isDirectory }

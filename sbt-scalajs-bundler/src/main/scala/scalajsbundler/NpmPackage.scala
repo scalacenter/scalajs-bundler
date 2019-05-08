@@ -1,9 +1,8 @@
 package scalajsbundler
 
-import java.io.FileReader
-import org.scalajs.core.tools.json
-import org.scalajs.core.tools.json.{JSON, JSONDeserializer, JSONObjExtractor}
+import play.api.libs.json.{JsPath, Json, Reads}
 import sbt._
+
 import scala.util.Try
 
 case class NpmPackage(version: String) {
@@ -17,18 +16,12 @@ case class NpmPackage(version: String) {
 }
 
 object NpmPackage {
-  implicit object NpmPackageDeserializer extends JSONDeserializer[NpmPackage] {
-    def deserialize(x: JSON): NpmPackage = {
-      val obj = new JSONObjExtractor(x)
-      NpmPackage(
-        obj.fld[String]("version")
-      )
-    }
-  }
+  implicit val npmPackageDeserializer: Reads[NpmPackage] =
+    (JsPath \ "version").read[String].map(NpmPackage.apply)
 
   def getForModule(targetDir: File, module: String): Option[NpmPackage] = {
     val webpackPackageJsonFilePath = targetDir / "node_modules" / module / "package.json"
 
-    Try(json.fromJSON[NpmPackage](json.readJSON(new FileReader(webpackPackageJsonFilePath)))).toOption
+    Try(Json.parse(IO.read(webpackPackageJsonFilePath)).as[NpmPackage]).toOption
   }
 }

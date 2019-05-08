@@ -22,7 +22,7 @@ object WebpackTasks {
       val cacheLocation = streams.value.cacheDirectory / s"${stage.key.label}-webpack"
       val generatedWebpackConfigFile =
         (scalaJSBundlerWebpackConfig in stage).value
-      val emitSourceMaps = (webpackEmitSourceMaps in stage).value
+      val emitSourceMaps = (finallyEmitSourceMaps in stage).value
       val customWebpackConfigFile = (webpackConfigFile in stage).value
       val webpackResourceFiles = webpackResources.value.get
       val entriesList = entry(stage).value
