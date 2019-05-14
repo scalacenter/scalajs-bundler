@@ -12,7 +12,7 @@ $ exists target/scala-2.11/scalajs-bundler/main/static-opt-bundle.js target/scal
 # Disabling source maps in Scala.js also disables it for scalajs-bundler
 
 > clean
-> set emitSourceMaps := false
+> set scalaJSLinkerConfig := scalaJSLinkerConfig.value.withSourceMap(false)
 > fastOptJS::webpack
 $ absent target/scala-2.11/scalajs-bundler/main/static-fastopt-bundle.js.map
 > fullOptJS::webpack
@@ -21,7 +21,7 @@ $ absent target/scala-2.11/scalajs-bundler/main/static-opt-bundle.js.map
 # webpackEmitSourceMaps controls source maps emission for the webpack task
 
 > clean
-> set emitSourceMaps := true
+> set scalaJSLinkerConfig := scalaJSLinkerConfig.value.withSourceMap(true)
 > set webpackEmitSourceMaps in (Compile, fastOptJS) := false
 > fastOptJS::webpack
 $ exists target/scala-2.11/scalajs-bundler/main/static-fastopt.js.map

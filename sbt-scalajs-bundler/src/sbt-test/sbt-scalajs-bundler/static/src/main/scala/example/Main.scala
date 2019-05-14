@@ -1,15 +1,14 @@
 package example
 
 import scala.scalajs.js
-import scala.scalajs.js.JSApp
 import scala.scalajs.js.Dynamic.literal
 
 import snabbdom.{snabbdom, h, modules}
 
 import org.scalajs.dom.document
 
-object Main extends JSApp {
-  def main(): Unit = {
+object Main {
+  def main(args: Array[String]): Unit = {
 
     val someFn = () => println("someFn")
     val anotherEventHandler = () => println("another event handler")

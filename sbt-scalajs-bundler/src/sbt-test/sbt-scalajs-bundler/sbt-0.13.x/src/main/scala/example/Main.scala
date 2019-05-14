@@ -10,10 +10,10 @@ object LeftPad extends js.Function3[String, Int, js.UndefOr[Char], String] {
     js.native
 }
 
-object Main extends js.JSApp {
+object Main{
   def format(s: String, len: Int = 10) = LeftPad(s, len)
 
-  def main(): Unit = {
+  def main(args: Array[String]): Unit = {
     println(format("scala"))
   }
 }

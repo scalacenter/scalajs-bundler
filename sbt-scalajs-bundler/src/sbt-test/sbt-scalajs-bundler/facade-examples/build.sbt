@@ -8,6 +8,6 @@ scalaJSUseMainModuleInitializer := true
 
 npmDependencies in Compile += "uuid" -> "3.1.0"
 
-libraryDependencies += "org.scalatest" %%% "scalatest" % "3.0.0" % Test
+libraryDependencies += "org.scalatest" %%% "scalatest" % "3.1.0-SNAP9" % Test
 
 ivyLoggingLevel in ThisBuild := UpdateLogging.Quiet

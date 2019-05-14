@@ -6,7 +6,7 @@ scalaVersion := "2.11.12"
 
 scalaJSUseMainModuleInitializer := true
 
-libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "0.9.1"
+libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "0.9.7"
 
 npmDependencies in Compile += "snabbdom" -> "0.5.3"
 
@@ -15,7 +15,7 @@ npmDevDependencies in Compile += "uglifyjs-webpack-plugin" -> "1.2.2"
 // Use a different Webpack configuration file for production
 webpackConfigFile in fullOptJS := Some(baseDirectory.value / "prod.webpack.config.js")
 
-libraryDependencies += "org.scalatest" %%% "scalatest" % "3.0.0" % Test
+libraryDependencies += "org.scalatest" %%% "scalatest" % "3.1.0-SNAP9" % Test
 
 // Execute the tests in browser-like environment
 requireJsDomEnv in Test := true
@@ -46,8 +46,8 @@ TaskKey[Unit]("checkSize") := {
   //#filter-files
   val artifactSize = IO.readBytes(bundleFile).length
 
-  val sizeLow = 20000
-  val sizeHigh = 22000
+  val sizeLow = 18000
+  val sizeHigh = 21000
 
   // Account for minor variance in size due to transitive dependency updates
   assert(

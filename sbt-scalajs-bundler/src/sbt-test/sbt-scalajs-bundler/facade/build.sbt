@@ -8,7 +8,7 @@ lazy val usage =
     .settings(commonSettings: _*)
     .settings(
       scalaJSUseMainModuleInitializer := true,
-      libraryDependencies += "org.scalatest" %%% "scalatest" % "3.0.0" % Test
+      libraryDependencies += "org.scalatest" %%% "scalatest" % "3.1.0-SNAP9" % Test
     )
     .dependsOn(facade)
 

@@ -71,7 +71,7 @@ object WebScalaJSBundlerPlugin extends AutoPlugin {
               Def.task {
                 val files = (webpack in (project, Compile, sjsStage in project)).value
                 val clientTarget = (npmUpdate in (project, Compile)).value
-                val sourceMapsEnabled = (webpackEmitSourceMaps in (project, Compile, sjsStage in project)).value
+                val sourceMapsEnabled = (finallyEmitSourceMaps in (project, Compile, sjsStage in project)).value
                 files.map(_.data).pair(Path.relativeTo(clientTarget)).map((_, sourceMapsEnabled))
               }
             }

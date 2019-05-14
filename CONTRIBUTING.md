@@ -20,7 +20,14 @@ $ sbt package
 
 ## Run the tests
 
-We use [sbt-scripted](http://eed3si9n.com/testing-sbt-plugins) to test the plugins.
+We use [sbt-scripted](http://eed3si9n.com/testing-sbt-plugins) to test the plugins. However, we customized
+the way tests are launched to filter tests according to their compatibility with major versions of sbt and Scala.js:
+
+- tests can have a `project/build.properties` file defining a specific sbt version they are compatible with,
+- test names suffixed with `_sjs-0.6` are only compatible with Scala.js 0.6.
+
+The version of Scala.js to use is provided by the `SCALAJS_VERSION` environment variable. You can set the sbt version
+to use with the standard `^^` operator.
 
 To run all the tests:
 
@@ -28,13 +35,25 @@ To run all the tests:
 $ sbt runScripted
 ~~~
 
-Or, to run a single test:
+Or, with a specific Scala.js version:
 
-~~~ sh
-$ sbt "sbt-scalajs-bundler/scripted sbt-scalajs-bundler/test-name"
+~~~ bash
+$ SCALAJS_VERSION=1.0.0-M7 sbt runScripted
 ~~~
 
-(where `test-name` is replaced by one of the
+Or, with a specific sbt version:
+
+~~~ bash
+$ sbt ^^1.2.8 runScripted
+~~~
+
+To run a single test:
+
+~~~ sh
+$ sbt "sbt-scalajs-bundler/scripted sbt-scalajs-bundler/<test-name>"
+~~~
+
+(where `<test-name>` is replaced by one of the
 [tests](https://github.com/scalacenter/scalajs-bundler/tree/master/sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler)).
 
 Sometimes you would like to open an interactive sbt shell and manually play with

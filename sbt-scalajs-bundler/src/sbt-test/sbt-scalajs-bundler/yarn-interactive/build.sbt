@@ -1,3 +1,5 @@
+scalaVersion := "2.12.8"
+
 useYarn := true
 
 yarnExtraArgs in Compile := Seq("--silent")

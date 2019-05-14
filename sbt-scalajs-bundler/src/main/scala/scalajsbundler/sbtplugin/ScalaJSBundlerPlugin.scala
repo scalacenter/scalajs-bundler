@@ -2,24 +2,15 @@ package scalajsbundler.sbtplugin
 
 import java.util.concurrent.atomic.AtomicReference
 
-import org.scalajs.core.tools.io.FileVirtualJSFile
-import org.scalajs.core.tools.jsdep.ResolvedJSDependency
-import org.scalajs.core.tools.linker.backend.ModuleKind
-import org.scalajs.jsenv.ComJSEnv
-import org.scalajs.jsenv.nodejs.NodeJSEnv
-import org.scalajs.sbtplugin.Loggers.sbtLogger2ToolsLogger
 import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
-import org.scalajs.sbtplugin.ScalaJSPluginInternal._
-import org.scalajs.sbtplugin.{ScalaJSPlugin, ScalaJSPluginInternal, Stage}
-import org.scalajs.testadapter.TestAdapter
+import org.scalajs.sbtplugin.{ScalaJSPlugin, Stage}
 import sbt.Keys._
-import sbt._
+import sbt.{Def, _}
+import scalajsbundler.{BundlerFile, NpmDependencies, Webpack, WebpackDevServer}
 
-import scala.annotation.tailrec
 import scalajsbundler.ExternalCommand.addPackages
-import scalajsbundler._
-import scalajsbundler.util.JSON
-
+import scalajsbundler.util.{JSON, ScalaJSNativeLibraries}
+import scalajsbundler.scalajs.compat.testing.TestAdapter
 
 
 /**
@@ -273,7 +264,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       * used files have changed. The list of files to be monitored is
       * provided by webpackMonitoredFiles
       *
-      * The files produced are wrapped in [[sbt.Attributed]], and tagged with
+      * The files produced are wrapped in `sbt.Attributed`, and tagged with
       * [[scalajsbundler.sbtplugin.SBTBundlerFile.ProjectNameAttr]] and
       * [[scalajsbundler.sbtplugin.SBTBundlerFile.BundlerFileTypeAttr]]. The
       * [[scalajsbundler.sbtplugin.SBTBundlerFile.ProjectNameAttr]] contains the "prefix" of the file names, such
@@ -333,18 +324,21 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       *   webpackEmitSourceMaps in (Compile, fullOptJS) := false
       * }}}
       *
-      * Note that, by default, this setting takes the same value as the Scala.js’ `emitSourceMaps`
-      * setting, so, to globally disable source maps you can just configure the `emitSourceMaps`
+      * By default, this setting is undefined and scalajs-bundler fallbacks to Scala.js’ `sourceMap`
+      * setting, so, to globally disable source maps you can just configure the `sourceMap`
       * setting:
       *
       * {{{
-      *   emitSourceMaps := false
+      *   scalaJSLinkerConfig ~= _.withSourceMap(false)
       * }}}
       *
       * @group settings
       */
     val webpackEmitSourceMaps: SettingKey[Boolean] =
       settingKey[Boolean]("Whether webpack should emit source maps at all")
+
+    private[scalajsbundler] val finallyEmitSourceMaps: SettingKey[Boolean] =
+      SettingKey("finallyEmitSourceMaps", rank = KeyRanks.Invisible)
 
     /**
       * Additional directories, monitored for webpack launch.
@@ -550,7 +544,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       KeyRanks.Invisible
     )
 
-  import autoImport._
+  import autoImport.{BundlerFile => _, _}
 
   override lazy val projectSettings: Seq[Def.Setting[_]] = Seq(
 
@@ -574,7 +568,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
     useYarn := false,
 
     ensureModuleKindIsCommonJSModule := {
-      if (scalaJSModuleKind.value == ModuleKind.CommonJSModule) true
+      if (scalaJSLinkerConfig.value.moduleKind == ModuleKind.CommonJSModule) true
       else sys.error(s"scalaJSModuleKind must be set to ModuleKind.CommonJSModule in projects where ScalaJSBundler plugin is enabled")
     },
 
@@ -654,7 +648,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
 
       npmInstallJSResources := NpmUpdateTasks.npmInstallJSResources(
         (crossTarget in npmUpdate).value,
-        scalaJSNativeLibraries.value.data,
+        ScalaJSNativeLibraries(fullClasspath.value),
         jsSourceDirectories.value,
         streams.value),
 
@@ -678,24 +672,12 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
         crossTarget.value / "scalajs-bundler" / (if (configuration.value == Compile) "main" else "test")
       },
 
-      // Override Scala.js’ loadedJSEnv to first run `npm update`
-      loadedJSEnv := loadedJSEnv.dependsOn(npmUpdate).value
+      Settings.jsEnvSetting
     ) ++
     perScalaJSStageSettings(Stage.FastOpt) ++
     perScalaJSStageSettings(Stage.FullOpt)
 
-  private val createdTestAdapters = new AtomicReference[List[TestAdapter]](Nil)
-
-  @tailrec
-  private def newTestAdapter(jsEnv: ComJSEnv, config: TestAdapter.Config): TestAdapter = {
-    val prev = createdTestAdapters.get()
-    val r = new TestAdapter(jsEnv, config)
-    if (createdTestAdapters.compareAndSet(prev, r :: prev)) r
-    else {
-      r.close()
-      newTestAdapter(jsEnv, config)
-    }
-  }
+  private[scalajsbundler] val createdTestAdapters = new AtomicReference[List[TestAdapter]](Nil)
 
   private def closeAllTestAdapters(): Unit =
     createdTestAdapters.getAndSet(Nil).foreach(_.close())
@@ -719,116 +701,39 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
 
       jsSourceDirectories ++= (jsSourceDirectories in Compile).value,
 
-      // Default to deprecated scalaJSRequestsDOM to not break old builds.
-      // i.e. `requiresDOM := true` or `jsDependencies += RuntimeDOM`
-      requireJsDomEnv := scalaJSRequestsDOM.value,
+      requireJsDomEnv := false,
 
-      // Override Scala.js setting, which does not support the combination of jsdom and CommonJS module output kind
-      loadedTestFrameworks := Def.task {
-        // use assert to prevent warning about pure expr in stat pos
-        assert(scalaJSEnsureUnforked.value)
+      Settings.loadedTestFrameworksSetting
 
-        val console = scalaJSConsole.value
-        val toolsLogger = sbtLogger2ToolsLogger(streams.value.log)
-        val frameworks = testFrameworks.value
-        val sjsOutput = fastOptJS.value.data
-
-        val env =
-          jsEnv.?.value.map {
-            case comJSEnv: ComJSEnv => comJSEnv.loadLibs(Seq(ResolvedJSDependency.minimal(FileVirtualJSFile(sjsOutput))))
-            case other => sys.error(s"You need a ComJSEnv to test (found ${other.name})")
-          }.getOrElse {
-            Def.taskDyn[ComJSEnv] {
-              assert(ensureModuleKindIsCommonJSModule.value)
-              val sjsOutput = fastOptJS.value.data
-              // If jsdom is going to be used, then we should bundle the test module into a file that exports the tests to the global namespace
-              if (requireJsDomEnv.value) Def.task {
-                val logger = streams.value.log
-                val targetDir = npmUpdate.value
-                val sjsOutputName = sjsOutput.name.stripSuffix(".js")
-                val bundle = targetDir / s"$sjsOutputName-bundle.js"
-                val webpackVersion = (version in webpack).value
-
-                val customWebpackConfigFile = (webpackConfigFile in Test).value
-                val nodeArgs = (webpackNodeArgs in Test).value
-
-                val writeTestBundleFunction =
-                  FileFunction.cached(
-                    streams.value.cacheDirectory / "test-loader",
-                    inStyle = FilesInfo.hash
-                  ) { _ =>
-                    logger.info("Writing and bundling the test loader")
-                    val loader = targetDir / s"$sjsOutputName-loader.js"
-                    JsDomTestEntries.writeLoader(sjsOutput, loader)
-
-                    customWebpackConfigFile match {
-                      case Some(configFile) =>
-                        val customConfigFileCopy = Webpack.copyCustomWebpackConfigFiles(targetDir, webpackResources.value.get)(configFile)
-                        NpmPackage(webpackVersion).major match {
-                          case Some(4) =>
-                            // TODO: It assumes tests are run on development mode. It should instead use build settings
-                            Webpack.run(nodeArgs: _*)("--mode", "development", "--config", customConfigFileCopy.getAbsolutePath, loader.absolutePath, "--output", bundle.absolutePath)(targetDir, logger)
-                          case _ =>
-                            Webpack.run(nodeArgs: _*)("--config", customConfigFileCopy.getAbsolutePath, loader.absolutePath, bundle.absolutePath)(targetDir, logger)
-                        }
-                      case None =>
-                        NpmPackage(webpackVersion).major match {
-                          case Some(4) =>
-                            // TODO: It assumes tests are run on development mode. It should instead use build settings
-                            Webpack.run(nodeArgs: _*)("--mode", "development", loader.absolutePath, "--output", bundle.absolutePath)(targetDir, logger)
-                          case _ =>
-                            Webpack.run(nodeArgs: _*)(loader.absolutePath, bundle.absolutePath)(targetDir, logger)
-                        }
-                    }
-
-                    Set.empty
-                  }
-                writeTestBundleFunction(Set(sjsOutput))
-                val file = FileVirtualJSFile(bundle)
-
-                val jsdomDir = installJsdom.value
-                new JSDOMNodeJSEnv(jsdomDir).loadLibs(Seq(ResolvedJSDependency.minimal(file)))
-              } else Def.task {
-                new NodeJSEnv().loadLibs(Seq(ResolvedJSDependency.minimal(FileVirtualJSFile(sjsOutput))))
-              }
-            }.value
-          }
-
-        // Pretend that we are not using a CommonJS module if jsdom is involved, otherwise that
-        // would be incompatible with the way jsdom loads scripts
-        val (moduleKind, moduleIdentifier) = {
-          val withoutDom = (scalaJSModuleKind.value, scalaJSModuleIdentifier.value)
-
-          if (requireJsDomEnv.value) (ModuleKind.NoModule, None)
-          else withoutDom
-        }
-
-        val frameworkNames = frameworks.map(_.implClassNames.toList).toList
-
-        val config = TestAdapter.Config()
-          .withLogger(toolsLogger)
-          .withJSConsole(console)
-          .withModuleSettings(moduleKind, moduleIdentifier)
-
-        val adapter = newTestAdapter(env, config)
-        val frameworkAdapters = adapter.loadFrameworks(frameworkNames)
-
-        frameworks.zip(frameworkAdapters).collect {
-          case (tf, Some(adapter)) => (tf, adapter)
-        }.toMap
-      }.dependsOn(npmUpdate).value
     )
 
   private def perScalaJSStageSettings(stage: Stage): Seq[Def.Setting[_]] = {
 
-    val stageTask = ScalaJSPluginInternal.stageKeys(stage)
+    val stageTask = stage match {
+      case Stage.FastOpt => fastOptJS
+      case Stage.FullOpt => fullOptJS
+    }
 
     Seq(
       // Ask Scala.js to output its result in our target directory
       crossTarget in stageTask := (crossTarget in npmUpdate).value,
 
+      finallyEmitSourceMaps in stageTask := {
+        (webpackEmitSourceMaps in stageTask).?.value
+          .getOrElse((scalaJSLinkerConfig in stageTask).value.sourceMap)
+      },
+
       // Override Scala.js’ relativeSourceMaps in case we have to emit source maps in the webpack task, because it does not work with absolute source maps
-      relativeSourceMaps in stageTask := (webpackEmitSourceMaps in stageTask).value,
+      scalaJSLinkerConfig in stageTask := {
+        val prev = (scalaJSLinkerConfig in stageTask).value
+        val relSourceMaps = (webpackEmitSourceMaps in stageTask).?.value.getOrElse(prev.sourceMap)
+        val relSourceMapBase = (artifactPath in stageTask).value.toURI
+        if (!relSourceMaps) {
+          prev
+        } else {
+          prev.withRelativizeSourceMapBase(Some(relSourceMapBase))
+        }
+      },
 
       scalaJSBundlerWebpackConfig in stageTask := BundlerFile.WebpackConfig(
         WebpackTasks.entry(stageTask).value,
@@ -845,8 +750,6 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
             LibraryTasks.libraryAndLoadersBundle(stageTask, mode)
         }
       }.value,
-
-      webpackEmitSourceMaps in stageTask := (emitSourceMaps in stageTask).value,
 
       webpackMonitoredFiles in stageTask := {
         val generatedWebpackConfigFile = (scalaJSBundlerWebpackConfig in stageTask).value

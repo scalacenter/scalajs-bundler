@@ -3,13 +3,12 @@ package example
 import snabbdom.{snabbdom, modules, h}
 
 import scala.scalajs.js
-import scala.scalajs.js.JSApp
 
 import org.scalajs.dom.document
 
-object Main extends JSApp {
+object Main {
 
-  def main(): Unit = {
+  def main(args: Array[String]): Unit = {
     val patch = snabbdom.init(js.Array(modules.props, modules.eventlisteners))
 
     val view =

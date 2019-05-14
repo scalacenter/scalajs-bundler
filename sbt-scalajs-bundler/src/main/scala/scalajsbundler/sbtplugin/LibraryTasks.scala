@@ -1,12 +1,10 @@
 package scalajsbundler.sbtplugin
 
-import org.scalajs.sbtplugin.ScalaJSPlugin.AutoImport.{
+import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport.{
   scalaJSIR,
-  scalaJSLinkerConfig,
-  scalaJSModuleInitializers
-}
-import org.scalajs.sbtplugin.ScalaJSPluginInternal.{
   scalaJSLinker,
+  scalaJSLinkerConfig,
+  scalaJSModuleInitializers,
   usesScalaJSLinkerTag
 }
 import sbt.Keys._
@@ -66,7 +64,7 @@ object LibraryTasks {
     Def.task {
       assert(ensureModuleKindIsCommonJSModule.value)
       val log = streams.value.log
-      val emitSourceMaps = (webpackEmitSourceMaps in stage).value
+      val emitSourceMaps = (finallyEmitSourceMaps in stage).value
       val customWebpackConfigFile = (webpackConfigFile in stage).value
       val generatedWebpackConfigFile =
         (scalaJSBundlerWebpackConfig in stage).value
@@ -129,7 +127,7 @@ object LibraryTasks {
       val targetDir = npmUpdate.value
       val entry = WebpackTasks.entry(stage).value
       val library = bundle(stage, mode).value
-      val emitSourceMaps = (webpackEmitSourceMaps in stage).value
+      val emitSourceMaps = (finallyEmitSourceMaps in stage).value
       val log = streams.value.log
       val filesToMonitor = Seq(entry.file, library.file)
 

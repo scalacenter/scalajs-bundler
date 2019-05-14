@@ -1,11 +1,10 @@
 package example
 
 import scala.scalajs.js
-import scala.scalajs.js.JSApp
 import leaflet.modules._
 
-object Main extends JSApp {
-  def main(): Unit = {
+object Main {
+  def main(args: Array[String]): Unit = {
     LeafletAssets
 
     val map = Leaflet.map("container").setView(js.Array(51.505f, -0.09f), 13)
