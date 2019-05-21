@@ -310,7 +310,7 @@ webpackConfigFile in <span class="hljs-type">Test</span> := <span class="hljs-ty
 requireJsDomEnv in <span class="hljs-type">Test</span> := <span class="hljs-literal">true</span></code></pre>
 </div></div>
 <p>You can find a fully working example
-<a href="https://github.com/scalacenter/scalajs-bundler/blob/master/sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler/global-namespace-with-jsdom-unit-testing">here</a>.</p>
+<a href="https://github.com/scalacenter/scalajs-bundler/blob/master/sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler/global-namespace-with-jsdom-unit-testing_sjs-0.6">here</a>.</p>
 <h2 id="several-entry-points" class="a_section" data-magellan-target="several-entry-points">How to bundle an application having several entry points as exports?<a class="a_hlink" href="#several-entry-points"></a></h2>
 <p>By default, <code class="hljs">ScalaJSBundlerPlugin</code> assumes that your application only has a main class, activated through
 <code class="hljs">scalaJSUseMainModuleInitializer := true</code>, and disregards top-level <em>exports</em>. If you have exports that
@@ -326,7 +326,7 @@ need to be exposed as several entry points, this will not work.</p>
 
 <span class="hljs-keyword">import</span> scala.scalajs.js.annotation.{<span class="hljs-type">JSExportTopLevel</span>, <span class="hljs-type">JSExportAll</span>}
 
-<span class="hljs-meta">@JSExportTopLevel</span>(name=<span class="hljs-string">"sjs.example.Library"</span>) <span class="hljs-meta">@JSExportAll</span>
+<span class="hljs-meta">@JSExportTopLevel</span>(name=<span class="hljs-string">"sjs_example_Library"</span>) <span class="hljs-meta">@JSExportAll</span>
 <span class="hljs-class"><span class="hljs-keyword">object</span> <span class="hljs-title">Library</span> </span>{
   <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">foo</span></span>(): <span class="hljs-type">String</span> = <span class="hljs-type">SomeOtherCode</span>.quux(<span class="hljs-literal">true</span>)
   <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">bar</span></span>(): <span class="hljs-type">String</span> = <span class="hljs-type">SomeOtherCode</span>.quux(<span class="hljs-literal">false</span>)
@@ -334,8 +334,8 @@ need to be exposed as several entry points, this will not work.</p>
 </div></div>
 <p>You can call its methods as follows from your JavaScript code:</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
-<pre class="hljs"><code class="language-scala">console.log(sjs.example.<span class="hljs-type">Library</span>.foo());
-console.log(sjs.example.<span class="hljs-type">Library</span>.bar());</code></pre>
+<pre class="hljs"><code class="language-scala">console.log(sjs_example_Library.foo());
+console.log(sjs_example_Library.bar());</code></pre>
 </div></div>
 <h2 id="performance" class="a_section" data-magellan-target="performance">How to improve the performance of the bundling process?<a class="a_hlink" href="#performance"></a></h2>
 <p>You can enable the <a href="reference.html#bundling-mode-library-only">library-only bundling mode</a> and disable source maps:</p>

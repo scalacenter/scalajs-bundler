@@ -39,7 +39,7 @@
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/scalacenter/scalajs-bundler/blob/v0.14.0/sbt-scalajs-bundler/src/main/scala/scalajsbundler/NpmDependencies.scala" target="_blank">NpmDependencies.scala</a></dd></dl><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/scalacenter/scalajs-bundler/blob/v0.15.0/sbt-scalajs-bundler/src/main/scala/scalajsbundler/NpmDependencies.scala" target="_blank">NpmDependencies.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
@@ -212,19 +212,6 @@
       </h4>
       <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">cp</dt><dd class="cmt"><p>Classpath</p></dd><dt>returns</dt><dd class="cmt"><p>All the NPM dependencies found in the given classpath
 </p></dd></dl></div>
-    </li><li name="scalajsbundler.NpmDependencies#deserializer" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="deserializer:org.scalajs.core.tools.json.JSONDeserializer[scalajsbundler.NpmDependencies]"></a>
-      <a id="deserializer:JSONDeserializer[NpmDependencies]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">implicit </span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">deserializer</span><span class="result">: <span class="extype" name="org.scalajs.core.tools.json.JSONDeserializer">JSONDeserializer</span>[<a href="NpmDependencies.html" class="extype" name="scalajsbundler.NpmDependencies">NpmDependencies</a>]</span>
-      </span>
-      </h4>
-      
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
@@ -362,15 +349,15 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
     </li><li name="scalajsbundler.NpmDependencies#serializer" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="serializer:org.scalajs.core.tools.json.JSONSerializer[scalajsbundler.NpmDependencies]"></a>
-      <a id="serializer:JSONSerializer[NpmDependencies]"></a>
+      <a id="serializer:play.api.libs.json.OFormat[scalajsbundler.NpmDependencies]"></a>
+      <a id="serializer:OFormat[NpmDependencies]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">implicit </span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">serializer</span><span class="result">: <span class="extype" name="org.scalajs.core.tools.json.JSONSerializer">JSONSerializer</span>[<a href="NpmDependencies.html" class="extype" name="scalajsbundler.NpmDependencies">NpmDependencies</a>]</span>
+        <span class="name">serializer</span><span class="result">: <span class="extype" name="play.api.libs.json.OFormat">OFormat</span>[<a href="NpmDependencies.html" class="extype" name="scalajsbundler.NpmDependencies">NpmDependencies</a>]</span>
       </span>
       </h4>
       
@@ -400,29 +387,16 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="scalajsbundler.NpmDependencies#tuple2Deserializer" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="tuple2Deserializer[A](implicitaDeserializer:org.scalajs.core.tools.json.JSONDeserializer[A]):org.scalajs.core.tools.json.JSONDeserializer[(String,A)]"></a>
-      <a id="tuple2Deserializer[A](JSONDeserializer[A]):JSONDeserializer[(String,A)]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">implicit </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">tuple2Deserializer</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="aDeserializer">aDeserializer: <span class="extype" name="org.scalajs.core.tools.json.JSONDeserializer">JSONDeserializer</span>[<span class="extype" name="scalajsbundler.NpmDependencies.tuple2Deserializer.A">A</span>]</span>)</span><span class="result">: <span class="extype" name="org.scalajs.core.tools.json.JSONDeserializer">JSONDeserializer</span>[(<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scalajsbundler.NpmDependencies.tuple2Deserializer.A">A</span>)]</span>
-      </span>
-      </h4>
-      
     </li><li name="scalajsbundler.NpmDependencies#tuple2Serializer" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="tuple2Serializer[A](implicitaSerializer:org.scalajs.core.tools.json.JSONSerializer[A]):org.scalajs.core.tools.json.JSONSerializer[(String,A)]"></a>
-      <a id="tuple2Serializer[A](JSONSerializer[A]):JSONSerializer[(String,A)]"></a>
+      <a id="tuple2Serializer[A](implicitaSerializer:play.api.libs.json.Format[A]):play.api.libs.json.Format[(String,A)]"></a>
+      <a id="tuple2Serializer[A](Format[A]):Format[(String,A)]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">implicit </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">tuple2Serializer</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="aSerializer">aSerializer: <span class="extype" name="org.scalajs.core.tools.json.JSONSerializer">JSONSerializer</span>[<span class="extype" name="scalajsbundler.NpmDependencies.tuple2Serializer.A">A</span>]</span>)</span><span class="result">: <span class="extype" name="org.scalajs.core.tools.json.JSONSerializer">JSONSerializer</span>[(<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scalajsbundler.NpmDependencies.tuple2Serializer.A">A</span>)]</span>
+        <span class="name">tuple2Serializer</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="aSerializer">aSerializer: <span class="extype" name="play.api.libs.json.Format">Format</span>[<span class="extype" name="scalajsbundler.NpmDependencies.tuple2Serializer.A">A</span>]</span>)</span><span class="result">: <span class="extype" name="play.api.libs.json.Format">Format</span>[(<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scalajsbundler.NpmDependencies.tuple2Serializer.A">A</span>)]</span>
       </span>
       </h4>
       

@@ -72,6 +72,7 @@ the <code class="hljs">webpack</code> task scoped to a Scala.js stage (<code cla
 <pre class="hljs"><code class="language-markdown"><span class="hljs-quote">&gt; fastOptJS::webpack</span>
 </code></pre>
 </div></div>
+<p>The <code class="hljs">webpack</code> task returns a list of artifacts produced by the bundling process.</p>
 <h3 id="npm-dependencies" class="a_section" data-magellan-target="npm-dependencies">JavaScript Dependencies<a class="a_hlink" href="#npm-dependencies"></a></h3>
 <p>To define the npm packages your project depends on, use the <code class="hljs">npmDependencies</code> key:</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
@@ -89,8 +90,8 @@ the <code class="hljs">webpack</code> task scoped to a Scala.js stage (<code cla
 in order to work with the npm modules, otherwise you will need some additional configuration, as explained
 <a href="cookbook.html#global-namespace">here</a>.</p>
 </blockquote>
-<p>Last but not least, the <code class="hljs">.js</code> files that are in your classpath are automatically copied to the
-working directory of the <code class="hljs">node</code> command. This means that you can also <code class="hljs">@JSImport</code> these modules from
+<p>Last but not least, the <code class="hljs">.js</code> files that are in your classpath and in the <code class="hljs">jsSourceDirectories</code> are automatically
+copied to the working directory of the <code class="hljs">node</code> command. This means that you can also <code class="hljs">@JSImport</code> these modules from
 your Scala facades (you can see an example
 <a href="https://github.com/scalacenter/scalajs-bundler/blob/master/sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler/js-resources/src/main/scala/example/MyModule.scala#L6">here</a>).</p>
 <h3 id="jsdom" class="a_section" data-magellan-target="jsdom">jsdom Support for Tests<a class="a_hlink" href="#jsdom"></a></h3>
@@ -111,12 +112,12 @@ their execution so that they can be loaded by jsdom.</p>
 </code></pre>
 </div></div>
 <p>If your sbt (sub-)project directory contains a <code class="hljs">yarn.lock</code>, it will be used. Else, a new one will be created. You should check <code class="hljs">yarn.lock</code> into source control.</p>
-<p>Yarn 0.22.0+ must be available on the host platform.</p>
+<p>Yarn 0.22.0+ must be available on your machine.</p>
 <h3 id="bundling-mode" class="a_section" data-magellan-target="bundling-mode">Bundling Mode<a class="a_hlink" href="#bundling-mode"></a></h3>
 <p>Each time you change something in your application source code and compile the project, Scala.js emits a new .js
 file that can weigh several MBs if your application is large. Scalajs-bundler provides
 a few different options with respect to handling this large output file, controlled by setting the optional
-<code class="hljs">webpackBundlingMode</code> key and can be scoped to a Scala.js stage(<code class="hljs">fastOptJS</code> or <code class="hljs">fullOptJS</code>).</p>
+<code class="hljs">webpackBundlingMode</code> key and can be scoped to a Scala.js stage (<code class="hljs">fastOptJS</code> or <code class="hljs">fullOptJS</code>).</p>
 <h4 id="bundling-mode-application" class="a_section" data-magellan-target="bundling-mode-application">Application (default)<a class="a_hlink" href="#bundling-mode-application"></a></h4>
 <p><code class="hljs">webpackBundlingMode := BundlingMode.Application</code> generates a webpack config that simply processes the Scala.js output file as an
 entrypoint. This means that webpack loaders, plugins, etc will work as usual. It also means that webpack will
@@ -132,9 +133,19 @@ and any changes to the <code class="hljs">webpack.config.js</code>). This is acc
 <code class="hljs">output.libraryTarget</code> keys in the webpack.config. By default, this generates a global variable named
 <code class="hljs">ScalaJSBundlerLibrary</code>, but if needed, that variable name can be overridden via the <code class="hljs">exportedName</code>
 parameter provided to <code class="hljs">BundlingMode.LibraryOnly</code>.</p>
-<p>It then uses a special &quot;loader&quot; to resolve these dependencies for the actual Scala.js application.</p>
+<p>The drawback of this mode is that because the output of Scala.js is not processed by Webpack, it is
+still a CommonJS module that is not directly executable by web browsers. This problem is addressed
+by including a special “loader” before including the Scala.js module.</p>
+<blockquote class="warning">
+<p>The inclusion of a CommonJS module in the web browser is not guaranteed to work. In particular,
+in <code class="hljs">fullOptJS</code> mode the name mangler might produce names that could clash with other existing
+global names. For this reason, we don’t recommend using the <code class="hljs">LibraryOnly</code> bundling mode in <code class="hljs">fullOptJS</code>,
+or in production.</p>
+</blockquote>
 <p>In order to use this mode, instead of including <code class="hljs">yourapp-bundle.js</code> in your page, you will need to include
-<code class="hljs">yourapp-library.js</code>, <code class="hljs">yourapp-loader.js</code>, <code class="hljs">yourapp-fastopt.js</code> or <code class="hljs">yourapp-opt.js</code>. If you're using Play
+<code class="hljs">yourapp-library.js</code> (which contains all the application libraries bundled into a single file),
+<code class="hljs">yourapp-loader.js</code> (which contains a hack to make the application work), and <code class="hljs">yourapp-fastopt.js</code> or
+<code class="hljs">yourapp-opt.js</code> (which contains the output of Scala.js, that is a CommonJS module). If you're using Play
 Framework, you could use a twirl template similar to this one:</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
 <pre class="hljs"><code class="language-html">@(projectName: String,
@@ -178,7 +189,8 @@ modules which were imported.</p>
 for the Scala.js out to hang onto, which is what the loader provides.</p>
 <h4 id="bundling-mode-library-and-application" class="a_section" data-magellan-target="bundling-mode-library-and-application">Library and Application<a class="a_hlink" href="#bundling-mode-library-and-application"></a></h4>
 <p><code class="hljs">bundlingMode := BundlingMode.LibraryAndApplication()</code> builds on <code class="hljs">BundlingMode.LibraryOnly</code> and attempts to
-duplicate the output of <code class="hljs">BundlingMode.Application</code> without the overhead processing the entire Scala.js output file.
+produce only one artifact (like the <code class="hljs">Application</code> bundling mode) without the overhead processing the entire
+Scala.js output file.
 It uses the same library file generation process as <code class="hljs">BundlingMode.LibraryOnly</code>. It then bundles that library,
 the loader, and the Scala.js output into a <code class="hljs">yourapp-bundle</code> file by concatenating them. If <code class="hljs">enableSourceMaps := true</code>,
 it will attempt to use the node.js <code class="hljs">concat-with-sourcemaps</code> module to combine the sourcemaps as well.</p>

@@ -39,7 +39,7 @@
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/scalacenter/scalajs-bundler/blob/v0.14.0/sbt-scalajs-bundler/src/main/scala/scalajsbundler/sbtplugin/ScalaJSBundlerPlugin.scala" target="_blank">ScalaJSBundlerPlugin.scala</a></dd></dl><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/scalacenter/scalajs-bundler/blob/v0.15.0/sbt-scalajs-bundler/src/main/scala/scalajsbundler/sbtplugin/ScalaJSBundlerPlugin.scala" target="_blank">ScalaJSBundlerPlugin.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
@@ -427,6 +427,20 @@ additionalNpmConfig in Compile := <span class="std">Map</span>(
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.autoImport#jsSourceDirectories" visbl="pub" data-isabs="false" fullComment="yes" group="settings">
+      <a id="jsSourceDirectories:sbt.SettingKey[Seq[sbt.File]]"></a>
+      <a id="jsSourceDirectories:SettingKey[Seq[File]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">jsSourceDirectories</span><span class="result">: <span class="extype" name="sbt.SettingKey">SettingKey</span>[<span class="extype" name="scala.Seq">Seq</span>[<a href="../../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a>]]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Local js source directories to be collected by the bundler</p><div class="fullcomment"><div class="comment cmt"><p>Local js source directories to be collected by the bundler</p><p>Default is <code>src/main/js</code>
+</p></div></div>
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>
       <a id="ne(AnyRef):Boolean"></a>
@@ -541,7 +555,7 @@ that contains the <code>node_modules</code> directory).
         <span class="name">npmInstallJSResources</span><span class="result">: <span class="extype" name="sbt.TaskKey">TaskKey</span>[<span class="extype" name="scala.Seq">Seq</span>[<a href="../../sbt/package.html#File=java.io.File" class="extmbr" name="sbt.File">File</a>]]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Installs all JavaScript resources found on the classpath as node packages.</p><div class="fullcomment"><div class="comment cmt"><p>Installs all JavaScript resources found on the classpath as node packages.</p><p>The JavaScript resources are installed locally in <code>node_modules</code> and can be used any other node package,
+      <p class="shortcomment cmt">Installs all JavaScript resources found on the classpath as node packages.</p><div class="fullcomment"><div class="comment cmt"><p>Installs all JavaScript resources found on the classpath as node packages.</p><p>Additionally, it installs also the resources found under <a href="#jsSourceDirectories:sbt.SettingKey[Seq[sbt.File]]" class="extmbr" name="scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.autoImport#jsSourceDirectories">jsSourceDirectories</a></p><p>The JavaScript resources are installed locally in <code>node_modules</code> and can be used any other node package,
 such as to load a module using <code>require()</code>.</p><p>The plugin uses different directories according to the configuration (<code>Compile</code> or <code>Test</code>). Thus,
 this setting is scoped by a <code>Configuration</code>.</p><p>The task returns the path to each JavaScript resource within the <code>node_modules</code> directory.
 </p></div></div>
@@ -746,7 +760,7 @@ host platform.</p><p>Defaults to <code>false</code>.
 a <code>Configuration</code> (either <code>Compile</code> or <code>Test</code>).</p><p>For instance, to bundle the output of <code>fastOptJS</code>, run the following task from the sbt shell:</p><pre>fastOptJS::webpack</pre><p>Or, in an sbt build definition:</p><pre>webpack in (Compile, fastOptJS)</pre><p>Note that to scope the task to a different project than the “current” sbt project, you
 have to write the following:</p><pre>webpack in (projectRef, Compile, fastOptJS in projectRef)</pre><p>The task returns the produced bundles.</p><p>The task is cached, so webpack is only launched when some of the
 used files have changed. The list of files to be monitored is
-provided by webpackMonitoredFiles</p><p>The files produced are wrapped in <span class="extype" name="sbt.Attributed">sbt.Attributed</span>, and tagged with
+provided by webpackMonitoredFiles</p><p>The files produced are wrapped in <code>sbt.Attributed</code>, and tagged with
 <a href="SBTBundlerFile$.html#ProjectNameAttr:sbt.AttributeKey[String]" class="extmbr" name="scalajsbundler.sbtplugin.SBTBundlerFile#ProjectNameAttr">scalajsbundler.sbtplugin.SBTBundlerFile.ProjectNameAttr</a> and
 <a href="SBTBundlerFile$.html#BundlerFileTypeAttr:sbt.AttributeKey[scalajsbundler.BundlerFileType]" class="extmbr" name="scalajsbundler.sbtplugin.SBTBundlerFile#BundlerFileTypeAttr">scalajsbundler.sbtplugin.SBTBundlerFile.BundlerFileTypeAttr</a>. The
 <a href="SBTBundlerFile$.html#ProjectNameAttr:sbt.AttributeKey[String]" class="extmbr" name="scalajsbundler.sbtplugin.SBTBundlerFile#ProjectNameAttr">scalajsbundler.sbtplugin.SBTBundlerFile.ProjectNameAttr</a> contains the &quot;prefix&quot; of the file names, such
@@ -843,9 +857,9 @@ configuration file, but you can supply your own file via this setting. Example o
       <p class="shortcomment cmt">whether to enable (or not) source-map in
 a given configuration (<code>Compile</code> or <code>Test</code>) and stage (<code>fastOptJS</code> or <code>fullOptJS</code>).</p><div class="fullcomment"><div class="comment cmt"><p>whether to enable (or not) source-map in
 a given configuration (<code>Compile</code> or <code>Test</code>) and stage (<code>fastOptJS</code> or <code>fullOptJS</code>). Example
-of use:</p><pre>webpackEmitSourceMaps in (Compile, fullOptJS) := <span class="kw">false</span></pre><p>Note that, by default, this setting takes the same value as the Scala.js’ <code>emitSourceMaps</code>
-setting, so, to globally disable source maps you can just configure the <code>emitSourceMaps</code>
-setting:</p><pre>emitSourceMaps := <span class="kw">false</span></pre></div></div>
+of use:</p><pre>webpackEmitSourceMaps in (Compile, fullOptJS) := <span class="kw">false</span></pre><p>By default, this setting is undefined and scalajs-bundler fallbacks to Scala.js’ <code>sourceMap</code>
+setting, so, to globally disable source maps you can just configure the <code>sourceMap</code>
+setting:</p><pre>scalaJSLinkerConfig ~= _.withSourceMap(<span class="kw">false</span>)</pre></div></div>
     </li><li name="scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.autoImport#webpackExtraArgs" visbl="pub" data-isabs="false" fullComment="yes" group="settings">
       <a id="webpackExtraArgs:sbt.SettingKey[Seq[String]]"></a>
       <a id="webpackExtraArgs:SettingKey[Seq[String]]"></a>
