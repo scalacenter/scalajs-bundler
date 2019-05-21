@@ -14,6 +14,8 @@ the `webpack` task scoped to a Scala.js stage (`fastOptJS` or `fullOptJS`):
 > fastOptJS::webpack
 ~~~
 
+The `webpack` task returns a list of artifacts produced by the bundling process.
+
 ### JavaScript Dependencies {#npm-dependencies}
 
 To define the npm packages your project depends on, use the `npmDependencies` key:
@@ -34,8 +36,8 @@ npmDependencies in Test += "jasmine" -> "2.5.2"
 > in order to work with the npm modules, otherwise you will need some additional configuration, as explained
 > [here](cookbook.md#global-namespace).
 
-Last but not least, the `.js` files that are in your classpath are automatically copied to the
-working directory of the `node` command. This means that you can also `@JSImport` these modules from
+Last but not least, the `.js` files that are in your classpath and in the `jsSourceDirectories` are automatically
+copied to the working directory of the `node` command. This means that you can also `@JSImport` these modules from
 your Scala facades (you can see an example
 [here](https://github.com/scalacenter/scalajs-bundler/blob/master/sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler/js-resources/src/main/scala/example/MyModule.scala#L6)).
 
@@ -64,14 +66,14 @@ useYarn := true
 
 If your sbt (sub-)project directory contains a `yarn.lock`, it will be used. Else, a new one will be created. You should check `yarn.lock` into source control.
 
-Yarn 0.22.0+ must be available on the host platform.
+Yarn 0.22.0+ must be available on your machine.
 
 ### Bundling Mode {#bundling-mode}
 
 Each time you change something in your application source code and compile the project, Scala.js emits a new .js 
 file that can weigh several MBs if your application is large. Scalajs-bundler provides
 a few different options with respect to handling this large output file, controlled by setting the optional
-`webpackBundlingMode` key and can be scoped to a Scala.js stage(`fastOptJS` or `fullOptJS`).
+`webpackBundlingMode` key and can be scoped to a Scala.js stage (`fastOptJS` or `fullOptJS`).
 
 #### Application (default) {#bundling-mode-application}
 
@@ -82,9 +84,10 @@ have to process a very large Scala.Js output file.
 Turning this CommonJS module into code executable by web browsers takes time, often upwards of a minute. 
 
 Nonetheless, this is identical to what you'd get if were to duplicate your workflow outside scalajs-bundler, 
-so it remains the default. 
+so it remains the default.
 
 #### Library Only {#bundling-mode-library-only}
+
 You can get a much faster “change source and reload application” workflow by setting the 
 `webpackBundlingMode := BundlingMode.LibraryOnly()` key. This bundling mode avoids having webpack process the entire
 Scala.js output, but instead uses webpack to bundle all the javascript dependencies (determined via `@JSImport` 
@@ -93,10 +96,20 @@ and any changes to the `webpack.config.js`). This is accomplished by setting the
 `ScalaJSBundlerLibrary`, but if needed, that variable name can be overridden via the `exportedName` 
 parameter provided to `BundlingMode.LibraryOnly`.
 
-It then uses a special "loader" to resolve these dependencies for the actual Scala.js application.
+The drawback of this mode is that because the output of Scala.js is not processed by Webpack, it is
+still a CommonJS module that is not directly executable by web browsers. This problem is addressed
+by including a special “loader” before including the Scala.js module.
+
+> {.warning}
+> The inclusion of a CommonJS module in the web browser is not guaranteed to work. In particular,
+> in `fullOptJS` mode the name mangler might produce names that could clash with other existing
+> global names. For this reason, we don’t recommend using the `LibraryOnly` bundling mode in `fullOptJS`,
+> or in production.
 
 In order to use this mode, instead of including `yourapp-bundle.js` in your page, you will need to include
-`yourapp-library.js`, `yourapp-loader.js`, `yourapp-fastopt.js` or `yourapp-opt.js`. If you're using Play 
+`yourapp-library.js` (which contains all the application libraries bundled into a single file),
+`yourapp-loader.js` (which contains a hack to make the application work), and `yourapp-fastopt.js` or
+`yourapp-opt.js` (which contains the output of Scala.js, that is a CommonJS module). If you're using Play 
 Framework, you could use a twirl template similar to this one:
 
 ~~~ html
@@ -150,7 +163,8 @@ for the Scala.js out to hang onto, which is what the loader provides.
 #### Library and Application {#bundling-mode-library-and-application}
 
 `bundlingMode := BundlingMode.LibraryAndApplication()` builds on `BundlingMode.LibraryOnly` and attempts to 
-duplicate the output of `BundlingMode.Application` without the overhead processing the entire Scala.js output file. 
+produce only one artifact (like the `Application` bundling mode) without the overhead processing the entire
+Scala.js output file. 
 It uses the same library file generation process as `BundlingMode.LibraryOnly`. It then bundles that library, 
 the loader, and the Scala.js output into a `yourapp-bundle` file by concatenating them. If `enableSourceMaps := true`, 
 it will attempt to use the node.js `concat-with-sourcemaps` module to combine the sourcemaps as well. 

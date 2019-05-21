@@ -1,5 +1,21 @@
 # Changelog
 
+## Version 0.15.0
+
+> 2019 May 21
+
+The main highlight of this release is the support of Scala.js 1.x. We still support Scala.js 0.6.x, but
+we require at least version 0.6.26.
+
+New features:
+- [#201](https://github.com/scalacenter/scalajs-bundler/issues/201): Introduce a `jsSourceDirectories` setting,
+  which points to a list of directories containing files (`.js`, `.json`, etc.) that can be used by Scala.js
+  projects.
+- [#246](https://github.com/scalacenter/scalajs-bundler/issues/246): Support Scala.js 1.0.0-M7.
+
+You can find the complete list of commits since the last release
+[here](https://github.com/scalacenter/scalajs-bundler/compare/v0.14.0...v0.15.0).
+
 ## Version 0.14.0
 
 > 2018 Nov 5
@@ -22,6 +38,9 @@ New features:
 And documentation fixes:
   - [#269](https://github.com/scalacenter/scalajs-bundler/issues/269): Update docs
 
+You can find the complete list of commits since the last release
+[here](https://github.com/scalacenter/scalajs-bundler/compare/v0.13.1...v0.14.0).
+
 ## Version 0.13.1
 
 > 2018 Jul 13
@@ -35,6 +54,9 @@ The following PRs are included in this release
 - [#254](https://github.com/scalacenter/scalajs-bundler/pull/254): Npm/yarn args
 - [#251](https://github.com/scalacenter/scalajs-bundler/pull/251): Fix typo
 - [#249](https://github.com/scalacenter/scalajs-bundler/pull/249): Sync yarn.lock between baseDir and installDir
+
+You can find the complete list of commits since the last release
+[here](https://github.com/scalacenter/scalajs-bundler/compare/v0.13.0...v0.14.1).
 
 ## Version 0.13.0
 

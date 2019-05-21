@@ -11,7 +11,7 @@ addSbtPlugin("ch.epfl.scala" % "sbt-scalajs-bundler" % "{{version}}")
 ~~~
 
 > {.note}
-> Note that the plugin requires Scala.js 0.6.26+ or 1.0.0-M7 and either
+> The plugin requires Scala.js 0.6.26+ or 1.0.0-M7 and either
 > sbt 0.13.17+ or 1.0.2+.
 
 Enable the `ScalaJSBundlerPlugin`, in your `build.sbt` file:
@@ -33,13 +33,16 @@ npmDependencies in Compile += "snabbdom" -> "0.5.3"
 ~~~
 
 > {.note}
-> You will most probably want to write a [Scala.js facade](https://www.scala-js.org/doc/interoperability/facade-types.html)
-> for your module. You can find information on how to do that in the
+> You will most probably want to write a [Scala.js facade](https://www.scala-js.org/doc/interoperability/facade-types.html#-imports-from-other-javascript-modules)
+> for the JavaScript module. You can find information on how to do that in the
 > [cookbook](cookbook.md#facade), or draw inspiration from
 > [this example](https://github.com/scalacenter/scalajs-bundler/blob/master/sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler/browserless/src/main/scala/uuid/uuid.scala).
 
 Then, use the `fastOptJS::webpack` sbt command to download the npm packages and bundle your Scala.js
-application into a JavaScript file executable by a web browser.
+application and its dependencies into a single JavaScript file executable by a web browser.
+
+In this example, the `webpack` sbt task produces a single file located at
+`target/scala-2.12/scalajs-bundler/main/<project-id>-fastopt-bundle.js`.
 
 See complete examples in the [tests](https://github.com/scalacenter/scalajs-bundler/tree/master/sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler).
 
@@ -66,7 +69,8 @@ lazy val client = project.enablePlugins(ScalaJSBundlerPlugin)
 
 You also need to setup the `ScalaJSBundlerPlugin` on the Scala.js project, as described in the preceding section, and
 the `sbt-web-scalajs` plugins as described in [their documentation](https://github.com/vmunier/sbt-web-scalajs).
-Note that `sbt-web-scalajs`'s `ScalaJSWeb` plugin must not be enabled, because `ScalaJSWeb` will create source mappings to source files copied to a hash path, which conflict with `ScalaJSBundlerPlugin`'s webpack-based source mappings.
+Note that `sbt-web-scalajs`'s `ScalaJSWeb` plugin must **not** be enabled, because `ScalaJSWeb` will create source
+mappings to source files copied to a hash path, which conflict with `ScalaJSBundlerPlugin`'s webpack-based source mappings.
 
 The `WebScalaJSBundlerPlugin` plugin automatically configures the `scalaJSPipeline` task to use
 the bundles rather than the output of the Scala.js compilation.
