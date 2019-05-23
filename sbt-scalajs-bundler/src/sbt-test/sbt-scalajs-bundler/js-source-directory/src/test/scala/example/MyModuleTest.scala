@@ -13,6 +13,10 @@ class MyModuleTest extends FreeSpec {
     "has a someConfig field" in {
       assert(MyModule.someConfig != null)
     }
+
+    "has a someNestedConfig field" in {
+      assert(MyModule.someNestedConfig != null)
+    }
   }
 
 }

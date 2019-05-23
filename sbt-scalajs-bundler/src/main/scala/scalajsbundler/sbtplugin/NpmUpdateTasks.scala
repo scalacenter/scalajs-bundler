@@ -77,7 +77,11 @@ object NpmUpdateTasks {
                             streams: Keys.TaskStreams): Seq[File] = {
     val jsFileResources =   jsResources.collect {
       case (relativePath, jsfile: FileVirtualBinaryFile) => jsfile.file -> relativePath
-    }.toSet ++ jsSourceDirectories.flatMap(f => if (f.isDirectory) Path.allSubpaths(f) else Seq.empty).toSet
+    }.toSet ++ jsSourceDirectories.flatMap { f =>
+      if (f.isDirectory)
+        Path.allSubpaths(f).filterNot(_._1.isDirectory)
+      else Seq.empty
+    }.toSet
 
     val cachedActionFunction = FileFunction.cached(
         streams.cacheDirectory / "scalajsbundler-npm-install-resources",
