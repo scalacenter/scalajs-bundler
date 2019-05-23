@@ -8,4 +8,5 @@ import scala.scalajs.js.annotation.JSImport
 object MyModule extends js.Object {
   val someUuid: String = js.native
   val someConfig: js.Object = js.native
+  val someNestedConfig: js.Object = js.native
 }
