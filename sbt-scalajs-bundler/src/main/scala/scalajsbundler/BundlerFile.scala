@@ -38,11 +38,6 @@ object BundlerFile {
     def project: String = application.project
   }
 
-  object EntryPoint {
-    /** Filename of the generated bundle, given its module entry name */
-    def fileName(entry: String): String = s"$entry-entrypoint.js"
-  }
-
   /**
     * The package.json file, used for populating the node_modules folder
     *
@@ -137,12 +132,6 @@ object BundlerFile {
              targetDir
                .resolve(Loader.fileName(project))
                .toFile)
-
-    def asEntryPoint: EntryPoint =
-      EntryPoint(this,
-                 targetDir
-                   .resolve(EntryPoint.fileName(project))
-                   .toFile)
 
     def asApplicationBundle: ApplicationBundle =
       ApplicationBundle(project,

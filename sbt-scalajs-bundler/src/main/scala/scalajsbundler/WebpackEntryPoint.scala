@@ -4,6 +4,8 @@ import sbt.{IO, Logger}
 
 import scalajsbundler.util.JS
 
+import java.io.File
+
 object WebpackEntryPoint {
 
   /**
@@ -13,10 +15,8 @@ object WebpackEntryPoint {
     */
   def writeEntryPoint(
       imports: Seq[String],
-      entryPoint: BundlerFile.EntryPoint,
-      logger: Logger
+      entryPoint: File
   ): Unit = {
-    logger.info(s"Writing module entry point for ${entryPoint.file.getName}")
     val depsFileContent =
       JS.ref("module")
         .dot("exports")
@@ -29,6 +29,6 @@ object WebpackEntryPoint {
                   }: _*)
                   .bracket(name))): _*)
         )
-    IO.write(entryPoint.file, depsFileContent.show)
+    IO.write(entryPoint, depsFileContent.show)
   }
 }

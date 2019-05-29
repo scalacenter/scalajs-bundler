@@ -9,7 +9,7 @@ import sbt.{Def, _}
 import scalajsbundler.{BundlerFile, NpmDependencies, Webpack, WebpackDevServer}
 
 import scalajsbundler.ExternalCommand.addPackages
-import scalajsbundler.util.{JSON, ScalaJSNativeLibraries}
+import scalajsbundler.util.{JSON, ScalaJSNativeLibraries, ScalaJSOutputAnalyzer}
 import scalajsbundler.scalajs.compat.testing.TestAdapter
 
 
@@ -544,6 +544,11 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       KeyRanks.Invisible
     )
 
+  private val scalaJSBundlerEntryPointFile =
+    SettingKey[File]("scalaJSBundlerEntryPointFile",
+      "Entry point file",
+      KeyRanks.Invisible)
+
   import autoImport.{BundlerFile => _, _}
 
   override lazy val projectSettings: Seq[Def.Setting[_]] = Seq(
@@ -672,6 +677,35 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
         crossTarget.value / "scalajs-bundler" / (if (configuration.value == Compile) "main" else "test")
       },
 
+      scalaJSBundlerEntryPointFile :=
+        ((crossTarget in fastOptJS).value / 
+           ((moduleName in fastOptJS).value + "-entrypoint.js")),
+
+      scalaJSLinker in fastOptJS := {
+        ScalaJSOutputAnalyzer.linker(
+          (scalaJSLinkerConfig in fastOptJS).value,
+          scalaJSBundlerEntryPointFile.value)
+      },
+
+      webpack in fastOptJS := Def.taskDyn {
+        (webpackBundlingMode in fastOptJS).value match {
+          case scalajsbundler.BundlingMode.Application =>
+            WebpackTasks.webpack(fastOptJS)
+          case mode: scalajsbundler.BundlingMode.LibraryOnly =>
+            LibraryTasks.librariesAndLoaders(fastOptJS, mode, scalaJSBundlerEntryPointFile)
+          case mode: scalajsbundler.BundlingMode.LibraryAndApplication =>
+            LibraryTasks.libraryAndLoadersBundle(fastOptJS, mode, scalaJSBundlerEntryPointFile)
+        }
+      }.value,
+
+      webpack in fullOptJS := {
+        if ((webpackBundlingMode in fullOptJS).value != scalajsbundler.BundlingMode.Application) {
+          throw new MessageOnlyException("BundlingMode must be Application in fullOptJS")
+        }
+
+        WebpackTasks.webpack(fullOptJS).value
+      },
+
       Settings.jsEnvSetting
     ) ++
     perScalaJSStageSettings(Stage.FastOpt) ++
@@ -739,17 +773,6 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
         WebpackTasks.entry(stageTask).value,
         npmUpdate.value / "scalajs.webpack.config.js"
       ),
-
-      webpack in stageTask := Def.taskDyn {
-        (webpackBundlingMode in stageTask).value match {
-          case scalajsbundler.BundlingMode.Application =>
-            WebpackTasks.webpack(stageTask)
-          case mode: scalajsbundler.BundlingMode.LibraryOnly =>
-            LibraryTasks.librariesAndLoaders(stageTask, mode)
-          case mode: scalajsbundler.BundlingMode.LibraryAndApplication =>
-            LibraryTasks.libraryAndLoadersBundle(stageTask, mode)
-        }
-      }.value,
 
       webpackMonitoredFiles in stageTask := {
         val generatedWebpackConfigFile = (scalaJSBundlerWebpackConfig in stageTask).value

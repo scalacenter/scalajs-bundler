@@ -16,51 +16,10 @@ import scalajsbundler.sbtplugin.ScalaJSBundlerPlugin._
 import scalajsbundler.util.{Caching, JSBundler, ScalaJSOutputAnalyzer}
 
 object LibraryTasks {
-
-  private[sbtplugin] def entryPoint(stage: TaskKey[Attributed[File]])
-    : Def.Initialize[Task[BundlerFile.EntryPoint]] =
-    Def.taskDyn {
-      val s = streams.value
-      val linkerConfig = (scalaJSLinkerConfig in stage).value
-      val linker = (scalaJSLinker in stage).value
-      val linkerTag = (usesScalaJSLinkerTag in stage).value
-      val entry = WebpackTasks.entry(stage).value
-      val scalaJSIRValue = scalaJSIR.value
-      val scalaJSModuleInitializersValue = scalaJSModuleInitializers.value
-      val cacheLocation = streams.value.cacheDirectory / s"${stage.key.label}-webpack-entrypoint"
-      Def
-        .task {
-          val entryPointFile = entry.asEntryPoint
-          val linkingUnit = ScalaJSOutputAnalyzer.linkingUnit(
-            linkerConfig,
-            linker,
-            scalaJSIRValue.data,
-            scalaJSModuleInitializersValue,
-            s.log
-          )
-          val importedModules =
-            ScalaJSOutputAnalyzer.importedModules(linkingUnit)
-
-          // Avoid re-writing the entrypoint file if the list of modules hasn't changed
-          // allowing downstream caching to detect change reliably
-          Caching.cached(entryPointFile.file,
-                         importedModules.mkString(","),
-                         cacheLocation)(
-            () =>
-              WebpackEntryPoint.writeEntryPoint(
-                importedModules,
-                entryPointFile,
-                s.log
-            ))
-          entryPointFile
-        }
-        .tag(linkerTag)
-        .dependsOn(npmUpdate in stage)
-    }
-
   private[sbtplugin] def bundle(
       stage: TaskKey[Attributed[File]],
-      mode: BundlingMode.Library): Def.Initialize[Task[BundlerFile.Library]] =
+      mode: BundlingMode.Library,
+      entryPoint: SettingKey[File]): Def.Initialize[Task[BundlerFile.Library]] =
     Def.task {
       assert(ensureModuleKindIsCommonJSModule.value)
       val log = streams.value.log
@@ -70,7 +29,8 @@ object LibraryTasks {
         (scalaJSBundlerWebpackConfig in stage).value
       val compileResources = (resources in Compile).value
       val webpackResourceFiles = (webpackResources in stage).value.get
-      val entryPointFile = entryPoint(stage).value
+      val entryPointFile = BundlerFile.EntryPoint(
+        WebpackTasks.entry(stage).value, entryPoint.value)
       val monitoredFiles = customWebpackConfigFile.toSeq ++
         Seq(generatedWebpackConfigFile.file, entryPointFile.file) ++
         webpackResourceFiles ++ compileResources
@@ -119,14 +79,15 @@ object LibraryTasks {
     }
 
   private[sbtplugin] def bundleAll(stage: TaskKey[Attributed[File]],
-                                   mode: BundlingMode.LibraryAndApplication)
+                                  mode: BundlingMode.LibraryAndApplication,
+                                  entryPoint: SettingKey[File])
     : Def.Initialize[Task[Seq[BundlerFile.Public]]] =
     Def.task {
       assert(ensureModuleKindIsCommonJSModule.value)
       val cacheLocation = streams.value.cacheDirectory / s"${stage.key.label}-webpack-bundle-all"
       val targetDir = npmUpdate.value
       val entry = WebpackTasks.entry(stage).value
-      val library = bundle(stage, mode).value
+      val library = bundle(stage, mode, entryPoint).value
       val emitSourceMaps = (finallyEmitSourceMaps in stage).value
       val log = streams.value.log
       val filesToMonitor = Seq(entry.file, library.file)
@@ -150,19 +111,21 @@ object LibraryTasks {
     }
 
   private[sbtplugin] def librariesAndLoaders(stage: TaskKey[Attributed[File]],
-                                             mode: BundlingMode.LibraryOnly)
+                                             mode: BundlingMode.LibraryOnly,
+                                             entryPoint: SettingKey[File])
     : Def.Initialize[Task[Seq[Attributed[File]]]] =
     Def.task {
       Seq(WebpackTasks.entry(stage).value,
         loader(stage, mode).value,
-        bundle(stage, mode).value).flatMap(_.asAttributedFiles)
+        bundle(stage, mode, entryPoint).value).flatMap(_.asAttributedFiles)
     }
 
   private[sbtplugin] def libraryAndLoadersBundle(
       stage: TaskKey[Attributed[File]],
-      mode: BundlingMode.LibraryAndApplication)
+      mode: BundlingMode.LibraryAndApplication,
+      entryPoint: SettingKey[File])
     : Def.Initialize[Task[Seq[Attributed[File]]]] =
     Def.task {
-      bundleAll(stage, mode).value.flatMap(_.asAttributedFiles)
+      bundleAll(stage, mode, entryPoint).value.flatMap(_.asAttributedFiles)
     }
 }
