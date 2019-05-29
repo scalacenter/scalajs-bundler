@@ -1,6 +1,7 @@
 package scalajsbundler.sbtplugin
 
 import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport.{
+  fastOptJS,
   scalaJSIR,
   scalaJSLinker,
   scalaJSLinkerConfig,
@@ -153,6 +154,8 @@ object LibraryTasks {
                                              mode: BundlingMode.LibraryOnly)
     : Def.Initialize[Task[Seq[Attributed[File]]]] =
     Def.task {
+      checkBundlingModeValid(stage, mode, streams.value.log)
+
       Seq(WebpackTasks.entry(stage).value,
         loader(stage, mode).value,
         bundle(stage, mode).value).flatMap(_.asAttributedFiles)
@@ -163,6 +166,14 @@ object LibraryTasks {
       mode: BundlingMode.LibraryAndApplication)
     : Def.Initialize[Task[Seq[Attributed[File]]]] =
     Def.task {
+      checkBundlingModeValid(stage, mode, streams.value.log)
+
       bundleAll(stage, mode).value.flatMap(_.asAttributedFiles)
     }
+
+  private def checkBundlingModeValid(stage: TaskKey[Attributed[File]], mode: BundlingMode, log: Logger) = {
+    if (stage != fastOptJS && mode.isInstanceOf[BundlingMode.Library]) {
+      log.warn(s"${mode.getClass.getSimpleName} should not be used with fullOptJS")
+    }
+  }
 }
