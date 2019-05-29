@@ -554,7 +554,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
 
     webpackCliVersion := "2.0.11",
 
-    version in startWebpackDevServer := "2.11.1",
+    version in startWebpackDevServer := "3.4.1",
 
     version in installJsdom := "9.9.0",
 
