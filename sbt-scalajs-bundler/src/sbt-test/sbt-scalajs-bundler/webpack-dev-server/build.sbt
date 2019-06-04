@@ -16,7 +16,7 @@ webpackConfigFile := Some(baseDirectory.value / "webpack.config.js")
 
 webpackDevServerPort := 7357
 
-version in webpack                     := "4.1.1"
+version in webpack                     := "4.32.2"
 
 // (Used by tests only) checks that a HTML can be loaded (and that its JavaScript can be executed) without errors
 InputKey[Unit]("html") := {
