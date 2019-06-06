@@ -72,7 +72,8 @@ object BundlerFile {
               }.getOrElse(targetDir.resolve(Library.fileName(project)).toFile),
               stats.map { s =>
                 s.resolveAllAssets(targetDir)
-              }.getOrElse(Nil)
+              }.getOrElse(Nil),
+              Some(file)
             )
 
     /**
@@ -82,7 +83,7 @@ object BundlerFile {
     def asLibraryFromCached(cached: Set[File]): Library = {
       assert(cached.size >= 1)
       val assets = if (cached.size == 1) Nil else cached.tail.toList
-      Library(project, cached.head, assets)
+      Library(project, cached.head, assets, Some(file))
     }
 
     /**
@@ -95,7 +96,8 @@ object BundlerFile {
                         }.getOrElse(targetDir.resolve(ApplicationBundle.fileName(project)).toFile),
                         stats.map { s =>
                           s.resolveAllAssets(targetDir)
-                        }.getOrElse(Nil))
+                        }.getOrElse(Nil),
+                        Some(file))
 
     /**
       * Returns an application bundle from a set of cached files
@@ -104,7 +106,7 @@ object BundlerFile {
     def asApplicationBundleFromCached(cached: Set[File]): ApplicationBundle = {
       assert(cached.size >= 1)
       val assets = if (cached.size == 1) Nil else cached.tail.toList
-      ApplicationBundle(project, cached.head, assets)
+      ApplicationBundle(project, cached.head, assets, Some(file))
     }
   }
 
@@ -149,7 +151,8 @@ object BundlerFile {
                         targetDir
                           .resolve(ApplicationBundle.fileName(project))
                           .toFile,
-                        assets)
+                        assets,
+                        None)
 
     /**
       * Returns an application bundle from a set of cached files
@@ -157,7 +160,7 @@ object BundlerFile {
     def asApplicationBundleFromCached(cached: Set[File]): ApplicationBundle = {
       assert(cached.size >= 1)
       val assets = if (cached.size == 1) Nil else cached.tail.toList
-      ApplicationBundle(project, cached.head, assets)
+      ApplicationBundle(project, cached.head, assets, None)
     }
   }
 
@@ -167,9 +170,10 @@ object BundlerFile {
     * @param file The file containing the application javascript
     * @param assets All the assets on the application
     */
-  case class Library(project: String, file: File, assets: List[java.io.File]) extends Public {
+  case class Library(project: String, file: File, assets: List[java.io.File], generatedWebpackFile: Option[File])
+    extends Public {
     val `type`: BundlerFileType = BundlerFileType.Library
-    val cached: ListSet[File] = CachedBundleFiles.cached(file, assets)
+    val cached: ListSet[File] = CachedBundleFiles.cached(file, assets) ++ generatedWebpackFile
 
     override def attributedFiles: (File, Seq[File]) = (file, assets)
   }
@@ -211,11 +215,11 @@ object BundlerFile {
     * @param file The file containing the application javascript
     * @param assets All the assets on the application
     */
-  case class ApplicationBundle(project: String, file: File, assets: List[java.io.File])
+  case class ApplicationBundle(project: String, file: File, assets: List[java.io.File], generatedWebpackFile: Option[File])
       extends Public {
     val `type`: BundlerFileType = BundlerFileType.ApplicationBundle
 
-    val cached: ListSet[File] = CachedBundleFiles.cached(file, assets)
+    val cached: ListSet[File] = CachedBundleFiles.cached(file, assets) ++ generatedWebpackFile
 
     override def attributedFiles: (File, Seq[File]) = (file, assets)
   }
