@@ -50,8 +50,8 @@ object ScalaJSOutputAnalyzer {
   ): LinkingUnit = {
     import scala.concurrent.ExecutionContext.Implicits.global
 
-    require(linkerConfig.moduleKind == ModuleKind.CommonJSModule,
-            s"linkerConfig.moduleKind was ${linkerConfig.moduleKind}")
+    require(linkerConfig.moduleKind != ModuleKind.NoModule,
+            s"linkerConfig.moduleKind was ModuleKind.NoModule")
     val frontend = StandardLinkerFrontend(linkerConfig)
     val backend = new StoreLinkingUnitLinkerBackend(linkerConfig)
     val linker = StandardLinkerImpl(frontend, backend)

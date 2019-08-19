@@ -11,7 +11,7 @@ import org.scalajs.sbtplugin.ScalaJSPluginInternal.{scalaJSEnsureUnforked, scala
 import sbt.Keys.{loadedTestFrameworks, streams, testFrameworks, version}
 import sbt._
 import scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.autoImport.{installJsdom, npmUpdate, requireJsDomEnv, webpack, webpackConfigFile, webpackNodeArgs, webpackResources}
-import scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.{createdTestAdapters, ensureModuleKindIsCommonJSModule}
+import scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.{createdTestAdapters, ensureModuleKindIsNotNoModule}
 import scalajsbundler.scalajs.compat.testing.TestAdapter
 import scalajsbundler.{JSDOMNodeJSEnv, JsDomTestEntries, NpmPackage, Webpack}
 
@@ -40,7 +40,7 @@ private[sbtplugin] object Settings {
           case other => sys.error(s"You need a ComJSEnv to test (found ${other.name})")
         }.getOrElse {
           Def.taskDyn[ComJSEnv] {
-            assert(ensureModuleKindIsCommonJSModule.value)
+            assert(ensureModuleKindIsNotNoModule.value)
             val sjsOutput = fastOptJS.value.data
             // If jsdom is going to be used, then we should bundle the test module into a file that exports the tests to the global namespace
             if (requireJsDomEnv.value) Def.task {

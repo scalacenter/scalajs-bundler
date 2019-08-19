@@ -44,8 +44,8 @@ object ScalaJSOutputAnalyzer {
       moduleInitializers: Seq[ModuleInitializer],
       logger: Logger
   ): LinkingUnit = {
-    require(linkerConfig.moduleKind == ModuleKind.CommonJSModule,
-            s"linkerConfig.moduleKind was ${linkerConfig.moduleKind}")
+    require(linkerConfig.moduleKind != ModuleKind.NoModule,
+            s"linkerConfig.moduleKind was ModuleKind.NoModule")
     val symbolRequirements = {
       val backend = new BasicLinkerBackend(linkerConfig.semantics,
                                            linkerConfig.esFeatures,

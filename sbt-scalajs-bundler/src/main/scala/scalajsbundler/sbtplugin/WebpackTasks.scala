@@ -18,7 +18,7 @@ object WebpackTasks {
   private[sbtplugin] def webpack(
       stage: TaskKey[Attributed[File]]): Def.Initialize[Task[Seq[Attributed[File]]]] =
     Def.task {
-      assert(ensureModuleKindIsCommonJSModule.value)
+      assert(ensureModuleKindIsNotNoModule.value)
       val cacheLocation = streams.value.cacheDirectory / s"${stage.key.label}-webpack"
       val generatedWebpackConfigFile =
         (scalaJSBundlerWebpackConfig in stage).value

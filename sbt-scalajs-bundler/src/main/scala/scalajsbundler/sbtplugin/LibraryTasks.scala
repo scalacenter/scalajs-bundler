@@ -62,7 +62,7 @@ object LibraryTasks {
       stage: TaskKey[Attributed[File]],
       mode: BundlingMode.Library): Def.Initialize[Task[BundlerFile.Library]] =
     Def.task {
-      assert(ensureModuleKindIsCommonJSModule.value)
+      assert(ensureModuleKindIsNotNoModule.value)
       val log = streams.value.log
       val emitSourceMaps = (finallyEmitSourceMaps in stage).value
       val customWebpackConfigFile = (webpackConfigFile in stage).value
@@ -107,7 +107,7 @@ object LibraryTasks {
       stage: TaskKey[Attributed[File]],
       mode: BundlingMode.Library): Def.Initialize[Task[BundlerFile.Loader]] =
     Def.task {
-      assert(ensureModuleKindIsCommonJSModule.value)
+      assert(ensureModuleKindIsNotNoModule.value)
       val entry = WebpackTasks.entry(stage).value
       val loaderFile = entry.asLoader
 
@@ -122,7 +122,7 @@ object LibraryTasks {
                                    mode: BundlingMode.LibraryAndApplication)
     : Def.Initialize[Task[Seq[BundlerFile.Public]]] =
     Def.task {
-      assert(ensureModuleKindIsCommonJSModule.value)
+      assert(ensureModuleKindIsNotNoModule.value)
       val cacheLocation = streams.value.cacheDirectory / s"${stage.key.label}-webpack-bundle-all"
       val targetDir = npmUpdate.value
       val entry = WebpackTasks.entry(stage).value
