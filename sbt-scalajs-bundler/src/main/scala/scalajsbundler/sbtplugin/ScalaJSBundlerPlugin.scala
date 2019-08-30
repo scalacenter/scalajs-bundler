@@ -386,6 +386,18 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
     )
 
     /**
+     * Custom environment variables to node.js when running webpack tasks
+     *
+     * Defaults to an empty map.
+     *
+     * @group settings
+     */
+    val webpackNodeEnvVars = SettingKey[Map[String, String]](
+      "webpackNodeEnvVars",
+      "Custom environment variables to node.js when running webpack tasks"
+    )
+
+    /**
       * node.js cli custom arguments as described in https://nodejs.org/api/cli.html
       *
       * Defaults to an empty list.
@@ -580,6 +592,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
     webpackMonitoredDirectories := Seq(),
     (includeFilter in webpackMonitoredFiles) := AllPassFilter,
     webpackExtraArgs := Seq.empty,
+    webpackNodeEnvVars := Map.empty,
     webpackNodeArgs := Seq.empty,
 
     npmExtraArgs := Seq.empty,
