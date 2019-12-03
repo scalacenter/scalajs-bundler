@@ -2,8 +2,6 @@ package scalajsbundler.sbtplugin
 
 import scala.annotation.tailrec
 
-import java.util.concurrent.atomic.AtomicReference
-
 import org.scalajs.jsenv.JSEnv
 import org.scalajs.sbtplugin.Loggers.sbtLogger2ToolsLogger
 import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport.{fastOptJS, jsEnv, jsEnvInput, scalaJSUseTestModuleInitializer}
@@ -13,7 +11,6 @@ import sbt.testing.Framework
 import scalajsbundler.{JSDOMNodeJSEnv, Webpack, JsDomTestEntries, NpmPackage}
 import scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.autoImport.{installJsdom, npmUpdate, requireJsDomEnv, webpackConfigFile, webpackNodeArgs, webpackResources, webpack}
 import scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.{createdTestAdapters, ensureModuleKindIsCommonJSModule}
-import scalajsbundler.scalajs.compat.io.FileVirtualBinaryFile
 import scalajsbundler.scalajs.compat.testing.TestAdapter
 
 private[sbtplugin] object Settings {
@@ -26,7 +23,7 @@ private[sbtplugin] object Settings {
   val loadedTestFrameworksSetting =
     loadedTestFrameworks := Def.task {
       val (env, input) = {
-        Def.taskDyn[(JSEnv, org.scalajs.jsenv.Input)] {
+        Def.taskDyn[(JSEnv, Seq[org.scalajs.jsenv.Input])] {
           assert(ensureModuleKindIsCommonJSModule.value)
           val sjsOutput = fastOptJS.value.data
           // If jsdom is going to be used, then we should bundle the test module into a file that exports the tests to the global namespace
@@ -72,11 +69,10 @@ private[sbtplugin] object Settings {
                 Set.empty
               }
             writeTestBundleFunction(Set(sjsOutput))
-            val file = new FileVirtualBinaryFile(bundle)
 
             val jsdomDir = installJsdom.value
             val env = new JSDOMNodeJSEnv(JSDOMNodeJSEnv.Config(jsdomDir))
-            val input = org.scalajs.jsenv.Input.ScriptsToLoad(List(file))
+            val input = List(org.scalajs.jsenv.Input.Script(bundle.toPath))
             (env, input)
           } else Def.task {
             (jsEnv.value, jsEnvInput.value)
@@ -115,7 +111,7 @@ private[sbtplugin] object Settings {
     }.dependsOn(npmUpdate).value
 
   @tailrec
-  private def newTestAdapter(jsEnv: JSEnv, input: org.scalajs.jsenv.Input, config: TestAdapter.Config): TestAdapter = {
+  private def newTestAdapter(jsEnv: JSEnv, input: Seq[org.scalajs.jsenv.Input], config: TestAdapter.Config): TestAdapter = {
     val prev = createdTestAdapters.get()
     val r = new TestAdapter(jsEnv, input, config)
     if (createdTestAdapters.compareAndSet(prev, r :: prev)) r

@@ -1,5 +1,19 @@
 # Changelog
 
+## Version 0.16.0
+
+> Unreleased
+
+The main highlight of this release is the support of Scala.js 1.0.0-RC1 instead of 1.0.0-M7.
+We still support Scala.js 0.6.x, but we require at least version 0.6.31.
+
+- Add support for Scala.js 1.0.0-RC1 (drop support for 1.0.0-M7)
+- Require Scala.js 0.6.31 or later in the 0.6.x branch
+- Require sbt 1.2.1 or later in the sbt 1.x branch (sbt 0.13.17+ is still supported)
+
+You can find the complete list of commits since the last release
+[here](https://github.com/scalacenter/scalajs-bundler/compare/v0.15.0...master).
+
 ## Version 0.15.0
 
 > 2019 May 21
@@ -154,8 +168,8 @@ You can find the complete list of commits since the last release
 
 > 2017 September 10
 
-When upgrading to this release, make sure to check out the new [webpackBundlingMode](reference.md#bundling-mode) 
-configuration value. The old `enableReloadWorkflow` key has been removed, in favor 
+When upgrading to this release, make sure to check out the new [webpackBundlingMode](reference.md#bundling-mode)
+configuration value. The old `enableReloadWorkflow` key has been removed, in favor
 of `BundlingMode.LibraryAndApplication()`.
 
 - [#143](https://github.com/scalacenter/scalajs-bundler/pull/143): Document the compatible versions of npm;

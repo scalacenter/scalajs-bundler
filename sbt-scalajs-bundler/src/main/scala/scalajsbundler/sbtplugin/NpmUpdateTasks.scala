@@ -1,6 +1,6 @@
 package scalajsbundler.sbtplugin
 
-import scalajsbundler.scalajs.compat.io.{FileVirtualBinaryFile, VirtualBinaryFile}
+import scalajsbundler.scalajs.compat.io._
 import scalajsbundler.ExternalCommand
 import sbt._
 
@@ -76,7 +76,7 @@ object NpmUpdateTasks {
                             jsSourceDirectories: Seq[File],
                             streams: Keys.TaskStreams): Seq[File] = {
     val jsFileResources =   jsResources.collect {
-      case (relativePath, jsfile: FileVirtualBinaryFile) => jsfile.file -> relativePath
+      case (relativePath, jsfile: FileVirtualBinaryFile) => jsfile.toFile() -> relativePath
     }.toSet ++ jsSourceDirectories.flatMap { f =>
       if (f.isDirectory)
         Path.allSubpaths(f).filterNot(_._1.isDirectory)

@@ -14,7 +14,7 @@ addSbtPlugin("ch.epfl.scala" % "sbt-scalajs-bundler" % "{{version}}-0.6")
 
 > {.note}
 > The plugin requires Scala.js 0.6.26+ or 1.0.0-M7 and either
-> sbt 0.13.17+ or 1.0.2+.
+> sbt 0.13.17+ or 1.2.1+.
 
 Enable the `ScalaJSBundlerPlugin`, in your `build.sbt` file:
 
