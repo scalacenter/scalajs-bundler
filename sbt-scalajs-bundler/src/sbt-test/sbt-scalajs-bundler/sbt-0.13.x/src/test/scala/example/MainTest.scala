@@ -1,31 +1,19 @@
 package example
 
-import org.scalatest.FreeSpec
+import org.junit.Assert._
+import org.junit.Test
 
-class MainTest extends FreeSpec {
+class MainTest {
 
-  "LeftPad" - {
-    "leftPad" in {
-      assert(LeftPad("123", 5) == "  123")
-    }
-
-    "leftPad with custom char" in {
-      assert(LeftPad("123", 5, '0') == "00123")
-    }
-
-    "leftPad with smaller length" in {
-      assert(LeftPad("123", 2) == "123")
-    }
+  @Test def leftPad(): Unit = {
+    assertEquals("  123", LeftPad("123", 5))
+    assertEquals("00123", LeftPad("123", 5, '0'))
+    assertEquals("123", LeftPad("123", 2))
   }
 
-  "Main" - {
-    "format with default length" in {
-      assert(Main.format("scala") == "     scala")
-    }
-
-    "format with length" in {
-      assert(Main.format("scala", 6) == " scala")
-    }
+  @Test def main(): Unit = {
+    assertEquals("     scala", Main.format("scala"))
+    assertEquals(" scala", Main.format("scala", 6))
   }
 
 }

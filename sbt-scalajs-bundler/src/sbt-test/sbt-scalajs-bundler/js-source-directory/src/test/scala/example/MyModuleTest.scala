@@ -1,22 +1,20 @@
 package example
 
-import org.scalatest.FreeSpec
+import org.junit.Assert._
+import org.junit.Test
 
-class MyModuleTest extends FreeSpec {
+class MyModuleTest {
 
-  "MyModule" - {
+  @Test def someUuid(): Unit = {
+    assertNotNull(MyModule.someUuid)
+  }
 
-    "has a someUuid field" in {
-      assert(MyModule.someUuid != null)
-    }
+  @Test def someConfig(): Unit = {
+    assertNotNull(MyModule.someConfig)
+  }
 
-    "has a someConfig field" in {
-      assert(MyModule.someConfig != null)
-    }
-
-    "has a someNestedConfig field" in {
-      assert(MyModule.someNestedConfig != null)
-    }
+  @Test def someNestedConfig(): Unit = {
+    assertNotNull(MyModule.someNestedConfig)
   }
 
 }

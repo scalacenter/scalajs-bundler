@@ -1,6 +1,6 @@
 name := "static"
 
-enablePlugins(ScalaJSBundlerPlugin)
+enablePlugins(ScalaJSBundlerPlugin, ScalaJSJUnitPlugin)
 
 scalaVersion := "2.11.12"
 
@@ -18,8 +18,6 @@ npmDevDependencies in Compile += "uglifyjs-webpack-plugin" -> "0.4.3"
 
 // Use a different Webpack configuration file for production
 webpackConfigFile in fullOptJS := Some(baseDirectory.value / "prod.webpack.config.js")
-
-libraryDependencies += "org.scalatest" %%% "scalatest" % "3.1.0" % Test
 
 // Execute the tests in browser-like environment
 requireJsDomEnv in Test := true

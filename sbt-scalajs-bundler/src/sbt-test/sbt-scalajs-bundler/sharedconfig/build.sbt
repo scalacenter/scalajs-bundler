@@ -1,7 +1,7 @@
 
 name := "sharedconfig"
 
-enablePlugins(ScalaJSBundlerPlugin)
+enablePlugins(ScalaJSBundlerPlugin, ScalaJSJUnitPlugin)
 
 scalaVersion := "2.11.12"
 
@@ -31,8 +31,6 @@ webpackConfigFile in fullOptJS := Some(baseDirectory.value / "prod.webpack.confi
 
 // Use the shared Webpack configuration file for reload workflow and for running the tests
 webpackConfigFile in Test := Some(baseDirectory.value / "common.webpack.config.js")
-
-libraryDependencies += "org.scalatest" %%% "scalatest" % "3.1.0" % Test
 
 // Execute the tests in browser-like environment
 requireJsDomEnv in Test := true
