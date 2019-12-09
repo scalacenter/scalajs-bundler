@@ -1,15 +1,12 @@
 package example
 
-import org.scalatest.FreeSpec
+import org.junit.Assert._
+import org.junit.Test
 
-class FooTest extends FreeSpec {
+class FooTest {
 
-  "Foo" - {
-
-    "has a bar method" in {
-      assert(Foo.bar() != null)
-    }
-
+  @Test def bar(): Unit = {
+    assertNotNull(Foo.bar())
   }
 
 }
