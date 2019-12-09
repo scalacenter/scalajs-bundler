@@ -2,7 +2,7 @@
 
 ## Version 0.16.0
 
-> Unreleased
+> 2019 Dec 09
 
 The main highlight of this release is the support of Scala.js 1.0.0-RC1 instead of 1.0.0-M7.
 We still support Scala.js 0.6.x, but we require at least version 0.6.31.
@@ -12,7 +12,7 @@ We still support Scala.js 0.6.x, but we require at least version 0.6.31.
 - Require sbt 1.2.1 or later in the sbt 1.x branch (sbt 0.13.17+ is still supported)
 
 You can find the complete list of commits since the last release
-[here](https://github.com/scalacenter/scalajs-bundler/compare/v0.15.0...master).
+[here](https://github.com/scalacenter/scalajs-bundler/compare/v0.15.0...v0.16.0).
 
 ## Version 0.15.0
 
