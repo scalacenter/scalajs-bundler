@@ -11,7 +11,7 @@ Last stable version is ![](config:version):
 // For Scala.js 1.x
 addSbtPlugin("ch.epfl.scala" % "sbt-scalajs-bundler" % "{{version}}")
 // Or, for Scala.js 0.6.x
-addSbtPlugin("ch.epfl.scala" % "sbt-scalajs-bundler-0.6" % "{{version}}")
+addSbtPlugin("ch.epfl.scala" % "sbt-scalajs-bundler-sjs06" % "{{version}}")
 ~~~
 
 See the [**getting started**](getting-started.md) page for more details about

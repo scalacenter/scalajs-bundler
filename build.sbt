@@ -12,7 +12,7 @@ val `sbt-scalajs-bundler` =
     .settings(commonSettings)
     .settings(
       sbtPlugin := true,
-      name := (if (isScalaJS1x) "sbt-scalajs-bundler" else "sbt-scalajs-bundler-0.6"),
+      name := (if (isScalaJS1x) "sbt-scalajs-bundler" else "sbt-scalajs-bundler-sjs06"),
       description := "Module bundler for Scala.js projects",
       libraryDependencies += "com.typesafe.play" %% "play-json" % "2.6.7",
       addSbtPlugin("org.scala-js" % "sbt-scalajs" % scalaJSVersion),
@@ -35,7 +35,7 @@ val `sbt-web-scalajs-bundler` =
         val () = publishLocal.value
         val () = (publishLocal in `sbt-scalajs-bundler`).value
       },
-      name := (if (isScalaJS1x) "sbt-web-scalajs-bundler" else "sbt-web-scalajs-bundler-0.6"),
+      name := (if (isScalaJS1x) "sbt-web-scalajs-bundler" else "sbt-web-scalajs-bundler-sjs06"),
       description := "Module bundler for Scala.js projects (integration with sbt-web-scalajs)",
       addSbtPlugin("com.vmunier" % "sbt-web-scalajs" % (if (isScalaJS1x) "1.0.9" else "1.0.9-0.6"))
     )

@@ -10,7 +10,7 @@ Add the `sbt-scalajs-bundler` plugin to your Scala.js project, in your `project/
 // For Scala.js 1.x
 addSbtPlugin("ch.epfl.scala" % "sbt-scalajs-bundler" % "{{version}}")
 // Or, for Scala.js 0.6.x
-addSbtPlugin("ch.epfl.scala" % "sbt-scalajs-bundler-0.6" % "{{version}}")
+addSbtPlugin("ch.epfl.scala" % "sbt-scalajs-bundler-sjs06" % "{{version}}")
 ~~~
 
 > {.note}
@@ -57,7 +57,7 @@ For sbt-web integration use the `sbt-web-scalajs-bundler` plugin instead of `sbt
 // For Scala.js 1.x
 addSbtPlugin("ch.epfl.scala" % "sbt-web-scalajs-bundler" % "{{version}}")
 // Or, for Scala.js 0.6.x
-addSbtPlugin("ch.epfl.scala" % "sbt-web-scalajs-bundler-0.6" % "{{version}}")
+addSbtPlugin("ch.epfl.scala" % "sbt-web-scalajs-bundler-sjs06" % "{{version}}")
 ~~~
 
 Then, enable the `WebScalaJSBundlerPlugin` on the project that uses sbt-web:
