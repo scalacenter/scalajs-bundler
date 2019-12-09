@@ -2,7 +2,7 @@ package scalajsbundler.util
 
 import java.io.{BufferedInputStream, ByteArrayOutputStream, FileInputStream, OutputStream}
 
-import scalajsbundler.scalajs.compat.io.{FileVirtualBinaryFile, memVirtualBinaryFile, VirtualBinaryFile}
+import scalajsbundler.scalajs.compat.io._
 import sbt.{Attributed, Def, File, FileFilter, Path, globFilter}
 
 import scala.annotation.tailrec
@@ -13,7 +13,7 @@ private[scalajsbundler] object ScalaJSNativeLibraries {
   def apply(fullClasspath: Seq[Attributed[File]]): Seq[(String, VirtualBinaryFile)] = {
     collectFromClasspath(fullClasspath,
       "*.js", collectJar = jsFilesInJar,
-      collectFile = (f, relPath) => relPath -> new FileVirtualBinaryFile(f))
+      collectFile = (f, relPath) => relPath -> fileVirtualBinaryFile(f))
   }
 
   /** Collect certain file types from a classpath.
@@ -60,7 +60,7 @@ private[scalajsbundler] object ScalaJSNativeLibraries {
     import java.util.zip._
 
     val jarPath = jar.getPath
-    val jarVersion = new FileVirtualBinaryFile(jar).version
+    val jarVersion = fileVirtualBinaryFile(jar).version
 
     val stream =
       new ZipInputStream(new BufferedInputStream(new FileInputStream(jar)))

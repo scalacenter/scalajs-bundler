@@ -18,6 +18,9 @@ webpackDevServerPort := 7357
 
 version in webpack                     := "4.32.2"
 
+// HtmlUnit does not support ECMAScript 2015
+scalaJSLinkerConfig ~= { _.withESFeatures(_.withUseECMAScript2015(false)) }
+
 // (Used by tests only) checks that a HTML can be loaded (and that its JavaScript can be executed) without errors
 InputKey[Unit]("html") := {
   import complete.DefaultParsers._

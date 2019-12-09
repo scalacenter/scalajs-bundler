@@ -32,7 +32,7 @@ webpackConfigFile in fullOptJS := Some(baseDirectory.value / "prod.webpack.confi
 // Use the shared Webpack configuration file for reload workflow and for running the tests
 webpackConfigFile in Test := Some(baseDirectory.value / "common.webpack.config.js")
 
-libraryDependencies += "org.scalatest" %%% "scalatest" % "3.1.0-SNAP9" % Test
+libraryDependencies += "org.scalatest" %%% "scalatest" % "3.1.0" % Test
 
 // Execute the tests in browser-like environment
 requireJsDomEnv in Test := true
@@ -40,6 +40,9 @@ requireJsDomEnv in Test := true
 webpackBundlingMode in fastOptJS := BundlingMode.LibraryAndApplication()
 
 useYarn := true
+
+// HtmlUnit does not support ECMAScript 2015
+scalaJSLinkerConfig ~= { _.withESFeatures(_.withUseECMAScript2015(false)) }
 
 // Check that a HTML can be loaded (and that its JavaScript can be executed) without errors
 InputKey[Unit]("html") := {

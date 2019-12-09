@@ -10,6 +10,9 @@ npmDependencies in Compile += "uuid" -> "3.1.0"
 webpackBundlingMode := BundlingMode.LibraryAndApplication()
 //#relevant-settings
 
+// HtmlUnit does not support ECMAScript 2015
+scalaJSLinkerConfig ~= { _.withESFeatures(_.withUseECMAScript2015(false)) }
+
 // Check that a HTML can be loaded (and that its JavaScript can be executed) without errors
 InputKey[Unit]("html") := {
   import complete.DefaultParsers._

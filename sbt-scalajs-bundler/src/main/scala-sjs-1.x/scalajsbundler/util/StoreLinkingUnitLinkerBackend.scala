@@ -1,17 +1,21 @@
 package org.scalajs.linker.scalajsbundler
 
-import org.scalajs.linker._
+import org.scalajs.linker.interface._
 import org.scalajs.linker.standard._
+
 import org.scalajs.logging.Logger
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class StoreLinkingUnitLinkerBackend(linkerConfig: StandardLinker.Config) extends LinkerBackend  {
-  val coreSpec: CoreSpec = linkerConfig.commonPhaseConfig.coreSpec
-  val symbolRequirements: SymbolRequirement = {
-    val backend = StandardLinkerBackend(linkerConfig)
-    backend.symbolRequirements
-  }
+class StoreLinkingUnitLinkerBackend(linkerConfig: StandardConfig) extends LinkerBackend  {
+  private val underlyingBackend: LinkerBackend =
+    StandardLinkerBackend(linkerConfig)
+
+  val coreSpec: CoreSpec = underlyingBackend.coreSpec
+
+  val symbolRequirements: SymbolRequirement = underlyingBackend.symbolRequirements
+
+  def injectedIRFiles: Seq[IRFile] = underlyingBackend.injectedIRFiles
 
   @volatile
   private var _outputLinkingUnit: LinkingUnit = _

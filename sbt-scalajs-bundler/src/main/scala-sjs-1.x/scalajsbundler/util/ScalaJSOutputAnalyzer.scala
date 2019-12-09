@@ -1,9 +1,9 @@
 package scalajsbundler.util
 
-import org.scalajs.io.WritableMemVirtualBinaryFile
 import org.scalajs.ir.Trees.JSNativeLoadSpec
-import org.scalajs.linker.irio.VirtualScalaJSIRFile
+
 import org.scalajs.linker._
+import org.scalajs.linker.interface._
 import org.scalajs.linker.standard._
 import org.scalajs.linker.scalajsbundler.StoreLinkingUnitLinkerBackend
 import org.scalajs.sbtplugin.Loggers
@@ -42,9 +42,9 @@ object ScalaJSOutputAnalyzer {
     * @return
     */
   def linkingUnit(
-      linkerConfig: StandardLinker.Config,
+      linkerConfig: StandardConfig,
       linker: ClearableLinker,
-      irFiles: Seq[VirtualScalaJSIRFile],
+      irFiles: Seq[IRFile],
       moduleInitializers: Seq[ModuleInitializer],
       logger: Logger
   ): LinkingUnit = {
@@ -55,7 +55,7 @@ object ScalaJSOutputAnalyzer {
     val frontend = StandardLinkerFrontend(linkerConfig)
     val backend = new StoreLinkingUnitLinkerBackend(linkerConfig)
     val linker = StandardLinkerImpl(frontend, backend)
-    val dummyOutput = LinkerOutput(new WritableMemVirtualBinaryFile)
+    val dummyOutput = LinkerOutput(MemOutputFile())
     val future = linker.link(irFiles, moduleInitializers, dummyOutput, Loggers.sbtLogger2ToolsLogger(logger))
     concurrent.blocking(Await.result(future, Duration.Inf))
     backend.outputLinkingUnit
