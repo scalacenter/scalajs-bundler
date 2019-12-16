@@ -44,7 +44,7 @@ $ sbt ^^1.2.8 runScripted
 Or, with a specific Scala.js version (Scala.js 1.x also requires sbt 1.x):
 
 ~~~ bash
-$ SCALAJS_VERSION=1.0.0-RC1 sbt ^^1.2.8 runScripted
+$ SCALAJS_VERSION=1.0.0-RC2 sbt ^^1.2.8 runScripted
 ~~~
 
 To run a single test:
@@ -80,6 +80,12 @@ $ sbt -Dplugin.version=x.y.z-SNAPSHOT
 
 ~~~ sh
 $ sbt publishLocal
+~~~
+
+Or, with a specific Scala.js version (Scala.js 1.x also requires sbt 1.x):
+
+~~~ sh
+$ SCALAJS_VERSION=1.0.0-RC2 sbt ^^1.2.8 publishLocal
 ~~~
 
 ## Preview the documentation

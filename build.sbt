@@ -37,7 +37,7 @@ val `sbt-web-scalajs-bundler` =
       },
       name := (if (isScalaJS1x) "sbt-web-scalajs-bundler" else "sbt-web-scalajs-bundler-sjs06"),
       description := "Module bundler for Scala.js projects (integration with sbt-web-scalajs)",
-      addSbtPlugin("com.vmunier" % "sbt-web-scalajs" % (if (isScalaJS1x) "1.0.9" else "1.0.9-0.6"))
+      addSbtPlugin("com.vmunier" % "sbt-web-scalajs" % (if (isScalaJS1x) "1.0.10" else "1.0.10-0.6"))
     )
     .dependsOn(`sbt-scalajs-bundler`)
 
