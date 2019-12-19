@@ -30,6 +30,7 @@ object WebpackTasks {
       val log = streams.value.log
       val monitoredFiles = (webpackMonitoredFiles in stage).value
       val extraArgs = (webpackExtraArgs in stage).value
+      val nodeEnvVars = (webpackNodeEnvVars in stage).value
       val nodeArgs = (webpackNodeArgs in stage).value
       val webpackMode = Webpack.WebpackMode((scalaJSLinkerConfig in stage).value)
 
@@ -46,6 +47,7 @@ object WebpackTasks {
             entriesList,
             targetDir,
             extraArgs,
+            nodeEnvVars,
             nodeArgs,
             webpackMode,
             log

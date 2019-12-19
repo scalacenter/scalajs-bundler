@@ -8,7 +8,7 @@ import scala.sys.process.ProcessLogger
 
 object Commands {
 
-  def run[A](cmd: Seq[String], cwd: File, logger: Logger, outputProcess: InputStream => A): Either[String, Option[A]] = {
+  def run[A](cmd: Seq[String], cwd: File, extraEnv: Map[String, String], logger: Logger, outputProcess: InputStream => A): Either[String, Option[A]] = {
     val toErrorLog = (is: InputStream) => {
       scala.io.Source.fromInputStream(is).getLines.foreach(msg => logger.error(msg))
       is.close()
@@ -23,7 +23,7 @@ object Commands {
     }
 
     logger.debug(s"Command: ${cmd.mkString(" ")}")
-    val process = Process(cmd, cwd)
+    val process = Process(cmd, cwd, extraEnv.toSeq: _*)
     val processIO = BasicIO.standard(false).withOutput(outputCapture).withError(toErrorLog)
     val code: Int = process.run(processIO).exitValue()
     if (code != 0) {
@@ -35,7 +35,7 @@ object Commands {
 
   def run(cmd: Seq[String], cwd: File, logger: Logger): Unit = {
     val toInfoLog = (is: InputStream) => scala.io.Source.fromInputStream(is).getLines.foreach(msg => logger.info(msg))
-    run(cmd, cwd, logger, toInfoLog).fold(sys.error, _ => ())
+    run(cmd, cwd, Map.empty, logger, toInfoLog).fold(sys.error, _ => ())
   }
 
   def start(cmd: Seq[String], cwd: File, logger: Logger): Process =

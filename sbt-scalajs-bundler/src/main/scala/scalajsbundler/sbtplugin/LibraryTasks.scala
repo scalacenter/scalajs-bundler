@@ -76,6 +76,7 @@ object LibraryTasks {
         webpackResourceFiles ++ compileResources
       val cacheLocation = streams.value.cacheDirectory / s"${stage.key.label}-webpack-libraries"
       val extraArgs = (webpackExtraArgs in stage).value
+      val nodeEnvVars = (webpackNodeEnvVars in stage).value
       val nodeArgs = (webpackNodeArgs in stage).value
       val webpackMode = Webpack.WebpackMode((scalaJSLinkerConfig in stage).value)
 
@@ -94,6 +95,7 @@ object LibraryTasks {
             entryPointFile,
             mode.exportedName,
             extraArgs,
+            nodeEnvVars,
             nodeArgs,
             webpackMode,
             log
