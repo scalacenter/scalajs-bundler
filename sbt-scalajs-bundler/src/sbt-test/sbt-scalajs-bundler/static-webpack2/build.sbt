@@ -10,7 +10,7 @@ version in webpack := "2.2.1"
 
 version in startWebpackDevServer := "2.11.1"
 
-libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "0.9.7"
+libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "0.9.8"
 
 npmDependencies in Compile += "snabbdom" -> "0.5.3"
 
