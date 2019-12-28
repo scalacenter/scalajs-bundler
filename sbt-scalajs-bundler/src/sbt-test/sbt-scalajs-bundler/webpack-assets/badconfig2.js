@@ -4,6 +4,8 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const path = require("path");
 const rootDir = path.resolve(__dirname, "../../../..");
 const resourcesDir = path.resolve(rootDir, "src/main/resources");
+// LessLoader is requested but it is missing from npmDevDependencies
+const LessLoaderPlugin = require("less-loader");
 
 const WebApp = Merge(ScalaJS, {
   mode: "development",
