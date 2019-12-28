@@ -12,14 +12,6 @@ const WebApp = Merge(ScalaJS, {
   entry: {
     app: [path.resolve(resourcesDir, "./entry.js")]
   },
-  module: {
-    rules: [
-      {
-        test: /\.css$/,
-        use: ["style-loader"] // We should include css-loader
-      }
-    ]
-  },
   plugins: [new HtmlWebpackPlugin()]
 });
 
