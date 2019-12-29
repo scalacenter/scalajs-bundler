@@ -25,7 +25,7 @@ npmDevDependencies in Compile += "webpack-merge" -> "4.1.2"
 
 npmDevDependencies in Compile += "less" -> "3.9.0"
 
-npmDevDependencies in Compile += "less-loader" -> "5.0.0"
+//Is this needed? npmDevDependencies in Compile += "less-loader" -> "5.0.0"
 
 npmDevDependencies in Compile += "style-loader" -> "0.21.0"
 
