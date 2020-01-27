@@ -40,11 +40,14 @@ object Webpack {
     * @return The copied config file.
     */
   def copyCustomWebpackConfigFiles(targetDir: File, webpackResources: Seq[File])(customConfigFile: File): File = {
-    def copyToWorkingDir(targetDir: File)(file: File): File = {
-      val copy = targetDir / file.name
-      IO.copyFile(file, copy)
-      copy
-    }
+    def copyToWorkingDir(targetDir: File)(file: File): File =
+      if (file.isDirectory) {
+        IO.copyDirectory(file, targetDir)
+        targetDir
+      } else {
+        IO.copyFile(file, targetDir / file.name)
+        targetDir / file.name
+      }
 
     webpackResources.foreach(copyToWorkingDir(targetDir))
     copyToWorkingDir(targetDir)(customConfigFile)
