@@ -7,13 +7,6 @@ import com.google.common.jimfs.Jimfs
 
 private[scalajsbundler] object compat {
 
-  object backend {
-    val Printers = org.scalajs.linker.backend.javascript.Printers
-    val Trees = org.scalajs.linker.backend.javascript.Trees
-    def function(args: List[org.scalajs.linker.backend.javascript.Trees.ParamDef], body: org.scalajs.linker.backend.javascript.Trees.Tree)(implicit pos: org.scalajs.ir.Position): org.scalajs.linker.backend.javascript.Trees.Function =
-      org.scalajs.linker.backend.javascript.Trees.Function(arrow = false, args, body)
-  }
-
   object io {
     type FileVirtualBinaryFile = Path
     type VirtualBinaryFile = Path
@@ -27,11 +20,6 @@ private[scalajsbundler] object compat {
     implicit class FileOps(private val __self: Path) extends AnyVal {
       def version: Option[String] = Some(Files.getLastModifiedTime(__self).toString())
     }
-  }
-
-  object ir {
-    type Position = org.scalajs.ir.Position
-    val Position = org.scalajs.ir.Position
   }
 
   object linker {
