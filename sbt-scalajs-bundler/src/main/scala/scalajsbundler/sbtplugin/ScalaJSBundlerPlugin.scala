@@ -519,6 +519,12 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
     val jsSourceDirectories = settingKey[Seq[File]]("Local js source directories to be collected by the bundler")
   }
 
+  private[sbtplugin] val scalaJSBundlerImportedModules =
+    TaskKey[List[String]]("scalaJSBundlerImportedModules",
+      "Computes the list of imported modules",
+      KeyRanks.Invisible
+    )
+
   private val scalaJSBundlerPackageJson =
     TaskKey[BundlerFile.PackageJson]("scalaJSBundlerPackageJson",
       "Write a package.json file defining the NPM dependencies of project",
@@ -618,7 +624,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
     inConfig(Test)(perConfigSettings ++ testSettings)
 
   private lazy val perConfigSettings: Seq[Def.Setting[_]] =
-    Seq(
+    Def.settings(
       npmDependencies := Seq.empty,
 
       npmDevDependencies := Seq.empty,
@@ -672,7 +678,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
         crossTarget.value / "scalajs-bundler" / (if (configuration.value == Compile) "main" else "test")
       },
 
-      Settings.jsEnvSetting
+      Settings.configSettings
     ) ++
     perScalaJSStageSettings(Stage.FastOpt) ++
     perScalaJSStageSettings(Stage.FullOpt)
@@ -682,7 +688,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
   private def closeAllTestAdapters(): Unit =
     createdTestAdapters.getAndSet(Nil).foreach(_.close())
 
-  override def globalSettings: Seq[Def.Setting[_]] = Seq(
+  override def globalSettings: Seq[Def.Setting[_]] = Def.settings(
     onComplete := {
       val prev = onComplete.value
 
@@ -690,11 +696,13 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
         prev()
         closeAllTestAdapters()
       }
-    }
+    },
+
+    Settings.globalSettings
   )
 
   private lazy val testSettings: Seq[Setting[_]] =
-    Seq(
+    Def.settings(
       npmDependencies ++= (npmDependencies in Compile).value,
 
       npmDevDependencies ++= (npmDevDependencies in Compile).value,
@@ -703,7 +711,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
 
       requireJsDomEnv := false,
 
-      Settings.loadedTestFrameworksSetting
+      Settings.testConfigSettings
 
     )
 

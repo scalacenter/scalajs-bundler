@@ -9,5 +9,6 @@ addSbtPlugin("com.typesafe.sbt"  % "sbt-site"     % "1.1.0")
 addSbtPlugin("com.novocode"      % "sbt-ornate"   % "0.5")
 addSbtPlugin("com.eed3si9n"      % "sbt-unidoc"   % "0.3.3")
 addSbtPlugin("com.typesafe.sbt"  % "sbt-ghpages"  % "0.5.4")
+addSbtPlugin("com.eed3si9n"      % "sbt-buildinfo" % "0.7.0")
 
 ivyLoggingLevel in ThisBuild := UpdateLogging.Quiet
