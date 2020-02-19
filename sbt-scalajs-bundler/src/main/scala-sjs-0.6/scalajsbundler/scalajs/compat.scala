@@ -18,8 +18,4 @@ private[scalajsbundler] object compat {
     }
   }
 
-  object linker {
-    type Config = org.scalajs.core.tools.linker.StandardLinker.Config
-  }
-
 }

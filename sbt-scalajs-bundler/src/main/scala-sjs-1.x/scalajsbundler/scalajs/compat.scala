@@ -22,8 +22,4 @@ private[scalajsbundler] object compat {
     }
   }
 
-  object linker {
-    type Config = org.scalajs.linker.interface.StandardConfig
-  }
-
 }
