@@ -7,8 +7,17 @@ val scalaJSVersion = sys.env.getOrElse("SCALAJS_VERSION", "0.6.31")
 val isScalaJS1x = scalaJSVersion.startsWith("1.")
 val scalaJSSourceDirectorySuffix = if (isScalaJS1x) "sjs-1.x" else "sjs-0.6"
 
+// This project is only used with Scala.js 1.x
+lazy val `scalajs-bundler-linker` =
+  project.in(file("scalajs-bundler-linker"))
+    .settings(
+      scalaVersion := "2.12.10",
+      libraryDependencies += "org.scala-js" %% "scalajs-linker" % scalaJSVersion
+    )
+
 val `sbt-scalajs-bundler` =
   project.in(file("sbt-scalajs-bundler"))
+    .enablePlugins(BuildInfoPlugin)
     .settings(commonSettings)
     .settings(
       sbtPlugin := true,
@@ -16,13 +25,22 @@ val `sbt-scalajs-bundler` =
       description := "Module bundler for Scala.js projects",
       libraryDependencies += "com.typesafe.play" %% "play-json" % "2.6.7",
       addSbtPlugin("org.scala-js" % "sbt-scalajs" % scalaJSVersion),
-      libraryDependencies ++= {
-        if (isScalaJS1x)
-          List("org.scala-js" %% "scalajs-linker" % scalaJSVersion)
-        else
-          Nil
-      },
-      unmanagedSourceDirectories in Compile += (sourceDirectory in Compile).value / s"scala-$scalaJSSourceDirectorySuffix"
+      unmanagedSourceDirectories in Compile += (sourceDirectory in Compile).value / s"scala-$scalaJSSourceDirectorySuffix",
+      buildInfoKeys := Seq[BuildInfoKey](version),
+      buildInfoPackage := "scalajsbundler.sbtplugin.internal",
+      // When supported, add: buildInfoOptions += sbtbuildinfo.BuildInfoOption.PackagePrivate
+      if (isScalaJS1x) {
+        scriptedDependencies := {
+          val () = scriptedDependencies.value
+          val () = publishLocal.value
+          val () = (publishLocal in `scalajs-bundler-linker`).value
+        }
+      } else {
+        scriptedDependencies := {
+          val () = scriptedDependencies.value
+          val () = publishLocal.value
+        }
+      }
     )
 
 val `sbt-web-scalajs-bundler` =
@@ -30,10 +48,19 @@ val `sbt-web-scalajs-bundler` =
     .settings(commonSettings)
     .settings(
       sbtPlugin := true,
-      scriptedDependencies := {
-        val () = scriptedDependencies.value
-        val () = publishLocal.value
-        val () = (publishLocal in `sbt-scalajs-bundler`).value
+      if (isScalaJS1x) {
+        scriptedDependencies := {
+          val () = scriptedDependencies.value
+          val () = publishLocal.value
+          val () = (publishLocal in `sbt-scalajs-bundler`).value
+          val () = (publishLocal in `scalajs-bundler-linker`).value
+        }
+      } else {
+        scriptedDependencies := {
+          val () = scriptedDependencies.value
+          val () = publishLocal.value
+          val () = (publishLocal in `sbt-scalajs-bundler`).value
+        }
       },
       name := (if (isScalaJS1x) "sbt-web-scalajs-bundler" else "sbt-web-scalajs-bundler-sjs06"),
       description := "Module bundler for Scala.js projects (integration with sbt-web-scalajs)",

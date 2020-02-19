@@ -2,9 +2,7 @@ package scalajsbundler.util
 
 import java.util.concurrent.atomic.AtomicInteger
 
-import scalajsbundler.scalajs.compat.ir.Position
-import scalajsbundler.scalajs.compat.backend.{Printers, function}
-import scalajsbundler.scalajs.compat.backend.Trees._
+import JSTrees._
 
 private[util] sealed abstract class JSLike(val tree: Tree) {
   def show: String = tree.show
@@ -13,9 +11,9 @@ private[util] sealed abstract class JSLike(val tree: Tree) {
 }
 
 object JSLike {
-  def show(tree: Tree, isStat: Boolean = true): String = {
+  private def show(tree: Tree, isStat: Boolean): String = {
     val writer = new java.io.StringWriter
-    val printer = new Printers.JSTreePrinter(writer)
+    val printer = new JSPrinters.JSTreePrinter(writer)
     printer.printTree(tree, isStat)
     writer.toString
   }
@@ -23,7 +21,6 @@ object JSLike {
 
 /** A convenient wrapper around JS trees */
 final class JS private(tree: Tree) extends JSLike(tree) {
-  import JS.position
   def dot(ident: String): JS = JS(DotSelect(tree, Ident(ident)))
   def bracket(ident: String): JS = JS(BracketSelect(tree, StringLiteral(ident)))
   def bracket(ident: JSLike): JS = JS(BracketSelect(tree, ident.tree))
@@ -33,9 +30,7 @@ final class JS private(tree: Tree) extends JSLike(tree) {
 
 object JS {
 
-  implicit lazy val position: Position = Position.NoPosition
-
-  def apply(tree: Tree): JS = new JS(tree)
+  private[util] def apply(tree: Tree): JS = new JS(tree)
 
   /** Array literal. */
   def arr(elems: JSLike*): JS = JS(ArrayConstr(elems.map(_.tree).to[List]))
@@ -76,7 +71,7 @@ object JS {
   /** Anonymous function definition */
   def fun(body: JS => JSLike): JS = {
     val param = freshIdentifier()
-    JS(function(List(ParamDef(Ident(param), rest = false)), Return(body(ref(param)).tree)))
+    JS(Function(arrow = false, List(ParamDef(Ident(param), rest = false)), Return(body(ref(param)).tree)))
   }
 
   /** Name binding */
@@ -110,9 +105,7 @@ final class JSON private(tree: Tree) extends JSLike(tree)
 
 object JSON {
 
-  implicit lazy val position: Position = Position.NoPosition
-
-  def apply(tree: Tree): JSON = new JSON(tree)
+  private[util] def apply(tree: Tree): JSON = new JSON(tree)
 
   /** Array literal. */
   def arr(elems: JSON*): JSON = JSON(ArrayConstr(elems.map(_.tree).to[List]))
