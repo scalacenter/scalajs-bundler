@@ -1,7 +1,5 @@
 package scalajsbundler.sbtplugin
 
-import java.util.concurrent.atomic.AtomicReference
-
 import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
 import org.scalajs.sbtplugin.{ScalaJSPlugin, Stage}
 import sbt.Keys._
@@ -10,7 +8,6 @@ import scalajsbundler.{BundlerFile, NpmDependencies, Webpack, WebpackDevServer}
 
 import scalajsbundler.ExternalCommand.addPackages
 import scalajsbundler.util.{JSON, ScalaJSNativeLibraries}
-import scalajsbundler.scalajs.compat.testing.TestAdapter
 
 
 /**
@@ -683,23 +680,8 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
     perScalaJSStageSettings(Stage.FastOpt) ++
     perScalaJSStageSettings(Stage.FullOpt)
 
-  private[scalajsbundler] val createdTestAdapters = new AtomicReference[List[TestAdapter]](Nil)
-
-  private def closeAllTestAdapters(): Unit =
-    createdTestAdapters.getAndSet(Nil).foreach(_.close())
-
-  override def globalSettings: Seq[Def.Setting[_]] = Def.settings(
-    onComplete := {
-      val prev = onComplete.value
-
-      { () =>
-        prev()
-        closeAllTestAdapters()
-      }
-    },
-
+  override def globalSettings: Seq[Def.Setting[_]] =
     Settings.globalSettings
-  )
 
   private lazy val testSettings: Seq[Setting[_]] =
     Def.settings(

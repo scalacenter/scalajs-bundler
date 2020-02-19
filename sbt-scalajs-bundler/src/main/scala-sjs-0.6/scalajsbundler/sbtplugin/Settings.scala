@@ -1,5 +1,6 @@
 package scalajsbundler.sbtplugin
 
+import java.util.concurrent.atomic.AtomicReference
 import org.scalajs.core.tools.io.FileVirtualJSFile
 import org.scalajs.core.tools.jsdep.ResolvedJSDependency
 import org.scalajs.core.tools.linker.backend.ModuleKind
@@ -8,11 +9,11 @@ import org.scalajs.jsenv.nodejs.NodeJSEnv
 import org.scalajs.sbtplugin.Loggers.sbtLogger2ToolsLogger
 import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
 import org.scalajs.sbtplugin.ScalaJSPluginInternal.{scalaJSEnsureUnforked, scalaJSModuleIdentifier}
-import sbt.Keys.{loadedTestFrameworks, streams, testFrameworks, version}
+import org.scalajs.testadapter.TestAdapter
+import sbt.Keys._
 import sbt._
 import scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.autoImport.{installJsdom, npmUpdate, requireJsDomEnv, webpack, webpackConfigFile, webpackNodeArgs, webpackResources}
-import scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.{createdTestAdapters, ensureModuleKindIsCommonJSModule, scalaJSBundlerImportedModules}
-import scalajsbundler.scalajs.compat.testing.TestAdapter
+import scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.{ensureModuleKindIsCommonJSModule, scalaJSBundlerImportedModules}
 import scalajsbundler.{JSDOMNodeJSEnv, JsDomTestEntries, NpmPackage, Webpack}
 import scalajsbundler.util.ScalaJSOutputAnalyzer
 
@@ -20,9 +21,23 @@ import scala.annotation.tailrec
 
 private[sbtplugin] object Settings {
 
+  private val createdTestAdapters = new AtomicReference[List[TestAdapter]](Nil)
+
+  private def closeAllTestAdapters(): Unit =
+    createdTestAdapters.getAndSet(Nil).foreach(_.close())
+
   // Settings that must be applied in Global
   val globalSettings: Seq[Setting[_]] =
-    Nil
+    Def.settings(
+      onComplete := {
+        val prev = onComplete.value
+
+        { () =>
+          prev()
+          closeAllTestAdapters()
+        }
+      }
+    )
 
   // Settings that must be applied for each stage in each configuration
   private def scalaJSStageSettings(key: TaskKey[Attributed[File]]): Seq[Setting[_]] =

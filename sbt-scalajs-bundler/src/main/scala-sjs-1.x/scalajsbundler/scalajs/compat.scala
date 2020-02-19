@@ -26,8 +26,4 @@ private[scalajsbundler] object compat {
     type Config = org.scalajs.linker.interface.StandardConfig
   }
 
-  object testing {
-    type TestAdapter = org.scalajs.testing.adapter.TestAdapter
-    val TestAdapter = org.scalajs.testing.adapter.TestAdapter
-  }
 }
