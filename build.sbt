@@ -23,6 +23,7 @@ val `sbt-scalajs-bundler` =
       sbtPlugin := true,
       name := (if (isScalaJS1x) "sbt-scalajs-bundler" else "sbt-scalajs-bundler-sjs06"),
       description := "Module bundler for Scala.js projects",
+      libraryDependencies += "com.google.jimfs" % "jimfs" % "1.1",
       libraryDependencies += "com.typesafe.play" %% "play-json" % "2.6.7",
       addSbtPlugin("org.scala-js" % "sbt-scalajs" % scalaJSVersion),
       unmanagedSourceDirectories in Compile += (sourceDirectory in Compile).value / s"scala-$scalaJSSourceDirectorySuffix",

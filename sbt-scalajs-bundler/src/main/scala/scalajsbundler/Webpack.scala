@@ -2,7 +2,6 @@ package scalajsbundler
 
 import sbt._
 import scalajsbundler.util.{Commands, JS}
-import scalajsbundler.scalajs.compat.linker.Config
 import java.io.InputStream
 
 import play.api.libs.json._
@@ -22,13 +21,9 @@ object Webpack {
     val mode = "production"
   }
   object WebpackMode {
-    def apply(sjsConfig: Config): WebpackMode = {
-      if (sjsConfig.semantics.productionMode) {
-        ProductionMode
-      } else {
-        DevelopmentMode
-      }
-    }
+    def fromBooleanProductionMode(productionMode: Boolean): WebpackMode =
+      if (productionMode) ProductionMode
+      else DevelopmentMode
   }
 
   /**

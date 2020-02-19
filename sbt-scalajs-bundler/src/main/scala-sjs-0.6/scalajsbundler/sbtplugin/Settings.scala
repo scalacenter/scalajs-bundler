@@ -1,9 +1,10 @@
 package scalajsbundler.sbtplugin
 
 import java.util.concurrent.atomic.AtomicReference
-import org.scalajs.core.tools.io.FileVirtualJSFile
+import org.scalajs.core.tools.io.{FileVirtualJSFile, VirtualScalaJSIRFile}
 import org.scalajs.core.tools.jsdep.ResolvedJSDependency
-import org.scalajs.core.tools.linker.backend.ModuleKind
+import org.scalajs.core.tools.linker.{ClearableLinker, LinkingUnit, ModuleInitializer, StandardLinker}
+import org.scalajs.core.tools.linker.backend.{BasicLinkerBackend, LinkerBackend, ModuleKind}
 import org.scalajs.jsenv.ComJSEnv
 import org.scalajs.jsenv.nodejs.NodeJSEnv
 import org.scalajs.sbtplugin.Loggers.sbtLogger2ToolsLogger
@@ -15,7 +16,6 @@ import sbt._
 import scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.autoImport.{installJsdom, npmUpdate, requireJsDomEnv, webpack, webpackConfigFile, webpackNodeArgs, webpackResources}
 import scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.{ensureModuleKindIsCommonJSModule, scalaJSBundlerImportedModules}
 import scalajsbundler.{JSDOMNodeJSEnv, JsDomTestEntries, NpmPackage, Webpack}
-import scalajsbundler.util.ScalaJSOutputAnalyzer
 
 import scala.annotation.tailrec
 
@@ -185,6 +185,57 @@ private[sbtplugin] object Settings {
       r.close()
       newTestAdapter(jsEnv, config)
     }
+  }
+
+  private object ScalaJSOutputAnalyzer {
+
+    /**
+      * @return The list of ES modules imported by a Scala.js project
+      * @param linkingUnit The Scala.js linking unit
+      */
+    def importedModules(linkingUnit: LinkingUnit): List[String] = {
+      import org.scalajs.core.ir.Trees.JSNativeLoadSpec._
+      linkingUnit.classDefs
+        .flatMap(_.jsNativeLoadSpec)
+        .flatMap {
+          case Import(module, _) => List(module)
+          case ImportWithGlobalFallback(Import(module, _), _) => List(module)
+          case Global(_) => Nil
+        }
+        .distinct
+    }
+
+    /**
+      * Extract the linking unit from the Scala.js output
+      *
+      * @param linkerConfig Configuration of the Scala.js linker
+      * @param linker Scala.js linker
+      * @param irFiles Scala.js IR files
+      * @param moduleInitializers Scala.js module initializers
+      * @param logger Logger
+      * @return
+      */
+    def linkingUnit(
+        linkerConfig: StandardLinker.Config,
+        linker: ClearableLinker,
+        irFiles: Seq[VirtualScalaJSIRFile],
+        moduleInitializers: Seq[ModuleInitializer],
+        logger: Logger
+    ): LinkingUnit = {
+      val symbolRequirements = {
+        val backend = new BasicLinkerBackend(linkerConfig.semantics,
+                                             linkerConfig.esFeatures,
+                                             linkerConfig.moduleKind,
+                                             linkerConfig.sourceMap,
+                                             LinkerBackend.Config())
+        backend.symbolRequirements
+      }
+      linker.linkUnit(irFiles,
+                      moduleInitializers,
+                      symbolRequirements,
+                      sbtLogger2ToolsLogger(logger))
+    }
+
   }
 
 }

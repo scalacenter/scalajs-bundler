@@ -31,7 +31,8 @@ object WebpackTasks {
       val monitoredFiles = (webpackMonitoredFiles in stage).value
       val extraArgs = (webpackExtraArgs in stage).value
       val nodeArgs = (webpackNodeArgs in stage).value
-      val webpackMode = Webpack.WebpackMode((scalaJSLinkerConfig in stage).value)
+      val webpackMode =
+        Webpack.WebpackMode.fromBooleanProductionMode((scalaJSLinkerConfig in stage).value.semantics.productionMode)
 
       val cachedActionFunction =
         FileFunction.cached(
