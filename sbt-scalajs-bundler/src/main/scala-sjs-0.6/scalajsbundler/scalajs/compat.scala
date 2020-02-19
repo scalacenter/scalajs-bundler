@@ -22,9 +22,4 @@ private[scalajsbundler] object compat {
     type Config = org.scalajs.core.tools.linker.StandardLinker.Config
   }
 
-  object testing {
-    type TestAdapter = org.scalajs.testadapter.TestAdapter
-    val TestAdapter = org.scalajs.testadapter.TestAdapter
-  }
-
 }
