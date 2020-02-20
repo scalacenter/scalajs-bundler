@@ -4,9 +4,9 @@ environment:
   matrix:
     - CI_SBT_VERSION: 0.13.17
       SCALAJS_VERSION: 0.6.31
-    - CI_SBT_VERSION: 1.2.1
+    - CI_SBT_VERSION: 1.2.8
       SCALAJS_VERSION: 0.6.31
-    - CI_SBT_VERSION: 1.2.1
+    - CI_SBT_VERSION: 1.2.8
       SCALAJS_VERSION: 1.0.0
 install:
   - ps: Install-Product node 12
