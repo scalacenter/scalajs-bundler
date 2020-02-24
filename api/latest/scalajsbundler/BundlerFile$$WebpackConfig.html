@@ -1,32 +1,161 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<!DOCTYPE html >
 <html>
         <head>
-          <title>WebpackConfig - scalajsbundler.BundlerFile.WebpackConfig</title>
-          <meta name="description" content="WebpackConfig - scalajsbundler.BundlerFile.WebpackConfig" />
-          <meta name="keywords" content="WebpackConfig scalajsbundler.BundlerFile.WebpackConfig" />
+          <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+          <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+          <title></title>
+          <meta name="description" content="" />
+          <meta name="keywords" content="" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
+      
+      <link href="../lib/index.css" media="screen" type="text/css" rel="stylesheet" />
       <link href="../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
       <link href="../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript" src="../lib/jquery.min.js"></script>
+      <script type="text/javascript" src="../lib/jquery.panzoom.min.js"></script>
+      <script type="text/javascript" src="../lib/jquery.mousewheel.min.js"></script>
+      <script type="text/javascript" src="../lib/index.js"></script>
+      <script type="text/javascript" src="../index.js"></script>
+      <script type="text/javascript" src="../lib/scheduler.js"></script>
+      <script type="text/javascript" src="../lib/template.js"></script>
+      
       <script type="text/javascript">
-         if(top === self) {
-            var url = '../index.html';
-            var hash = 'scalajsbundler.BundlerFile$$WebpackConfig';
-            var anchor = window.location.hash;
-            var anchor_opt = '';
-            if (anchor.length >= 1)
-              anchor_opt = '@' + anchor.substring(1);
-            window.location.href = url + '#' + hash + anchor_opt;
-         }
-   	  </script>
+        /* this variable can be used by the JS to determine the path to the root document */
+        var toRoot = '../';
+      </script>
     
         </head>
-        <body class="type">
+        <body>
+      <div id="search">
+        <span id="doc-title"><span id="doc-version"></span></span>
+        <span class="close-results"><span class="left">&lt;</span> Back</span>
+        <div id="textfilter">
+          <span class="input">
+            <input autocapitalize="none" placeholder="Search" id="index-input" type="text" accesskey="/" />
+            <i class="clear material-icons"></i>
+            <i id="search-icon" class="material-icons"></i>
+          </span>
+        </div>
+    </div>
+      <div id="search-results">
+        <div id="search-progress">
+          <div id="progress-fill"></div>
+        </div>
+        <div id="results-content">
+          <div id="entity-results"></div>
+          <div id="member-results"></div>
+        </div>
+      </div>
+      <div id="content-scroll-container" style="-webkit-overflow-scrolling: touch;">
+        <div id="content-container" style="-webkit-overflow-scrolling: touch;">
+          <div id="subpackage-spacer">
+            <div id="packages">
+              <h1>Packages</h1>
+              <ul>
+                <li name="_root_.root" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="_root_"></a><a id="root:_root_"></a>
+      <span class="permalink">
+      <a href="../index.html" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a title="" href="../index.html"><span class="name">root</span></a>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="_root_">root</a></dd></dl></div>
+    </li><li name="_root_.scalajsbundler" visbl="pub" class="indented1 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="scalajsbundler"></a><a id="scalajsbundler:scalajsbundler"></a>
+      <span class="permalink">
+      <a href="../scalajsbundler/index.html" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a title="" href="index.html"><span class="name">scalajsbundler</span></a>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="_root_">root</a></dd></dl></div>
+    </li><li name="scalajsbundler.BundlerFile" visbl="pub" class="indented2 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="BundlerFile"></a><a id="BundlerFile:BundlerFile"></a>
+      <span class="permalink">
+      <a href="../scalajsbundler/BundlerFile$.html" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a title="" href="BundlerFile$.html"><span class="name">BundlerFile</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="index.html" class="extype" name="scalajsbundler">scalajsbundler</a></dd></dl></div>
+    </li><li class="current-entities indented2">
+                        <span class="separator"></span>
+                        <a class="class" href="BundlerFile$$Application.html" title="The Scala.js application itself, aka -fastopt.js or -opt.js"></a>
+                        <a href="BundlerFile$$Application.html" title="The Scala.js application itself, aka -fastopt.js or -opt.js">Application</a>
+                      </li><li class="current-entities indented2">
+                        <a class="object" href="BundlerFile$$ApplicationBundle$.html" title=""></a>
+                        <a class="class" href="BundlerFile$$ApplicationBundle.html" title="A fully self-contained application bundle, including all dependencies."></a>
+                        <a href="BundlerFile$$ApplicationBundle.html" title="A fully self-contained application bundle, including all dependencies.">ApplicationBundle</a>
+                      </li><li class="current-entities indented2">
+                        <a class="object" href="BundlerFile$$EntryPoint$.html" title=""></a>
+                        <a class="class" href="BundlerFile$$EntryPoint.html" title="A library-mode entrypoint file"></a>
+                        <a href="BundlerFile$$EntryPoint.html" title="A library-mode entrypoint file">EntryPoint</a>
+                      </li><li class="current-entities indented2">
+                        <span class="separator"></span>
+                        <a class="class" href="BundlerFile$$Internal.html" title="Internal-only files"></a>
+                        <a href="BundlerFile$$Internal.html" title="Internal-only files">Internal</a>
+                      </li><li class="current-entities indented2">
+                        <a class="object" href="BundlerFile$$Library$.html" title=""></a>
+                        <a class="class" href="BundlerFile$$Library.html" title="A webpack library bundle, containing only libraries"></a>
+                        <a href="BundlerFile$$Library.html" title="A webpack library bundle, containing only libraries">Library</a>
+                      </li><li class="current-entities indented2">
+                        <a class="object" href="BundlerFile$$Loader$.html" title=""></a>
+                        <a class="class" href="BundlerFile$$Loader.html" title="A webpack loader file."></a>
+                        <a href="BundlerFile$$Loader.html" title="A webpack loader file.">Loader</a>
+                      </li><li class="current-entities indented2">
+                        <span class="separator"></span>
+                        <a class="class" href="BundlerFile$$PackageJson.html" title="The package.json file, used for populating the node_modules folder"></a>
+                        <a href="BundlerFile$$PackageJson.html" title="The package.json file, used for populating the node_modules folder">PackageJson</a>
+                      </li><li class="current-entities indented2">
+                        <span class="separator"></span>
+                        <a class="class" href="BundlerFile$$Public.html" title="Public webpack artifacts -- those that might be served to clients or packaged"></a>
+                        <a href="BundlerFile$$Public.html" title="Public webpack artifacts -- those that might be served to clients or packaged">Public</a>
+                      </li><li class="current-entities indented2">
+                        <span class="separator"></span>
+                        <a class="class" href="" title="A webpack configuration file."></a>
+                        <a href="" title="A webpack configuration file.">WebpackConfig</a>
+                      </li><li class="current-entities indented2">
+                        <span class="separator"></span>
+                        <a class="trait" href="BundlerFile$$WebpackInput.html" title="Files that may be inputs to the webpack process"></a>
+                        <a href="BundlerFile$$WebpackInput.html" title="Files that may be inputs to the webpack process">WebpackInput</a>
+                      </li>
+              </ul>
+            </div>
+          </div>
+          <div id="content">
+            <body class="class type">
       <div id="definition">
-        <img src="../lib/class_big.png" />
-        <p id="owner"><a href="package.html" class="extype" name="scalajsbundler">scalajsbundler</a>.<a href="BundlerFile$.html" class="extype" name="scalajsbundler.BundlerFile">BundlerFile</a></p>
-        <h1>WebpackConfig</h1>
+        <div class="big-circle class">c</div>
+        <p id="owner"><a href="index.html" class="extype" name="scalajsbundler">scalajsbundler</a>.<a href="BundlerFile$.html" class="extype" name="scalajsbundler.BundlerFile">BundlerFile</a></p>
+        <h1>WebpackConfig<span class="permalink">
+      <a href="../scalajsbundler/BundlerFile$$WebpackConfig.html" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span></h1>
+        <h3><span class="morelinks"></span></h3>
       </div>
 
       <h4 id="signature" class="signature">
@@ -38,53 +167,66 @@
         <span class="name">WebpackConfig</span><span class="params">(<span name="application">application: <a href="BundlerFile$$Application.html" class="extype" name="scalajsbundler.BundlerFile.Application">Application</a></span>, <span name="file">file: <span class="extype" name="java.io.File">File</span></span>)</span><span class="result"> extends <a href="BundlerFile$$Internal.html" class="extype" name="scalajsbundler.BundlerFile.Internal">Internal</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
+
       
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>A webpack configuration file.
-</p></div><dl class="paramcmts block"><dt class="param">application</dt><dd class="cmt"><p>The <a href="BundlerFile$$Application.html" class="extype" name="scalajsbundler.BundlerFile.Application">Application</a> this file runs webpack for</p></dd><dt class="param">file</dt><dd class="cmt"><p>The webpack.config.js file reference
-</p></dd></dl><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/scalacenter/scalajs-bundler/blob/v0.16.0/sbt-scalajs-bundler/src/main/scala/scalajsbundler/BundlerFile.scala" target="_blank">BundlerFile.scala</a></dd></dl><div class="toggleContainer block">
-          <span class="toggle">Linear Supertypes</span>
+</p></div><dl class="paramcmts block"><dt class="param">application</dt><dd class="cmt"><p>The <a href="BundlerFile$$Application.html" class="extype" name="scalajsbundler.BundlerFile.Application">Application</a> this file runs webpack for</p></dd><dt class="param">file</dt><dd class="cmt"><p>The webpack.config.js file reference</p></dd></dl><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/scalacenter/scalajs-bundler/blob/v0.17.0/sbt-scalajs-bundler/src/main/scala/scalajsbundler/BundlerFile.scala" target="_blank">BundlerFile.scala</a></dd></dl><div class="toggleContainer block">
+          <span class="toggle">
+            Linear Supertypes
+          </span>
           <div class="superTypes hiddenContent"><a href="BundlerFile$$Internal.html" class="extype" name="scalajsbundler.BundlerFile.Internal">Internal</a>, <a href="BundlerFile.html" class="extype" name="scalajsbundler.BundlerFile">BundlerFile</a>, <span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
       <div id="mbrsel">
-        <div id="textfilter"><span class="pre"></span><span class="input"><input id="mbrsel-input" type="text" accesskey="/" /></span><span class="post"></span></div>
-        <div id="order">
-              <span class="filtertype">Ordering</span>
+        <div class="toggle"></div>
+        <div id="memberfilter">
+          <i class="material-icons arrow"></i>
+          <span class="input">
+            <input id="mbrsel-input" placeholder="Filter all members" type="text" accesskey="/" />
+          </span>
+          <i class="clear material-icons"></i>
+        </div>
+        <div id="filterby">
+          <div id="order">
+            <span class="filtertype">Ordering</span>
+            <ol>
+              
+              <li class="alpha in"><span>Alphabetic</span></li>
+              <li class="inherit out"><span>By Inheritance</span></li>
+            </ol>
+          </div>
+          <div class="ancestors">
+                  <span class="filtertype">Inherited<br />
+                  </span>
+                  <ol id="linearization">
+                    <li class="in" name="scalajsbundler.BundlerFile.WebpackConfig"><span>WebpackConfig</span></li><li class="in" name="scalajsbundler.BundlerFile.Internal"><span>Internal</span></li><li class="in" name="scalajsbundler.BundlerFile"><span>BundlerFile</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.Product"><span>Product</span></li><li class="in" name="scala.Equals"><span>Equals</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  </ol>
+                </div><div class="ancestors">
+              <span class="filtertype"></span>
               <ol>
-                
-                <li class="alpha in"><span>Alphabetic</span></li>
-                <li class="inherit out"><span>By inheritance</span></li>
+                <li class="hideall out"><span>Hide All</span></li>
+                <li class="showall in"><span>Show All</span></li>
               </ol>
             </div>
-        <div id="ancestors">
-                <span class="filtertype">Inherited<br />
-                </span>
-                <ol id="linearization">
-                  <li class="in" name="scalajsbundler.BundlerFile.WebpackConfig"><span>WebpackConfig</span></li><li class="in" name="scalajsbundler.BundlerFile.Internal"><span>Internal</span></li><li class="in" name="scalajsbundler.BundlerFile"><span>BundlerFile</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.Product"><span>Product</span></li><li class="in" name="scala.Equals"><span>Equals</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
-                </ol>
-              </div><div id="ancestors">
-            <span class="filtertype"></span>
-            <ol>
-              <li class="hideall out"><span>Hide All</span></li>
-              <li class="showall in"><span>Show all</span></li>
-            </ol>
-            <a href="http://docs.scala-lang.org/overviews/scaladoc/usage.html#members" target="_blank">Learn more about member selection</a>
-          </div>
-        <div id="visbl">
-            <span class="filtertype">Visibility</span>
-            <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
-          </div>
+          <div id="visbl">
+              <span class="filtertype">Visibility</span>
+              <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
+            </div>
+        </div>
       </div>
 
       <div id="template">
         <div id="allMembers">
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
-              <ol><li name="scalajsbundler.BundlerFile.WebpackConfig#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="&lt;init&gt;(application:scalajsbundler.BundlerFile.Application,file:java.io.File):scalajsbundler.BundlerFile.WebpackConfig"></a>
-      <a id="&lt;init&gt;:WebpackConfig"></a>
-      <h4 class="signature">
+              <ol><li name="scalajsbundler.BundlerFile.WebpackConfig#&lt;init&gt;" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="&lt;init&gt;(application:scalajsbundler.BundlerFile.Application,file:java.io.File):scalajsbundler.BundlerFile.WebpackConfig"></a><a id="&lt;init&gt;:WebpackConfig"></a>
+      <span class="permalink">
+      <a href="../scalajsbundler/BundlerFile$$WebpackConfig.html#&lt;init&gt;(application:scalajsbundler.BundlerFile.Application,file:java.io.File):scalajsbundler.BundlerFile.WebpackConfig" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">new</span>
@@ -92,9 +234,8 @@
       <span class="symbol">
         <span class="name">WebpackConfig</span><span class="params">(<span name="application">application: <a href="BundlerFile$$Application.html" class="extype" name="scalajsbundler.BundlerFile.Application">Application</a></span>, <span name="file">file: <span class="extype" name="java.io.File">File</span></span>)</span>
       </span>
-      </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">application</dt><dd class="cmt"><p>The <a href="BundlerFile$$Application.html" class="extype" name="scalajsbundler.BundlerFile.Application">Application</a> this file runs webpack for</p></dd><dt class="param">file</dt><dd class="cmt"><p>The webpack.config.js file reference
-</p></dd></dl></div>
+      
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">application</dt><dd class="cmt"><p>The <a href="BundlerFile$$Application.html" class="extype" name="scalajsbundler.BundlerFile.Application">Application</a> this file runs webpack for</p></dd><dt class="param">file</dt><dd class="cmt"><p>The webpack.config.js file reference</p></dd></dl></div>
     </li></ol>
             </div>
 
@@ -102,25 +243,16 @@
 
         
 
-        <div id="values" class="values members">
+        <div class="values members">
               <h3>Value Members</h3>
-              <ol><li name="scala.AnyRef#!=" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="!=(x$1:AnyRef):Boolean"></a>
-      <a id="!=(AnyRef):Boolean"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="scala.Any#!=" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="!=(x$1:Any):Boolean"></a>
-      <a id="!=(Any):Boolean"></a>
-      <h4 class="signature">
+              <ol>
+                <li name="scala.AnyRef#!=" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="!=(x$1:Any):Boolean"></a><a id="!=(Any):Boolean"></a>
+      <span class="permalink">
+      <a href="../scalajsbundler/BundlerFile$$WebpackConfig.html#!=(x$1:Any):Boolean" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
       <span class="modifier_kind">
         <span class="modifier">final </span>
         <span class="kind">def</span>
@@ -128,12 +260,15 @@
       <span class="symbol">
         <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="scala.AnyRef###" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="scala.AnyRef###" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="##():Int"></a>
-      <a id="##():Int"></a>
-      <h4 class="signature">
+      <span class="permalink">
+      <a href="../scalajsbundler/BundlerFile$$WebpackConfig.html###():Int" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
       <span class="modifier_kind">
         <span class="modifier">final </span>
         <span class="kind">def</span>
@@ -141,25 +276,15 @@
       <span class="symbol">
         <span title="gt4s: $hash$hash" class="name">##</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
       </span>
-      </h4>
+      
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="scala.AnyRef#==" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="==(x$1:AnyRef):Boolean"></a>
-      <a id="==(AnyRef):Boolean"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="scala.Any#==" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="==(x$1:Any):Boolean"></a>
-      <a id="==(Any):Boolean"></a>
-      <h4 class="signature">
+    </li><li name="scala.AnyRef#==" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="==(x$1:Any):Boolean"></a><a id="==(Any):Boolean"></a>
+      <span class="permalink">
+      <a href="../scalajsbundler/BundlerFile$$WebpackConfig.html#==(x$1:Any):Boolean" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
       <span class="modifier_kind">
         <span class="modifier">final </span>
         <span class="kind">def</span>
@@ -167,12 +292,15 @@
       <span class="symbol">
         <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="scalajsbundler.BundlerFile.WebpackConfig#application" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="application:scalajsbundler.BundlerFile.Application"></a>
-      <a id="application:Application"></a>
-      <h4 class="signature">
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="scalajsbundler.BundlerFile.WebpackConfig#application" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="application:scalajsbundler.BundlerFile.Application"></a><a id="application:Application"></a>
+      <span class="permalink">
+      <a href="../scalajsbundler/BundlerFile$$WebpackConfig.html#application:scalajsbundler.BundlerFile.Application" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">val</span>
@@ -180,12 +308,15 @@
       <span class="symbol">
         <span class="name">application</span><span class="result">: <a href="BundlerFile$$Application.html" class="extype" name="scalajsbundler.BundlerFile.Application">Application</a></span>
       </span>
-      </h4>
-      <p class="shortcomment cmt">The <a href="BundlerFile$$Application.html" class="extype" name="scalajsbundler.BundlerFile.Application">Application</a> this file runs webpack for</p>
-    </li><li name="scalajsbundler.BundlerFile.WebpackConfig#asApplicationBundle" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="asApplicationBundle(stats:Option[scalajsbundler.Stats.WebpackStats]):scalajsbundler.BundlerFile.ApplicationBundle"></a>
-      <a id="asApplicationBundle(Option[WebpackStats]):ApplicationBundle"></a>
-      <h4 class="signature">
+      
+      
+    </li><li name="scalajsbundler.BundlerFile.WebpackConfig#asApplicationBundle" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="asApplicationBundle(stats:Option[scalajsbundler.Stats.WebpackStats]):scalajsbundler.BundlerFile.ApplicationBundle"></a><a id="asApplicationBundle(Option[WebpackStats]):ApplicationBundle"></a>
+      <span class="permalink">
+      <a href="../scalajsbundler/BundlerFile$$WebpackConfig.html#asApplicationBundle(stats:Option[scalajsbundler.Stats.WebpackStats]):scalajsbundler.BundlerFile.ApplicationBundle" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
@@ -193,13 +324,16 @@
       <span class="symbol">
         <span class="name">asApplicationBundle</span><span class="params">(<span name="stats">stats: <span class="extype" name="scala.Option">Option</span>[<a href="Stats$$WebpackStats.html" class="extype" name="scalajsbundler.Stats.WebpackStats">WebpackStats</a>]</span>)</span><span class="result">: <a href="BundlerFile$$ApplicationBundle.html" class="extype" name="scalajsbundler.BundlerFile.ApplicationBundle">ApplicationBundle</a></span>
       </span>
-      </h4>
-      <p class="shortcomment cmt">Returns the Application for this configuration identifying the asset produced by scala.</p><div class="fullcomment"><div class="comment cmt"><p>Returns the Application for this configuration identifying the asset produced by scala.js through webpack stats
-</p></div></div>
-    </li><li name="scalajsbundler.BundlerFile.WebpackConfig#asApplicationBundleFromCached" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="asApplicationBundleFromCached(cached:Set[java.io.File]):scalajsbundler.BundlerFile.ApplicationBundle"></a>
-      <a id="asApplicationBundleFromCached(Set[File]):ApplicationBundle"></a>
-      <h4 class="signature">
+      
+      <p class="shortcomment cmt">Returns the Application for this configuration identifying the asset produced by scala.js through webpack stats
+</p>
+    </li><li name="scalajsbundler.BundlerFile.WebpackConfig#asApplicationBundleFromCached" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="asApplicationBundleFromCached(cached:Set[java.io.File]):scalajsbundler.BundlerFile.ApplicationBundle"></a><a id="asApplicationBundleFromCached(Set[File]):ApplicationBundle"></a>
+      <span class="permalink">
+      <a href="../scalajsbundler/BundlerFile$$WebpackConfig.html#asApplicationBundleFromCached(cached:Set[java.io.File]):scalajsbundler.BundlerFile.ApplicationBundle" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
@@ -207,14 +341,17 @@
       <span class="symbol">
         <span class="name">asApplicationBundleFromCached</span><span class="params">(<span name="cached">cached: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="java.io.File">File</span>]</span>)</span><span class="result">: <a href="BundlerFile$$ApplicationBundle.html" class="extype" name="scalajsbundler.BundlerFile.ApplicationBundle">ApplicationBundle</a></span>
       </span>
-      </h4>
+      
       <p class="shortcomment cmt">Returns an application bundle from a set of cached files
 By convention the first element is the <code>file</code> and the rest are the assets
 </p>
-    </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="scala.Any#asInstanceOf" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
-      <a id="asInstanceOf[T0]:T0"></a>
-      <h4 class="signature">
+      <span class="permalink">
+      <a href="../scalajsbundler/BundlerFile$$WebpackConfig.html#asInstanceOf[T0]:T0" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
       <span class="modifier_kind">
         <span class="modifier">final </span>
         <span class="kind">def</span>
@@ -222,12 +359,15 @@ By convention the first element is the <code>file</code> and the rest are the as
       <span class="symbol">
         <span class="name">asInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <span class="extype" name="scala.Any.asInstanceOf.T0">T0</span></span>
       </span>
-      </h4>
+      
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="scalajsbundler.BundlerFile.WebpackConfig#asLibrary" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="asLibrary(stats:Option[scalajsbundler.Stats.WebpackStats]):scalajsbundler.BundlerFile.Library"></a>
-      <a id="asLibrary(Option[WebpackStats]):Library"></a>
-      <h4 class="signature">
+    </li><li name="scalajsbundler.BundlerFile.WebpackConfig#asLibrary" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="asLibrary(stats:Option[scalajsbundler.Stats.WebpackStats]):scalajsbundler.BundlerFile.Library"></a><a id="asLibrary(Option[WebpackStats]):Library"></a>
+      <span class="permalink">
+      <a href="../scalajsbundler/BundlerFile$$WebpackConfig.html#asLibrary(stats:Option[scalajsbundler.Stats.WebpackStats]):scalajsbundler.BundlerFile.Library" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
@@ -235,13 +375,16 @@ By convention the first element is the <code>file</code> and the rest are the as
       <span class="symbol">
         <span class="name">asLibrary</span><span class="params">(<span name="stats">stats: <span class="extype" name="scala.Option">Option</span>[<a href="Stats$$WebpackStats.html" class="extype" name="scalajsbundler.Stats.WebpackStats">WebpackStats</a>]</span>)</span><span class="result">: <a href="BundlerFile$$Library.html" class="extype" name="scalajsbundler.BundlerFile.Library">Library</a></span>
       </span>
-      </h4>
-      <p class="shortcomment cmt">Returns the Library identifying the asset produced by scala.</p><div class="fullcomment"><div class="comment cmt"><p>Returns the Library identifying the asset produced by scala.js through webpack stats
-</p></div></div>
-    </li><li name="scalajsbundler.BundlerFile.WebpackConfig#asLibraryFromCached" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="asLibraryFromCached(cached:Set[java.io.File]):scalajsbundler.BundlerFile.Library"></a>
-      <a id="asLibraryFromCached(Set[File]):Library"></a>
-      <h4 class="signature">
+      
+      <p class="shortcomment cmt">Returns the Library identifying the asset produced by scala.js through webpack stats
+</p>
+    </li><li name="scalajsbundler.BundlerFile.WebpackConfig#asLibraryFromCached" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="asLibraryFromCached(cached:Set[java.io.File]):scalajsbundler.BundlerFile.Library"></a><a id="asLibraryFromCached(Set[File]):Library"></a>
+      <span class="permalink">
+      <a href="../scalajsbundler/BundlerFile$$WebpackConfig.html#asLibraryFromCached(cached:Set[java.io.File]):scalajsbundler.BundlerFile.Library" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
@@ -249,14 +392,17 @@ By convention the first element is the <code>file</code> and the rest are the as
       <span class="symbol">
         <span class="name">asLibraryFromCached</span><span class="params">(<span name="cached">cached: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="java.io.File">File</span>]</span>)</span><span class="result">: <a href="BundlerFile$$Library.html" class="extype" name="scalajsbundler.BundlerFile.Library">Library</a></span>
       </span>
-      </h4>
+      
       <p class="shortcomment cmt">Returns library from a set of cached files
 By convention the first element is the <code>file</code> and the rest are the assets
 </p>
-    </li><li name="scala.AnyRef#clone" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="clone():Object"></a>
-      <a id="clone():AnyRef"></a>
-      <h4 class="signature">
+    </li><li name="scala.AnyRef#clone" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="clone():Object"></a><a id="clone():AnyRef"></a>
+      <span class="permalink">
+      <a href="../scalajsbundler/BundlerFile$$WebpackConfig.html#clone():Object" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
@@ -264,18 +410,23 @@ By convention the first element is the <code>file</code> and the rest are the as
       <span class="symbol">
         <span class="name">clone</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.AnyRef">AnyRef</span></span>
       </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<span class="extype" name="java.lang">lang</span>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
       <span class="defval" name="classOf[java.lang.CloneNotSupportedException]">...</span>
     </span>)</span>
               
+                <span class="name">@native</span><span class="args">()</span>
+              
         </dd></dl></div>
-    </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="eq(x$1:AnyRef):Boolean"></a>
-      <a id="eq(AnyRef):Boolean"></a>
-      <h4 class="signature">
+    </li><li name="scala.AnyRef#eq" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="eq(x$1:AnyRef):Boolean"></a><a id="eq(AnyRef):Boolean"></a>
+      <span class="permalink">
+      <a href="../scalajsbundler/BundlerFile$$WebpackConfig.html#eq(x$1:AnyRef):Boolean" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
       <span class="modifier_kind">
         <span class="modifier">final </span>
         <span class="kind">def</span>
@@ -283,12 +434,15 @@ By convention the first element is the <code>file</code> and the rest are the as
       <span class="symbol">
         <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
-      </h4>
+      
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="scalajsbundler.BundlerFile.WebpackConfig#file" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="file:java.io.File"></a>
-      <a id="file:File"></a>
-      <h4 class="signature">
+    </li><li name="scalajsbundler.BundlerFile.WebpackConfig#file" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="file:java.io.File"></a><a id="file:File"></a>
+      <span class="permalink">
+      <a href="../scalajsbundler/BundlerFile$$WebpackConfig.html#file:java.io.File" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">val</span>
@@ -296,13 +450,15 @@ By convention the first element is the <code>file</code> and the rest are the as
       <span class="symbol">
         <span class="name">file</span><span class="result">: <span class="extype" name="java.io.File">File</span></span>
       </span>
-      </h4>
-      <p class="shortcomment cmt">The webpack.</p><div class="fullcomment"><div class="comment cmt"><p>The webpack.config.js file reference
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="scalajsbundler.BundlerFile.WebpackConfig">WebpackConfig</a> → <a href="BundlerFile.html" class="extype" name="scalajsbundler.BundlerFile">BundlerFile</a></dd></dl></div>
-    </li><li name="scala.AnyRef#finalize" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="scalajsbundler.BundlerFile.WebpackConfig">WebpackConfig</a> → <a href="BundlerFile.html" class="extype" name="scalajsbundler.BundlerFile">BundlerFile</a></dd></dl></div>
+    </li><li name="scala.AnyRef#finalize" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="finalize():Unit"></a>
-      <a id="finalize():Unit"></a>
-      <h4 class="signature">
+      <span class="permalink">
+      <a href="../scalajsbundler/BundlerFile$$WebpackConfig.html#finalize():Unit" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
@@ -310,18 +466,21 @@ By convention the first element is the <code>file</code> and the rest are the as
       <span class="symbol">
         <span class="name">finalize</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<span class="extype" name="java.lang">lang</span>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
       <span class="symbol">classOf[java.lang.Throwable]</span>
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="scala.AnyRef#getClass" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="scala.AnyRef#getClass" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getClass():Class[_]"></a>
-      <a id="getClass():Class[_]"></a>
-      <h4 class="signature">
+      <span class="permalink">
+      <a href="../scalajsbundler/BundlerFile$$WebpackConfig.html#getClass():Class[_]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
       <span class="modifier_kind">
         <span class="modifier">final </span>
         <span class="kind">def</span>
@@ -329,12 +488,18 @@ By convention the first element is the <code>file</code> and the rest are the as
       <span class="symbol">
         <span class="name">getClass</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.Class">Class</span>[_]</span>
       </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="scala.Any#isInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd><dt>Annotations</dt><dd>
+                <span class="name">@native</span><span class="args">()</span>
+              
+        </dd></dl></div>
+    </li><li name="scala.Any#isInstanceOf" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isInstanceOf[T0]:Boolean"></a>
-      <a id="isInstanceOf[T0]:Boolean"></a>
-      <h4 class="signature">
+      <span class="permalink">
+      <a href="../scalajsbundler/BundlerFile$$WebpackConfig.html#isInstanceOf[T0]:Boolean" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
       <span class="modifier_kind">
         <span class="modifier">final </span>
         <span class="kind">def</span>
@@ -342,12 +507,15 @@ By convention the first element is the <code>file</code> and the rest are the as
       <span class="symbol">
         <span class="name">isInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
-      </h4>
+      
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="ne(x$1:AnyRef):Boolean"></a>
-      <a id="ne(AnyRef):Boolean"></a>
-      <h4 class="signature">
+    </li><li name="scala.AnyRef#ne" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="ne(x$1:AnyRef):Boolean"></a><a id="ne(AnyRef):Boolean"></a>
+      <span class="permalink">
+      <a href="../scalajsbundler/BundlerFile$$WebpackConfig.html#ne(x$1:AnyRef):Boolean" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
       <span class="modifier_kind">
         <span class="modifier">final </span>
         <span class="kind">def</span>
@@ -355,12 +523,15 @@ By convention the first element is the <code>file</code> and the rest are the as
       <span class="symbol">
         <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
-      </h4>
+      
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="scala.AnyRef#notify" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="scala.AnyRef#notify" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="notify():Unit"></a>
-      <a id="notify():Unit"></a>
-      <h4 class="signature">
+      <span class="permalink">
+      <a href="../scalajsbundler/BundlerFile$$WebpackConfig.html#notify():Unit" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
       <span class="modifier_kind">
         <span class="modifier">final </span>
         <span class="kind">def</span>
@@ -368,12 +539,18 @@ By convention the first element is the <code>file</code> and the rest are the as
       <span class="symbol">
         <span class="name">notify</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="scala.AnyRef#notifyAll" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@native</span><span class="args">()</span>
+              
+        </dd></dl></div>
+    </li><li name="scala.AnyRef#notifyAll" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="notifyAll():Unit"></a>
-      <a id="notifyAll():Unit"></a>
-      <h4 class="signature">
+      <span class="permalink">
+      <a href="../scalajsbundler/BundlerFile$$WebpackConfig.html#notifyAll():Unit" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
       <span class="modifier_kind">
         <span class="modifier">final </span>
         <span class="kind">def</span>
@@ -381,12 +558,18 @@ By convention the first element is the <code>file</code> and the rest are the as
       <span class="symbol">
         <span class="name">notifyAll</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="scalajsbundler.BundlerFile.WebpackConfig#project" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@native</span><span class="args">()</span>
+              
+        </dd></dl></div>
+    </li><li name="scalajsbundler.BundlerFile.WebpackConfig#project" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="project:String"></a>
-      <a id="project:String"></a>
-      <h4 class="signature">
+      <span class="permalink">
+      <a href="../scalajsbundler/BundlerFile$$WebpackConfig.html#project:String" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
@@ -394,12 +577,15 @@ By convention the first element is the <code>file</code> and the rest are the as
       <span class="symbol">
         <span class="name">project</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
-      </h4>
       
-    </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
-      <a id="synchronized[T0](⇒T0):T0"></a>
-      <h4 class="signature">
+      
+    </li><li name="scala.AnyRef#synchronized" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="synchronized[T0](x$1:=&gt;T0):T0"></a><a id="synchronized[T0](⇒T0):T0"></a>
+      <span class="permalink">
+      <a href="../scalajsbundler/BundlerFile$$WebpackConfig.html#synchronized[T0](x$1:=&gt;T0):T0" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
       <span class="modifier_kind">
         <span class="modifier">final </span>
         <span class="kind">def</span>
@@ -407,12 +593,15 @@ By convention the first element is the <code>file</code> and the rest are the as
       <span class="symbol">
         <span class="name">synchronized</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="params">(<span name="arg0">arg0: ⇒ <span class="extype" name="java.lang.AnyRef.synchronized.T0">T0</span></span>)</span><span class="result">: <span class="extype" name="java.lang.AnyRef.synchronized.T0">T0</span></span>
       </span>
-      </h4>
+      
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="scalajsbundler.BundlerFile.WebpackConfig#targetDir" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="targetDir:java.nio.file.Path"></a>
-      <a id="targetDir:Path"></a>
-      <h4 class="signature">
+    </li><li name="scalajsbundler.BundlerFile.WebpackConfig#targetDir" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="targetDir:java.nio.file.Path"></a><a id="targetDir:Path"></a>
+      <span class="permalink">
+      <a href="../scalajsbundler/BundlerFile$$WebpackConfig.html#targetDir:java.nio.file.Path" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
@@ -420,12 +609,15 @@ By convention the first element is the <code>file</code> and the rest are the as
       <span class="symbol">
         <span class="name">targetDir</span><span class="result">: <span class="extype" name="java.nio.file.Path">Path</span></span>
       </span>
-      </h4>
       
-    </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      
+    </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
-      <a id="wait():Unit"></a>
-      <h4 class="signature">
+      <span class="permalink">
+      <a href="../scalajsbundler/BundlerFile$$WebpackConfig.html#wait():Unit" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
       <span class="modifier_kind">
         <span class="modifier">final </span>
         <span class="kind">def</span>
@@ -433,7 +625,7 @@ By convention the first element is the <code>file</code> and the rest are the as
       <span class="symbol">
         <span class="name">wait</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
-      </h4>
+      
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
@@ -441,10 +633,13 @@ By convention the first element is the <code>file</code> and the rest are the as
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="wait(x$1:Long,x$2:Int):Unit"></a>
-      <a id="wait(Long,Int):Unit"></a>
-      <h4 class="signature">
+    </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="wait(x$1:Long,x$2:Int):Unit"></a><a id="wait(Long,Int):Unit"></a>
+      <span class="permalink">
+      <a href="../scalajsbundler/BundlerFile$$WebpackConfig.html#wait(x$1:Long,x$2:Int):Unit" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
       <span class="modifier_kind">
         <span class="modifier">final </span>
         <span class="kind">def</span>
@@ -452,7 +647,7 @@ By convention the first element is the <code>file</code> and the rest are the as
       <span class="symbol">
         <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Long">Long</span></span>, <span name="arg1">arg1: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
-      </h4>
+      
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
@@ -460,10 +655,13 @@ By convention the first element is the <code>file</code> and the rest are the as
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="wait(x$1:Long):Unit"></a>
-      <a id="wait(Long):Unit"></a>
-      <h4 class="signature">
+    </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="wait(x$1:Long):Unit"></a><a id="wait(Long):Unit"></a>
+      <span class="permalink">
+      <a href="../scalajsbundler/BundlerFile$$WebpackConfig.html#wait(x$1:Long):Unit" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
       <span class="modifier_kind">
         <span class="modifier">final </span>
         <span class="kind">def</span>
@@ -471,15 +669,18 @@ By convention the first element is the <code>file</code> and the rest are the as
       <span class="symbol">
         <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
-      </h4>
+      
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
       <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
     </span>)</span>
               
+                <span class="name">@native</span><span class="args">()</span>
+              
         </dd></dl></div>
-    </li></ol>
+    </li>
+              </ol>
             </div>
 
         
@@ -520,6 +721,9 @@ By convention the first element is the <code>file</code> and the rest are the as
       <div id="tooltip"></div>
 
       <div id="footer">  </div>
-      <script defer="defer" type="text/javascript" id="jquery-js" src="../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../lib/template.js"></script>
+    </body>
+          </div>
+        </div>
+      </div>
     </body>
       </html>
