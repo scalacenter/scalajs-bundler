@@ -1,5 +1,23 @@
 # Changelog
 
+## Version 0.17.0
+
+> 2020 Feb 24
+
+The main highlight of this release is better support for Scala.js 1.0.0+ out of the box.
+We still support Scala.js 0.6.31+ as well.
+
+- With Scala.js 1.x, dynamically load the appropriate scalajs-linker, removing the need for the
+  `libraryDependencies += "org.scala-js" %% "scalajs-linker" % scalaVersion`
+  workaround.
+- With Scala.js 1.x, do not internally link twice when using the `LibraryOnly` and
+  `LibraryAndApplication` bundling modes, improving performance.
+- With Scala.js 1.x, better integrate with the `jsEnv` and `jsEnvInput` tasks of
+  Scala.js when using `requireJsDomEnv`.
+
+You can find the complete list of commits since the last release
+[here](https://github.com/scalacenter/scalajs-bundler/compare/v0.16.0...v0.17.0).
+
 ## Version 0.16.0
 
 > 2019 Dec 09
