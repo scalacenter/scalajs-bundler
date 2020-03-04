@@ -18,6 +18,8 @@ webpackConfigFile in fullOptJS := Some(baseDirectory.value / "prod.webpack.confi
 // Execute the tests in browser-like environment
 requireJsDomEnv in Test := true
 
+version in installJsdom := "16.2.0"
+
 webpackBundlingMode := BundlingMode.LibraryAndApplication()
 
 useYarn := true
