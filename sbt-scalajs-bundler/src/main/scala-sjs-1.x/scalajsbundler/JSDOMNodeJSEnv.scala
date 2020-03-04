@@ -63,43 +63,83 @@ class JSDOMNodeJSEnv(config: JSDOMNodeJSEnv.Config) extends JSEnv {
     val scriptsURIs = scripts.map(JSDOMNodeJSEnv.materialize(_))
     val scriptsURIsAsJSStrings =
       scriptsURIs.map(uri => "\"" + escapeJS(uri.toASCIIString) + "\"")
+    val scriptsURIsJSArray = scriptsURIsAsJSStrings.mkString("[", ", ", "]")
     val jsDOMCode = {
       s"""
+         |
          |(function () {
-         |  var jsdom;
-         |  try {
-         |    jsdom = require("jsdom/lib/old-api.js"); // jsdom >= 10.x
-         |  } catch (e) {
-         |    jsdom = require("jsdom"); // jsdom <= 9.x
-         |  }
+         |  var jsdom = require("jsdom");
          |
-         |  var virtualConsole = jsdom.createVirtualConsole()
-         |    .sendTo(console, { omitJsdomErrors: true });
-         |  virtualConsole.on("jsdomError", function (error) {
-         |    /* This inelegant if + console.error is the only way I found
-         |     * to make sure the stack trace of the original error is
-         |     * printed out.
-         |     */
-         |    if (error.detail && error.detail.stack)
-         |      console.error(error.detail.stack);
-         |
-         |    // Throw the error anew to make sure the whole execution fails
-         |    throw error;
-         |  });
-         |
-         |  jsdom.env({
-         |    html: "",
-         |    url: "http://localhost/",
-         |    virtualConsole: virtualConsole,
-         |    created: function (error, window) {
-         |      if (error == null) {
-         |        window["scalajsCom"] = global.scalajsCom;
-         |      } else {
-         |        throw error;
+         |  if (typeof jsdom.JSDOM === "function") {
+         |    // jsdom >= 10.0.0
+         |    var virtualConsole = new jsdom.VirtualConsole()
+         |      .sendTo(console, { omitJSDOMErrors: true });
+         |    virtualConsole.on("jsdomError", function (error) {
+         |      try {
+         |        // Display as much info about the error as possible
+         |        if (error.detail && error.detail.stack) {
+         |          console.error("" + error.detail);
+         |          console.error(error.detail.stack);
+         |        } else {
+         |          console.error(error);
+         |        }
+         |      } finally {
+         |        // Whatever happens, kill the process so that the run fails
+         |        process.exit(1);
          |      }
-         |    },
-         |    scripts: [${scriptsURIsAsJSStrings.mkString(", ")}]
-         |  });
+         |    });
+         |
+         |    var dom = new jsdom.JSDOM("", {
+         |      virtualConsole: virtualConsole,
+         |      url: "http://localhost/",
+         |
+         |      /* Allow unrestricted <script> tags. This is exactly as
+         |       * "dangerous" as the arbitrary execution of script files we
+         |       * do in the non-jsdom Node.js env.
+         |       */
+         |      resources: "usable",
+         |      runScripts: "dangerously"
+         |    });
+         |
+         |    var window = dom.window;
+         |    window["scalajsCom"] = global.scalajsCom;
+         |
+         |    var scriptsSrcs = $scriptsURIsJSArray;
+         |    for (var i = 0; i < scriptsSrcs.length; i++) {
+         |      var script = window.document.createElement("script");
+         |      script.src = scriptsSrcs[i];
+         |      window.document.body.appendChild(script);
+         |    }
+         |  } else {
+         |    // jsdom v9.x
+         |    var virtualConsole = jsdom.createVirtualConsole()
+         |      .sendTo(console, { omitJsdomErrors: true });
+         |    virtualConsole.on("jsdomError", function (error) {
+         |      /* This inelegant if + console.error is the only way I found
+         |       * to make sure the stack trace of the original error is
+         |       * printed out.
+         |       */
+         |      if (error.detail && error.detail.stack)
+         |        console.error(error.detail.stack);
+         |
+         |      // Throw the error anew to make sure the whole execution fails
+         |      throw error;
+         |    });
+         |
+         |    jsdom.env({
+         |      html: "",
+         |      virtualConsole: virtualConsole,
+         |      url: "http://localhost/",
+         |      created: function (error, window) {
+         |        if (error == null) {
+         |          window["scalajsCom"] = global.scalajsCom;
+         |        } else {
+         |          throw error;
+         |        }
+         |      },
+         |      scripts: $scriptsURIsJSArray
+         |    });
+         |  }
          |})();
          |""".stripMargin
     }
