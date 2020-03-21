@@ -187,6 +187,7 @@ def runScriptedTask = Def.taskDyn {
       }
     val scalaJSIncompatibility =
       if (directory.name.endsWith("_sjs-0.6") && !scalaJSVersion.startsWith("0.6")) Some(s"it requires Scala.js 0.6")
+      else if (directory.name.endsWith("_sjs-1") && !scalaJSVersion.startsWith("1.")) Some("it requires Scala.js 1.x")
       else None
 
     sbtIncompatibility.orElse(scalaJSIncompatibility) match {
