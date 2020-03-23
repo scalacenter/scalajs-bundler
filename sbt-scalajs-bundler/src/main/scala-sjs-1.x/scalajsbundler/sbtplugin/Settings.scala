@@ -39,8 +39,16 @@ private[sbtplugin] object Settings {
         val log = s.log
         val retrieveDir = s.cacheDirectory / "scalajs-bundler-linker"
         val lm = (dependencyResolution in scalaJSLinkerImpl).value
-        val moduleID = "ch.epfl.scala" % "scalajs-bundler-linker_2.12" % BuildInfo.version
-        lm.retrieve(moduleID, scalaModuleInfo = None, retrieveDir, log)
+        val dummyModuleID =
+          "ch.epfl.scala" % "scalajs-bundler-linker-and-scalajs-linker_2.12" % s"${BuildInfo.version}/$scalaJSVersion"
+        val dependencies = Vector(
+            // Load our linker back-end
+            "ch.epfl.scala" % "scalajs-bundler-linker_2.12" % BuildInfo.version,
+            // And force-bump the dependency on scalajs-linker to match the version of sbt-scalajs
+            "org.scala-js" % "scalajs-linker_2.12" % scalaJSVersion
+        )
+        val moduleDescriptor = lm.moduleDescriptor(dummyModuleID, dependencies, scalaModuleInfo = None)
+        lm.retrieve(moduleDescriptor, retrieveDir, log)
           .fold(w => throw w.resolveException, Attributed.blankSeq(_))
       },
 
