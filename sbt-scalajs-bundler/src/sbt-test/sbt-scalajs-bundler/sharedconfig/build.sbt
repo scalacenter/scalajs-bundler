@@ -1,13 +1,13 @@
 
 name := "sharedconfig"
 
-enablePlugins(ScalaJSBundlerPlugin)
+enablePlugins(ScalaJSBundlerPlugin, ScalaJSJUnitPlugin)
 
 scalaVersion := "2.11.12"
 
 scalaJSUseMainModuleInitializer := true
 
-libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "0.9.7"
+libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "1.0.0"
 
 npmDependencies in Compile += "leaflet" -> "0.7.7"
 
@@ -32,14 +32,15 @@ webpackConfigFile in fullOptJS := Some(baseDirectory.value / "prod.webpack.confi
 // Use the shared Webpack configuration file for reload workflow and for running the tests
 webpackConfigFile in Test := Some(baseDirectory.value / "common.webpack.config.js")
 
-libraryDependencies += "org.scalatest" %%% "scalatest" % "3.1.0-SNAP9" % Test
-
 // Execute the tests in browser-like environment
 requireJsDomEnv in Test := true
 
 webpackBundlingMode in fastOptJS := BundlingMode.LibraryAndApplication()
 
 useYarn := true
+
+// HtmlUnit does not support ECMAScript 2015
+scalaJSLinkerConfig ~= { _.withESFeatures(_.withUseECMAScript2015(false)) }
 
 // Check that a HTML can be loaded (and that its JavaScript can be executed) without errors
 InputKey[Unit]("html") := {

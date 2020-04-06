@@ -1,62 +1,36 @@
 package scalajsbundler.sbtplugin
 
-import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport.{
-  scalaJSIR,
-  scalaJSLinker,
-  scalaJSLinkerConfig,
-  scalaJSModuleInitializers,
-  usesScalaJSLinkerTag
-}
 import sbt.Keys._
 import sbt.{Def, _}
 
+import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport.scalaJSLinkerConfig
 import scalajsbundler.{BundlerFile, Webpack, WebpackEntryPoint}
 import scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.autoImport._
 import scalajsbundler.sbtplugin.ScalaJSBundlerPlugin._
-import scalajsbundler.util.{Caching, JSBundler, ScalaJSOutputAnalyzer}
+import scalajsbundler.util.{Caching, JSBundler}
 
 object LibraryTasks {
 
   private[sbtplugin] def entryPoint(stage: TaskKey[Attributed[File]])
     : Def.Initialize[Task[BundlerFile.EntryPoint]] =
-    Def.taskDyn {
+    Def.task {
       val s = streams.value
-      val linkerConfig = (scalaJSLinkerConfig in stage).value
-      val linker = (scalaJSLinker in stage).value
-      val linkerTag = (usesScalaJSLinkerTag in stage).value
+      val importedModules = (scalaJSBundlerImportedModules in stage).value
       val entry = WebpackTasks.entry(stage).value
-      val scalaJSIRValue = scalaJSIR.value
-      val scalaJSModuleInitializersValue = scalaJSModuleInitializers.value
       val cacheLocation = streams.value.cacheDirectory / s"${stage.key.label}-webpack-entrypoint"
-      Def
-        .task {
-          val entryPointFile = entry.asEntryPoint
-          val linkingUnit = ScalaJSOutputAnalyzer.linkingUnit(
-            linkerConfig,
-            linker,
-            scalaJSIRValue.data,
-            scalaJSModuleInitializersValue,
-            s.log
-          )
-          val importedModules =
-            ScalaJSOutputAnalyzer.importedModules(linkingUnit)
+      val entryPointFile = entry.asEntryPoint
 
-          // Avoid re-writing the entrypoint file if the list of modules hasn't changed
-          // allowing downstream caching to detect change reliably
-          Caching.cached(entryPointFile.file,
-                         importedModules.mkString(","),
-                         cacheLocation)(
-            () =>
-              WebpackEntryPoint.writeEntryPoint(
-                importedModules,
-                entryPointFile,
-                s.log
-            ))
-          entryPointFile
-        }
-        .tag(linkerTag)
-        .dependsOn(npmUpdate in stage)
-    }
+      // Avoid re-writing the entrypoint file if the list of modules hasn't changed
+      // allowing downstream caching to detect change reliably
+      Caching.cached(entryPointFile.file, importedModules.mkString(","), cacheLocation)(
+        () =>
+          WebpackEntryPoint.writeEntryPoint(
+            importedModules,
+            entryPointFile,
+            s.log
+        ))
+      entryPointFile
+    }.dependsOn(npmUpdate in stage)
 
   private[sbtplugin] def bundle(
       stage: TaskKey[Attributed[File]],
@@ -77,7 +51,8 @@ object LibraryTasks {
       val cacheLocation = streams.value.cacheDirectory / s"${stage.key.label}-webpack-libraries"
       val extraArgs = (webpackExtraArgs in stage).value
       val nodeArgs = (webpackNodeArgs in stage).value
-      val webpackMode = Webpack.WebpackMode((scalaJSLinkerConfig in stage).value)
+      val webpackMode =
+        Webpack.WebpackMode.fromBooleanProductionMode((scalaJSLinkerConfig in stage).value.semantics.productionMode)
 
       val cachedActionFunction =
         FileFunction.cached(

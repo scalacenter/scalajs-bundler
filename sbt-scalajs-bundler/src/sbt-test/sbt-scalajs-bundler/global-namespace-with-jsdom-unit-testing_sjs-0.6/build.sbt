@@ -1,7 +1,7 @@
 
 name := "global-namespace-with-jsdom-unit-testing"
 
-enablePlugins(ScalaJSBundlerPlugin)
+enablePlugins(ScalaJSBundlerPlugin, ScalaJSJUnitPlugin)
 
 scalaVersion := "2.11.12"
 
@@ -29,8 +29,6 @@ requireJsDomEnv in Test := true
 //#relevant-settings
 
 version in installJsdom := "12.0.0"
-
-libraryDependencies += "org.scalatest" %%% "scalatest" % "3.0.0" % Test
 
 useYarn := true
 

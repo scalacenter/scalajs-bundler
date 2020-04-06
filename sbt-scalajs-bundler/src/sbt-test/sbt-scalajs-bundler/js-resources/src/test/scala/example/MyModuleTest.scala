@@ -1,15 +1,12 @@
 package example
 
-import org.scalatest.FreeSpec
+import org.junit.Assert._
+import org.junit.Test
 
-class MyModuleTest extends FreeSpec {
+class MyModuleTest {
 
-  "MyModule" - {
-
-    "has a someUuid field" in {
-      assert(MyModule.someUuid != null)
-    }
-
+  @Test def someUuid(): Unit = {
+    assertNotNull(MyModule.someUuid)
   }
 
 }

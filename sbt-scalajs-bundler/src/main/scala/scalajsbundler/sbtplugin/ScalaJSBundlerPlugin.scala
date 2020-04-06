@@ -1,7 +1,5 @@
 package scalajsbundler.sbtplugin
 
-import java.util.concurrent.atomic.AtomicReference
-
 import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
 import org.scalajs.sbtplugin.{ScalaJSPlugin, Stage}
 import sbt.Keys._
@@ -10,7 +8,6 @@ import scalajsbundler.{BundlerFile, NpmDependencies, Webpack, WebpackDevServer}
 
 import scalajsbundler.ExternalCommand.addPackages
 import scalajsbundler.util.{JSON, ScalaJSNativeLibraries}
-import scalajsbundler.scalajs.compat.testing.TestAdapter
 
 
 /**
@@ -519,6 +516,12 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
     val jsSourceDirectories = settingKey[Seq[File]]("Local js source directories to be collected by the bundler")
   }
 
+  private[sbtplugin] val scalaJSBundlerImportedModules =
+    TaskKey[List[String]]("scalaJSBundlerImportedModules",
+      "Computes the list of imported modules",
+      KeyRanks.Invisible
+    )
+
   private val scalaJSBundlerPackageJson =
     TaskKey[BundlerFile.PackageJson]("scalaJSBundlerPackageJson",
       "Write a package.json file defining the NPM dependencies of project",
@@ -618,7 +621,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
     inConfig(Test)(perConfigSettings ++ testSettings)
 
   private lazy val perConfigSettings: Seq[Def.Setting[_]] =
-    Seq(
+    Def.settings(
       npmDependencies := Seq.empty,
 
       npmDevDependencies := Seq.empty,
@@ -672,29 +675,16 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
         crossTarget.value / "scalajs-bundler" / (if (configuration.value == Compile) "main" else "test")
       },
 
-      Settings.jsEnvSetting
+      Settings.configSettings
     ) ++
     perScalaJSStageSettings(Stage.FastOpt) ++
     perScalaJSStageSettings(Stage.FullOpt)
 
-  private[scalajsbundler] val createdTestAdapters = new AtomicReference[List[TestAdapter]](Nil)
-
-  private def closeAllTestAdapters(): Unit =
-    createdTestAdapters.getAndSet(Nil).foreach(_.close())
-
-  override def globalSettings: Seq[Def.Setting[_]] = Seq(
-    onComplete := {
-      val prev = onComplete.value
-
-      { () =>
-        prev()
-        closeAllTestAdapters()
-      }
-    }
-  )
+  override def globalSettings: Seq[Def.Setting[_]] =
+    Settings.globalSettings
 
   private lazy val testSettings: Seq[Setting[_]] =
-    Seq(
+    Def.settings(
       npmDependencies ++= (npmDependencies in Compile).value,
 
       npmDevDependencies ++= (npmDevDependencies in Compile).value,
@@ -703,7 +693,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
 
       requireJsDomEnv := false,
 
-      Settings.loadedTestFrameworksSetting
+      Settings.testConfigSettings
 
     )
 

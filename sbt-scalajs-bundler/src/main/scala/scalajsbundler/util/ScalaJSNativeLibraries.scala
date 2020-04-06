@@ -1,19 +1,21 @@
 package scalajsbundler.util
 
-import java.io.{BufferedInputStream, ByteArrayOutputStream, FileInputStream, OutputStream}
+import com.google.common.jimfs.Jimfs
 
-import scalajsbundler.scalajs.compat.io.{FileVirtualBinaryFile, memVirtualBinaryFile, VirtualBinaryFile}
-import sbt.{Attributed, Def, File, FileFilter, Path, globFilter}
+import java.io.{BufferedInputStream, ByteArrayOutputStream, FileInputStream, OutputStream}
+import java.nio.file.{Files, Path}
+
+import sbt.{Attributed, Def, File, FileFilter, globFilter}
 
 import scala.annotation.tailrec
 
 private[scalajsbundler] object ScalaJSNativeLibraries {
 
   // Copied from https://github.com/scala-js/jsdependencies
-  def apply(fullClasspath: Seq[Attributed[File]]): Seq[(String, VirtualBinaryFile)] = {
+  def apply(fullClasspath: Seq[Attributed[File]]): Seq[(String, Path)] = {
     collectFromClasspath(fullClasspath,
       "*.js", collectJar = jsFilesInJar,
-      collectFile = (f, relPath) => relPath -> new FileVirtualBinaryFile(f))
+      collectFile = (f, relPath) => relPath -> f.toPath())
   }
 
   /** Collect certain file types from a classpath.
@@ -37,7 +39,7 @@ private[scalajsbundler] object ScalaJSNativeLibraries {
         results ++= collectJar(cpEntry)
       } else if (cpEntry.isDirectory) {
         for {
-          (file, relPath0) <- Path.selectSubpaths(cpEntry, filter)
+          (file, relPath0) <- sbt.Path.selectSubpaths(cpEntry, filter)
         } {
           val relPath = relPath0.replace(java.io.File.separatorChar, '/')
           results += collectFile(file, relPath)
@@ -51,16 +53,17 @@ private[scalajsbundler] object ScalaJSNativeLibraries {
     results.result()
   }
 
-  private def jsFilesInJar(jar: File): List[(String, VirtualBinaryFile)] =
+  private def jsFilesInJar(jar: File): List[(String, Path)] =
     jarListEntries(jar, _.endsWith(".js"))
 
   private def jarListEntries[T](jar: File,
-    p: String => Boolean): List[(String, VirtualBinaryFile)] = {
+    p: String => Boolean): List[(String, Path)] = {
 
     import java.util.zip._
 
     val jarPath = jar.getPath
-    val jarVersion = new FileVirtualBinaryFile(jar).version
+
+    val memFileSystem = Jimfs.newFileSystem()
 
     val stream =
       new ZipInputStream(new BufferedInputStream(new FileInputStream(jar)))
@@ -76,7 +79,7 @@ private[scalajsbundler] object ScalaJSNativeLibraries {
         }
       }
 
-      def makeVF(e: ZipEntry): (String, VirtualBinaryFile) = {
+      def makeVF(e: ZipEntry): (String, Path) = {
         val size = e.getSize
         val out =
           if (0 <= size && size <= Int.MaxValue) new ByteArrayOutputStream(size.toInt)
@@ -85,9 +88,10 @@ private[scalajsbundler] object ScalaJSNativeLibraries {
         try {
           readAll(out)
           val relName = e.getName
-          val vf = memVirtualBinaryFile(s"$jarPath:$relName", out.toByteArray(),
-            jarVersion)
-          relName -> vf
+          val path = memFileSystem.getPath(s"$jarPath/$relName")
+          Files.createDirectories(path.getParent())
+          Files.write(path, out.toByteArray())
+          relName -> path
         } finally {
           out.close()
         }

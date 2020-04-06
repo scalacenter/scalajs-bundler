@@ -1,37 +1,67 @@
-import sbtunidoc.Plugin.ScalaUnidoc
-import sbtunidoc.Plugin.UnidocKeys.unidoc
-
 val runScripted = taskKey[Unit]("Run supported sbt scripted tests")
 
-val scalaJSVersion = sys.env.getOrElse("SCALAJS_VERSION", "0.6.27")
+val scalaJSVersion = sys.env.getOrElse("SCALAJS_VERSION", "1.0.0")
 val isScalaJS1x = scalaJSVersion.startsWith("1.")
 val scalaJSSourceDirectorySuffix = if (isScalaJS1x) "sjs-1.x" else "sjs-0.6"
 
+// This project is only used with Scala.js 1.x
+lazy val `scalajs-bundler-linker` =
+  project.in(file("scalajs-bundler-linker"))
+    .settings(
+      scalaVersion := "2.12.10",
+      libraryDependencies += "org.scala-js" %% "scalajs-linker" % scalaJSVersion
+    )
+
 val `sbt-scalajs-bundler` =
   project.in(file("sbt-scalajs-bundler"))
+    .enablePlugins(SbtPlugin, BuildInfoPlugin)
     .settings(commonSettings)
     .settings(
-      sbtPlugin := true,
-      name := "sbt-scalajs-bundler",
+      name := (if (isScalaJS1x) "sbt-scalajs-bundler" else "sbt-scalajs-bundler-sjs06"),
       description := "Module bundler for Scala.js projects",
+      libraryDependencies += "com.google.jimfs" % "jimfs" % "1.1",
       libraryDependencies += "com.typesafe.play" %% "play-json" % "2.6.7",
       addSbtPlugin("org.scala-js" % "sbt-scalajs" % scalaJSVersion),
-      unmanagedSourceDirectories in Compile += (sourceDirectory in Compile).value / s"scala-$scalaJSSourceDirectorySuffix"
+      unmanagedSourceDirectories in Compile += (sourceDirectory in Compile).value / s"scala-$scalaJSSourceDirectorySuffix",
+      buildInfoKeys := Seq[BuildInfoKey](version),
+      buildInfoPackage := "scalajsbundler.sbtplugin.internal",
+      // When supported, add: buildInfoOptions += sbtbuildinfo.BuildInfoOption.PackagePrivate
+      if (isScalaJS1x) {
+        scriptedDependencies := {
+          val () = scriptedDependencies.value
+          val () = publishLocal.value
+          val () = (publishLocal in `scalajs-bundler-linker`).value
+        }
+      } else {
+        scriptedDependencies := {
+          val () = scriptedDependencies.value
+          val () = publishLocal.value
+        }
+      }
     )
 
 val `sbt-web-scalajs-bundler` =
   project.in(file("sbt-web-scalajs-bundler"))
+    .enablePlugins(SbtPlugin)
     .settings(commonSettings)
     .settings(
-      sbtPlugin := true,
-      scriptedDependencies := {
-        val () = scriptedDependencies.value
-        val () = publishLocal.value
-        val () = (publishLocal in `sbt-scalajs-bundler`).value
+      if (isScalaJS1x) {
+        scriptedDependencies := {
+          val () = scriptedDependencies.value
+          val () = publishLocal.value
+          val () = (publishLocal in `sbt-scalajs-bundler`).value
+          val () = (publishLocal in `scalajs-bundler-linker`).value
+        }
+      } else {
+        scriptedDependencies := {
+          val () = scriptedDependencies.value
+          val () = publishLocal.value
+          val () = (publishLocal in `sbt-scalajs-bundler`).value
+        }
       },
-      name := "sbt-web-scalajs-bundler",
+      name := (if (isScalaJS1x) "sbt-web-scalajs-bundler" else "sbt-web-scalajs-bundler-sjs06"),
       description := "Module bundler for Scala.js projects (integration with sbt-web-scalajs)",
-      addSbtPlugin("com.vmunier" % "sbt-web-scalajs" % (if (isScalaJS1x) "1.0.9" else "1.0.9-0.6"))
+      addSbtPlugin("com.vmunier" % "sbt-web-scalajs" % (if (isScalaJS1x) "1.0.11" else "1.0.11-0.6"))
     )
     .dependsOn(`sbt-scalajs-bundler`)
 
@@ -40,13 +70,15 @@ val `sbt-web-scalajs-bundler` =
 // scalaVersion is not compatible.
 val apiDoc =
   project.in(file("api-doc"))
-    .settings(noPublishSettings ++ unidocSettings: _*)
+    .enablePlugins(ScalaUnidocPlugin)
+    .settings(noPublishSettings: _*)
     .settings(
       scalacOptions in (ScalaUnidoc, unidoc) ++= Seq(
         "-groups",
         "-doc-source-url", s"https://github.com/scalacenter/scalajs-bundler/blob/v${version.value}€{FILE_PATH}.scala",
         "-sourcepath", (baseDirectory in ThisBuild).value.absolutePath
-      )
+      ),
+      unidocProjectFilter in (ScalaUnidoc, unidoc) := inAnyProject -- inProjects(`scalajs-bundler-linker`)
     )
     .aggregate(`sbt-scalajs-bundler`, `sbt-web-scalajs-bundler`)
 
@@ -54,10 +86,10 @@ val ornateTarget = Def.setting(target.value / "ornate")
 
 val manual =
   project.in(file("manual"))
-    .enablePlugins(OrnatePlugin)
-    .settings(noPublishSettings ++ ghpages.settings: _*)
+    .enablePlugins(OrnatePlugin, GhpagesPlugin)
+    .settings(noPublishSettings: _*)
     .settings(
-      scalaVersion := "2.11.12",
+      scalaVersion := "2.12.10",
       git.remoteRepo := "git@github.com:scalacenter/scalajs-bundler.git",
       ornateSourceDir := Some(sourceDirectory.value / "ornate"),
       ornateTargetDir := Some(ornateTarget.value),
@@ -67,7 +99,7 @@ val manual =
       mappings in ornate := {
         val _ = ornate.value
         val output = ornateTarget.value
-        output ** AllPassFilter --- output pair relativeTo(output)
+        output ** AllPassFilter --- output pair Path.relativeTo(output)
       },
       siteSubdirName in packageDoc := "api/latest",
       addMappingsToSiteDir(mappings in ScalaUnidoc in packageDoc in apiDoc, siteSubdirName in packageDoc)
@@ -78,7 +110,7 @@ val `scalajs-bundler` =
     .settings(noPublishSettings: _*)
     .aggregate(`sbt-scalajs-bundler`, `sbt-web-scalajs-bundler`)
 
-inScope(ThisScope.copy(project = Global))(List(
+inThisBuild(List(
   pgpPublicRing := file("./travis/local.pubring.asc"),
   pgpSecretRing := file("./travis/local.secring.asc"),
   pgpPassphrase := sys.env.get("PGP_PASS").map(_.toArray),
@@ -112,7 +144,7 @@ inScope(ThisScope.copy(project = Global))(List(
   developers := List(Developer("julienrf", "Julien Richard-Foy", "julien.richard-foy@epfl.ch", url("http://julien.richard-foy.fr")))
 ))
 
-lazy val commonSettings = ScriptedPlugin.scriptedSettings ++ List(
+lazy val commonSettings = List(
   runScripted := runScriptedTask.value,
   scriptedLaunchOpts ++= Seq(
     "-Dplugin.version=" + version.value,
@@ -120,11 +152,12 @@ lazy val commonSettings = ScriptedPlugin.scriptedSettings ++ List(
     "-Dsbt.execute.extrachecks=true" // Avoid any deadlocks.
   ),
   scriptedBufferLog := false,
-  crossSbtVersions := List("0.13.17", "1.0.2"),
+  crossSbtVersions := List("0.13.17", "1.2.8"),
+  sbtVersion in pluginCrossBuild := "1.2.8",
   scalaVersion := {
     (sbtBinaryVersion in pluginCrossBuild).value match {
       case "0.13" => "2.10.7"
-      case _ => "2.12.8"
+      case _ => "2.12.10"
     }
   }
 )
@@ -132,8 +165,8 @@ lazy val commonSettings = ScriptedPlugin.scriptedSettings ++ List(
 lazy val noPublishSettings =
   Seq(
     publishArtifact := false,
-    publish := (),
-    publishLocal := ()
+    publish := {},
+    publishLocal := {}
   )
 
 // Run all the sbt-scripted tests that are compatible with both the selected sbt version
@@ -154,6 +187,7 @@ def runScriptedTask = Def.taskDyn {
       }
     val scalaJSIncompatibility =
       if (directory.name.endsWith("_sjs-0.6") && !scalaJSVersion.startsWith("0.6")) Some(s"it requires Scala.js 0.6")
+      else if (directory.name.endsWith("_sjs-1") && !scalaJSVersion.startsWith("1.")) Some("it requires Scala.js 1.x")
       else None
 
     sbtIncompatibility.orElse(scalaJSIncompatibility) match {

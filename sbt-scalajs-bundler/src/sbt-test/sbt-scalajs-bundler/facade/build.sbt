@@ -4,11 +4,10 @@ val `facade-project` =
 
 lazy val usage =
   project.in(file("usage"))
-    .enablePlugins(ScalaJSBundlerPlugin)
+    .enablePlugins(ScalaJSBundlerPlugin, ScalaJSJUnitPlugin)
     .settings(commonSettings: _*)
     .settings(
-      scalaJSUseMainModuleInitializer := true,
-      libraryDependencies += "org.scalatest" %%% "scalatest" % "3.1.0-SNAP9" % Test
+      scalaJSUseMainModuleInitializer := true
     )
     .dependsOn(facade)
 

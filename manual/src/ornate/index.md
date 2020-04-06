@@ -8,7 +8,10 @@ scalajs-bundler uses [npm](https://www.npmjs.com) and [webpack](https://webpack.
 Last stable version is ![](config:version):
 
 ~~~ scala expandVars=true
+// For Scala.js 1.x
 addSbtPlugin("ch.epfl.scala" % "sbt-scalajs-bundler" % "{{version}}")
+// Or, for Scala.js 0.6.x
+addSbtPlugin("ch.epfl.scala" % "sbt-scalajs-bundler-sjs06" % "{{version}}")
 ~~~
 
 See the [**getting started**](getting-started.md) page for more details about

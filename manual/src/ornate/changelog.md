@@ -1,5 +1,37 @@
 # Changelog
 
+## Version 0.17.0
+
+> 2020 Feb 24
+
+The main highlight of this release is better support for Scala.js 1.0.0+ out of the box.
+We still support Scala.js 0.6.31+ as well.
+
+- With Scala.js 1.x, dynamically load the appropriate scalajs-linker, removing the need for the
+  `libraryDependencies += "org.scala-js" %% "scalajs-linker" % scalaVersion`
+  workaround.
+- With Scala.js 1.x, do not internally link twice when using the `LibraryOnly` and
+  `LibraryAndApplication` bundling modes, improving performance.
+- With Scala.js 1.x, better integrate with the `jsEnv` and `jsEnvInput` tasks of
+  Scala.js when using `requireJsDomEnv`.
+
+You can find the complete list of commits since the last release
+[here](https://github.com/scalacenter/scalajs-bundler/compare/v0.16.0...v0.17.0).
+
+## Version 0.16.0
+
+> 2019 Dec 09
+
+The main highlight of this release is the support of Scala.js 1.0.0-RC1 instead of 1.0.0-M7.
+We still support Scala.js 0.6.x, but we require at least version 0.6.31.
+
+- Add support for Scala.js 1.0.0-RC1 (drop support for 1.0.0-M7)
+- Require Scala.js 0.6.31 or later in the 0.6.x branch
+- Require sbt 1.2.1 or later in the sbt 1.x branch (sbt 0.13.17+ is still supported)
+
+You can find the complete list of commits since the last release
+[here](https://github.com/scalacenter/scalajs-bundler/compare/v0.15.0...v0.16.0).
+
 ## Version 0.15.0
 
 > 2019 May 21
@@ -154,8 +186,8 @@ You can find the complete list of commits since the last release
 
 > 2017 September 10
 
-When upgrading to this release, make sure to check out the new [webpackBundlingMode](reference.md#bundling-mode) 
-configuration value. The old `enableReloadWorkflow` key has been removed, in favor 
+When upgrading to this release, make sure to check out the new [webpackBundlingMode](reference.md#bundling-mode)
+configuration value. The old `enableReloadWorkflow` key has been removed, in favor
 of `BundlingMode.LibraryAndApplication()`.
 
 - [#143](https://github.com/scalacenter/scalajs-bundler/pull/143): Document the compatible versions of npm;

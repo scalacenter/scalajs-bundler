@@ -1,40 +1,26 @@
 package example
 
-import org.scalatest.FreeSpec
+import org.junit.Assert._
+import org.junit.Test
 
-class FacadesTest extends FreeSpec {
+class FacadesTest {
 
-  "Obj" - {
-
-    "has a bar method" in {
-      assert(Obj.bar(41) == 42)
-    }
-
+  @Test def testObj(): Unit = {
+    assertEquals(42, Obj.bar(41))
   }
 
-  "Func" - {
-
-    "acts as a function" in {
-      assert(Func(2, 5) == "Konrad says 2 plus 5 is 7")
-    }
-
+  @Test def testFunc(): Unit = {
+    assertEquals("Konrad says 2 plus 5 is 7", Func(2, 5))
   }
 
-  "Member" - {
-
-    "can be called as a function" in {
-      assert(Member(41) == 42)
-    }
-
+  @Test def testMember(): Unit = {
+    assertEquals(42, Member(41))
   }
 
-  "User" - {
-
-    "can be constructed and fields can be accessed" in {
-      val user = new User("Julien", 30)
-      assert(user.name == "Julien" && user.age == 30)
-    }
-
+  @Test def testUser(): Unit = {
+    val user = new User("Julien", 30)
+    assertEquals("Julien", user.name)
+    assertEquals(30, user.age)
   }
 
 }

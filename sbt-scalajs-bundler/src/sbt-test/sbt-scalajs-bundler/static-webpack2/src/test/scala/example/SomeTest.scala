@@ -1,33 +1,31 @@
 package example
 
-import org.scalatest.FreeSpec
+import org.junit.Assert._
+import org.junit.Test
+
 import org.scalajs.dom.document
 
 import scala.scalajs.js
 
-class SomeTest extends FreeSpec {
+class SomeTest {
 
-  "snabbdom" - {
-    "should patch the DOM" in {
+  @Test def testSnabbdom(): Unit = {
+    import snabbdom.{snabbdom, h, modules}
+    val patch =
+      snabbdom.init(js.Array(
+        modules.props
+      ))
 
-      import snabbdom.{snabbdom, h, modules}
-      val patch =
-        snabbdom.init(js.Array(
-          modules.props
-        ))
+    val vnode = h("h1", "It works": js.Any)
 
-      val vnode = h("h1", "It works": js.Any)
+    val container = document.createElement("div")
+    document.body.appendChild(container)
 
-      val container = document.createElement("div")
-      document.body.appendChild(container)
+    patch(container, vnode)
 
-      patch(container, vnode)
-
-      val patchedNode = document.body.lastChild
-      assert(patchedNode.nodeName == "H1")
-      assert(patchedNode.textContent == "It works")
-
-    }
+    val patchedNode = document.body.lastChild
+    assertEquals("H1", patchedNode.nodeName)
+    assertEquals("It works", patchedNode.textContent)
   }
 
 }

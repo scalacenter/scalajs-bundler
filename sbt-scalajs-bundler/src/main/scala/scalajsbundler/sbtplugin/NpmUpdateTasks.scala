@@ -1,6 +1,6 @@
 package scalajsbundler.sbtplugin
 
-import scalajsbundler.scalajs.compat.io.{FileVirtualBinaryFile, VirtualBinaryFile}
+import java.nio.file.Path
 import scalajsbundler.ExternalCommand
 import sbt._
 
@@ -22,7 +22,7 @@ object NpmUpdateTasks {
                 targetDir: File,
                 packageJsonFile: File,
                 useYarn: Boolean,
-                jsResources: Seq[(String, VirtualBinaryFile)],
+                jsResources: Seq[(String, Path)],
                 streams: Keys.TaskStreams,
                 npmExtraArgs: Seq[String],
                 yarnExtraArgs: Seq[String]): File = {
@@ -63,6 +63,16 @@ object NpmUpdateTasks {
     targetDir
   }
 
+  private object PathWithFile {
+    def unapply(path: Path): Option[File] = {
+      try {
+        Some(path.toFile())
+      } catch {
+        case _: UnsupportedOperationException => None
+      }
+    }
+  }
+
   /**
     * Installs JavaScript resources as node packages.
     *
@@ -72,14 +82,14 @@ object NpmUpdateTasks {
     * @return The paths to the node packages
     */
   def npmInstallJSResources(targetDir: File,
-                            jsResources: Seq[(String, VirtualBinaryFile)],
+                            jsResources: Seq[(String, Path)],
                             jsSourceDirectories: Seq[File],
                             streams: Keys.TaskStreams): Seq[File] = {
     val jsFileResources =   jsResources.collect {
-      case (relativePath, jsfile: FileVirtualBinaryFile) => jsfile.file -> relativePath
+      case (relativePath, PathWithFile(jsfile)) => jsfile -> relativePath
     }.toSet ++ jsSourceDirectories.flatMap { f =>
       if (f.isDirectory)
-        Path.allSubpaths(f).filterNot(_._1.isDirectory)
+        sbt.Path.allSubpaths(f).filterNot(_._1.isDirectory)
       else Seq.empty
     }.toSet
 

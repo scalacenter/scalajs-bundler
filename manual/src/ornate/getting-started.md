@@ -7,14 +7,15 @@ You need to have `npm` installed on your system.
 Add the `sbt-scalajs-bundler` plugin to your Scala.js project, in your `project/plugins.sbt` file:
 
 ~~~ scala expandVars=true
+// For Scala.js 1.x
 addSbtPlugin("ch.epfl.scala" % "sbt-scalajs-bundler" % "{{version}}")
 // Or, for Scala.js 0.6.x
-addSbtPlugin("ch.epfl.scala" % "sbt-scalajs-bundler" % "{{version}}-0.6")
+addSbtPlugin("ch.epfl.scala" % "sbt-scalajs-bundler-sjs06" % "{{version}}")
 ~~~
 
 > {.note}
-> The plugin requires Scala.js 0.6.26+ or 1.0.0-M7 and either
-> sbt 0.13.17+ or 1.0.2+.
+> The plugin requires Scala.js 0.6.26+ or 1.0.0-RC1 and either
+> sbt 0.13.17+ or 1.2.1+.
 
 Enable the `ScalaJSBundlerPlugin`, in your `build.sbt` file:
 
@@ -53,7 +54,10 @@ See complete examples in the [tests](https://github.com/scalacenter/scalajs-bund
 For sbt-web integration use the `sbt-web-scalajs-bundler` plugin instead of `sbt-scalajs-bundler`:
 
 ~~~ scala expandVars=true
+// For Scala.js 1.x
 addSbtPlugin("ch.epfl.scala" % "sbt-web-scalajs-bundler" % "{{version}}")
+// Or, for Scala.js 0.6.x
+addSbtPlugin("ch.epfl.scala" % "sbt-web-scalajs-bundler-sjs06" % "{{version}}")
 ~~~
 
 Then, enable the `WebScalaJSBundlerPlugin` on the project that uses sbt-web:

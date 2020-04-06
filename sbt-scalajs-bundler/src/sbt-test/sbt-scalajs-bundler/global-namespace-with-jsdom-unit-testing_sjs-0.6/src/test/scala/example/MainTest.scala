@@ -1,20 +1,19 @@
 package example
 
-import org.scalatest.FreeSpec
+import org.junit.Assert._
+import org.junit.Test
 
 import scala.scalajs.js
 import scala.scalajs.js.Date
 
-class MainTest extends FreeSpec {
+class MainTest {
 
-  "getMillis" - {
-    "should return UNIX timestamp" in {
-      val millisBefore = Date.now().toLong
-      val millis = Main.getNowInMillis
-      val millisAfter = Date.now().toLong
-      assert(millis >= millisBefore)
-      assert(millis <= millisAfter)
-    }
+  @Test def getMillis(): Unit = {
+    val millisBefore = Date.now().toLong
+    val millis = Main.getNowInMillis
+    val millisAfter = Date.now().toLong
+    assertTrue(millis >= millisBefore)
+    assertTrue(millis <= millisAfter)
   }
 
 }
