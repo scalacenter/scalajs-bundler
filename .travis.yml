@@ -27,8 +27,8 @@ script:
 after_success:
 - if [ $TRAVIS_PULL_REQUEST = 'false' ] && [ -n "$TRAVIS_TAG" ]; then
     if [ $TRAVIS_SBT_VERSION = '1.2.8' ] && [ $SCALAJS_VERSION = '1.0.0' ]; then
-      sbt scalajs-bundler-linker/publishSigned
-    fi
+      sbt scalajs-bundler-linker/publishSigned;
+    fi;
     sbt ";^^$TRAVIS_SBT_VERSION; sbt-scalajs-bundler/publishSigned; sbt-web-scalajs-bundler/publishSigned; sonatypeReleaseAll; manual/makeSite; manual/ghpagesPushSite";
   fi
 cache:
