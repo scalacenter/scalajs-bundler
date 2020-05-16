@@ -1,6 +1,6 @@
 val runScripted = taskKey[Unit]("Run supported sbt scripted tests")
 
-val scalaJSVersion = sys.env.getOrElse("SCALAJS_VERSION", "1.0.0")
+val scalaJSVersion = sys.env.getOrElse("SCALAJS_VERSION", "1.1.0")
 val isScalaJS1x = scalaJSVersion.startsWith("1.")
 val scalaJSSourceDirectorySuffix = if (isScalaJS1x) "sjs-1.x" else "sjs-0.6"
 
@@ -8,7 +8,7 @@ val scalaJSSourceDirectorySuffix = if (isScalaJS1x) "sjs-1.x" else "sjs-0.6"
 lazy val `scalajs-bundler-linker` =
   project.in(file("scalajs-bundler-linker"))
     .settings(
-      scalaVersion := "2.12.10",
+      scalaVersion := "2.12.11",
       libraryDependencies += "org.scala-js" %% "scalajs-linker" % scalaJSVersion
     )
 
@@ -89,7 +89,7 @@ val manual =
     .enablePlugins(OrnatePlugin, GhpagesPlugin)
     .settings(noPublishSettings: _*)
     .settings(
-      scalaVersion := "2.12.10",
+      scalaVersion := "2.12.11",
       git.remoteRepo := "git@github.com:scalacenter/scalajs-bundler.git",
       ornateSourceDir := Some(sourceDirectory.value / "ornate"),
       ornateTargetDir := Some(ornateTarget.value),
@@ -157,7 +157,7 @@ lazy val commonSettings = List(
   scalaVersion := {
     (sbtBinaryVersion in pluginCrossBuild).value match {
       case "0.13" => "2.10.7"
-      case _ => "2.12.10"
+      case _ => "2.12.11"
     }
   }
 )
