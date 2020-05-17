@@ -49,7 +49,7 @@ TaskKey[Unit]("checkSize") := {
   //#filter-files
   val artifactSize = IO.readBytes(bundleFile).length
 
-  val sizeLow = 18000
+  val sizeLow = 17000
   val sizeHigh = 22000
 
   // Account for minor variance in size due to transitive dependency updates

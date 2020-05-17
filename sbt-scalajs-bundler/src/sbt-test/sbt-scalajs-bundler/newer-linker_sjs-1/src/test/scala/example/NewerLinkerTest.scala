@@ -6,7 +6,7 @@ import org.junit.Test
 class NewerLinkerTest {
 
   @Test def newerLinker(): Unit = {
-    assertEquals("1.0.1", System.getProperty("java.vm.version"))
+    assertEquals("1.1.0", System.getProperty("java.vm.version"))
 
     /* Test the fix to https://github.com/scala-js/scala-js/issues/3984, which
      * was shipped in Scala.js 1.0.1.

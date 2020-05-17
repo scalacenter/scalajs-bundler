@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 0.18.0
+
+> 2020 May 16
+
+This release adds support for scala.js 1.1.0
+
 ## Version 0.17.0
 
 > 2020 Feb 24
