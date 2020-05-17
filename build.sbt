@@ -1,6 +1,6 @@
 val runScripted = taskKey[Unit]("Run supported sbt scripted tests")
 
-val scalaJSVersion = sys.env.getOrElse("SCALAJS_VERSION", "1.1.0")
+val scalaJSVersion = sys.env.getOrElse("SCALAJS_VERSION", "1.0.0")
 val isScalaJS1x = scalaJSVersion.startsWith("1.")
 val scalaJSSourceDirectorySuffix = if (isScalaJS1x) "sjs-1.x" else "sjs-0.6"
 
