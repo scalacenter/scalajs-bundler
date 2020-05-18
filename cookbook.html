@@ -82,7 +82,7 @@
 <h2 id="custom-config" class="a_section" data-magellan-target="custom-config">How to use a custom webpack configuration file?<a class="a_hlink" href="#custom-config"></a></h2>
 <p>First, configure the <code class="hljs">webpackConfigFile</code> setting to refer to your configuration file:</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
-<pre class="hljs"><code class="language-scala">webpackConfigFile in fastOptJS := <span class="hljs-type">Some</span>(baseDirectory.value / <span class="hljs-string">"my.custom.webpack.config.js"</span>)
+<pre class="hljs"><code class="language-scala">null := <span class="hljs-type">Some</span>(baseDirectory.value / <span class="hljs-string">"my.custom.webpack.config.js"</span>)
 </code></pre>
 </div></div>
 <p>Or, if you want to use the same configuration file for both <code class="hljs">fastOptJS</code> and <code class="hljs">fullOptJS</code>:</p>
