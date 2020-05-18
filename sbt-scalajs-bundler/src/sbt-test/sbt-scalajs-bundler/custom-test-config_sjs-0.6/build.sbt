@@ -1,18 +1,18 @@
 name := "custom-test"
 
-val reactJS = "15.6.1"
-val scalaJsReact = "1.1.1"
+val reactJS = "16.13.1"
+val scalaJsReact = "1.7.0"
 
 enablePlugins(ScalaJSBundlerPlugin)
 
-scalaVersion := "2.11.12"
+scalaVersion := "2.13.2"
 
 scalaJSUseMainModuleInitializer := true
 
 libraryDependencies ++= Seq(
   "com.github.japgolly.scalajs-react" %%% "core"  % scalaJsReact,
   "com.github.japgolly.scalajs-react" %%% "test"  % scalaJsReact % Test,
-  "com.lihaoyi"                       %%% "utest" % "0.6.3" % Test
+  "com.lihaoyi"                       %%% "utest" % "0.7.4" % Test
 )
 
 // Use a different Webpack configuration file for test

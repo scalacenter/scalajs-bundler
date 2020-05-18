@@ -7,7 +7,7 @@ object Component {
 
   private val component =
     ScalaComponent
-      .builder[Unit]("Component")
+      .builder[Unit]
       .render_P ( _ =>
         <.div(
           ^.cls := "app"
