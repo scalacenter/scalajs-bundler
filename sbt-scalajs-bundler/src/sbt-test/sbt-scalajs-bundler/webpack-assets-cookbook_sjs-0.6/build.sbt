@@ -4,21 +4,21 @@ import com.typesafe.sbt.packager.SettingsHelper._
 
 name := "webpack-assets"
 
-scalaVersion := "2.12.6"
+scalaVersion := "2.13.2"
 
 scalaJSUseMainModuleInitializer := true
 
 resolvers += Resolver.sonatypeRepo("snapshots")
 
 npmDependencies.in(Compile) := Seq(
-  "react" -> "16.4.2",
-  "react-dom" -> "16.4.2"
+  "react" -> "16.13.1",
+  "react-dom" -> "16.13.1"
 )
 
 webpackBundlingMode := scalajsbundler.BundlingMode.LibraryAndApplication()
 
 libraryDependencies ++= Seq(
-  "com.github.ahnfelt" %%% "react4s" % "0.9.15-SNAPSHOT"
+  "com.github.ahnfelt" %%% "react4s" % "0.9.29-SNAPSHOT"
 )
 
 //#scalajs-files

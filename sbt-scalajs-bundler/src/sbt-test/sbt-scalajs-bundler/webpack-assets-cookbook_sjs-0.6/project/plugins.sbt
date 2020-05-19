@@ -6,6 +6,6 @@ addSbtPlugin("org.scala-js" % "sbt-scalajs" % scalaJSVersion)
 
 addSbtPlugin("ch.epfl.scala" % s"sbt-scalajs-bundler$pluginSuffix" %  scalaJSBundlerVersion)
 
-addSbtPlugin("com.typesafe.sbt" % "sbt-native-packager" % "1.3.6")
+addSbtPlugin("com.typesafe.sbt" % "sbt-native-packager" % "1.7.2")
 
 ivyLoggingLevel in ThisBuild := UpdateLogging.Quiet
