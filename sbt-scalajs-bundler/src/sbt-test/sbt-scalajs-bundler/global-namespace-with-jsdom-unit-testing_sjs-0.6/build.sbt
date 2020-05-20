@@ -3,7 +3,7 @@ name := "global-namespace-with-jsdom-unit-testing"
 
 enablePlugins(ScalaJSBundlerPlugin, ScalaJSJUnitPlugin)
 
-scalaVersion := "2.11.12"
+scalaVersion := "2.12.11"
 
 scalaJSUseMainModuleInitializer := true
 

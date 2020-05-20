@@ -2,7 +2,7 @@ name := "browserless"
 
 enablePlugins(ScalaJSBundlerPlugin, ScalaJSJUnitPlugin)
 
-scalaVersion := "2.11.12"
+scalaVersion := "2.13.2"
 
 scalaJSUseMainModuleInitializer := true
 

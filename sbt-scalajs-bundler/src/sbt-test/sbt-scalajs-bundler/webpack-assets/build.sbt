@@ -5,7 +5,7 @@ name := "webpack-assets"
 
 enablePlugins(ScalaJSBundlerPlugin)
 
-scalaVersion := "2.12.5"
+scalaVersion := "2.13.2"
 
 scalaJSUseMainModuleInitializer := true
 
@@ -19,23 +19,23 @@ webpackBundlingMode in fullOptJS := BundlingMode.Application
 
 webpackConfigFile in fullOptJS := Some(baseDirectory.value / "prod.config.js")
 
-npmDevDependencies in Compile += "html-webpack-plugin" -> "3.0.6"
+npmDevDependencies in Compile += "html-webpack-plugin" -> "4.3.0"
 
-npmDevDependencies in Compile += "webpack-merge" -> "4.1.2"
+npmDevDependencies in Compile += "webpack-merge" -> "4.2.2"
 
-npmDevDependencies in Compile += "style-loader" -> "0.21.0"
+npmDevDependencies in Compile += "style-loader" -> "1.2.1"
 
-npmDevDependencies in Compile += "css-loader" -> "0.28.11"
+npmDevDependencies in Compile += "css-loader" -> "3.5.3"
 
-npmDevDependencies in Compile += "mini-css-extract-plugin" -> "0.4.0"
+npmDevDependencies in Compile += "mini-css-extract-plugin" -> "0.9.0"
 
 webpackDevServerPort := 7357
 
 useYarn := true
 
-version in webpack                     := "4.8.1"
+version in webpack                     := "4.43.0"
 
-version in startWebpackDevServer       := "3.1.4"
+version in startWebpackDevServer       := "3.11.0"
 
 // HtmlUnit does not support ECMAScript 2015
 scalaJSLinkerConfig ~= { _.withESFeatures(_.withUseECMAScript2015(false)) }
