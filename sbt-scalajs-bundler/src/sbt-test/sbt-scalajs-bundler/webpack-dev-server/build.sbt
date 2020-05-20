@@ -5,14 +5,14 @@ name := "webpack-dev-server"
 
 enablePlugins(ScalaJSBundlerPlugin)
 
-scalaVersion := "2.11.12"
+scalaVersion := "2.13.2"
 
 scalaJSUseMainModuleInitializer := true
 
 // Use a custom config file
 webpackConfigFile := Some(baseDirectory.value / "webpack.config.js")
 
-(npmDevDependencies in Compile) += ("html-webpack-plugin" -> "3.0.6")
+(npmDevDependencies in Compile) += ("html-webpack-plugin" -> "4.3.0")
 
 webpackDevServerPort := 7357
 
