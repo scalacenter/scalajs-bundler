@@ -11,11 +11,6 @@ class ExampleSpec extends PlaySpec with GuiceOneServerPerSuite with OneBrowserPe
     (new Loader).load(Context.create(Environment.simple()))
 
   "The application" must {
-    "load the page without error" in {
-      go to s"http://localhost:$port/"
-      find(tagName("p")).value.text mustBe "Hello, world!"
-    }
-
     "load assets imported from NPM modules" in {
       go to s"http://localhost:$port/assets/font-awesome/css/font-awesome.min.css"
       pageSource must include("Font Awesome")
