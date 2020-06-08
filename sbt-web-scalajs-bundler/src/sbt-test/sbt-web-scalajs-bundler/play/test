@@ -1,11 +1,11 @@
 > clean
-$ absent client/target/scala-2.11/scalajs-bundler/main/client-fastopt-bundle.js
+$ absent client/target/scala-2.13/scalajs-bundler/main/client-fastopt-bundle.js
 > server/scalaJSDev
-$ exists client/target/scala-2.11/scalajs-bundler/main/client-fastopt-bundle.js
+$ exists client/target/scala-2.13/scalajs-bundler/main/client-fastopt-bundle.js
 
-$ absent client/target/scala-2.11/scalajs-bundler/main/client-opt-bundle.js
+$ absent client/target/scala-2.13/scalajs-bundler/main/client-opt-bundle.js
 > server/scalaJSProd
-$ exists client/target/scala-2.11/scalajs-bundler/main/client-opt-bundle.js
+$ exists client/target/scala-2.13/scalajs-bundler/main/client-opt-bundle.js
 
 > clean
 > server/test

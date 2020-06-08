@@ -1,12 +1,14 @@
 package example
 
-import org.scalatestplus.play._
-import play.api.{ApplicationLoader, Environment}
+import org.scalatestplus.play.guice.GuiceOneServerPerSuite
+import org.scalatestplus.play.{HtmlUnitFactory, OneBrowserPerSuite, PlaySpec}
+import play.api.ApplicationLoader.Context
+import play.api.Environment
 
-class ExampleSpec extends PlaySpec with OneServerPerSuite with OneBrowserPerSuite with HtmlUnitFactory {
+class ExampleSpec extends PlaySpec with GuiceOneServerPerSuite with OneBrowserPerSuite with HtmlUnitFactory {
 
   implicit override lazy val app =
-    (new Loader).load(ApplicationLoader.createContext(Environment.simple()))
+    (new Loader).load(Context.create(Environment.simple()))
 
   "The application" must {
     "load the page without error" in {
