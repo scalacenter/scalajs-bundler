@@ -1,16 +1,18 @@
 package example
 
-import controllers.Assets
 import play.api.ApplicationLoader.Context
-import play.api.{ApplicationLoader, BuiltInComponentsFromContext}
+import play.api.{Application, ApplicationLoader, BuiltInComponentsFromContext}
+import play.filters.HttpFiltersComponents
 import router.Routes
 
 class Loader extends ApplicationLoader {
-  def load(context: Context) = new ExampleComponents(context).application
+  def load(context: Context): Application = new ExampleComponents(context).application
 }
 
-class ExampleComponents(context: Context) extends BuiltInComponentsFromContext(context) {
-  val controller = new ExampleController
-  val assets = new Assets(httpErrorHandler)
+class ExampleComponents(context: Context)
+    extends BuiltInComponentsFromContext(context)
+    with HttpFiltersComponents
+    with controllers.AssetsComponents {
+  val controller = new ExampleController(controllerComponents)
   val router = new Routes(httpErrorHandler, controller, assets)
 }

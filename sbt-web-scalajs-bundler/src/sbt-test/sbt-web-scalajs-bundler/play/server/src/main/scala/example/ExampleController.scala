@@ -1,9 +1,9 @@
 package example
 
-import play.api.mvc.{Action, Controller}
+import play.api.mvc.{AbstractController, ControllerComponents}
 import play.twirl.api.StringInterpolation
 
-class ExampleController extends Controller {
+class ExampleController(cc: ControllerComponents) extends AbstractController(cc) {
 
   val index = {
     val scriptUrl = bundleUrl("client")
