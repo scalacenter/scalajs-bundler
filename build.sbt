@@ -45,6 +45,10 @@ val `sbt-web-scalajs-bundler` =
     .enablePlugins(SbtPlugin)
     .settings(commonSettings)
     .settings(
+      // sbt-web-scalajs does not support sbt 1.2.x
+      crossSbtVersions := List("1.3.0"),
+      sbtVersion in pluginCrossBuild := "1.3.0",
+
       if (isScalaJS1x) {
         scriptedDependencies := {
           val () = scriptedDependencies.value
@@ -152,14 +156,8 @@ lazy val commonSettings = List(
     "-Dsbt.execute.extrachecks=true" // Avoid any deadlocks.
   ),
   scriptedBufferLog := false,
-  crossSbtVersions := List("0.13.17", "1.2.8"),
+  crossSbtVersions := List("1.2.8"),
   sbtVersion in pluginCrossBuild := "1.2.8",
-  scalaVersion := {
-    (sbtBinaryVersion in pluginCrossBuild).value match {
-      case "0.13" => "2.10.7"
-      case _ => "2.12.11"
-    }
-  }
 )
 
 lazy val noPublishSettings =
