@@ -2,15 +2,13 @@ name := "static"
 
 enablePlugins(ScalaJSBundlerPlugin, ScalaJSJUnitPlugin)
 
-scalaVersion := "2.11.12"
+scalaVersion := "2.13.3"
 
 scalaJSUseMainModuleInitializer := true
 
 libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "1.0.0"
 
 npmDependencies in Compile += "snabbdom" -> "0.5.3"
-
-npmDevDependencies in Compile += "uglifyjs-webpack-plugin" -> "1.2.2"
 
 // Use a different Webpack configuration file for production
 webpackConfigFile in fullOptJS := Some(baseDirectory.value / "prod.webpack.config.js")
@@ -19,6 +17,8 @@ webpackConfigFile in fullOptJS := Some(baseDirectory.value / "prod.webpack.confi
 requireJsDomEnv in Test := true
 
 version in installJsdom := "16.2.0"
+
+version in webpack := "4.44.1"
 
 webpackBundlingMode := BundlingMode.LibraryAndApplication()
 
@@ -50,7 +50,7 @@ TaskKey[Unit]("checkSize") := {
   val artifactSize = IO.readBytes(bundleFile).length
 
   val sizeLow = 17000
-  val sizeHigh = 22000
+  val sizeHigh = 29000
 
   // Account for minor variance in size due to transitive dependency updates
   assert(
