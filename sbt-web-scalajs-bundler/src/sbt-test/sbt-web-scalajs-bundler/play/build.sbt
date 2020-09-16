@@ -19,7 +19,10 @@ val server =
     .disablePlugins(PlayLayoutPlugin)
     .settings(
       scalaVersion := "2.13.2",
-      libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "5.1.0" % Test,
+      libraryDependencies ++= Seq(
+        "com.vmunier" %% "scalajs-scripts" % "1.1.4",
+        "org.scalatestplus.play" %% "scalatestplus-play" % "5.1.0" % Test
+      ),
       scalaJSProjects := Seq(client),
       pipelineStages in Assets := Seq(scalaJSPipeline),
       pipelineStages := Seq(digest, gzip),

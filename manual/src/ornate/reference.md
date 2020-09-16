@@ -187,12 +187,6 @@ where you used to enable `WebScalaJS`).
 The plugin tunes the `scalaJSPipeline` to use the bundles produced by webpack rather than the direct
 output of the Scala.js compilation.
 
-> {.note}
-> The [scalajs-scripts](https://github.com/vmunier/scalajs-scripts) will **not** work anymore because they
-> try to include the output of Scala.js instead of the output of the bundling process. You can see
-> [here](https://github.com/scalacenter/scalajs-bundler/blob/master/sbt-web-scalajs-bundler/src/sbt-test/sbt-web-scalajs-bundler/play/server/src/main/scala/example/ExampleController.scala#L25-L30)
-> how to include the correct .js file.
-
 ### Importing Assets from NPM Packages {#npm-assets}
 
 Some NPM packages also contain static assets (e.g. fonts, stylesheets, images, etc.). You can make them available

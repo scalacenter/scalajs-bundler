@@ -6,7 +6,6 @@ import play.twirl.api.StringInterpolation
 class ExampleController(cc: ControllerComponents) extends AbstractController(cc) {
 
   val index = {
-    val scriptUrl = bundleUrl("client")
     val result =
       Ok(
         html"""<!doctype html>
@@ -14,7 +13,7 @@ class ExampleController(cc: ControllerComponents) extends AbstractController(cc)
           <head></head>
           <body>
             <div>App is not loaded.</div>
-            <script src="$scriptUrl"></script>
+            ${scalajs.html.scripts("client", controllers.routes.Assets.versioned(_).toString, name => getClass.getResource(s"/public/$name") != null)}
           </body>
         </html>
       """
@@ -22,10 +21,4 @@ class ExampleController(cc: ControllerComponents) extends AbstractController(cc)
     Action(result)
   }
 
-  def bundleUrl(projectName: String): Option[String] = {
-    val name = projectName.toLowerCase
-    Seq(s"$name-opt-bundle.js", s"$name-fastopt-bundle.js")
-      .find(name => getClass.getResource(s"/public/$name") != null)
-      .map(controllers.routes.Assets.versioned(_).url)
-  }
 }
