@@ -13,7 +13,7 @@ class ExampleController(cc: ControllerComponents) extends AbstractController(cc)
           <head></head>
           <body>
             <div>App is not loaded.</div>
-            @scalajs.html.scripts("client", routes.Assets.versioned(_).toString, name => getClass.getResource(s"/public/$$name") != null)
+            ${scalajs.html.scripts("client", controllers.routes.Assets.versioned(_).toString, name => getClass.getResource(s"/public/$name") != null)}
           </body>
         </html>
       """
