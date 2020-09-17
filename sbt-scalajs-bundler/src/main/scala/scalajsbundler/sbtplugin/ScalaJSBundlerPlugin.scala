@@ -540,10 +540,10 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
     KeyRanks.Invisible
   )
 
-  private[scalajsbundler] val ensureModuleKindIsCommonJSModule =
+  private[scalajsbundler] val ensureModuleKindIsNotNoModule =
     SettingKey[Boolean](
-      "ensureModuleKindIsCommonJSModule",
-      "Checks that scalaJSModuleKind is set to CommonJSModule",
+      "ensureModuleKindIsNotNoModule",
+      "Checks that scalaJSModuleKind is not set to NoModule",
       KeyRanks.Invisible
     )
 
@@ -570,9 +570,9 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
 
     useYarn := false,
 
-    ensureModuleKindIsCommonJSModule := {
-      if (scalaJSLinkerConfig.value.moduleKind == ModuleKind.CommonJSModule) true
-      else sys.error(s"scalaJSModuleKind must be set to ModuleKind.CommonJSModule in projects where ScalaJSBundler plugin is enabled")
+    ensureModuleKindIsNotNoModule := {
+      if (scalaJSLinkerConfig.value.moduleKind != ModuleKind.NoModule) true
+      else sys.error(s"scalaJSModuleKind must not be set to ModuleKind.NoModule in projects where ScalaJSBundler plugin is enabled")
     },
 
     webpackBundlingMode := BundlingMode.Default,

@@ -96,7 +96,7 @@ private[sbtplugin] object Settings {
             case other => sys.error(s"You need a ComJSEnv to test (found ${other.name})")
           }.getOrElse {
             Def.taskDyn[ComJSEnv] {
-              assert(ensureModuleKindIsCommonJSModule.value)
+              assert(ensureModuleKindIsNotNoModule.value)
               val sjsOutput = fastOptJS.value.data
               // If jsdom is going to be used, then we should bundle the test module into a file that exports the tests to the global namespace
               if (requireJsDomEnv.value) Def.task {

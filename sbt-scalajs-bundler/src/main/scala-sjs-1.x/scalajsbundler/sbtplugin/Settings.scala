@@ -10,7 +10,7 @@ import sbt.Keys._
 import sbt._
 import scalajsbundler.{JSDOMNodeJSEnv, Webpack, JsDomTestEntries, NpmPackage}
 import scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.autoImport.{installJsdom, npmUpdate, requireJsDomEnv, webpackConfigFile, webpackNodeArgs, webpackResources, webpack}
-import scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.{ensureModuleKindIsCommonJSModule, scalaJSBundlerImportedModules}
+import scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.{ensureModuleKindIsNotNoModule, scalaJSBundlerImportedModules}
 import scalajsbundler.sbtplugin.internal.BuildInfo
 
 private[sbtplugin] object Settings {
@@ -131,7 +131,7 @@ private[sbtplugin] object Settings {
       jsEnvInput := Def.task {
         import org.scalajs.jsenv.Input._
 
-        assert(ensureModuleKindIsCommonJSModule.value)
+        assert(ensureModuleKindIsNotNoModule.value)
         val prev = jsEnvInput.value
         val sjsOutput = scalaJSLinkedFile.value.data
 
