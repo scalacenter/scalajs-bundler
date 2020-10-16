@@ -115,8 +115,8 @@ val `scalajs-bundler` =
     .aggregate(`sbt-scalajs-bundler`, `sbt-web-scalajs-bundler`)
 
 inThisBuild(List(
-  pgpPublicRing := file("./travis/local.pubring.asc"),
-  pgpSecretRing := file("./travis/local.secring.asc"),
+  pgpPublicRing := file("./local.pubring.asc"),
+  pgpSecretRing := file("./local.secring.asc"),
   pgpPassphrase := sys.env.get("PGP_PASS").map(_.toArray),
   credentials ++= (
     for {
@@ -149,6 +149,7 @@ inThisBuild(List(
 ))
 
 lazy val commonSettings = List(
+  publishTo := sonatypePublishTo.value,
   runScripted := runScriptedTask.value,
   scriptedLaunchOpts ++= Seq(
     "-Dplugin.version=" + version.value,
