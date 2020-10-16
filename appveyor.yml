@@ -6,15 +6,12 @@ environment:
       SCALAJS_VERSION: 1.0.0
 install:
   - ps: Install-Product node 12
-  - cmd: choco install sbt --version 1.2.8 -ia "INSTALLDIR=""C:\sbt"""
+  - cmd: choco install sbt --version 1.4.0 -ia "INSTALLDIR=""C:\sbt"""
   - cmd: SET PATH=C:\sbt\bin;%JAVA_HOME%\bin;%PATH%
   - cmd: SET SBT_OPTS=-XX:MaxPermSize=2g -Xmx4g
 build: off
 test_script:
-  # Normally this would be "^^%CI_SBT_VERSION%" but it looks like
-  # AppVeyor expands single '^' to '^^' to workaround the fact that in
-  # Windows batch files '^' serves as an escape charactor.
-  - cmd: sbt ";^%CI_SBT_VERSION%;test;runScripted"
+  - cmd: sbt ";^^%CI_SBT_VERSION%;test;runScripted"
 cache:
   - C:\sbt
   - C:\Users\appveyor\.ivy2\cache
