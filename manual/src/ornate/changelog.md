@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 0.19.0
+
+> 2020 October 16
+
+This release drops support for sbt 0.13.x, and adds support for sbt-web-scalajs 1.1.0+.
+
 ## Version 0.18.0
 
 > 2020 May 16
