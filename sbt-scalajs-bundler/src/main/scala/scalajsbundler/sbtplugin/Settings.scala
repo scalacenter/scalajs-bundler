@@ -3,6 +3,7 @@ package scalajsbundler.sbtplugin
 import java.nio.charset.StandardCharsets
 import java.nio.file.{Files, Path}
 import scala.collection.JavaConverters._
+import org.scalajs.jsenv.Input._
 import org.scalajs.linker.interface._
 import org.scalajs.sbtplugin._
 import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
@@ -61,28 +62,17 @@ private[sbtplugin] object Settings {
     )
 
   // Settings that must be applied for each stage in each configuration
-  private def scalaJSStageSettings(stage: Stage, key: TaskKey[Attributed[File]]): Seq[Setting[_]] = {
+  private def scalaJSStageSettings(stage: Stage, key: TaskKey[Attributed[Report]],
+      legacyKey: TaskKey[Attributed[File]]): Seq[Setting[_]] = {
     val entryPointOutputFileName =
       s"entrypoints-${stage.toString.toLowerCase}.txt"
 
     Def.settings(
-      scalaJSLinker in key := {
+      scalaJSLinker in legacyKey := {
         val config = (scalaJSLinkerConfig in key).value
         val box = (scalaJSLinkerBox in key).value
         val linkerImpl = (scalaJSLinkerImpl in key).value
-        val projectID = thisProject.value.id
-        val configName = configuration.value.name
-        val log = streams.value.log
         val entryPointOutputFile = crossTarget.value / entryPointOutputFileName
-
-        if (config.moduleKind != scalaJSLinkerConfig.value.moduleKind) {
-          val keyName = key.key.label
-          log.warn(
-              s"The module kind in `scalaJSLinkerConfig in ($projectID, " +
-              s"$configName, $keyName)` is different than the one `in " +
-              s"`($projectID, $configName)`. " +
-              "Some things will go wrong.")
-        }
 
         box.ensure {
           linkerImpl.asInstanceOf[BundlerLinkerImpl]
@@ -90,8 +80,8 @@ private[sbtplugin] object Settings {
         }
       },
 
-      scalaJSBundlerImportedModules in key := {
-        val _ = key.value
+      scalaJSBundlerImportedModules in legacyKey := {
+        val _ = legacyKey.value
         val entryPointOutputFile = crossTarget.value / entryPointOutputFileName
         val lines = Files.readAllLines(entryPointOutputFile.toPath, StandardCharsets.UTF_8)
         lines.asScala.toList
@@ -105,8 +95,45 @@ private[sbtplugin] object Settings {
       // Override Scala.js’ jsEnvInput to first run `npm update`
       jsEnvInput := jsEnvInput.dependsOn(npmUpdate).value,
 
-      scalaJSStageSettings(FastOptStage, fastOptJS),
-      scalaJSStageSettings(FullOptStage, fullOptJS)
+      /* Moreover, force it to use the output of the legacy key, because lots
+       * of things in scalajs-bundler assume that there is only one .js file
+       * that we can put in a specific directory to make things work.
+       */
+      jsEnvInput := {
+        val prev = jsEnvInput.value
+        val linkingResult = scalaJSLinkerResult.value
+        val legacyKeyOutput = scalaJSLinkedFile.value
+
+        // Compute the path to the `main` module, which is what sbt-scalajs puts in jsEnvInput
+        val report = linkingResult.data
+        val optMainModule = report.publicModules.find(_.moduleID == "main")
+        val optMainModulePath = optMainModule.map { mainModule =>
+          val linkerOutputDirectory = linkingResult.get(scalaJSLinkerOutputDirectory.key).getOrElse {
+            throw new MessageOnlyException(
+                "Linking report was not attributed with output directory. " +
+                "Please report this as a Scala.js bug.")
+          }
+          (linkerOutputDirectory / mainModule.jsFileName).toPath
+        }
+
+        // Replace the path to the `main` module by the path to the legacy key output
+        optMainModulePath match {
+          case Some(mainModulePath) =>
+            prev.map { inputItem =>
+              inputItem match {
+                case CommonJSModule(module) if module == mainModulePath =>
+                  CommonJSModule(legacyKeyOutput.data.toPath())
+                case _ =>
+                  inputItem
+              }
+            }
+          case None =>
+            prev
+        }
+      },
+
+      scalaJSStageSettings(FastOptStage, fastLinkJS, fastOptJS),
+      scalaJSStageSettings(FullOptStage, fullLinkJS, fullOptJS)
     )
 
   // Settings that must be applied in the Test configuration
@@ -129,8 +156,6 @@ private[sbtplugin] object Settings {
 
       // Use the product of bundling in jsEnvInput if requireJsDomEnv is true
       jsEnvInput := Def.task {
-        import org.scalajs.jsenv.Input._
-
         assert(ensureModuleKindIsCommonJSModule.value)
         val prev = jsEnvInput.value
         val sjsOutput = scalaJSLinkedFile.value.data
