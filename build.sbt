@@ -41,7 +41,7 @@ val `sbt-web-scalajs-bundler` =
         val () = (publishLocal in `scalajs-bundler-linker`).value
       },
       description := "Module bundler for Scala.js projects (integration with sbt-web-scalajs)",
-      addSbtPlugin("com.vmunier" % "sbt-web-scalajs" % "1.1.0")
+      addSbtPlugin("com.vmunier" % "sbt-web-scalajs" % "1.1.0-0.6")
     )
     .dependsOn(`sbt-scalajs-bundler`)
 
