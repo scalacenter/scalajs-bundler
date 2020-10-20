@@ -7,7 +7,7 @@ scalaVersion := "2.11.12"
 
 scalaJSUseMainModuleInitializer := true
 
-libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "1.0.0"
+libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "1.0.1"
 
 npmDependencies in Compile += "leaflet" -> "0.7.7"
 

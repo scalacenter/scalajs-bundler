@@ -4,7 +4,7 @@ val client =
     .settings(
       scalaVersion := "2.13.2",
       scalaJSUseMainModuleInitializer := true,
-      libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "1.0.0",
+      libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "1.0.1",
       npmDependencies in Compile ++= Seq(
         "snabbdom" -> "0.5.3",
         "font-awesome" -> "4.7.0",
