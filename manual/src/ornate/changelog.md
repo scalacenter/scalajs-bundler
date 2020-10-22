@@ -1,5 +1,15 @@
 # Changelog
 
+## Version 0.20.0
+
+> 2020 October 22
+
+This release upgrades to Scala.js 1.3.0.
+
+- Drop support for Scala.js 0.6.x
+- Drop support for Scala.js 1.0.x through 1.2.x
+- Add support for Scala.js 1.3.x
+
 ## Version 0.19.0
 
 > 2020 October 16
