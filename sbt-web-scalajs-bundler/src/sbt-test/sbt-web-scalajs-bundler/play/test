@@ -1,15 +1,14 @@
-> clean
 > server/assets
 $ exists client/target/scala-2.13/scalajs-bundler/main/client-fastopt-bundle.js
 $ absent client/target/scala-2.13/scalajs-bundler/main/client-opt-bundle.js
+$ delete client/target/scala-2.13/scalajs-bundler/main/client-fastopt-bundle.js
 
-> clean
 > set scalaJSStage in Global := FullOptStage
 > server/assets
 $ exists client/target/scala-2.13/scalajs-bundler/main/client-opt-bundle.js
 $ absent client/target/scala-2.13/scalajs-bundler/main/client-fastopt-bundle.js
+$ delete client/target/scala-2.13/scalajs-bundler/main/client-opt-bundle.js
 
-> clean
 > set scalaJSStage in Global := FastOptStage
 > server/test
 > client/test
