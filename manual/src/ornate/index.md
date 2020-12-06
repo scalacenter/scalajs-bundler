@@ -14,5 +14,14 @@ addSbtPlugin("ch.epfl.scala" % "sbt-scalajs-bundler" % "{{version}}")
 addSbtPlugin("ch.epfl.scala" % "sbt-scalajs-bundler-sjs06" % "{{version}}")
 ~~~
 
+If you're using [sbt-crossproject](https://github.com/portable-scala/sbt-crossproject) you need to add plugin via `jsConfigure`:
+
+~~~ scala expandVars=true
+lazy val cross = crossProject(JSPlatform, JVMPlatform).in(file("."))
+  .jvmSettings(BuildSettings.jvmSettings)
+  .jsSettings(BuildSettings.jsSettings)
+  .jsConfigure { project => project.enablePlugins(ScalaJSBundlerPlugin) }
+~~~
+
 See the [**getting started**](getting-started.md) page for more details about
 the setup process.
