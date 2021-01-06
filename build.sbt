@@ -13,7 +13,7 @@ val `sbt-scalajs-bundler` =
     .settings(commonSettings)
     .settings(
       description := "Module bundler for Scala.js projects",
-      libraryDependencies += "com.google.jimfs" % "jimfs" % "1.1",
+      libraryDependencies += "com.google.jimfs" % "jimfs" % "1.2",
       libraryDependencies += "com.typesafe.play" %% "play-json" % "2.6.7",
       addSbtPlugin("org.scala-js" % "sbt-scalajs" % scalaJSVersion),
       buildInfoKeys := Seq[BuildInfoKey](version),
