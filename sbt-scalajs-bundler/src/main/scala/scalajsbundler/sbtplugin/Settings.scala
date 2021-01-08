@@ -187,19 +187,23 @@ private[sbtplugin] object Settings {
                     case Some(configFile) =>
                       val customConfigFileCopy = Webpack.copyCustomWebpackConfigFiles(targetDir, webpackResources.value.get)(configFile)
                       NpmPackage(webpackVersion).major match {
-                        case Some(4) =>
+                        case Some(5) =>
                           // TODO: It assumes tests are run on development mode. It should instead use build settings
                           Webpack.run(nodeArgs: _*)("--mode", "development", "--config", customConfigFileCopy.getAbsolutePath, loader.absolutePath, "--output", bundle.absolutePath)(targetDir, logger)
-                        case _ =>
-                          Webpack.run(nodeArgs: _*)("--config", customConfigFileCopy.getAbsolutePath, loader.absolutePath, bundle.absolutePath)(targetDir, logger)
+                        case Some(x) =>
+                          sys.error(s"Unsupported webpack major version $x")
+                        case None =>
+                          sys.error("No webpack version defined")
                       }
                     case None =>
                       NpmPackage(webpackVersion).major match {
-                        case Some(4) =>
+                        case Some(5) =>
                           // TODO: It assumes tests are run on development mode. It should instead use build settings
                           Webpack.run(nodeArgs: _*)("--mode", "development", loader.absolutePath, "--output", bundle.absolutePath)(targetDir, logger)
-                        case _ =>
-                          Webpack.run(nodeArgs: _*)(loader.absolutePath, bundle.absolutePath)(targetDir, logger)
+                        case Some(x) =>
+                          sys.error(s"Unsupported webpack major version $x")
+                        case None =>
+                          sys.error("No webpack version defined")
                       }
                   }
 

@@ -33,6 +33,7 @@ object WebpackTasks {
       val nodeArgs = (webpackNodeArgs in stage).value
       val webpackMode =
         Webpack.WebpackMode.fromBooleanProductionMode((scalaJSLinkerConfig in stage).value.semantics.productionMode)
+      val devServerPort = webpackDevServerPort.value
 
       val cachedActionFunction =
         FileFunction.cached(
@@ -49,6 +50,7 @@ object WebpackTasks {
             extraArgs,
             nodeArgs,
             webpackMode,
+            devServerPort,
             log
           ).cached
         }

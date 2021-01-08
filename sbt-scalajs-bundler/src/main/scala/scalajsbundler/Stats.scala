@@ -1,8 +1,6 @@
 
 package scalajsbundler
 
-import java.time.LocalDateTime
-
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
 import sbt.Logger
@@ -15,7 +13,16 @@ import java.nio.file.Path
  */
 object Stats {
 
-  final case class Asset(name: String, size: Long, emitted: Option[Boolean], chunkNames: List[String])
+  final case class Asset(name: String, size: Long, emitted: Option[Boolean], chunkNames: List[String]) {
+    def formattedSize: String = {
+      val oneKiB = 1024L
+      val oneMiB = oneKiB * oneKiB
+
+      if (size < oneKiB) s"$size bytes"
+      else if (size < oneMiB) f"${size / oneKiB.toFloat}%1.2f KiB"
+      else f"${size / oneMiB.toFloat}%1.2f MiB"
+    }
+  }
 
   object formatting {
 
@@ -51,12 +58,12 @@ object Stats {
     def print(log: Logger): Unit = {
       import formatting._
       // Print base info
-      List(s"Version: $version", s"Hash: $hash", s"Time: ${time}ms", s"Path: ${outputPath.getOrElse("<default>")}", s"Built at ${LocalDateTime.now}").foreach(x => log.info(x))
+      List(s"Version: $version", s"Hash: $hash", s"Time: ${time}ms", s"Path: ${outputPath.getOrElse("<default>")}").foreach(x => log.info(x))
       log.info("")
       // Print the assets
       assets.map { a =>
         val emitted = a.emitted.fold("<unknown>")(a => if (a) "[emitted]" else "")
-        AssetLine(Part(a.name), Part(a.size.toString), Part(emitted), Part(a.chunkNames.mkString("[", ",", "]")))
+        AssetLine(Part(a.name), Part(a.formattedSize), Part(emitted), Part(a.chunkNames.mkString("[", ",", "]")))
       }.foldLeft(List(AssetLine.Zero)) {
         case (lines, curr) =>
           val adj = lines.map(_.adjustPadding(curr))

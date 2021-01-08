@@ -553,11 +553,11 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
 
     scalaJSLinkerConfig ~= { _.withModuleKind(ModuleKind.CommonJSModule) },
 
-    version in webpack := "4.32.2",
+    version in webpack := "5.12.0",
 
-    webpackCliVersion := "3.3.2",
+    webpackCliVersion := "4.3.1",
 
-    version in startWebpackDevServer := "3.4.1",
+    version in startWebpackDevServer := "3.11.1",
 
     version in installJsdom := "9.9.0",
 
@@ -764,7 +764,6 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
 
       // webpack-dev-server wiring
       startWebpackDevServer in stageTask := Def.task {
-        val port = (webpackDevServerPort in stageTask).value
         val extraArgs = (webpackDevServerExtraArgs in stageTask).value
 
         // This duplicates file layout logic from `Webpack`
@@ -787,7 +786,6 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
         server.start(
           workDir,
           config,
-          port,
           extraArgs,
           logger,
           globalLogger
