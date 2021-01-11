@@ -34,21 +34,49 @@ object Yarn extends ExternalCommand("yarn")
 
 object ExternalCommand {
   private val yarnOptions = List("--non-interactive", "--mutex", "network")
-  private def syncYarnLockfile(baseDir: File, installDir: File, logger: Logger)(
-      yarnCommand: => Unit): Unit = {
-    val sourceLockFile = baseDir / "yarn.lock"
-    val targetLockFile = installDir / "yarn.lock"
+
+  private def syncLockfile(
+    lockFileName: String,
+    baseDir: File,
+    installDir: File,
+    logger: Logger
+  )(
+      command: => Unit
+  ): Unit = {
+    val sourceLockFile = baseDir / lockFileName
+    val targetLockFile = installDir / lockFileName
+
     if (sourceLockFile.exists()) {
       logger.info("Using lockfile " + sourceLockFile)
       IO.copyFile(sourceLockFile, targetLockFile)
     }
 
-    yarnCommand
+    command
 
     if (targetLockFile.exists()) {
       logger.debug("Wrote lockfile to " + sourceLockFile)
       IO.copyFile(targetLockFile, sourceLockFile)
     }
+  }
+
+  private def syncYarnLockfile(
+    baseDir: File,
+    installDir: File,
+    logger: Logger
+  )(
+    command: => Unit
+  ): Unit = {
+    syncLockfile("yarn.lock", baseDir, installDir, logger)(command)
+  }
+
+  private def syncNpmLockfile(
+    baseDir: File,
+    installDir: File,
+    logger: Logger
+  )(
+    command: => Unit
+  ): Unit = {
+    syncLockfile("package-lock.json", baseDir, installDir, logger)(command)
   }
 
   /**
@@ -74,8 +102,9 @@ object ExternalCommand {
           logger)
       }
     } else {
-      Npm.run("install" +: (npmPackages ++ npmExtraArgs): _*)(installDir,
-                                                              logger)
+      syncNpmLockfile(baseDir, installDir, logger) {
+        Npm.run("install" +: (npmPackages ++ npmExtraArgs): _*)(installDir, logger)
+      }
     }
 
   def install(baseDir: File,
@@ -90,6 +119,8 @@ object ExternalCommand {
                                                                   logger)
       }
     } else {
-      Npm.run("install" +: npmExtraArgs: _*)(installDir, logger)
+      syncNpmLockfile(baseDir, installDir, logger) {
+        Npm.run("install" +: npmExtraArgs: _*)(installDir, logger)
+      }
     }
 }
