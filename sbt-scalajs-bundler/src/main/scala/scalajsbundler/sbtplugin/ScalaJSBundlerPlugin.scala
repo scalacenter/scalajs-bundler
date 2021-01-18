@@ -553,11 +553,11 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
 
     scalaJSLinkerConfig ~= { _.withModuleKind(ModuleKind.CommonJSModule) },
 
-    version in webpack := "5.12.0",
+    version in webpack := "5.24.3",
 
-    webpackCliVersion := "4.3.1",
+    webpackCliVersion := "4.5.0",
 
-    version in startWebpackDevServer := "3.11.1",
+    version in startWebpackDevServer := "3.11.2",
 
     version in installJsdom := "9.9.0",
 

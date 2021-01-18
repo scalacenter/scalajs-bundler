@@ -1,5 +1,5 @@
 const ScalaJS = require("./scalajs.webpack.config");
-const Merge = require("webpack-merge");
+const { merge } = require("webpack-merge");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
@@ -7,8 +7,7 @@ const path = require("path");
 const rootDir = path.resolve(__dirname, "../../../..");
 const resourcesDir = path.resolve(rootDir, "src/main/resources");
 
-const WebApp = Merge(ScalaJS, {
-  mode: "production",
+const WebApp = merge(ScalaJS, {
   entry: {
     app: [path.resolve(resourcesDir, "./entry.js")]
   },
@@ -16,7 +15,7 @@ const WebApp = Merge(ScalaJS, {
     rules: [
       {
         test: /\.css$/,
-        use: ["style-loader", MiniCssExtractPlugin.loader, "css-loader"]
+        use: [MiniCssExtractPlugin.loader, "css-loader"]
       }
     ]
   },

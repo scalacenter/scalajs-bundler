@@ -1,9 +1,8 @@
 const ScalaJS = require("./scalajs.webpack.config");
-const Merge = require("webpack-merge");
+const { merge } = require("webpack-merge");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
-const WebApp = Merge(ScalaJS, {
-  mode: "development",
+const WebApp = merge(ScalaJS, {
   output: {
     filename: "library.js"
   },

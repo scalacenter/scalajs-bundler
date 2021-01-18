@@ -5,6 +5,6 @@ addSbtPlugin("org.scala-js" % "sbt-scalajs" % scalaJSVersion)
 
 addSbtPlugin("ch.epfl.scala" % "sbt-scalajs-bundler" % scalaJSBundlerVersion)
 
-libraryDependencies += "net.sourceforge.htmlunit" % "htmlunit" % "2.23"
+libraryDependencies += "net.sourceforge.htmlunit" % "htmlunit" % "2.46.0"
 
 ivyLoggingLevel in ThisBuild := UpdateLogging.Quiet

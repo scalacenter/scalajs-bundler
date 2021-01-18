@@ -11,17 +11,13 @@ libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "1.0.0"
 
 npmDependencies in Compile += "leaflet" -> "0.7.7"
 
-version in webpack                     := "4.1.1"
-
-version in startWebpackDevServer       := "3.1.1"
-
 npmDevDependencies in Compile ++= Seq(
   "webpack-merge" -> "4.1.2",
-  "file-loader" -> "1.1.11",
-  "image-webpack-loader" -> "4.1.0",
-  "css-loader" -> "0.28.10",
-  "style-loader" -> "0.20.2",
-  "url-loader" -> "1.0.1"
+  "file-loader" -> "6.2.0",
+  "image-webpack-loader" -> "7.0.1",
+  "css-loader" -> "5.0.1",
+  "style-loader" -> "2.0.0",
+  "url-loader" -> "4.1.0"
 )
 
 webpackConfigFile in fastOptJS := Some(baseDirectory.value / "dev.webpack.config.js")

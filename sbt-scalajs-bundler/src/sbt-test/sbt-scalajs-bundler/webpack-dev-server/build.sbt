@@ -12,11 +12,9 @@ scalaJSUseMainModuleInitializer := true
 // Use a custom config file
 webpackConfigFile := Some(baseDirectory.value / "webpack.config.js")
 
-(npmDevDependencies in Compile) += ("html-webpack-plugin" -> "4.3.0")
+(npmDevDependencies in Compile) += ("html-webpack-plugin" -> "5.2.0")
 
 webpackDevServerPort := 7357
-
-version in webpack                     := "4.32.2"
 
 // HtmlUnit does not support ECMAScript 2015
 scalaJSLinkerConfig ~= { _.withESFeatures(_.withUseECMAScript2015(false)) }

@@ -1,12 +1,12 @@
 # the server should properly start
 > fastOptJS::webpack
-# 3 assets and 2 for loader and entry
-> html index.html 5
+# 1 assets and 3 for library, loader and app
+> html index.html 4
 > clean
 
 # Now let's try optimized
 > fullOptJS::webpack
-> htmlProd index.html demo 7
+> htmlProd index.html demo 4
 
 # Error case 1
 > set webpackConfigFile in fastOptJS := Some(new File("badconfig1.js"))
