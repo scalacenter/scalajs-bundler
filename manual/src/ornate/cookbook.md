@@ -287,7 +287,7 @@ webpackDevServerExtraArgs := Seq("--inline")
 `webpack` is then called with the following arguments:
 
 ~~~
---bail --config <configfile>
+--config <configfile>
 ~~~
 
 You can add extra params to the `webpack` call, for example, to increase debugging

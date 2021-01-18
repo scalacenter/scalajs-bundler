@@ -243,8 +243,16 @@ object Webpack {
           if (p.warnings.nonEmpty || p.errors.nonEmpty) {
             logger.info("")
             // Filtering is a workaround for #111
-            p.warnings.filterNot(_.contains("https://raw.githubusercontent.com")).foreach(x => logger.warn(x))
-            p.errors.foreach(x => logger.error(x))
+            p.warnings.filterNot(_.message.contains("https://raw.githubusercontent.com")).foreach { warning =>
+              logger.warn(s"WARNING in ${warning.moduleName}")
+              logger.warn(warning.message)
+              logger.warn("\n")
+            }
+            p.errors.foreach { error =>
+              logger.error(s"ERROR in ${error.moduleName} ${error.loc}")
+              logger.error(error.message)
+              logger.error("\n")
+            }
           }
           Some(p)
       }
@@ -273,7 +281,7 @@ object Webpack {
     */
   def run(nodeArgs: String*)(args: String*)(workingDir: File, log: Logger): Option[WebpackStats] = {
     val webpackBin = workingDir / "node_modules" / "webpack" / "bin" / "webpack"
-    val params = nodeArgs ++ Seq(webpackBin.absolutePath, "--bail", "--profile", "--json") ++ args
+    val params = nodeArgs ++ Seq(webpackBin.absolutePath, "--profile", "--json") ++ args
     val cmd = "node" +: params
     Commands.run(cmd, workingDir, log, jsonOutput(cmd, log)).fold(sys.error, _.flatten)
   }
