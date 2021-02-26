@@ -24,27 +24,11 @@ We use [sbt-scripted](http://eed3si9n.com/testing-sbt-plugins) to test the plugi
 the way tests are launched to filter tests according to their compatibility with major versions of sbt and Scala.js:
 
 - tests can have a `project/build.properties` file defining a specific sbt version they are compatible with,
-- test names suffixed with `_sjs-0.6` are only compatible with Scala.js 0.6.
-
-The version of Scala.js to use is provided by the `SCALAJS_VERSION` environment variable. You can set the sbt version
-to use with the standard `^^` operator.
 
 To run all the tests:
 
 ~~~ sh
-$ sbt runScripted
-~~~
-
-Or, with a specific sbt version:
-
-~~~ bash
-$ sbt ^^1.2.8 runScripted
-~~~
-
-Or, with a specific Scala.js version (Scala.js 1.x also requires sbt 1.x):
-
-~~~ bash
-$ SCALAJS_VERSION=1.0.0 sbt ^^1.2.8 runScripted
+$ sbt scripted
 ~~~
 
 To run a single test:
