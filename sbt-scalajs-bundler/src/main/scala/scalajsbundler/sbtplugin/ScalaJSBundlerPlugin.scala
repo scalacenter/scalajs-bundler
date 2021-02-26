@@ -782,13 +782,15 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
         // Server instance is project-level
         val server = webpackDevServer.value
         val logger = (streams in stageTask).value.log
+        val globalLogger = state.value.globalLogging.full
 
         server.start(
           workDir,
           config,
           port,
           extraArgs,
-          logger
+          logger,
+          globalLogger
         )
       }.dependsOn(
         // We need to execute the full webpack task once, since it generates
