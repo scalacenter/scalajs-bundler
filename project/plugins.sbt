@@ -1,5 +1,5 @@
-addSbtPlugin("org.xerial.sbt"    % "sbt-sonatype"  % "2.6")
-addSbtPlugin("com.jsuereth"      % "sbt-pgp"       % "2.0.2")
+addSbtPlugin("org.xerial.sbt"    % "sbt-sonatype"  % "2.3")
+addSbtPlugin("com.jsuereth"      % "sbt-pgp"       % "2.1.1")
 addSbtPlugin("com.dwijnand"      % "sbt-dynver"    % "2.1.0")
 addSbtPlugin("com.typesafe.sbt"  % "sbt-site"      % "1.4.1")
 addSbtPlugin("com.novocode"      % "sbt-ornate"    % "0.6")
