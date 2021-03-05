@@ -19,3 +19,5 @@ jobs:
         run: sbt test
       - name: Scripted tests
         run: sbt scripted
+      - name: Build the manual
+        run: sbt manual/makeSite
