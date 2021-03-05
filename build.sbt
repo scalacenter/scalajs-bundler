@@ -66,11 +66,10 @@ val ornateTarget = Def.setting(target.value / "ornate")
 
 val manual =
   project.in(file("manual"))
-    .enablePlugins(OrnatePlugin, GhpagesPlugin)
+    .enablePlugins(OrnatePlugin)
     .settings(noPublishSettings: _*)
     .settings(
       scalaVersion := "2.12.11",
-      git.remoteRepo := "git@github.com:scalacenter/scalajs-bundler.git",
       ornateSourceDir := Some(sourceDirectory.value / "ornate"),
       ornateTargetDir := Some(ornateTarget.value),
       ornateSettings := Map("version" -> version.value),
