@@ -19,7 +19,9 @@ before_install:
     tar xv -C travis -f travis/secrets.tar;
   fi
 script:
-- sbt -no-colors ";test;scripted"
+- if [ $TRAVIS_PULL_REQUEST = 'false' ] && [ -n "$TRAVIS_TAG" ]; then
+    sbt -no-colors ";compile;doc";
+  fi
 after_success:
 - if [ $TRAVIS_PULL_REQUEST = 'false' ] && [ -n "$TRAVIS_TAG" ]; then
     sbt "; scalajs-bundler-linker/publishSigned; sbt-scalajs-bundler/publishSigned; sbt-web-scalajs-bundler/publishSigned; sonatypeReleaseAll; manual/makeSite; manual/ghpagesPushSite";
