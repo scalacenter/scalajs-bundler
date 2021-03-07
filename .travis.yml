@@ -24,7 +24,7 @@ script:
   fi
 after_success:
 - if [ $TRAVIS_PULL_REQUEST = 'false' ] && [ -n "$TRAVIS_TAG" ]; then
-    sbt "; scalajs-bundler-linker/publishSigned; sbt-scalajs-bundler/publishSigned; sbt-web-scalajs-bundler/publishSigned; sonatypeReleaseAll; manual/makeSite; manual/ghpagesPushSite";
+    sbt "; scalajs-bundler-linker/publishSigned; sbt-scalajs-bundler/publishSigned; sbt-web-scalajs-bundler/publishSigned; sonatypeReleaseAll";
   fi
 cache:
   yarn: true
