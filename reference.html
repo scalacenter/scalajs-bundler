@@ -206,12 +206,6 @@ Enable this plugin on JVM projects that need to use .js artifacts produced by Sc
 where you used to enable <code class="hljs">WebScalaJS</code>).</p>
 <p>The plugin tunes the <code class="hljs">scalaJSPipeline</code> to use the bundles produced by webpack rather than the direct
 output of the Scala.js compilation.</p>
-<blockquote class="note">
-<p>The <a href="https://github.com/vmunier/scalajs-scripts">scalajs-scripts</a> will <strong>not</strong> work anymore because they
-try to include the output of Scala.js instead of the output of the bundling process. You can see
-<a href="https://github.com/scalacenter/scalajs-bundler/blob/master/sbt-web-scalajs-bundler/src/sbt-test/sbt-web-scalajs-bundler/play/server/src/main/scala/example/ExampleController.scala#L25-L30">here</a>
-how to include the correct .js file.</p>
-</blockquote>
 <h3 id="npm-assets" class="a_section" data-magellan-target="npm-assets">Importing Assets from NPM Packages<a class="a_hlink" href="#npm-assets"></a></h3>
 <p>Some NPM packages also contain static assets (e.g. fonts, stylesheets, images, etc.). You can make them available
 as sbt-web assets as follows:</p>

@@ -85,10 +85,10 @@
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="_root_">root</a></dd></dl></div>
-    </li><li name="scalajsbundler.BundlingMode" visbl="pub" class="indented2 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="BundlingMode"></a><a id="BundlingMode:BundlingMode"></a>
+    </li><li name="scalajsbundler.JSDOMNodeJSEnv" visbl="pub" class="indented2 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="JSDOMNodeJSEnv"></a><a id="JSDOMNodeJSEnv:JSDOMNodeJSEnv"></a>
       <span class="permalink">
-      <a href="../scalajsbundler/BundlingMode$.html" title="Permalink">
+      <a href="../scalajsbundler/JSDOMNodeJSEnv$.html" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -97,63 +97,49 @@
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a title="" href="BundlingMode$.html"><span class="name">BundlingMode</span></a>
+        <a title="" href="JSDOMNodeJSEnv$.html"><span class="name">JSDOMNodeJSEnv</span></a>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="index.html" class="extype" name="scalajsbundler">scalajsbundler</a></dd></dl></div>
     </li><li class="current-entities indented2">
-                        <span class="separator"></span>
-                        <a class="object" href="BundlingMode$$Application$.html" title="Bundle the entire application with webpack."></a>
-                        <a href="BundlingMode$$Application$.html" title="Bundle the entire application with webpack.">Application</a>
-                      </li><li class="current-entities indented2">
-                        <span class="separator"></span>
-                        <a class="trait" href="BundlingMode$$Library.html" title="Shared base class for LibraryOnly and LibraryAndApplication."></a>
-                        <a href="BundlingMode$$Library.html" title="Shared base class for LibraryOnly and LibraryAndApplication.">Library</a>
-                      </li><li class="current-entities indented2">
-                        <span class="separator"></span>
-                        <a class="class" href="" title="Builds on LibraryOnly by generating the loader and concatenating it with the Scala.js output file."></a>
-                        <a href="" title="Builds on LibraryOnly by generating the loader and concatenating it with the Scala.js output file.">LibraryAndApplication</a>
-                      </li><li class="current-entities indented2">
-                        <span class="separator"></span>
-                        <a class="class" href="BundlingMode$$LibraryOnly.html" title="Bundle only the libraries used by the application."></a>
-                        <a href="BundlingMode$$LibraryOnly.html" title="Bundle only the libraries used by the application.">LibraryOnly</a>
+                        <a class="object" href="" title=""></a>
+                        <a class="class" href="JSDOMNodeJSEnv$$Config.html" title=""></a>
+                        <a href="JSDOMNodeJSEnv$$Config.html" title="">Config</a>
                       </li>
               </ul>
             </div>
           </div>
           <div id="content">
-            <body class="class type">
+            <body class="object value">
       <div id="definition">
-        <div class="big-circle class">c</div>
-        <p id="owner"><a href="index.html" class="extype" name="scalajsbundler">scalajsbundler</a>.<a href="BundlingMode$.html" class="extype" name="scalajsbundler.BundlingMode">BundlingMode</a></p>
-        <h1>LibraryAndApplication<span class="permalink">
-      <a href="../scalajsbundler/BundlingMode$$LibraryAndApplication.html" title="Permalink">
+        <a href="JSDOMNodeJSEnv$$Config.html" title="See companion class"><div class="big-circle object-companion-class">o</div></a>
+        <p id="owner"><a href="index.html" class="extype" name="scalajsbundler">scalajsbundler</a>.<a href="JSDOMNodeJSEnv$.html" class="extype" name="scalajsbundler.JSDOMNodeJSEnv">JSDOMNodeJSEnv</a></p>
+        <h1><a href="JSDOMNodeJSEnv$$Config.html" title="See companion class">Config</a><span class="permalink">
+      <a href="../scalajsbundler/JSDOMNodeJSEnv$$Config$.html" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span></h1>
-        <h3><span class="morelinks"></span></h3>
+        <h3><span class="morelinks"><div>
+            Companion <a href="JSDOMNodeJSEnv$$Config.html" title="See companion class">class Config</a>
+          </div></span></h3>
       </div>
 
       <h4 id="signature" class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">case class</span>
+        <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <span class="name">LibraryAndApplication</span><span class="params">(<span name="exportedName">exportedName: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol"><span class="name"><a href="BundlingMode$.html#defaultLibraryExportedName:String">defaultLibraryExportedName</a></span></span></span>)</span><span class="result"> extends <a href="BundlingMode$$Library.html" class="extype" name="scalajsbundler.BundlingMode.Library">Library</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">Config</span>
       </span>
       </h4>
 
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Builds on <a href="BundlingMode$$LibraryOnly.html" class="extype" name="scalajsbundler.BundlingMode.LibraryOnly">LibraryOnly</a> by generating the <code>loader</code> and concatenating it with the Scala.js output file. This
-output is designed to be a drop-in replacement for fully processing the file via webpack (<a href="BundlingMode$$Application$.html" class="extype" name="scalajsbundler.BundlingMode.Application">Application</a> mode). When
-<code>webpackEmitSourceMaps := true</code>, this mode will attempt to merge all the files using the node.js
-'concat-with-sourcemaps' module.</p><p>Refer to <a href="BundlingMode$$Library.html" class="extype" name="scalajsbundler.BundlingMode.Library">Library</a> for additional details.
-</p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/scalacenter/scalajs-bundler/blob/v4147eac8/sbt-scalajs-bundler/src/main/scala/scalajsbundler/BundlingMode.scala" target="_blank">BundlingMode.scala</a></dd></dl><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/scalacenter/scalajs-bundler/blob/v4147eac8/sbt-scalajs-bundler/src/main/scala/scalajsbundler/JSDOMNodeJSEnv.scala" target="_blank">JSDOMNodeJSEnv.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">
             Linear Supertypes
           </span>
-          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <a href="BundlingMode$$Library.html" class="extype" name="scalajsbundler.BundlingMode.Library">Library</a>, <a href="BundlingMode.html" class="extype" name="scalajsbundler.BundlingMode">BundlingMode</a>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -179,7 +165,7 @@ output is designed to be a drop-in replacement for fully processing the file via
                   <span class="filtertype">Inherited<br />
                   </span>
                   <ol id="linearization">
-                    <li class="in" name="scalajsbundler.BundlingMode.LibraryAndApplication"><span>LibraryAndApplication</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.Product"><span>Product</span></li><li class="in" name="scala.Equals"><span>Equals</span></li><li class="in" name="scalajsbundler.BundlingMode.Library"><span>Library</span></li><li class="in" name="scalajsbundler.BundlingMode"><span>BundlingMode</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                    <li class="in" name="scalajsbundler.JSDOMNodeJSEnv.Config"><span>Config</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                   </ol>
                 </div><div class="ancestors">
               <span class="filtertype"></span>
@@ -197,26 +183,7 @@ output is designed to be a drop-in replacement for fully processing the file via
 
       <div id="template">
         <div id="allMembers">
-        <div id="constructors" class="members">
-              <h3>Instance Constructors</h3>
-              <ol><li name="scalajsbundler.BundlingMode.LibraryAndApplication#&lt;init&gt;" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(exportedName:String):scalajsbundler.BundlingMode.LibraryAndApplication"></a><a id="&lt;init&gt;:LibraryAndApplication"></a>
-      <span class="permalink">
-      <a href="../scalajsbundler/BundlingMode$$LibraryAndApplication.html#&lt;init&gt;(exportedName:String):scalajsbundler.BundlingMode.LibraryAndApplication" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">new</span>
-      </span>
-      <span class="symbol">
-        <span class="name">LibraryAndApplication</span><span class="params">(<span name="exportedName">exportedName: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol"><span class="name"><a href="BundlingMode$.html#defaultLibraryExportedName:String">defaultLibraryExportedName</a></span></span></span>)</span>
-      </span>
-      
-      
-    </li></ol>
-            </div>
+        
 
         
 
@@ -228,7 +195,7 @@ output is designed to be a drop-in replacement for fully processing the file via
                 <li name="scala.AnyRef#!=" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="!=(x$1:Any):Boolean"></a><a id="!=(Any):Boolean"></a>
       <span class="permalink">
-      <a href="../scalajsbundler/BundlingMode$$LibraryAndApplication.html#!=(x$1:Any):Boolean" title="Permalink">
+      <a href="../scalajsbundler/JSDOMNodeJSEnv$$Config$.html#!=(x$1:Any):Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -244,7 +211,7 @@ output is designed to be a drop-in replacement for fully processing the file via
     </li><li name="scala.AnyRef###" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="##():Int"></a>
       <span class="permalink">
-      <a href="../scalajsbundler/BundlingMode$$LibraryAndApplication.html###():Int" title="Permalink">
+      <a href="../scalajsbundler/JSDOMNodeJSEnv$$Config$.html###():Int" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -260,7 +227,7 @@ output is designed to be a drop-in replacement for fully processing the file via
     </li><li name="scala.AnyRef#==" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="==(x$1:Any):Boolean"></a><a id="==(Any):Boolean"></a>
       <span class="permalink">
-      <a href="../scalajsbundler/BundlingMode$$LibraryAndApplication.html#==(x$1:Any):Boolean" title="Permalink">
+      <a href="../scalajsbundler/JSDOMNodeJSEnv$$Config$.html#==(x$1:Any):Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -273,10 +240,27 @@ output is designed to be a drop-in replacement for fully processing the file via
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="scalajsbundler.JSDOMNodeJSEnv.Config#apply" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="apply(jsDomDirectory:java.io.File):scalajsbundler.JSDOMNodeJSEnv.Config"></a><a id="apply(File):Config"></a>
+      <span class="permalink">
+      <a href="../scalajsbundler/JSDOMNodeJSEnv$$Config$.html#apply(jsDomDirectory:java.io.File):scalajsbundler.JSDOMNodeJSEnv.Config" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">apply</span><span class="params">(<span name="jsDomDirectory">jsDomDirectory: <span class="extype" name="java.io.File">File</span></span>)</span><span class="result">: <a href="JSDOMNodeJSEnv$$Config.html" class="extype" name="scalajsbundler.JSDOMNodeJSEnv.Config">Config</a></span>
+      </span>
+      
+      <p class="shortcomment cmt">Returns a default configuration for a <a href="JSDOMNodeJSEnv.html" class="extype" name="scalajsbundler.JSDOMNodeJSEnv">JSDOMNodeJSEnv</a>.</p><div class="fullcomment"><div class="comment cmt"><p>Returns a default configuration for a <a href="JSDOMNodeJSEnv.html" class="extype" name="scalajsbundler.JSDOMNodeJSEnv">JSDOMNodeJSEnv</a>.</p><p> The defaults are:</p><ul><li><code>executable</code>: <code>&quot;node&quot;</code></li><li><code>args</code>: <code>Nil</code></li><li><code>env</code>: <code>Map.empty</code>
+</li></ul></div></div>
     </li><li name="scala.Any#asInstanceOf" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <span class="permalink">
-      <a href="../scalajsbundler/BundlingMode$$LibraryAndApplication.html#asInstanceOf[T0]:T0" title="Permalink">
+      <a href="../scalajsbundler/JSDOMNodeJSEnv$$Config$.html#asInstanceOf[T0]:T0" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -292,7 +276,7 @@ output is designed to be a drop-in replacement for fully processing the file via
     </li><li name="scala.AnyRef#clone" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a><a id="clone():AnyRef"></a>
       <span class="permalink">
-      <a href="../scalajsbundler/BundlingMode$$LibraryAndApplication.html#clone():Object" title="Permalink">
+      <a href="../scalajsbundler/JSDOMNodeJSEnv$$Config$.html#clone():Object" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -318,7 +302,7 @@ output is designed to be a drop-in replacement for fully processing the file via
     </li><li name="scala.AnyRef#eq" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a><a id="eq(AnyRef):Boolean"></a>
       <span class="permalink">
-      <a href="../scalajsbundler/BundlingMode$$LibraryAndApplication.html#eq(x$1:AnyRef):Boolean" title="Permalink">
+      <a href="../scalajsbundler/JSDOMNodeJSEnv$$Config$.html#eq(x$1:AnyRef):Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -331,28 +315,26 @@ output is designed to be a drop-in replacement for fully processing the file via
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="scalajsbundler.BundlingMode.LibraryAndApplication#exportedName" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="exportedName:String"></a>
+    </li><li name="scala.AnyRef#equals" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="equals(x$1:Any):Boolean"></a><a id="equals(Any):Boolean"></a>
       <span class="permalink">
-      <a href="../scalajsbundler/BundlingMode$$LibraryAndApplication.html#exportedName:String" title="Permalink">
+      <a href="../scalajsbundler/JSDOMNodeJSEnv$$Config$.html#equals(x$1:Any):Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">val</span>
+        <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">exportedName</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+        <span class="name">equals</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       
-      <p class="shortcomment cmt">Name of the global variable containing the dependencies
-</p><div class="fullcomment"><div class="comment cmt"><p>Name of the global variable containing the dependencies
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="scalajsbundler.BundlingMode.LibraryAndApplication">LibraryAndApplication</a> → <a href="BundlingMode$$Library.html" class="extype" name="scalajsbundler.BundlingMode.Library">Library</a></dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scala.AnyRef#getClass" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getClass():Class[_]"></a>
       <span class="permalink">
-      <a href="../scalajsbundler/BundlingMode$$LibraryAndApplication.html#getClass():Class[_]" title="Permalink">
+      <a href="../scalajsbundler/JSDOMNodeJSEnv$$Config$.html#getClass():Class[_]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -370,10 +352,31 @@ output is designed to be a drop-in replacement for fully processing the file via
                 <span class="name">@HotSpotIntrinsicCandidate</span><span class="args">()</span>
               
         </dd></dl></div>
+    </li><li name="scala.AnyRef#hashCode" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="hashCode():Int"></a>
+      <span class="permalink">
+      <a href="../scalajsbundler/JSDOMNodeJSEnv$$Config$.html#hashCode():Int" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">hashCode</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd><dt>Annotations</dt><dd>
+                <span class="name">@native</span><span class="args">()</span>
+              
+                <span class="name">@HotSpotIntrinsicCandidate</span><span class="args">()</span>
+              
+        </dd></dl></div>
     </li><li name="scala.Any#isInstanceOf" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isInstanceOf[T0]:Boolean"></a>
       <span class="permalink">
-      <a href="../scalajsbundler/BundlingMode$$LibraryAndApplication.html#isInstanceOf[T0]:Boolean" title="Permalink">
+      <a href="../scalajsbundler/JSDOMNodeJSEnv$$Config$.html#isInstanceOf[T0]:Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -389,7 +392,7 @@ output is designed to be a drop-in replacement for fully processing the file via
     </li><li name="scala.AnyRef#ne" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a><a id="ne(AnyRef):Boolean"></a>
       <span class="permalink">
-      <a href="../scalajsbundler/BundlingMode$$LibraryAndApplication.html#ne(x$1:AnyRef):Boolean" title="Permalink">
+      <a href="../scalajsbundler/JSDOMNodeJSEnv$$Config$.html#ne(x$1:AnyRef):Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -405,7 +408,7 @@ output is designed to be a drop-in replacement for fully processing the file via
     </li><li name="scala.AnyRef#notify" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="notify():Unit"></a>
       <span class="permalink">
-      <a href="../scalajsbundler/BundlingMode$$LibraryAndApplication.html#notify():Unit" title="Permalink">
+      <a href="../scalajsbundler/JSDOMNodeJSEnv$$Config$.html#notify():Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -426,7 +429,7 @@ output is designed to be a drop-in replacement for fully processing the file via
     </li><li name="scala.AnyRef#notifyAll" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="notifyAll():Unit"></a>
       <span class="permalink">
-      <a href="../scalajsbundler/BundlingMode$$LibraryAndApplication.html#notifyAll():Unit" title="Permalink">
+      <a href="../scalajsbundler/JSDOMNodeJSEnv$$Config$.html#notifyAll():Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -447,7 +450,7 @@ output is designed to be a drop-in replacement for fully processing the file via
     </li><li name="scala.AnyRef#synchronized" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a><a id="synchronized[T0](⇒T0):T0"></a>
       <span class="permalink">
-      <a href="../scalajsbundler/BundlingMode$$LibraryAndApplication.html#synchronized[T0](x$1:=&gt;T0):T0" title="Permalink">
+      <a href="../scalajsbundler/JSDOMNodeJSEnv$$Config$.html#synchronized[T0](x$1:=&gt;T0):T0" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -460,10 +463,26 @@ output is designed to be a drop-in replacement for fully processing the file via
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scala.AnyRef#toString" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="toString():String"></a>
+      <span class="permalink">
+      <a href="../scalajsbundler/JSDOMNodeJSEnv$$Config$.html#toString():String" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">toString</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait(x$1:Long,x$2:Int):Unit"></a><a id="wait(Long,Int):Unit"></a>
       <span class="permalink">
-      <a href="../scalajsbundler/BundlingMode$$LibraryAndApplication.html#wait(x$1:Long,x$2:Int):Unit" title="Permalink">
+      <a href="../scalajsbundler/JSDOMNodeJSEnv$$Config$.html#wait(x$1:Long,x$2:Int):Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -485,7 +504,7 @@ output is designed to be a drop-in replacement for fully processing the file via
     </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait(x$1:Long):Unit"></a><a id="wait(Long):Unit"></a>
       <span class="permalink">
-      <a href="../scalajsbundler/BundlingMode$$LibraryAndApplication.html#wait(x$1:Long):Unit" title="Permalink">
+      <a href="../scalajsbundler/JSDOMNodeJSEnv$$Config$.html#wait(x$1:Long):Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -509,7 +528,7 @@ output is designed to be a drop-in replacement for fully processing the file via
     </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <span class="permalink">
-      <a href="../scalajsbundler/BundlingMode$$LibraryAndApplication.html#wait():Unit" title="Permalink">
+      <a href="../scalajsbundler/JSDOMNodeJSEnv$$Config$.html#wait():Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -539,7 +558,7 @@ output is designed to be a drop-in replacement for fully processing the file via
               <ol><li name="scala.AnyRef#finalize" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="finalize():Unit"></a>
       <span class="permalink">
-      <a href="../scalajsbundler/BundlingMode$$LibraryAndApplication.html#finalize():Unit" title="Permalink">
+      <a href="../scalajsbundler/JSDOMNodeJSEnv$$Config$.html#finalize():Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -567,19 +586,7 @@ output is designed to be a drop-in replacement for fully processing the file via
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="scala.Serializable">
-              <h3>Inherited from <span class="extype" name="scala.Serializable">Serializable</span></h3>
-            </div><div class="parent" name="java.io.Serializable">
-              <h3>Inherited from <span class="extype" name="java.io.Serializable">Serializable</span></h3>
-            </div><div class="parent" name="scala.Product">
-              <h3>Inherited from <span class="extype" name="scala.Product">Product</span></h3>
-            </div><div class="parent" name="scala.Equals">
-              <h3>Inherited from <span class="extype" name="scala.Equals">Equals</span></h3>
-            </div><div class="parent" name="scalajsbundler.BundlingMode.Library">
-              <h3>Inherited from <a href="BundlingMode$$Library.html" class="extype" name="scalajsbundler.BundlingMode.Library">Library</a></h3>
-            </div><div class="parent" name="scalajsbundler.BundlingMode">
-              <h3>Inherited from <a href="BundlingMode.html" class="extype" name="scalajsbundler.BundlingMode">BundlingMode</a></h3>
-            </div><div class="parent" name="scala.AnyRef">
+        <div class="parent" name="scala.AnyRef">
               <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
             </div><div class="parent" name="scala.Any">
               <h3>Inherited from <span class="extype" name="scala.Any">Any</span></h3>
