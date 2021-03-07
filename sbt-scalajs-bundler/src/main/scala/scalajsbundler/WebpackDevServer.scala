@@ -16,13 +16,15 @@ private [scalajsbundler] class WebpackDevServer {
     * @param port - port, on which the server will operate.
     * @param extraArgs - additional arguments for webpack-dev-server.
     * @param logger - a logger to use for output
+    * @param globalLogger - a global logger to use for output even when the task is terminated
     */
   def start(
     workDir: File,
     configPath: File,
     port: Int,
     extraArgs: Seq[String],
-    logger: Logger
+    logger: Logger,
+    globalLogger: Logger,
   ) = this.synchronized {
     stop()
     worker = Some(new Worker(
@@ -30,7 +32,8 @@ private [scalajsbundler] class WebpackDevServer {
       configPath,
       port,
       extraArgs,
-      logger
+      logger,
+      globalLogger
     ))
   }
 
@@ -46,7 +49,8 @@ private [scalajsbundler] class WebpackDevServer {
     configPath: File,
     port: Int,
     extraArgs: Seq[String],
-    logger: Logger
+    logger: Logger,
+    globalLogger: Logger,
   ) {
     logger.info("Starting webpack-dev-server");
 
@@ -59,7 +63,7 @@ private [scalajsbundler] class WebpackDevServer {
       port.toString
     ) ++ extraArgs
 
-    val process = util.Commands.start(command, workDir, logger)
+    val process = util.Commands.start(command, workDir, globalLogger)
 
     def stop() = {
       logger.info("Stopping webpack-dev-server");
