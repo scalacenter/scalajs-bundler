@@ -52,7 +52,6 @@ TaskKey[Unit]("checkArchive") := {
     "assets/webpack-assets-opt-bundle.js",
     "assets/webpack-assets-opt-loader.js",
     "assets/webpack-assets-opt-library.js",
-    "assets/webpack-assets-opt-library.js.map",
     "assets/webpack-assets-opt.js",
     "assets/react.production.min.js",
     "assets/react-dom.production.min.js"

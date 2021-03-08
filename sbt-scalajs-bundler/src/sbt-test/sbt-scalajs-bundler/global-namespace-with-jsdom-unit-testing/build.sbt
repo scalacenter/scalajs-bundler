@@ -9,13 +9,13 @@ scalaJSUseMainModuleInitializer := true
 
 //#relevant-settings
 npmDependencies in Compile ++= Seq(
-  "moment" -> "2.18.1"
+  "moment" -> "2.29.1"
 )
 
 npmDevDependencies in Compile ++= Seq(
-  "webpack-merge" -> "4.1.2",
-  "imports-loader" -> "0.8.0",
-  "expose-loader" -> "0.7.5"
+  "webpack-merge" -> "5.7.3",
+  "imports-loader" -> "2.0.0",
+  "expose-loader" -> "2.0.0"
 )
 
 webpackConfigFile in fastOptJS := Some(baseDirectory.value / "dev.webpack.config.js")

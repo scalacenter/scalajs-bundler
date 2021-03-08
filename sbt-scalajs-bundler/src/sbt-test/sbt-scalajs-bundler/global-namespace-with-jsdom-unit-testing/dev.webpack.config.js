@@ -1,4 +1,4 @@
-var merge = require('webpack-merge');
+var { merge } = require('webpack-merge');
 
 var commonConfig = require('./common.webpack.config');
 var generatedConfig = require('./scalajs.webpack.config');
