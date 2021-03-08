@@ -10,11 +10,6 @@ libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "1.0.0"
 
 npmDependencies in Compile += "snabbdom" -> "0.5.3"
 
-npmDevDependencies in Compile += "uglifyjs-webpack-plugin" -> "1.2.2"
-
-// Use a different Webpack configuration file for production
-webpackConfigFile in fullOptJS := Some(baseDirectory.value / "prod.webpack.config.js")
-
 // Execute the tests in browser-like environment
 requireJsDomEnv in Test := true
 

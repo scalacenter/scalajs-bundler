@@ -19,23 +19,19 @@ webpackBundlingMode in fullOptJS := BundlingMode.Application
 
 webpackConfigFile in fullOptJS := Some(baseDirectory.value / "prod.config.js")
 
-npmDevDependencies in Compile += "html-webpack-plugin" -> "4.3.0"
+npmDevDependencies in Compile += "html-webpack-plugin" -> "5.2.0"
 
-npmDevDependencies in Compile += "webpack-merge" -> "4.2.2"
+npmDevDependencies in Compile += "webpack-merge" -> "5.7.3"
 
-npmDevDependencies in Compile += "style-loader" -> "1.2.1"
+npmDevDependencies in Compile += "style-loader" -> "2.0.0"
 
-npmDevDependencies in Compile += "css-loader" -> "3.5.3"
+npmDevDependencies in Compile += "css-loader" -> "5.0.1"
 
-npmDevDependencies in Compile += "mini-css-extract-plugin" -> "0.9.0"
+npmDevDependencies in Compile += "mini-css-extract-plugin" -> "1.3.4"
 
 webpackDevServerPort := 7357
 
 useYarn := true
-
-version in webpack                     := "4.43.0"
-
-version in startWebpackDevServer       := "3.11.0"
 
 // HtmlUnit does not support ECMAScript 2015
 scalaJSLinkerConfig ~= { _.withESFeatures(_.withUseECMAScript2015(false)) }
@@ -51,10 +47,14 @@ InputKey[Unit]("html") := {
   assert(files.length == assetsCount)
   // Check all files are present
   assert(files.map(_.data.exists).forall(_ == true))
+  // There is only one app file
+  assert(files.count(_.metadata.get(BundlerFileTypeAttr) == Some(BundlerFileType.Application)) == 1)
   // There is only one library file
   assert(files.count(_.metadata.get(BundlerFileTypeAttr) == Some(BundlerFileType.Library)) == 1)
-  // And 2 assets, the css and its map
-  assert(files.count(_.metadata.get(BundlerFileTypeAttr) == Some(BundlerFileType.Asset)) == 2)
+  // There is only one library file
+  assert(files.count(_.metadata.get(BundlerFileTypeAttr) == Some(BundlerFileType.Loader)) == 1)
+  // And 1 asset (HTML file)
+  assert(files.count(_.metadata.get(BundlerFileTypeAttr) == Some(BundlerFileType.Asset)) == 1)
   // The application is the first
   assert(files.head.metadata.get(BundlerFileTypeAttr) == Some(BundlerFileType.Application))
   val client = new WebClient()

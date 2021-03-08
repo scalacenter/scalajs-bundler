@@ -1,8 +1,6 @@
 
 package scalajsbundler
 
-import java.time.LocalDateTime
-
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
 import sbt.Logger
@@ -15,7 +13,16 @@ import java.nio.file.Path
  */
 object Stats {
 
-  final case class Asset(name: String, size: Long, emitted: Option[Boolean], chunkNames: List[String])
+  final case class Asset(name: String, size: Long, emitted: Boolean, chunkNames: List[String]) {
+    def formattedSize: String = {
+      val oneKiB = 1024L
+      val oneMiB = oneKiB * oneKiB
+
+      if (size < oneKiB) s"$size bytes"
+      else if (size < oneMiB) f"${size / oneKiB.toFloat}%1.2f KiB"
+      else f"${size / oneMiB.toFloat}%1.2f MiB"
+    }
+  }
 
   object formatting {
 
@@ -43,7 +50,19 @@ object Stats {
 
   }
 
-  final case class WebpackStats(version: String, hash: String, time: Long, outputPath: Option[Path], errors: List[String], warnings: List[String], assets: List[Asset]) {
+  final case class WebpackError(moduleName: String, message: String, loc: String)
+
+  final case class WebpackWarning(moduleName: String, message: String)
+
+  final case class WebpackStats(
+    version: String,
+    hash: String,
+    time: Long,
+    outputPath: Option[Path],
+    errors: List[WebpackError],
+    warnings: List[WebpackWarning],
+    assets: List[Asset]
+  ) {
 
     /**
       * Prints to the log an output similar to what webpack pushes to stdout
@@ -51,12 +70,12 @@ object Stats {
     def print(log: Logger): Unit = {
       import formatting._
       // Print base info
-      List(s"Version: $version", s"Hash: $hash", s"Time: ${time}ms", s"Path: ${outputPath.getOrElse("<default>")}", s"Built at ${LocalDateTime.now}").foreach(x => log.info(x))
+      List(s"Version: $version", s"Hash: $hash", s"Time: ${time}ms", s"Path: ${outputPath.getOrElse("<default>")}").foreach(x => log.info(x))
       log.info("")
       // Print the assets
       assets.map { a =>
-        val emitted = a.emitted.fold("<unknown>")(a => if (a) "[emitted]" else "")
-        AssetLine(Part(a.name), Part(a.size.toString), Part(emitted), Part(a.chunkNames.mkString("[", ",", "]")))
+        val emitted = if (a.emitted) "[emitted]" else ""
+        AssetLine(Part(a.name), Part(a.formattedSize), Part(emitted), Part(a.chunkNames.mkString("[", ",", "]")))
       }.foldLeft(List(AssetLine.Zero)) {
         case (lines, curr) =>
           val adj = lines.map(_.adjustPadding(curr))
@@ -91,17 +110,28 @@ object Stats {
   implicit val assetsReads: Reads[Asset] = (
     (JsPath \ "name").read[String] and
     (JsPath \ "size").read[Long] and
-    (JsPath \ "emitted").readNullable[Boolean] and
-    (JsPath \\ "chunkNames").read[List[String]]
+    (JsPath \ "emitted").read[Boolean] and
+    (JsPath \ "chunkNames").read[List[String]]
   )(Asset.apply _)
+
+  implicit val errorReads: Reads[WebpackError] = (
+    (JsPath \ "moduleName").read[String] and
+      (JsPath \ "message").read[String] and
+      (JsPath \ "loc").read[String]
+    )(WebpackError.apply _)
+
+  implicit val warningReads: Reads[WebpackWarning] = (
+    (JsPath \ "moduleName").read[String] and
+      (JsPath \ "message").read[String]
+    )(WebpackWarning.apply _)
 
   implicit val statsReads: Reads[WebpackStats] = (
     (JsPath \ "version").read[String] and
     (JsPath \ "hash").read[String] and
     (JsPath \ "time").read[Long] and
     (JsPath \ "outputPath").readNullable[String].map(x => x.map(new File(_).toPath)) and // It seems webpack 2 doesn't produce outputPath
-    (JsPath \ "errors").read[List[String]] and
-    (JsPath \ "warnings").read[List[String]] and
+    (JsPath \ "errors").read[List[WebpackError]] and
+    (JsPath \ "warnings").read[List[WebpackWarning]] and
     (JsPath \ "assets").read[List[Asset]]
   )(WebpackStats.apply _)
 

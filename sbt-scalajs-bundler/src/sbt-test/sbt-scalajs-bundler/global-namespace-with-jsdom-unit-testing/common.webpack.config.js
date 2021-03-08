@@ -6,19 +6,27 @@ const importRule = {
   // Force require global modules
   test: /.*-(fast|full)opt\.js$/,
   loader:
-    "imports-loader?" +
-    Object.keys(globalModules)
+    "imports-loader",
+  options: {
+    type: 'commonjs',
+    imports: Object.keys(globalModules)
       .map(function(modName) {
-        return modName + "=" + globalModules[modName];
+        return {
+          moduleName: globalModules[modName],
+          name: modName,
+        }
       })
-      .join(",")
+  }
 };
 
 const exposeRules = Object.keys(globalModules).map(function(modName) {
   // Expose global modules
   return {
     test: require.resolve(modName),
-    loader: "expose-loader?" + globalModules[modName]
+    loader: "expose-loader",
+    options: {
+      exposes: [globalModules[modName]],
+    },
   };
 });
 

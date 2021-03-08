@@ -13,7 +13,6 @@ private [scalajsbundler] class WebpackDevServer {
   /**
     * @param workDir - path to working directory for webpack-dev-server
     * @param configPath - path to webpack config.
-    * @param port - port, on which the server will operate.
     * @param extraArgs - additional arguments for webpack-dev-server.
     * @param logger - a logger to use for output
     * @param globalLogger - a global logger to use for output even when the task is terminated
@@ -21,7 +20,6 @@ private [scalajsbundler] class WebpackDevServer {
   def start(
     workDir: File,
     configPath: File,
-    port: Int,
     extraArgs: Seq[String],
     logger: Logger,
     globalLogger: Logger,
@@ -30,7 +28,6 @@ private [scalajsbundler] class WebpackDevServer {
     worker = Some(new Worker(
       workDir,
       configPath,
-      port,
       extraArgs,
       logger,
       globalLogger
@@ -47,7 +44,6 @@ private [scalajsbundler] class WebpackDevServer {
   private class Worker(
     workDir: File,
     configPath: File,
-    port: Int,
     extraArgs: Seq[String],
     logger: Logger,
     globalLogger: Logger,
@@ -56,11 +52,10 @@ private [scalajsbundler] class WebpackDevServer {
 
     val command = Seq(
       "node",
-      "node_modules/webpack-dev-server/bin/webpack-dev-server.js",
+      "node_modules/webpack/bin/webpack",
+      "serve",
       "--config",
-      configPath.getAbsolutePath,
-      "--port",
-      port.toString
+      configPath.getAbsolutePath
     ) ++ extraArgs
 
     val process = util.Commands.start(command, workDir, globalLogger)

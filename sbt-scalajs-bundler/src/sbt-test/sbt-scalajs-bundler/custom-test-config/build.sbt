@@ -27,8 +27,6 @@ webpackBundlingMode := BundlingMode.LibraryAndApplication()
 
 useYarn := true
 
-version in webpack := "4.32.2"
-
 npmDependencies in Compile ++= Seq(
   "react"     -> reactJS,
   "react-dom" -> reactJS

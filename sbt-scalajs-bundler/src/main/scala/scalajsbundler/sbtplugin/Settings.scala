@@ -119,13 +119,11 @@ private[sbtplugin] object Settings {
         // Replace the path to the `main` module by the path to the legacy key output
         optMainModulePath match {
           case Some(mainModulePath) =>
-            prev.map { inputItem =>
-              inputItem match {
-                case CommonJSModule(module) if module == mainModulePath =>
-                  CommonJSModule(legacyKeyOutput.data.toPath())
-                case _ =>
-                  inputItem
-              }
+            prev.map {
+              case CommonJSModule(module) if module == mainModulePath =>
+                CommonJSModule(legacyKeyOutput.data.toPath())
+              case inputItem =>
+                inputItem
             }
           case None =>
             prev
@@ -183,24 +181,30 @@ private[sbtplugin] object Settings {
                   val loader = targetDir / s"$sjsOutputName-loader.js"
                   JsDomTestEntries.writeLoader(sjsOutput, loader)
 
-                  customWebpackConfigFile match {
+                  val configArgs = customWebpackConfigFile match {
                     case Some(configFile) =>
                       val customConfigFileCopy = Webpack.copyCustomWebpackConfigFiles(targetDir, webpackResources.value.get)(configFile)
-                      NpmPackage(webpackVersion).major match {
-                        case Some(4) =>
-                          // TODO: It assumes tests are run on development mode. It should instead use build settings
-                          Webpack.run(nodeArgs: _*)("--mode", "development", "--config", customConfigFileCopy.getAbsolutePath, loader.absolutePath, "--output", bundle.absolutePath)(targetDir, logger)
-                        case _ =>
-                          Webpack.run(nodeArgs: _*)("--config", customConfigFileCopy.getAbsolutePath, loader.absolutePath, bundle.absolutePath)(targetDir, logger)
-                      }
+                      Seq("--config", customConfigFileCopy.getAbsolutePath)
+
                     case None =>
-                      NpmPackage(webpackVersion).major match {
-                        case Some(4) =>
-                          // TODO: It assumes tests are run on development mode. It should instead use build settings
-                          Webpack.run(nodeArgs: _*)("--mode", "development", loader.absolutePath, "--output", bundle.absolutePath)(targetDir, logger)
-                        case _ =>
-                          Webpack.run(nodeArgs: _*)(loader.absolutePath, bundle.absolutePath)(targetDir, logger)
-                      }
+                      Seq.empty
+                  }
+
+                  // TODO: It assumes tests are run on development mode. It should instead use build settings
+                  val allArgs = Seq(
+                    "--mode", "development",
+                    "--entry", loader.absolutePath,
+                    "--output-path", bundle.getParentFile.absolutePath,
+                    "--output-filename", bundle.name
+                  ) ++ configArgs
+
+                  NpmPackage(webpackVersion).major match {
+                    case Some(5) =>
+                      Webpack.run(nodeArgs: _*)(allArgs: _*)(targetDir, logger)
+                    case Some(x) =>
+                      sys.error(s"Unsupported webpack major version $x")
+                    case None =>
+                      sys.error("No webpack version defined")
                   }
 
                   Set.empty
@@ -216,13 +220,11 @@ private[sbtplugin] object Settings {
 
         optBundle match {
           case Some(bundle) =>
-            prev.map { inputItem =>
-              inputItem match {
-                case CommonJSModule(module) if module == sjsOutput.toPath() =>
-                  bundle
-                case _ =>
-                  inputItem
-              }
+            prev.map {
+              case CommonJSModule(module) if module == sjsOutput.toPath() =>
+                bundle
+              case inputItem =>
+                inputItem
             }
           case None =>
             prev

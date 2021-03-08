@@ -10,7 +10,7 @@ import Stats._
 import scala.util.{Failure, Success, Try}
 
 object Webpack {
-  // Represents webpack 4 modes
+  // Represents webpack 5 modes
   sealed trait WebpackMode {
     def mode: String
   }
@@ -61,95 +61,74 @@ object Webpack {
     webpackConfigFile: BundlerFile.WebpackConfig,
     libraryBundleName: Option[String],
     mode: WebpackMode,
+    devServerPort: Int,
     log: Logger
   ): Unit = {
-    log.info("Writing scalajs.webpack.config.js")
-    // Build the output configuration, configured for library output
-    // if a library bundle name is provided
-    val output = libraryBundleName match {
-      case Some(bundleName) =>
-        JS.obj(
-          "path" -> JS.str(webpackConfigFile.targetDir.toAbsolutePath.toString),
-          "filename" -> JS.str(BundlerFile.Library.fileName("[name]")),
-          "library" -> JS.str(bundleName),
-          "libraryTarget" -> JS.str("var")
-        )
-      case None =>
-        JS.obj(
-          "path" -> JS.str(webpackConfigFile.targetDir.toAbsolutePath.toString),
-          "filename" -> JS.str(BundlerFile.ApplicationBundle.fileName("[name]"))
-        )
-    }
+    val webpackConfigContent = generateConfigFile(emitSourceMaps, entry, webpackConfigFile, libraryBundleName, mode,
+      devServerPort)
 
-    // Build the file itself
-    val webpackConfigContent =
-      JS.ref("module").dot("exports").assign(JS.obj(Seq(
-        "entry" -> JS.obj(
-          entry.project -> JS.arr(JS.str(entry.file.absolutePath))
-        ),
-        "output" -> output
-      ) ++ (
-        if (emitSourceMaps) {
-          val webpackNpmPackage = NpmPackage.getForModule(webpackConfigFile.targetDir.toFile, "webpack")
-          webpackNpmPackage.flatMap(_.major) match {
-            case Some(1) =>
-              Seq(
-                "devtool" -> JS.str("source-map"),
-                "module" -> JS.obj(
-                  "preLoaders" -> JS.arr(
-                    JS.obj(
-                      "test" -> JS.regex("\\.js$"),
-                      "loader" -> JS.str("source-map-loader")
-                    )
-                  )
-                )
-              )
-            case Some(2) =>
-              Seq(
-                "devtool" -> JS.str("source-map"),
-                "module" -> JS.obj(
-                  "rules" -> JS.arr(
-                    JS.obj(
-                      "test" -> JS.regex("\\.js$"),
-                      "enforce" -> JS.str("pre"),
-                      "loader" -> JS.str("source-map-loader")
-                    )
-                  )
-                )
-              )
-            case Some(3) =>
-              Seq(
-                "devtool" -> JS.str("source-map"),
-                "module" -> JS.obj(
-                  "rules" -> JS.arr(
-                    JS.obj(
-                      "test" -> JS.regex("\\.js$"),
-                      "enforce" -> JS.str("pre"),
-                      "use" -> JS.arr(JS.str("source-map-loader"))
-                    )
-                  )
-                )
-              )
-            case Some(4) =>
-              Seq(
-                "mode" -> JS.str(mode.mode),
-                "devtool" -> JS.str("source-map"),
-                "module" -> JS.obj(
-                  "rules" -> JS.arr(
-                    JS.obj(
-                      "test" -> JS.regex("\\.js$"),
-                      "enforce" -> JS.str("pre"),
-                      "use" -> JS.arr(JS.str("source-map-loader"))
-                    )
-                  )
-                )
-              )
-            case Some(x) => sys.error(s"Unsupported webpack major version $x")
-            case None => sys.error("No webpack version defined")
-          }
-        } else Nil
-        ): _*))
+    log.info("Writing scalajs.webpack.config.js")
     IO.write(webpackConfigFile.file, webpackConfigContent.show)
+  }
+
+  private def generateConfigFile(
+    emitSourceMaps: Boolean,
+    entry: BundlerFile.WebpackInput,
+    webpackConfigFile: BundlerFile.WebpackConfig,
+    libraryBundleName: Option[String],
+    mode: WebpackMode,
+    devServerPort: Int
+  ): JS = {
+    val webpackNpmPackage = NpmPackage.getForModule(webpackConfigFile.targetDir.toFile, "webpack")
+    webpackNpmPackage.flatMap(_.major) match {
+      case Some(5) =>
+        // Build the output configuration, configured for library output
+        // if a library bundle name is provided
+        val output = libraryBundleName match {
+          case Some(bundleName) =>
+            JS.obj(
+              "path" -> JS.str(webpackConfigFile.targetDir.toAbsolutePath.toString),
+              "filename" -> JS.str(BundlerFile.Library.fileName("[name]")),
+              "library" -> JS.str(bundleName),
+              "libraryTarget" -> JS.str("var")
+            )
+          case None =>
+            JS.obj(
+              "path" -> JS.str(webpackConfigFile.targetDir.toAbsolutePath.toString),
+              "filename" -> JS.str(BundlerFile.ApplicationBundle.fileName("[name]"))
+            )
+        }
+
+        JS.ref("module").dot("exports").assign(JS.obj(Seq(
+          "entry" -> JS.obj(
+            entry.project -> JS.arr(JS.str(entry.file.absolutePath))
+          ),
+          "output" -> output,
+          "mode" -> JS.str(mode.mode),
+          "devServer" -> JS.obj("port" -> JS.int(devServerPort)),
+        ) ++ (
+          if (emitSourceMaps) {
+            Seq(
+              "devtool" -> JS.str("source-map"),
+              "module" -> JS.obj(
+                "rules" -> JS.arr(
+                  JS.obj(
+                    "test" -> JS.regex("\\.js$"),
+                    "enforce" -> JS.str("pre"),
+                    "use" -> JS.arr(JS.str("source-map-loader"))
+                  )
+                )
+              )
+            )
+          } else Nil
+          ): _*))
+
+      case Some(x) =>
+        sys.error(s"Unsupported webpack major version $x")
+
+      case None =>
+        sys.error("No webpack version defined")
+    }
   }
 
   /**
@@ -162,7 +141,8 @@ object Webpack {
     * @param entry Scala.js application to bundle
     * @param targetDir Target directory (and working directory for Nodejs)
     * @param extraArgs Extra arguments passed to webpack
-    * @param mode Mode for webpack 4
+    * @param mode Mode for webpack 5
+    * @param devServerPort Port used by webpack-dev-server
     * @param log Logger
     * @return The generated bundles
     */
@@ -176,9 +156,10 @@ object Webpack {
      extraArgs: Seq[String],
      nodeArgs: Seq[String],
      mode: WebpackMode,
+     devServerPort: Int,
      log: Logger
   ): BundlerFile.ApplicationBundle = {
-    writeConfigFile(emitSourceMaps, entry, generatedWebpackConfigFile, None, mode, log)
+    writeConfigFile(emitSourceMaps, entry, generatedWebpackConfigFile, None, mode, devServerPort, log)
 
     val configFile = customWebpackConfigFile
       .map(Webpack.copyCustomWebpackConfigFiles(targetDir, webpackResources))
@@ -206,7 +187,7 @@ object Webpack {
     * @param entryPointFile The entrypoint file to bundle dependencies for
     * @param libraryModuleName The library module name to assign the webpack bundle to
     * @param extraArgs Extra arguments passed to webpack
-    * @param mode Mode for webpack 4
+    * @param mode Mode for webpack 5
     * @param log Logger
     * @return The generated bundle
     */
@@ -220,6 +201,7 @@ object Webpack {
     extraArgs: Seq[String],
     nodeArgs: Seq[String],
     mode: WebpackMode,
+    devServerPort: Int,
     log: Logger
   ): BundlerFile.Library = {
     writeConfigFile(
@@ -228,6 +210,7 @@ object Webpack {
       generatedWebpackConfigFile,
       Some(libraryModuleName),
       mode,
+      devServerPort,
       log
     )
 
@@ -260,8 +243,16 @@ object Webpack {
           if (p.warnings.nonEmpty || p.errors.nonEmpty) {
             logger.info("")
             // Filtering is a workaround for #111
-            p.warnings.filterNot(_.contains("https://raw.githubusercontent.com")).foreach(x => logger.warn(x))
-            p.errors.foreach(x => logger.error(x))
+            p.warnings.filterNot(_.message.contains("https://raw.githubusercontent.com")).foreach { warning =>
+              logger.warn(s"WARNING in ${warning.moduleName}")
+              logger.warn(warning.message)
+              logger.warn("\n")
+            }
+            p.errors.foreach { error =>
+              logger.error(s"ERROR in ${error.moduleName} ${error.loc}")
+              logger.error(error.message)
+              logger.error("\n")
+            }
           }
           Some(p)
       }
@@ -290,7 +281,7 @@ object Webpack {
     */
   def run(nodeArgs: String*)(args: String*)(workingDir: File, log: Logger): Option[WebpackStats] = {
     val webpackBin = workingDir / "node_modules" / "webpack" / "bin" / "webpack"
-    val params = nodeArgs ++ Seq(webpackBin.absolutePath, "--bail", "--profile", "--json") ++ args
+    val params = nodeArgs ++ Seq(webpackBin.absolutePath, "--profile", "--json") ++ args
     val cmd = "node" +: params
     Commands.run(cmd, workingDir, log, jsonOutput(cmd, log)).fold(sys.error, _.flatten)
   }
