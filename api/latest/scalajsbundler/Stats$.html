@@ -202,7 +202,7 @@
 
       
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Webpack stats model and json parsers
-</p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/scalacenter/scalajs-bundler/blob/vd66d00c2/sbt-scalajs-bundler/src/main/scala/scalajsbundler/Stats.scala" target="_blank">Stats.scala</a></dd></dl><div class="toggleContainer block">
+</p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/scalacenter/scalajs-bundler/blob/v5c36f19d/sbt-scalajs-bundler/src/main/scala/scalajsbundler/Stats.scala" target="_blank">Stats.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">
             Linear Supertypes
           </span>
@@ -266,7 +266,23 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a title="" href="Stats$$Asset.html"><span class="name">Asset</span></a><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="size">size: <span class="extype" name="scala.Long">Long</span></span>, <span name="emitted">emitted: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Boolean">Boolean</span>]</span>, <span name="chunkNames">chunkNames: <span class="extype" name="scala.List">List</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a title="" href="Stats$$Asset.html"><span class="name">Asset</span></a><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="size">size: <span class="extype" name="scala.Long">Long</span></span>, <span name="emitted">emitted: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="chunkNames">chunkNames: <span class="extype" name="scala.List">List</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      
+      
+    </li><li name="scalajsbundler.Stats.WebpackError" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="WebpackErrorextendsProductwithSerializable"></a><a id="WebpackError:WebpackError"></a>
+      <span class="permalink">
+      <a href="../scalajsbundler/Stats$$WebpackError.html" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a title="" href="Stats$$WebpackError.html"><span class="name">WebpackError</span></a><span class="params">(<span name="moduleName">moduleName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="message">message: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="loc">loc: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       
       
@@ -282,7 +298,23 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a title="" href="Stats$$WebpackStats.html"><span class="name">WebpackStats</span></a><span class="params">(<span name="version">version: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="hash">hash: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="time">time: <span class="extype" name="scala.Long">Long</span></span>, <span name="outputPath">outputPath: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="java.nio.file.Path">Path</span>]</span>, <span name="errors">errors: <span class="extype" name="scala.List">List</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="warnings">warnings: <span class="extype" name="scala.List">List</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="assets">assets: <span class="extype" name="scala.List">List</span>[<a href="Stats$$Asset.html" class="extype" name="scalajsbundler.Stats.Asset">Asset</a>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a title="" href="Stats$$WebpackStats.html"><span class="name">WebpackStats</span></a><span class="params">(<span name="version">version: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="hash">hash: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="time">time: <span class="extype" name="scala.Long">Long</span></span>, <span name="outputPath">outputPath: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="java.nio.file.Path">Path</span>]</span>, <span name="errors">errors: <span class="extype" name="scala.List">List</span>[<a href="Stats$$WebpackError.html" class="extype" name="scalajsbundler.Stats.WebpackError">WebpackError</a>]</span>, <span name="warnings">warnings: <span class="extype" name="scala.List">List</span>[<a href="Stats$$WebpackWarning.html" class="extype" name="scalajsbundler.Stats.WebpackWarning">WebpackWarning</a>]</span>, <span name="assets">assets: <span class="extype" name="scala.List">List</span>[<a href="Stats$$Asset.html" class="extype" name="scalajsbundler.Stats.Asset">Asset</a>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      
+      
+    </li><li name="scalajsbundler.Stats.WebpackWarning" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="WebpackWarningextendsProductwithSerializable"></a><a id="WebpackWarning:WebpackWarning"></a>
+      <span class="permalink">
+      <a href="../scalajsbundler/Stats$$WebpackWarning.html" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a title="" href="Stats$$WebpackWarning.html"><span class="name">WebpackWarning</span></a><span class="params">(<span name="moduleName">moduleName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="message">message: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       
       
@@ -432,6 +464,22 @@
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="scalajsbundler.Stats#errorReads" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="errorReads:play.api.libs.json.Reads[scalajsbundler.Stats.WebpackError]"></a><a id="errorReads:Reads[WebpackError]"></a>
+      <span class="permalink">
+      <a href="../scalajsbundler/Stats$.html#errorReads:play.api.libs.json.Reads[scalajsbundler.Stats.WebpackError]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">errorReads</span><span class="result">: <span class="extype" name="play.api.libs.json.Reads">Reads</span>[<a href="Stats$$WebpackError.html" class="extype" name="scalajsbundler.Stats.WebpackError">WebpackError</a>]</span>
+      </span>
+      
+      
     </li><li name="scala.AnyRef#getClass" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getClass():Class[_]"></a>
       <span class="permalink">
@@ -664,6 +712,22 @@
     </span>)</span>
               
         </dd></dl></div>
+    </li><li name="scalajsbundler.Stats#warningReads" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="warningReads:play.api.libs.json.Reads[scalajsbundler.Stats.WebpackWarning]"></a><a id="warningReads:Reads[WebpackWarning]"></a>
+      <span class="permalink">
+      <a href="../scalajsbundler/Stats$.html#warningReads:play.api.libs.json.Reads[scalajsbundler.Stats.WebpackWarning]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">warningReads</span><span class="result">: <span class="extype" name="play.api.libs.json.Reads">Reads</span>[<a href="Stats$$WebpackWarning.html" class="extype" name="scalajsbundler.Stats.WebpackWarning">WebpackWarning</a>]</span>
+      </span>
+      
+      
     </li><li name="scalajsbundler.Stats.formatting" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="formatting"></a><a id="formatting:formatting"></a>
       <span class="permalink">

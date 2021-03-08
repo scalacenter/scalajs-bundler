@@ -262,19 +262,27 @@ modules to the global namespace. Typically, this file will look like this:</p>
   <span class="hljs-comment">// Force require global modules</span>
   test: <span class="hljs-regexp">/.*-(fast|full)opt\.js$/</span>,
   loader:
-    <span class="hljs-string">"imports-loader?"</span> +
-    <span class="hljs-built_in">Object</span>.keys(globalModules)
+    <span class="hljs-string">"imports-loader"</span>,
+  options: {
+    type: <span class="hljs-string">'commonjs'</span>,
+    imports: <span class="hljs-built_in">Object</span>.keys(globalModules)
       .map(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">modName</span>) </span>{
-        <span class="hljs-keyword">return</span> modName + <span class="hljs-string">"="</span> + globalModules[modName];
+        <span class="hljs-keyword">return</span> {
+          moduleName: globalModules[modName],
+          name: modName,
+        }
       })
-      .join(<span class="hljs-string">","</span>)
+  }
 };
 
 <span class="hljs-keyword">const</span> exposeRules = <span class="hljs-built_in">Object</span>.keys(globalModules).map(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">modName</span>) </span>{
   <span class="hljs-comment">// Expose global modules</span>
   <span class="hljs-keyword">return</span> {
     test: <span class="hljs-built_in">require</span>.resolve(modName),
-    loader: <span class="hljs-string">"expose-loader?"</span> + globalModules[modName]
+    loader: <span class="hljs-string">"expose-loader"</span>,
+    options: {
+      exposes: [globalModules[modName]],
+    },
   };
 });
 
@@ -291,13 +299,13 @@ modules to the global namespace. Typically, this file will look like this:</p>
 custom webpack configuration file:</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
 <pre class="hljs"><code class="language-scala">npmDependencies in <span class="hljs-type">Compile</span> ++= <span class="hljs-type">Seq</span>(
-  <span class="hljs-string">"moment"</span> -&gt; <span class="hljs-string">"2.18.1"</span>
+  <span class="hljs-string">"moment"</span> -&gt; <span class="hljs-string">"2.29.1"</span>
 )
 
 npmDevDependencies in <span class="hljs-type">Compile</span> ++= <span class="hljs-type">Seq</span>(
-  <span class="hljs-string">"webpack-merge"</span> -&gt; <span class="hljs-string">"4.1.2"</span>,
-  <span class="hljs-string">"imports-loader"</span> -&gt; <span class="hljs-string">"0.8.0"</span>,
-  <span class="hljs-string">"expose-loader"</span> -&gt; <span class="hljs-string">"0.7.5"</span>
+  <span class="hljs-string">"webpack-merge"</span> -&gt; <span class="hljs-string">"5.7.3"</span>,
+  <span class="hljs-string">"imports-loader"</span> -&gt; <span class="hljs-string">"2.0.0"</span>,
+  <span class="hljs-string">"expose-loader"</span> -&gt; <span class="hljs-string">"2.0.0"</span>
 )
 
 webpackConfigFile in fastOptJS := <span class="hljs-type">Some</span>(baseDirectory.value / <span class="hljs-string">"dev.webpack.config.js"</span>)
@@ -392,7 +400,7 @@ reload on every change:</p>
 <p><code class="hljs">scalajs-bundler</code> invokes <code class="hljs">webpack</code> with a configuration generated either automatically from the build or set with <code class="hljs">webpackConfigFile</code>.
 <code class="hljs">webpack</code> is then called with the following arguments:</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
-<pre class="hljs"><code class="language-sql"><span class="hljs-comment">--bail --config &lt;configfile&gt;</span>
+<pre class="hljs"><code class="language-sql"><span class="hljs-comment">--config &lt;configfile&gt;</span>
 </code></pre>
 </div></div>
 <p>You can add extra params to the <code class="hljs">webpack</code> call, for example, to increase debugging</p>

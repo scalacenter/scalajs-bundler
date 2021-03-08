@@ -109,8 +109,16 @@
                         <a href="" title="">Asset</a>
                       </li><li class="current-entities indented2">
                         <span class="separator"></span>
+                        <a class="class" href="Stats$$WebpackError.html" title=""></a>
+                        <a href="Stats$$WebpackError.html" title="">WebpackError</a>
+                      </li><li class="current-entities indented2">
+                        <span class="separator"></span>
                         <a class="class" href="Stats$$WebpackStats.html" title=""></a>
                         <a href="Stats$$WebpackStats.html" title="">WebpackStats</a>
+                      </li><li class="current-entities indented2">
+                        <span class="separator"></span>
+                        <a class="class" href="Stats$$WebpackWarning.html" title=""></a>
+                        <a href="Stats$$WebpackWarning.html" title="">WebpackWarning</a>
                       </li><li class="current-entities indented2">
                         <span class="separator"></span>
                         <a class="object" href="Stats$$formatting$.html" title=""></a>
@@ -138,12 +146,12 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">Asset</span><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="size">size: <span class="extype" name="scala.Long">Long</span></span>, <span name="emitted">emitted: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Boolean">Boolean</span>]</span>, <span name="chunkNames">chunkNames: <span class="extype" name="scala.List">List</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">Asset</span><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="size">size: <span class="extype" name="scala.Long">Long</span></span>, <span name="emitted">emitted: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="chunkNames">chunkNames: <span class="extype" name="scala.List">List</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
 
       
-          <div id="comment" class="fullcommenttop"><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/scalacenter/scalajs-bundler/blob/vd66d00c2/sbt-scalajs-bundler/src/main/scala/scalajsbundler/Stats.scala" target="_blank">Stats.scala</a></dd></dl><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><dl class="attributes block"> <dt>Source</dt><dd><a href="https://github.com/scalacenter/scalajs-bundler/blob/v5c36f19d/sbt-scalajs-bundler/src/main/scala/scalajsbundler/Stats.scala" target="_blank">Stats.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">
             Linear Supertypes
           </span>
@@ -194,9 +202,9 @@
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="scalajsbundler.Stats.Asset#&lt;init&gt;" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(name:String,size:Long,emitted:Option[Boolean],chunkNames:List[String]):scalajsbundler.Stats.Asset"></a><a id="&lt;init&gt;:Asset"></a>
+      <a id="&lt;init&gt;(name:String,size:Long,emitted:Boolean,chunkNames:List[String]):scalajsbundler.Stats.Asset"></a><a id="&lt;init&gt;:Asset"></a>
       <span class="permalink">
-      <a href="../scalajsbundler/Stats$$Asset.html#&lt;init&gt;(name:String,size:Long,emitted:Option[Boolean],chunkNames:List[String]):scalajsbundler.Stats.Asset" title="Permalink">
+      <a href="../scalajsbundler/Stats$$Asset.html#&lt;init&gt;(name:String,size:Long,emitted:Boolean,chunkNames:List[String]):scalajsbundler.Stats.Asset" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -205,7 +213,7 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">Asset</span><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="size">size: <span class="extype" name="scala.Long">Long</span></span>, <span name="emitted">emitted: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Boolean">Boolean</span>]</span>, <span name="chunkNames">chunkNames: <span class="extype" name="scala.List">List</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span>
+        <span class="name">Asset</span><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="size">size: <span class="extype" name="scala.Long">Long</span></span>, <span name="emitted">emitted: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="chunkNames">chunkNames: <span class="extype" name="scala.List">List</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span>
       </span>
       
       
@@ -326,9 +334,9 @@
               
         </dd></dl></div>
     </li><li name="scalajsbundler.Stats.Asset#emitted" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="emitted:Option[Boolean]"></a>
+      <a id="emitted:Boolean"></a>
       <span class="permalink">
-      <a href="../scalajsbundler/Stats$$Asset.html#emitted:Option[Boolean]" title="Permalink">
+      <a href="../scalajsbundler/Stats$$Asset.html#emitted:Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -337,7 +345,7 @@
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">emitted</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Boolean">Boolean</span>]</span>
+        <span class="name">emitted</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       
       
@@ -357,6 +365,22 @@
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scalajsbundler.Stats.Asset#formattedSize" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="formattedSize:String"></a>
+      <span class="permalink">
+      <a href="../scalajsbundler/Stats$$Asset.html#formattedSize:String" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">formattedSize</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      
+      
     </li><li name="scala.AnyRef#getClass" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getClass():Class[_]"></a>
       <span class="permalink">
