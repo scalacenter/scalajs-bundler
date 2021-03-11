@@ -1,0 +1,24 @@
+name: Release
+on:
+  push:
+    branches: [master]
+    tags: ["*"]
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: olafurpg/setup-scala@v12
+      - uses: olafurpg/setup-gpg@v3
+      - uses: coursier/cache-action@v5
+      - name: Publish
+        run: sbt clean ci-release
+        env:
+          PGP_PASSPHRASE: ${{ secrets.PGP_PASSPHRASE }}
+          PGP_SECRET: ${{ secrets.PGP_SECRET }}
+          SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
+          SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
+          CI_RELEASE: "; scalajs-bundler-linker/publishSigned; sbt-scalajs-bundler/publishSigned; sbt-web-scalajs-bundler/publishSigned"
+          CI_SNAPSHOT_RELEASE: "; scalajs-bundler-linker/publish; sbt-scalajs-bundler/publish; sbt-web-scalajs-bundler/publish"
+
+

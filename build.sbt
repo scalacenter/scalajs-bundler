@@ -90,15 +90,6 @@ val `scalajs-bundler` =
     .aggregate(`sbt-scalajs-bundler`, `sbt-web-scalajs-bundler`)
 
 inThisBuild(List(
-  pgpPublicRing := file("./local.pubring.asc"),
-  pgpSecretRing := file("./local.secring.asc"),
-  pgpPassphrase := sys.env.get("PGP_PASS").map(_.toArray),
-  credentials ++= (
-    for {
-      username <- sys.env.get("SONATYPE_USER")
-      password <- sys.env.get("SONATYPE_PASSWORD")
-    } yield Credentials("Sonatype Nexus Repository Manager", "oss.sonatype.org", username, password)
-  ).toList,
   scalacOptions ++= Seq(
     "-feature",
     "-deprecation",
@@ -124,7 +115,6 @@ inThisBuild(List(
 ))
 
 lazy val commonSettings = List(
-  publishTo := sonatypePublishTo.value,
   scriptedLaunchOpts ++= Seq(
     "-Dplugin.version=" + version.value,
     s"-Dscalajs.version=$scalaJSVersion",
