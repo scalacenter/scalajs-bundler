@@ -35,11 +35,13 @@ object PackageJsonTasks {
   ): BundlerFile.PackageJson = {
 
     val hash = Seq(
-      configuration.name,
+      targetDir.hashCode.toString,
       npmDependencies.toString,
       npmDevDependencies.toString,
       npmResolutions.toString,
+      additionalNpmConfig.hashCode.toString,
       fullClasspath.map(_.data.name).toString,
+      configuration.name,
       webpackVersion,
       webpackDevServerVersion,
       webpackCliVersion
