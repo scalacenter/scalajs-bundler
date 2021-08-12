@@ -42,7 +42,7 @@ object PackageJson {
 
     val sourceMapLoaderVersion =
       NpmPackage(webpackVersion).major match {
-        case Some(5) => "2.0.0"
+        case Some(5) => "3.0.0"
         case Some(x) => sys.error(s"Unsupported webpack major version $x")
         case None    => sys.error("No webpack version defined")
       }
