@@ -55,7 +55,7 @@ object PackageJson {
         "webpack" -> webpackVersion,
         "webpack-cli" -> webpackCliVersion,
         "webpack-dev-server" -> webpackDevServerVersion,
-        "concat-with-sourcemaps" -> "1.0.7", // Used by the reload workflow
+        "concat-with-sourcemaps" -> "1.1.0", // Used by the reload workflow
         "source-map-loader" -> sourceMapLoaderVersion // Used by webpack when emitSourceMaps is enabled
       )
 
