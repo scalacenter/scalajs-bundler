@@ -242,8 +242,7 @@ object Webpack {
         case JsSuccess(p, _) =>
           if (p.warnings.nonEmpty || p.errors.nonEmpty) {
             logger.info("")
-            // Filtering is a workaround for #111
-            p.warnings.filterNot(_.message.contains("https://raw.githubusercontent.com")).foreach { warning =>
+            p.warnings.foreach { warning =>
               logger.warn(s"WARNING in ${warning.moduleName}")
               logger.warn(warning.message)
               logger.warn("\n")
@@ -281,7 +280,11 @@ object Webpack {
     */
   def run(nodeArgs: String*)(args: String*)(workingDir: File, log: Logger): Option[WebpackStats] = {
     val webpackBin = workingDir / "node_modules" / "webpack" / "bin" / "webpack"
-    val params = nodeArgs ++ Seq(webpackBin.absolutePath, "--profile", "--json") ++ args
+    val params = nodeArgs ++ Seq(
+      webpackBin.absolutePath, "--profile", "--json",
+      // Filtering is a workaround for #111
+      "--ignore-warnings-message", """/https:\/\/raw\.githubusercontent\.com/"""
+    ) ++ args
     val cmd = "node" +: params
     Commands.run(cmd, workingDir, log, jsonOutput(cmd, log)).fold(sys.error, _.flatten)
   }
