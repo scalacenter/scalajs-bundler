@@ -49,9 +49,9 @@ object Stats {
 
   }
 
-  final case class WebpackError(moduleName: String, message: String, loc: String)
+  final case class WebpackError(moduleName: Option[String], message: String, loc: String)
 
-  final case class WebpackWarning(moduleName: String, message: String)
+  final case class WebpackWarning(moduleName: Option[String], message: String)
 
   final case class WebpackStats(
     version: String,

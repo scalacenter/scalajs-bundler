@@ -243,12 +243,12 @@ object Webpack {
           if (p.warnings.nonEmpty || p.errors.nonEmpty) {
             logger.info("")
             p.warnings.foreach { warning =>
-              logger.warn(s"WARNING in ${warning.moduleName}")
+              logger.warn(s"WARNING in ${warning.moduleName.getOrElse("<default>")}")
               logger.warn(warning.message)
               logger.warn("\n")
             }
             p.errors.foreach { error =>
-              logger.error(s"ERROR in ${error.moduleName} ${error.loc}")
+              logger.error(s"ERROR in ${error.moduleName.getOrElse("<default>")} ${error.loc}")
               logger.error(error.message)
               logger.error("\n")
             }
