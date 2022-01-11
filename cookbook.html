@@ -120,7 +120,7 @@ includeFilter in webpackMonitoredFiles := <span class="hljs-string">"*.scss"</sp
 <p>More fine-grained control over the list of monitored files is possible by overriding the
 <code class="hljs">webpackMonitoredFiles</code> task.</p>
 <p>You can find a working example of custom configuration file
-<a href="https://github.com/scalacenter/scalajs-bundler/blob/master/sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler/static/prod.webpack.config.js">here</a>.</p>
+<a href="https://github.com/scalacenter/scalajs-bundler/blob/main/sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler/static/prod.webpack.config.js">here</a>.</p>
 <p>It is also possible to configure a webpack config file to be used in reload workflow and when running the tests.
 This configuration may not contain <code class="hljs">entry</code> and <code class="hljs">output</code> configuration but can be used to configure loaders etc.</p>
 <p>These configuration files are configured using <code class="hljs">webpackConfigFile in reloadTask</code> or <code class="hljs">webpackConfigFile in Test</code>.
@@ -173,7 +173,7 @@ uses webpack-merge for convenience. The same result could be accomplished using 
 </code></pre>
 </div></div>
 <p>You can find a working example of a project using a shared configuration file
-<a href="https://github.com/scalacenter/scalajs-bundler/blob/master/sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler/sharedconfig">here</a>.</p>
+<a href="https://github.com/scalacenter/scalajs-bundler/blob/main/sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler/sharedconfig">here</a>.</p>
 <h2 id="facade" class="a_section" data-magellan-target="facade">How to use npm modules from Scala code?<a class="a_hlink" href="#facade"></a></h2>
 <p>Once you have <a href="getting-started.html">added npm dependencies</a> to the packages you are interested
 in, you have to <em>import</em> them from your code to effectively use them.</p>
@@ -226,7 +226,7 @@ member ;</li>
 <blockquote class="note">
 <p>Other styles of facades (importing a member in particular, importing functions and classes,
 importing local JavaScript files, etc.) can be found in
-<a href="https://github.com/scalacenter/scalajs-bundler/blob/master/sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler/facade-examples">these tests</a>.</p>
+<a href="https://github.com/scalacenter/scalajs-bundler/blob/main/sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler/facade-examples">these tests</a>.</p>
 </blockquote>
 <p>Finally, in your Scala code, just refer to the <code class="hljs">foo</code> object:</p>
 <div class="row"><div class="a_linked small-expand columns a_xscroll a_codeblock">
@@ -316,7 +316,7 @@ webpackConfigFile in <span class="hljs-type">Test</span> := <span class="hljs-ty
 requireJsDomEnv in <span class="hljs-type">Test</span> := <span class="hljs-literal">true</span></code></pre>
 </div></div>
 <p>You can find a fully working example
-<a href="https://github.com/scalacenter/scalajs-bundler/blob/master/sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler/global-namespace-with-jsdom-unit-testing">here</a>.</p>
+<a href="https://github.com/scalacenter/scalajs-bundler/blob/main/sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler/global-namespace-with-jsdom-unit-testing">here</a>.</p>
 <h2 id="several-entry-points" class="a_section" data-magellan-target="several-entry-points">How to bundle an application having several entry points as exports?<a class="a_hlink" href="#several-entry-points"></a></h2>
 <p>By default, <code class="hljs">ScalaJSBundlerPlugin</code> assumes that your application only has a main class, activated through
 <code class="hljs">scalaJSUseMainModuleInitializer := true</code>, and disregards top-level <em>exports</em>. If you have exports that
