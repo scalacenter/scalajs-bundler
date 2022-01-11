@@ -1,4 +1,4 @@
-scalajs-bundler [![](https://index.scala-lang.org/scalacenter/scalajs-bundler/sbt-scalajs-bundler/latest.svg)](https://index.scala-lang.org/scalacenter/scalajs-bundler) [![Gitter](https://img.shields.io/badge/gitter-join%20chat-green.svg)](https://gitter.im/scalacenter/scalajs-bundler) [![Build Status](https://travis-ci.org/scalacenter/scalajs-bundler.svg?branch=master)](https://travis-ci.org/scalacenter/scalajs-bundler)
+scalajs-bundler [![](https://index.scala-lang.org/scalacenter/scalajs-bundler/sbt-scalajs-bundler/latest.svg)](https://index.scala-lang.org/scalacenter/scalajs-bundler) [![Gitter](https://img.shields.io/badge/gitter-join%20chat-green.svg)](https://gitter.im/scalacenter/scalajs-bundler) [![Build Status](https://travis-ci.org/scalacenter/scalajs-bundler.svg?branch=main)](https://travis-ci.org/scalacenter/scalajs-bundler)
 ==============
 
 Module bundler for Scala.js projects that use NPM packages.

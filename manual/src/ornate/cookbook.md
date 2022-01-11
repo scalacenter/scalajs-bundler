@@ -51,7 +51,7 @@ More fine-grained control over the list of monitored files is possible by overri
 `webpackMonitoredFiles` task.
 
 You can find a working example of custom configuration file
-[here](https://github.com/scalacenter/scalajs-bundler/blob/master/sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler/static/prod.webpack.config.js).
+[here](https://github.com/scalacenter/scalajs-bundler/blob/main/sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler/static/prod.webpack.config.js).
 
 It is also possible to configure a webpack config file to be used in reload workflow and when running the tests.
 This configuration may not contain `entry` and `output` configuration but can be used to configure loaders etc.
@@ -107,7 +107,7 @@ module.exports = merge(commonConfig, {
 ~~~
 
 You can find a working example of a project using a shared configuration file
-[here](https://github.com/scalacenter/scalajs-bundler/blob/master/sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler/sharedconfig).
+[here](https://github.com/scalacenter/scalajs-bundler/blob/main/sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler/sharedconfig).
 
 
 ## How to use npm modules from Scala code? {#facade}
@@ -162,7 +162,7 @@ There are several points worth highlighting:
 > {.note}
 > Other styles of facades (importing a member in particular, importing functions and classes,
 > importing local JavaScript files, etc.) can be found in
-> [these tests](https://github.com/scalacenter/scalajs-bundler/blob/master/sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler/facade-examples).
+> [these tests](https://github.com/scalacenter/scalajs-bundler/blob/main/sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler/facade-examples).
 
 Finally, in your Scala code, just refer to the `foo` object:
 
@@ -207,7 +207,7 @@ custom webpack configuration file:
 ~~~
 
 You can find a fully working example
-[here](https://github.com/scalacenter/scalajs-bundler/blob/master/sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler/global-namespace-with-jsdom-unit-testing).
+[here](https://github.com/scalacenter/scalajs-bundler/blob/main/sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler/global-namespace-with-jsdom-unit-testing).
 
 ## How to bundle an application having several entry points as exports? {#several-entry-points}
 

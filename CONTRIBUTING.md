@@ -38,7 +38,7 @@ $ sbt "sbt-scalajs-bundler/scripted sbt-scalajs-bundler/<test-name>"
 ~~~
 
 (where `<test-name>` is replaced by one of the
-[tests](https://github.com/scalacenter/scalajs-bundler/tree/master/sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler)).
+[tests](https://github.com/scalacenter/scalajs-bundler/tree/main/sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler)).
 
 Sometimes you would like to open an interactive sbt shell and manually play with
 sbt tasks instead of writing them into a sbt-scripted test. In such a case, you

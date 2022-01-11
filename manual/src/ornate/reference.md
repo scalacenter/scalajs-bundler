@@ -39,7 +39,7 @@ npmDependencies in Test += "jasmine" -> "2.5.2"
 Last but not least, the `.js` files that are in your classpath and in the `jsSourceDirectories` are automatically
 copied to the working directory of the `node` command. This means that you can also `@JSImport` these modules from
 your Scala facades (you can see an example
-[here](https://github.com/scalacenter/scalajs-bundler/blob/master/sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler/js-resources/src/main/scala/example/MyModule.scala#L6)).
+[here](https://github.com/scalacenter/scalajs-bundler/blob/main/sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler/js-resources/src/main/scala/example/MyModule.scala#L6)).
 
 ### jsdom Support for Tests {#jsdom}
 
@@ -53,7 +53,7 @@ Then, `ScalaJSBundlerPlugin` will automatically download jsdom and bundle the te
 their execution so that they can be loaded by jsdom.
 
 You can find an example of project requiring the DOM for its tests
-[here](https://github.com/scalacenter/scalajs-bundler/blob/master/sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler/static/).
+[here](https://github.com/scalacenter/scalajs-bundler/blob/main/sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler/static/).
 
 ### Yarn {#yarn}
 

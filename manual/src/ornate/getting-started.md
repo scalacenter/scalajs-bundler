@@ -39,7 +39,7 @@ npmDependencies in Compile += "snabbdom" -> "0.5.3"
 > You will most probably want to write a [Scala.js facade](https://www.scala-js.org/doc/interoperability/facade-types.html#-imports-from-other-javascript-modules)
 > for the JavaScript module. You can find information on how to do that in the
 > [cookbook](cookbook.md#facade), or draw inspiration from
-> [this example](https://github.com/scalacenter/scalajs-bundler/blob/master/sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler/browserless/src/main/scala/uuid/uuid.scala).
+> [this example](https://github.com/scalacenter/scalajs-bundler/blob/main/sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler/browserless/src/main/scala/uuid/uuid.scala).
 
 Then, use the `fastOptJS::webpack` sbt command to download the npm packages and bundle your Scala.js
 application and its dependencies into a single JavaScript file executable by a web browser.
@@ -47,7 +47,7 @@ application and its dependencies into a single JavaScript file executable by a w
 In this example, the `webpack` sbt task produces a single file located at
 `target/scala-2.12/scalajs-bundler/main/<project-id>-fastopt-bundle.js`.
 
-See complete examples in the [tests](https://github.com/scalacenter/scalajs-bundler/tree/master/sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler).
+See complete examples in the [tests](https://github.com/scalacenter/scalajs-bundler/tree/main/sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler).
 
 ## Integrating with sbt-web {#sbt-web}
 
@@ -81,4 +81,4 @@ mappings to source files copied to a hash path, which conflict with `ScalaJSBund
 The `WebScalaJSBundlerPlugin` plugin automatically configures the `scalaJSPipeline` task to use
 the bundles rather than the output of the Scala.js compilation.
 
-You can see a complete example [here](https://github.com/scalacenter/scalajs-bundler/tree/master/sbt-web-scalajs-bundler/src/sbt-test/sbt-web-scalajs-bundler/play).
+You can see a complete example [here](https://github.com/scalacenter/scalajs-bundler/tree/ma/sbt-web-scalajs-bundler/src/sbt-test/sbt-web-scalajs-bundler/play).
