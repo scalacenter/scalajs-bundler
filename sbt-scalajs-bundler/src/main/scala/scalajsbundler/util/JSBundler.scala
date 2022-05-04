@@ -18,12 +18,14 @@ object JSBundler {
   ): Unit =
     IO.write(loaderFile.file, loaderScript(bundleName))
 
-  /**
-    * Run webpack to bundle the application.
+  /** Run webpack to bundle the application.
     *
-    * @param targetDir Target directory (and working directory for Nodejs)
-    * @param logger Logger
-    * @return The generated bundles
+    * @param targetDir
+    *   Target directory (and working directory for Nodejs)
+    * @param logger
+    *   Logger
+    * @return
+    *   The generated bundles
     */
   def bundle(
       targetDir: File,
@@ -43,27 +45,23 @@ object JSBundler {
           JS.ref("require")(JS.str("concat-with-sourcemaps")),
           JS.ref("require")(JS.str("fs"))
         ) { (Concat, fs) =>
-          JS.let(
-            JS.`new`(Concat,
-                     JS.bool(true),
-                     JS.str(bundleFile.file.name),
-                     JS.str(";\n"))) { concat =>
+          JS.let(JS.`new`(Concat, JS.bool(true), JS.str(bundleFile.file.name), JS.str(";\n"))) { concat =>
             JS.block(
               concat
                 .dot("add")
                 .apply(
                   JS.str(""),
                   fs.dot("readFileSync")
-                    .apply(JS.str(libraryFile.file.absolutePath),
-                           JS.str("utf-8")),
+                    .apply(JS.str(libraryFile.file.absolutePath), JS.str("utf-8")),
                   fs.dot("readFileSync")
                     .apply(JS.str(libraryFile.file.absolutePath ++ ".map"))
                 ),
               concat
                 .dot("add")
-                .apply(JS.str(loaderFile.file.name),
-                       fs.dot("readFileSync")
-                         .apply(JS.str(loaderFile.file.absolutePath))),
+                .apply(
+                  JS.str(loaderFile.file.name),
+                  fs.dot("readFileSync")
+                    .apply(JS.str(loaderFile.file.absolutePath))),
               concat
                 .dot("add")
                 .apply(
@@ -71,24 +69,22 @@ object JSBundler {
                   fs.dot("readFileSync")
                     .apply(JS.str(entry.file.absolutePath), JS.str("utf-8")),
                   fs.dot("readFileSync")
-                    .apply(JS.str(entry.file.absolutePath ++ ".map"),
-                           JS.str("utf-8"))
+                    .apply(JS.str(entry.file.absolutePath ++ ".map"), JS.str("utf-8"))
                 ),
-              JS.let(JS.ref("Buffer").dot("from").apply(
-                JS.str(s"\n//# sourceMappingURL=${bundleFile.file.name ++ ".map"}\n"))
-              ) { endBuffer =>
-                  JS.let(
-                    JS.ref("Buffer")
-                      .dot("concat")
-                      .apply(JS.arr(concat.dot("content"), endBuffer))) {
-                    result =>
-                      fs.dot("writeFileSync")
-                        .apply(JS.str(bundleFile.file.absolutePath), result)
-                  }
+              JS.let(
+                JS.ref("Buffer")
+                  .dot("from")
+                  .apply(JS.str(s"\n//# sourceMappingURL=${bundleFile.file.name ++ ".map"}\n"))) { endBuffer =>
+                JS.let(
+                  JS.ref("Buffer")
+                    .dot("concat")
+                    .apply(JS.arr(concat.dot("content"), endBuffer))) { result =>
+                  fs.dot("writeFileSync")
+                    .apply(JS.str(bundleFile.file.absolutePath), result)
+                }
               },
               fs.dot("writeFileSync")
-                .apply(JS.str(bundleFile.file.absolutePath ++ ".map"),
-                       concat.dot("sourceMap"))
+                .apply(JS.str(bundleFile.file.absolutePath ++ ".map"), concat.dot("sourceMap"))
             )
           }
         }

@@ -6,16 +6,18 @@ import sbt._
 import scala.util.Try
 
 case class NpmPackage(version: String) {
+
   def major: Option[Int] = {
     val r = """^(\d+)(\..*|)$""".r
     version match {
       case r(v, _) => Try(v.toInt).toOption
-      case _ => None
+      case _       => None
     }
   }
 }
 
 object NpmPackage {
+
   implicit val npmPackageDeserializer: Reads[NpmPackage] =
     (JsPath \ "version").read[String].map(NpmPackage.apply)
 

@@ -12,28 +12,25 @@ import webscalajs.WebScalaJS.autoImport._
 import scala.collection.immutable.Nil
 import scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.autoImport._
 
-/**
-  * If WebScalaJS is enabled, tweaks the pipelineStage so that the bundle is produced
-  * as an sbt-web asset.
+/** If WebScalaJS is enabled, tweaks the pipelineStage so that the bundle is produced as an sbt-web asset.
   *
-  * = Tasks and Settings =
+  * =Tasks and Settings=
   *
   * See the [[WebScalaJSBundlerPlugin.autoImport autoImport]] member.
   */
 object WebScalaJSBundlerPlugin extends AutoPlugin {
 
-  /**
-    * @groupname settings Settings
-    */
+  /** @groupname settings Settings */
   object autoImport {
 
-    /**
-      * Sequence of PathMapping’s to include to sbt-web’s assets.
+    /** Sequence of PathMapping’s to include to sbt-web’s assets.
       *
-      * @see [[scalajsbundler.sbtplugin.NpmAssets.ofProject NpmAssets.ofProject]]
+      * @see
+      *   [[scalajsbundler.sbtplugin.NpmAssets.ofProject NpmAssets.ofProject]]
       * @group settings
       */
-    val npmAssets: TaskKey[Seq[PathMapping]] = taskKey[Seq[PathMapping]]("Assets (resources that are not CommonJS modules) imported from the NPM packages")
+    val npmAssets: TaskKey[Seq[PathMapping]] =
+      taskKey[Seq[PathMapping]]("Assets (resources that are not CommonJS modules) imported from the NPM packages")
 
     val NpmAssets = scalajsbundler.sbtplugin.NpmAssets
 
@@ -51,13 +48,14 @@ object WebScalaJSBundlerPlugin extends AutoPlugin {
 
   val allFrontendProjectResourceDirectories: Def.Initialize[Seq[File]] = Def.settingDyn {
     val projectRefs = scalaJSProjects.value.map(Project.projectToRef)
-    projectRefs.map { project =>
-      Def.setting {
-        (resourceDirectories in Compile in project).value
+    projectRefs
+      .map { project =>
+        Def.setting {
+          (resourceDirectories in Compile in project).value
+        }
       }
-    }.foldLeft(Def.setting(Seq.empty[File]))((acc, resourceDirectories) =>
-      Def.setting(acc.value ++ resourceDirectories.value)
-    )
+      .foldLeft(Def.setting(Seq.empty[File]))((acc, resourceDirectories) =>
+        Def.setting(acc.value ++ resourceDirectories.value))
   }
 
   val bundlesWithSourceMaps: Def.Initialize[Task[Seq[(File, String)]]] =
@@ -81,7 +79,8 @@ object WebScalaJSBundlerPlugin extends AutoPlugin {
                 }
               }
             }
-            .foldLeft(Def.task(Seq.empty[((File, String), Boolean)]))((acc, bundleFiles) => Def.task(acc.value ++ bundleFiles.value))
+            .foldLeft(Def.task(Seq.empty[((File, String), Boolean)]))((acc, bundleFiles) =>
+              Def.task(acc.value ++ bundleFiles.value))
             .value
 
         bundles.flatMap { case ((file, path), bundleSourceMapsEnabled) =>

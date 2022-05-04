@@ -38,7 +38,7 @@ private[util] object JSPrinters {
     def printTopLevelTree(tree: Tree): Unit = {
       tree match {
         case Skip() =>
-          // do not print anything
+        // do not print anything
         case tree: Block =>
           var rest = tree.stats
           while (rest.nonEmpty) {
@@ -54,8 +54,8 @@ private[util] object JSPrinters {
     }
 
     protected def shouldPrintSepAfterTree(tree: Tree): Boolean = tree match {
-      case _:DocComment | _:FunctionDef | _:ClassDef => false
-      case _                                         => true
+      case _: DocComment | _: FunctionDef | _: ClassDef => false
+      case _                                            => true
     }
 
     protected def printRow(ts: List[Tree], start: Char, end: Char): Unit = {
@@ -341,7 +341,7 @@ private[util] object JSPrinters {
 
         case DotSelect(qualifier, item) =>
           qualifier match {
-            case _:IntLiteral | _:DoubleLiteral =>
+            case _: IntLiteral | _: DoubleLiteral =>
               print("(")
               print(qualifier)
               print(")")
@@ -381,10 +381,10 @@ private[util] object JSPrinters {
             print("typeof ")
           } else {
             (op: @switch) match {
-              case + => print('+')
-              case - => print('-')
-              case ~ => print('~')
-              case ! => print('!')
+              case +        => print('+')
+              case -        => print('-')
+              case ~        => print('~')
+              case !        => print('!')
               case `typeof` => print("typeof ")
             }
           }

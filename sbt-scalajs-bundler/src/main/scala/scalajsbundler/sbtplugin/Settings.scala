@@ -10,24 +10,33 @@ import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
 import sbt.Keys._
 import sbt._
 import scalajsbundler.{JSDOMNodeJSEnv, Webpack, JsDomTestEntries, NpmPackage}
-import scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.autoImport.{installJsdom, npmUpdate, requireJsDomEnv, webpackConfigFile, webpackNodeArgs, webpackResources, webpack}
+import scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.autoImport.{
+  installJsdom,
+  npmUpdate,
+  requireJsDomEnv,
+  webpackConfigFile,
+  webpackNodeArgs,
+  webpackResources,
+  webpack
+}
 import scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.{ensureModuleKindIsCommonJSModule, scalaJSBundlerImportedModules}
 import scalajsbundler.sbtplugin.internal.BuildInfo
 
 private[sbtplugin] object Settings {
 
-  private class BundlerLinkerImpl(base: LinkerImpl.Reflect)
-      extends LinkerImpl.Forwarding(base) {
+  private class BundlerLinkerImpl(base: LinkerImpl.Reflect) extends LinkerImpl.Forwarding(base) {
 
     private val loader = base.loader
 
     private val clearableLinkerMethod = {
-      Class.forName("scalajsbundler.bundlerlinker.BundlerLinkerImpl", true, loader)
+      Class
+        .forName("scalajsbundler.bundlerlinker.BundlerLinkerImpl", true, loader)
         .getMethod("clearableLinker", classOf[StandardConfig], classOf[Path])
     }
 
     def bundlerLinker(config: StandardConfig, entryPointOutputFile: Path): ClearableLinker = {
-      clearableLinkerMethod.invoke(null, config, entryPointOutputFile)
+      clearableLinkerMethod
+        .invoke(null, config, entryPointOutputFile)
         .asInstanceOf[ClearableLinker]
     }
   }
@@ -43,16 +52,15 @@ private[sbtplugin] object Settings {
         val dummyModuleID =
           "ch.epfl.scala" % "scalajs-bundler-linker-and-scalajs-linker_2.12" % s"${BuildInfo.version}/$scalaJSVersion"
         val dependencies = Vector(
-            // Load our linker back-end
-            "ch.epfl.scala" % "scalajs-bundler-linker_2.12" % BuildInfo.version,
-            // And force-bump the dependency on scalajs-linker to match the version of sbt-scalajs
-            "org.scala-js" % "scalajs-linker_2.12" % scalaJSVersion
+          // Load our linker back-end
+          "ch.epfl.scala" % "scalajs-bundler-linker_2.12" % BuildInfo.version,
+          // And force-bump the dependency on scalajs-linker to match the version of sbt-scalajs
+          "org.scala-js" % "scalajs-linker_2.12" % scalaJSVersion
         )
         val moduleDescriptor = lm.moduleDescriptor(dummyModuleID, dependencies, scalaModuleInfo = None)
         lm.retrieve(moduleDescriptor, retrieveDir, log)
           .fold(w => throw w.resolveException, Attributed.blankSeq(_))
       },
-
       scalaJSLinkerImpl := {
         val cp = (fullClasspath in scalaJSLinkerImpl).value
         scalaJSLinkerImplBox.value.ensure {
@@ -62,7 +70,9 @@ private[sbtplugin] object Settings {
     )
 
   // Settings that must be applied for each stage in each configuration
-  private def scalaJSStageSettings(stage: Stage, key: TaskKey[Attributed[Report]],
+  private def scalaJSStageSettings(
+      stage: Stage,
+      key: TaskKey[Attributed[Report]],
       legacyKey: TaskKey[Attributed[File]]): Seq[Setting[_]] = {
     val entryPointOutputFileName =
       s"entrypoints-${stage.toString.toLowerCase}.txt"
@@ -75,11 +85,11 @@ private[sbtplugin] object Settings {
         val entryPointOutputFile = crossTarget.value / entryPointOutputFileName
 
         box.ensure {
-          linkerImpl.asInstanceOf[BundlerLinkerImpl]
+          linkerImpl
+            .asInstanceOf[BundlerLinkerImpl]
             .bundlerLinker(config, entryPointOutputFile.toPath)
         }
       },
-
       scalaJSBundlerImportedModules in legacyKey := {
         val _ = legacyKey.value
         val entryPointOutputFile = crossTarget.value / entryPointOutputFileName
@@ -109,9 +119,8 @@ private[sbtplugin] object Settings {
         val optMainModule = report.publicModules.find(_.moduleID == "main")
         val optMainModulePath = optMainModule.map { mainModule =>
           val linkerOutputDirectory = linkingResult.get(scalaJSLinkerOutputDirectory.key).getOrElse {
-            throw new MessageOnlyException(
-                "Linking report was not attributed with output directory. " +
-                "Please report this as a Scala.js bug.")
+            throw new MessageOnlyException("Linking report was not attributed with output directory. " +
+              "Please report this as a Scala.js bug.")
           }
           (linkerOutputDirectory / mainModule.jsFileName).toPath
         }
@@ -129,7 +138,6 @@ private[sbtplugin] object Settings {
             prev
         }
       },
-
       scalaJSStageSettings(FastOptStage, fastLinkJS, fastOptJS),
       scalaJSStageSettings(FullOptStage, fullLinkJS, fullOptJS)
     )
@@ -140,12 +148,14 @@ private[sbtplugin] object Settings {
       // Configure a JSDOMNodeJSEnv with an installation of jsdom if requireJsDomEnv is true
       jsEnv := {
         val defaultJSEnv = jsEnv.value
-        val optJsdomDir = Def.taskDyn[Option[File]] {
-          if (requireJsDomEnv.value)
-            installJsdom.map(Some(_))
-          else
-            Def.task(None)
-        }.value
+        val optJsdomDir = Def
+          .taskDyn[Option[File]] {
+            if (requireJsDomEnv.value)
+              installJsdom.map(Some(_))
+            else
+              Def.task(None)
+          }
+          .value
         optJsdomDir match {
           case Some(jsdomDir) => new JSDOMNodeJSEnv(JSDOMNodeJSEnv.Config(jsdomDir))
           case None           => defaultJSEnv
@@ -153,83 +163,95 @@ private[sbtplugin] object Settings {
       },
 
       // Use the product of bundling in jsEnvInput if requireJsDomEnv is true
-      jsEnvInput := Def.task {
-        assert(ensureModuleKindIsCommonJSModule.value)
-        val prev = jsEnvInput.value
-        val sjsOutput = scalaJSLinkedFile.value.data
+      jsEnvInput := Def
+        .task {
+          assert(ensureModuleKindIsCommonJSModule.value)
+          val prev = jsEnvInput.value
+          val sjsOutput = scalaJSLinkedFile.value.data
 
-        val optBundle = {
-          Def.taskDyn[Option[org.scalajs.jsenv.Input]] {
-            val sjsOutput = scalaJSLinkedFile.value.data
-            // If jsdom is going to be used, then we should bundle the test module
-            if (requireJsDomEnv.value) Def.task {
-              val logger = streams.value.log
-              val targetDir = npmUpdate.value
-              val sjsOutputName = sjsOutput.name.stripSuffix(".js")
-              val bundle = targetDir / s"$sjsOutputName-bundle.js"
-              val webpackVersion = (version in webpack).value
+          val optBundle = {
+            Def
+              .taskDyn[Option[org.scalajs.jsenv.Input]] {
+                val sjsOutput = scalaJSLinkedFile.value.data
+                // If jsdom is going to be used, then we should bundle the test module
+                if (requireJsDomEnv.value) Def.task {
+                  val logger = streams.value.log
+                  val targetDir = npmUpdate.value
+                  val sjsOutputName = sjsOutput.name.stripSuffix(".js")
+                  val bundle = targetDir / s"$sjsOutputName-bundle.js"
+                  val webpackVersion = (version in webpack).value
 
-              val customWebpackConfigFile = (webpackConfigFile in Test).value
-              val nodeArgs = (webpackNodeArgs in Test).value
+                  val customWebpackConfigFile = (webpackConfigFile in Test).value
+                  val nodeArgs = (webpackNodeArgs in Test).value
 
-              val writeTestBundleFunction =
-                FileFunction.cached(
-                  streams.value.cacheDirectory / "test-loader",
-                  inStyle = FilesInfo.hash
-                ) { _ =>
-                  logger.info("Writing and bundling the test loader")
-                  val loader = targetDir / s"$sjsOutputName-loader.js"
-                  JsDomTestEntries.writeLoader(sjsOutput, loader)
+                  val writeTestBundleFunction =
+                    FileFunction.cached(
+                      streams.value.cacheDirectory / "test-loader",
+                      inStyle = FilesInfo.hash
+                    ) { _ =>
+                      logger.info("Writing and bundling the test loader")
+                      val loader = targetDir / s"$sjsOutputName-loader.js"
+                      JsDomTestEntries.writeLoader(sjsOutput, loader)
 
-                  val configArgs = customWebpackConfigFile match {
-                    case Some(configFile) =>
-                      val customConfigFileCopy = Webpack.copyCustomWebpackConfigFiles(targetDir, webpackResources.value.get)(configFile)
-                      Seq("--config", customConfigFileCopy.getAbsolutePath)
+                      val configArgs = customWebpackConfigFile match {
+                        case Some(configFile) =>
+                          val customConfigFileCopy =
+                            Webpack.copyCustomWebpackConfigFiles(targetDir, webpackResources.value.get)(configFile)
+                          Seq("--config", customConfigFileCopy.getAbsolutePath)
 
-                    case None =>
-                      Seq.empty
-                  }
+                        case None =>
+                          Seq.empty
+                      }
 
-                  // TODO: It assumes tests are run on development mode. It should instead use build settings
-                  val allArgs = Seq(
-                    "--mode", "development",
-                    "--entry", loader.absolutePath,
-                    "--output-path", bundle.getParentFile.absolutePath,
-                    "--output-filename", bundle.name
-                  ) ++ configArgs
+                      // TODO: It assumes tests are run on development mode. It should instead use build settings
+                      val allArgs = Seq(
+                        "--mode",
+                        "development",
+                        "--entry",
+                        loader.absolutePath,
+                        "--output-path",
+                        bundle.getParentFile.absolutePath,
+                        "--output-filename",
+                        bundle.name
+                      ) ++ configArgs
 
-                  NpmPackage(webpackVersion).major match {
-                    case Some(5) =>
-                      Webpack.run(nodeArgs: _*)(allArgs: _*)(targetDir, logger)
-                    case Some(x) =>
-                      sys.error(s"Unsupported webpack major version $x")
-                    case None =>
-                      sys.error("No webpack version defined")
-                  }
+                      NpmPackage(webpackVersion).major match {
+                        case Some(5) =>
+                          Webpack.run(nodeArgs: _*)(allArgs: _*)(targetDir, logger)
+                        case Some(x) =>
+                          sys.error(s"Unsupported webpack major version $x")
+                        case None =>
+                          sys.error("No webpack version defined")
+                      }
 
-                  Set.empty
+                      Set.empty
+                    }
+                  writeTestBundleFunction(Set(sjsOutput))
+
+                  Some(Script(bundle.toPath))
                 }
-              writeTestBundleFunction(Set(sjsOutput))
+                else
+                  Def.task {
+                    None
+                  }
+              }
+              .value
+          }
 
-              Some(Script(bundle.toPath))
-            } else Def.task {
-              None
-            }
-          }.value
+          optBundle match {
+            case Some(bundle) =>
+              prev.map {
+                case CommonJSModule(module) if module == sjsOutput.toPath() =>
+                  bundle
+                case inputItem =>
+                  inputItem
+              }
+            case None =>
+              prev
+          }
         }
-
-        optBundle match {
-          case Some(bundle) =>
-            prev.map {
-              case CommonJSModule(module) if module == sjsOutput.toPath() =>
-                bundle
-              case inputItem =>
-                inputItem
-            }
-          case None =>
-            prev
-        }
-      }.dependsOn(npmUpdate).value
+        .dependsOn(npmUpdate)
+        .value
     )
 
 }

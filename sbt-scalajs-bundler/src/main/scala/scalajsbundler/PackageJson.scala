@@ -6,32 +6,40 @@ import scalajsbundler.util.JSON
 
 object PackageJson {
 
-  /**
-    * Write a package.json file defining the NPM dependencies of the application, plus the ones
-    * required to do the bundling.
+  /** Write a package.json file defining the NPM dependencies of the application, plus the ones required to do the
+    * bundling.
     *
-    * @param log Logger
-    * @param targetFile File to write into
-    * @param npmDependencies NPM dependencies
-    * @param npmDevDependencies NPM devDependencies
-    * @param npmResolutions Resolutions to use in case of conflicting dependencies
-    * @param additionalNpmConfig Additional options to include in 'package.json'
-    * @param fullClasspath Classpath (used to look for dependencies of Scala.js libraries this project depends on)
-    * @param currentConfiguration Current configuration
-    * @return The created package.json file
+    * @param log
+    *   Logger
+    * @param targetFile
+    *   File to write into
+    * @param npmDependencies
+    *   NPM dependencies
+    * @param npmDevDependencies
+    *   NPM devDependencies
+    * @param npmResolutions
+    *   Resolutions to use in case of conflicting dependencies
+    * @param additionalNpmConfig
+    *   Additional options to include in 'package.json'
+    * @param fullClasspath
+    *   Classpath (used to look for dependencies of Scala.js libraries this project depends on)
+    * @param currentConfiguration
+    *   Current configuration
+    * @return
+    *   The created package.json file
     */
   def write(
-    log: Logger,
-    targetFile: File,
-    npmDependencies: Seq[(String, String)],
-    npmDevDependencies: Seq[(String, String)],
-    npmResolutions: Map[String, String],
-    additionalNpmConfig: Map[String, JSON],
-    fullClasspath: Seq[Attributed[File]],
-    currentConfiguration: Configuration,
-    webpackVersion: String,
-    webpackDevServerVersion: String,
-    webpackCliVersion: String
+      log: Logger,
+      targetFile: File,
+      npmDependencies: Seq[(String, String)],
+      npmDevDependencies: Seq[(String, String)],
+      npmResolutions: Map[String, String],
+      additionalNpmConfig: Map[String, JSON],
+      fullClasspath: Seq[Attributed[File]],
+      currentConfiguration: Configuration,
+      webpackVersion: String,
+      webpackDevServerVersion: String,
+      webpackCliVersion: String
   ): Unit = {
     val npmManifestDependencies = NpmDependencies.collectFromClasspath(fullClasspath)
     val dependencies =
@@ -63,8 +71,8 @@ object PackageJson {
       JSON.obj(
         (
           additionalNpmConfig.toSeq :+
-          "dependencies" -> JSON.objStr(resolveDependencies(dependencies, npmResolutions, log)) :+
-          "devDependencies" -> JSON.objStr(resolveDependencies(devDependencies, npmResolutions, log))
+            "dependencies" -> JSON.objStr(resolveDependencies(dependencies, npmResolutions, log)) :+
+            "devDependencies" -> JSON.objStr(resolveDependencies(devDependencies, npmResolutions, log))
         ): _*
       )
 
@@ -72,23 +80,26 @@ object PackageJson {
     IO.write(targetFile, packageJson.toJson)
   }
 
-  /**
-    * Resolves multiple occurrences of a dependency to a same package.
+  /** Resolves multiple occurrences of a dependency to a same package.
     *
-    *  - If all the occurrences refer to the same version, pick this one ;
-    *  - If they refer to different versions, pick the one defined in `resolutions` (or fail
-    *    if there is no such resolution).
+    *   - If all the occurrences refer to the same version, pick this one ;
+    *   - If they refer to different versions, pick the one defined in `resolutions` (or fail if there is no such
+    *     resolution).
     *
-    * @return The resolved dependencies
-    * @param dependencies The dependencies to resolve
-    * @param resolutions The resolutions to use in case of conflict (they will be ignored if there are no conflicts)
-    * @param log Logger
+    * @return
+    *   The resolved dependencies
+    * @param dependencies
+    *   The dependencies to resolve
+    * @param resolutions
+    *   The resolutions to use in case of conflict (they will be ignored if there are no conflicts)
+    * @param log
+    *   Logger
     */
   def resolveDependencies(
-    dependencies: Seq[(String, String)],
-    resolutions: Map[String, String],
-    log: Logger
-  ): List[(String, String)] ={
+      dependencies: Seq[(String, String)],
+      resolutions: Map[String, String],
+      log: Logger
+  ): List[(String, String)] = {
     val resolvedDependencies =
       dependencies
         .groupBy { case (name, version) => name }
@@ -101,7 +112,7 @@ object PackageJson {
               case _ =>
                 val resolution = resolutions.get(name) match {
                   case Some(v) => v
-                  case None => versions.mkString(" ")
+                  case None    => versions.mkString(" ")
                 }
                 name -> resolution
             }
