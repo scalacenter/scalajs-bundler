@@ -1,4 +1,5 @@
 package scalajsbundler.sbtplugin
+
 import sbt.Keys._
 import sbt.{Def, _}
 
@@ -8,15 +9,14 @@ import scalajsbundler.sbtplugin.ScalaJSBundlerPlugin.autoImport._
 import scalajsbundler.Webpack
 
 object WebpackTasks {
-  private[sbtplugin] def entry(stage: TaskKey[Attributed[File]])
-  : Def.Initialize[Task[BundlerFile.Application]] =
+
+  private[sbtplugin] def entry(stage: TaskKey[Attributed[File]]): Def.Initialize[Task[BundlerFile.Application]] =
     Def.task {
       val projectName = stage.value.data.name.stripSuffix(".js")
       BundlerFile.Application(projectName, stage.value.data, Nil)
     }
 
-  private[sbtplugin] def webpack(
-      stage: TaskKey[Attributed[File]]): Def.Initialize[Task[Seq[Attributed[File]]]] =
+  private[sbtplugin] def webpack(stage: TaskKey[Attributed[File]]): Def.Initialize[Task[Seq[Attributed[File]]]] =
     Def.task {
       assert(ensureModuleKindIsCommonJSModule.value)
       val cacheLocation = streams.value.cacheDirectory / s"${stage.key.label}-webpack"
@@ -40,19 +40,21 @@ object WebpackTasks {
           cacheLocation,
           inStyle = FilesInfo.hash
         ) { _ =>
-          Webpack.bundle(
-            emitSourceMaps,
-            generatedWebpackConfigFile,
-            customWebpackConfigFile,
-            webpackResourceFiles,
-            entriesList,
-            targetDir,
-            extraArgs,
-            nodeArgs,
-            webpackMode,
-            devServerPort,
-            log
-          ).cached
+          Webpack
+            .bundle(
+              emitSourceMaps,
+              generatedWebpackConfigFile,
+              customWebpackConfigFile,
+              webpackResourceFiles,
+              entriesList,
+              targetDir,
+              extraArgs,
+              nodeArgs,
+              webpackMode,
+              devServerPort,
+              log
+            )
+            .cached
         }
       val cached = cachedActionFunction(monitoredFiles.to[Set])
       generatedWebpackConfigFile.asApplicationBundleFromCached(cached).asAttributedFiles

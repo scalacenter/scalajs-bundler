@@ -11,6 +11,7 @@ private[util] sealed abstract class JSLike(val tree: Tree) {
 }
 
 object JSLike {
+
   private def show(tree: Tree, isStat: Boolean): String = {
     val writer = new java.io.StringWriter
     val printer = new JSPrinters.JSTreePrinter(writer)
@@ -20,7 +21,7 @@ object JSLike {
 }
 
 /** A convenient wrapper around JS trees */
-final class JS private(tree: Tree) extends JSLike(tree) {
+final class JS private (tree: Tree) extends JSLike(tree) {
   def dot(ident: String): JS = JS(DotSelect(tree, Ident(ident)))
   def bracket(ident: String): JS = JS(BracketSelect(tree, StringLiteral(ident)))
   def bracket(ident: JSLike): JS = JS(BracketSelect(tree, ident.tree))
@@ -96,12 +97,13 @@ object JS {
   def `new`(ctor: JS, args: JSLike*): JS = JS(New(ctor.tree, args.map(_.tree).to[List]))
 
   private val identifierSeq = new AtomicInteger(0)
+
   private def freshIdentifier(): String =
     s"x${identifierSeq.getAndIncrement()}"
 
 }
 
-final class JSON private(tree: Tree) extends JSLike(tree)
+final class JSON private (tree: Tree) extends JSLike(tree)
 
 object JSON {
 

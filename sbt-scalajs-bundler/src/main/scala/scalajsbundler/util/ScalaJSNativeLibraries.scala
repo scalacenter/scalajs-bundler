@@ -13,24 +13,31 @@ private[scalajsbundler] object ScalaJSNativeLibraries {
 
   // Copied from https://github.com/scala-js/jsdependencies
   def apply(fullClasspath: Seq[Attributed[File]]): Seq[(String, Path)] = {
-    collectFromClasspath(fullClasspath,
-      "*.js", collectJar = jsFilesInJar,
+    collectFromClasspath(
+      fullClasspath,
+      "*.js",
+      collectJar = jsFilesInJar,
       collectFile = (f, relPath) => relPath -> f.toPath())
   }
 
   /** Collect certain file types from a classpath.
     *
-    *  @param cp Classpath to collect from
-    *  @param filter Filter for (real) files of interest (not in jars)
-    *  @param collectJar Collect elements from a jar (called for all jars)
-    *  @param collectFile Collect a single file. Params are the file and the
-    *      relative path of the file (to its classpath entry root).
-    *  @return Collected elements attributed with physical files they originated
-    *      from (key: scalaJSSourceFiles).
+    * @param cp
+    *   Classpath to collect from
+    * @param filter
+    *   Filter for (real) files of interest (not in jars)
+    * @param collectJar
+    *   Collect elements from a jar (called for all jars)
+    * @param collectFile
+    *   Collect a single file. Params are the file and the relative path of the file (to its classpath entry root).
+    * @return
+    *   Collected elements attributed with physical files they originated from (key: scalaJSSourceFiles).
     */
-  private def collectFromClasspath[T](cp: Def.Classpath, filter: FileFilter,
-    collectJar: File => Seq[T],
-    collectFile: (File, String) => T): Seq[T] = {
+  private def collectFromClasspath[T](
+      cp: Def.Classpath,
+      filter: FileFilter,
+      collectJar: File => Seq[T],
+      collectFile: (File, String) => T): Seq[T] = {
 
     val results = Seq.newBuilder[T]
 
@@ -45,8 +52,7 @@ private[scalajsbundler] object ScalaJSNativeLibraries {
           results += collectFile(file, relPath)
         }
       } else {
-        throw new IllegalArgumentException(
-          "Illegal classpath entry: " + cpEntry.getPath)
+        throw new IllegalArgumentException("Illegal classpath entry: " + cpEntry.getPath)
       }
     }
 
@@ -56,8 +62,7 @@ private[scalajsbundler] object ScalaJSNativeLibraries {
   private def jsFilesInJar(jar: File): List[(String, Path)] =
     jarListEntries(jar, _.endsWith(".js"))
 
-  private def jarListEntries[T](jar: File,
-    p: String => Boolean): List[(String, Path)] = {
+  private def jarListEntries[T](jar: File, p: String => Boolean): List[(String, Path)] = {
 
     import java.util.zip._
 
@@ -97,7 +102,8 @@ private[scalajsbundler] object ScalaJSNativeLibraries {
         }
       }
 
-      Iterator.continually(stream.getNextEntry())
+      Iterator
+        .continually(stream.getNextEntry())
         .takeWhile(_ != null)
         .filter(e => p(e.getName))
         .map(makeVF)

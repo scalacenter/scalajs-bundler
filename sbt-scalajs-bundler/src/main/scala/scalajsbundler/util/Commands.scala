@@ -8,7 +8,11 @@ import scala.sys.process.ProcessLogger
 
 object Commands {
 
-  def run[A](cmd: Seq[String], cwd: File, logger: Logger, outputProcess: InputStream => A): Either[String, Option[A]] = {
+  def run[A](
+      cmd: Seq[String],
+      cwd: File,
+      logger: Logger,
+      outputProcess: InputStream => A): Either[String, Option[A]] = {
     val toErrorLog = (is: InputStream) => {
       scala.io.Source.fromInputStream(is).getLines.foreach(msg => logger.error(msg))
       is.close()

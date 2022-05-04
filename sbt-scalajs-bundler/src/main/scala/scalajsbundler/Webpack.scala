@@ -10,29 +10,37 @@ import Stats._
 import scala.util.{Failure, Success, Try}
 
 object Webpack {
+
   // Represents webpack 5 modes
   sealed trait WebpackMode {
     def mode: String
   }
+
   case object DevelopmentMode extends WebpackMode {
     val mode = "development"
   }
+
   case object ProductionMode extends WebpackMode {
     val mode = "production"
   }
+
   object WebpackMode {
+
     def fromBooleanProductionMode(productionMode: Boolean): WebpackMode =
       if (productionMode) ProductionMode
       else DevelopmentMode
   }
 
-  /**
-    * Copies the custom webpack configuration file and the webpackResources to the target dir
+  /** Copies the custom webpack configuration file and the webpackResources to the target dir
     *
-    * @param targetDir target directory
-    * @param webpackResources Resources to copy
-    * @param customConfigFile User supplied config file
-    * @return The copied config file.
+    * @param targetDir
+    *   target directory
+    * @param webpackResources
+    *   Resources to copy
+    * @param customConfigFile
+    *   User supplied config file
+    * @return
+    *   The copied config file.
     */
   def copyCustomWebpackConfigFiles(targetDir: File, webpackResources: Seq[File])(customConfigFile: File): File = {
     def copyToWorkingDir(targetDir: File)(file: File): File = {
@@ -45,39 +53,43 @@ object Webpack {
     copyToWorkingDir(targetDir)(customConfigFile)
   }
 
-  /**
-    * Writes the webpack configuration file. The output file is designed to be minimal, and to be extended,
-    * however, the `entry` and `output` keys must be preserved in order for the bundler to work as expected.
+  /** Writes the webpack configuration file. The output file is designed to be minimal, and to be extended, however, the
+    * `entry` and `output` keys must be preserved in order for the bundler to work as expected.
     *
-    * @param emitSourceMaps Whether source maps is enabled at all
-    * @param entry The input entrypoint file to process via webpack
-    * @param webpackConfigFile webpack configuration file to write to
-    * @param libraryBundleName If defined, generate a library bundle named `libraryBundleName`
-    * @param log Logger
+    * @param emitSourceMaps
+    *   Whether source maps is enabled at all
+    * @param entry
+    *   The input entrypoint file to process via webpack
+    * @param webpackConfigFile
+    *   webpack configuration file to write to
+    * @param libraryBundleName
+    *   If defined, generate a library bundle named `libraryBundleName`
+    * @param log
+    *   Logger
     */
   def writeConfigFile(
-    emitSourceMaps: Boolean,
-    entry: BundlerFile.WebpackInput,
-    webpackConfigFile: BundlerFile.WebpackConfig,
-    libraryBundleName: Option[String],
-    mode: WebpackMode,
-    devServerPort: Int,
-    log: Logger
+      emitSourceMaps: Boolean,
+      entry: BundlerFile.WebpackInput,
+      webpackConfigFile: BundlerFile.WebpackConfig,
+      libraryBundleName: Option[String],
+      mode: WebpackMode,
+      devServerPort: Int,
+      log: Logger
   ): Unit = {
-    val webpackConfigContent = generateConfigFile(emitSourceMaps, entry, webpackConfigFile, libraryBundleName, mode,
-      devServerPort)
+    val webpackConfigContent =
+      generateConfigFile(emitSourceMaps, entry, webpackConfigFile, libraryBundleName, mode, devServerPort)
 
     log.info("Writing scalajs.webpack.config.js")
     IO.write(webpackConfigFile.file, webpackConfigContent.show)
   }
 
   private def generateConfigFile(
-    emitSourceMaps: Boolean,
-    entry: BundlerFile.WebpackInput,
-    webpackConfigFile: BundlerFile.WebpackConfig,
-    libraryBundleName: Option[String],
-    mode: WebpackMode,
-    devServerPort: Int
+      emitSourceMaps: Boolean,
+      entry: BundlerFile.WebpackInput,
+      webpackConfigFile: BundlerFile.WebpackConfig,
+      libraryBundleName: Option[String],
+      mode: WebpackMode,
+      devServerPort: Int
   ): JS = {
     val webpackNpmPackage = NpmPackage.getForModule(webpackConfigFile.targetDir.toFile, "webpack")
     webpackNpmPackage.flatMap(_.major) match {
@@ -99,28 +111,30 @@ object Webpack {
             )
         }
 
-        JS.ref("module").dot("exports").assign(JS.obj(Seq(
-          "entry" -> JS.obj(
-            entry.project -> JS.arr(JS.str(entry.file.absolutePath))
-          ),
-          "output" -> output,
-          "mode" -> JS.str(mode.mode),
-          "devServer" -> JS.obj("port" -> JS.int(devServerPort)),
-        ) ++ (
-          if (emitSourceMaps) {
-            Seq(
-              "devtool" -> JS.str("source-map"),
-              "module" -> JS.obj(
-                "rules" -> JS.arr(
-                  JS.obj(
-                    "test" -> JS.regex("\\.js$"),
-                    "enforce" -> JS.str("pre"),
-                    "use" -> JS.arr(JS.str("source-map-loader"))
+        JS.ref("module")
+          .dot("exports")
+          .assign(JS.obj(Seq(
+            "entry" -> JS.obj(
+              entry.project -> JS.arr(JS.str(entry.file.absolutePath))
+            ),
+            "output" -> output,
+            "mode" -> JS.str(mode.mode),
+            "devServer" -> JS.obj("port" -> JS.int(devServerPort))
+          ) ++ (
+            if (emitSourceMaps) {
+              Seq(
+                "devtool" -> JS.str("source-map"),
+                "module" -> JS.obj(
+                  "rules" -> JS.arr(
+                    JS.obj(
+                      "test" -> JS.regex("\\.js$"),
+                      "enforce" -> JS.str("pre"),
+                      "use" -> JS.arr(JS.str("source-map-loader"))
+                    )
                   )
                 )
               )
-            )
-          } else Nil
+            } else Nil
           ): _*))
 
       case Some(x) =>
@@ -131,33 +145,43 @@ object Webpack {
     }
   }
 
-  /**
-    * Run webpack to bundle the application.
+  /** Run webpack to bundle the application.
     *
-    * @param emitSourceMaps Whether or not source maps are enabled
-    * @param generatedWebpackConfigFile Webpack config file generated by scalajs-bundler
-    * @param customWebpackConfigFile User supplied config file
-    * @param webpackResources Additional resources to be copied to the working folder
-    * @param entry Scala.js application to bundle
-    * @param targetDir Target directory (and working directory for Nodejs)
-    * @param extraArgs Extra arguments passed to webpack
-    * @param mode Mode for webpack 5
-    * @param devServerPort Port used by webpack-dev-server
-    * @param log Logger
-    * @return The generated bundles
+    * @param emitSourceMaps
+    *   Whether or not source maps are enabled
+    * @param generatedWebpackConfigFile
+    *   Webpack config file generated by scalajs-bundler
+    * @param customWebpackConfigFile
+    *   User supplied config file
+    * @param webpackResources
+    *   Additional resources to be copied to the working folder
+    * @param entry
+    *   Scala.js application to bundle
+    * @param targetDir
+    *   Target directory (and working directory for Nodejs)
+    * @param extraArgs
+    *   Extra arguments passed to webpack
+    * @param mode
+    *   Mode for webpack 5
+    * @param devServerPort
+    *   Port used by webpack-dev-server
+    * @param log
+    *   Logger
+    * @return
+    *   The generated bundles
     */
   def bundle(
-     emitSourceMaps: Boolean,
-     generatedWebpackConfigFile: BundlerFile.WebpackConfig,
-     customWebpackConfigFile: Option[File],
-     webpackResources: Seq[File],
-     entry: BundlerFile.Application,
-     targetDir: File,
-     extraArgs: Seq[String],
-     nodeArgs: Seq[String],
-     mode: WebpackMode,
-     devServerPort: Int,
-     log: Logger
+      emitSourceMaps: Boolean,
+      generatedWebpackConfigFile: BundlerFile.WebpackConfig,
+      customWebpackConfigFile: Option[File],
+      webpackResources: Seq[File],
+      entry: BundlerFile.Application,
+      targetDir: File,
+      extraArgs: Seq[String],
+      nodeArgs: Seq[String],
+      mode: WebpackMode,
+      devServerPort: Int,
+      log: Logger
   ): BundlerFile.ApplicationBundle = {
     writeConfigFile(emitSourceMaps, entry, generatedWebpackConfigFile, None, mode, devServerPort, log)
 
@@ -177,32 +201,41 @@ object Webpack {
     bundle
   }
 
-  /**
-    * Run webpack to bundle the application.
+  /** Run webpack to bundle the application.
     *
-    * @param emitSourceMaps Are source maps enabled?
-    * @param generatedWebpackConfigFile Webpack config file generated by scalajs-bundler
-    * @param customWebpackConfigFile User supplied config file
-    * @param webpackResources Additional webpack resources to include in the working directory
-    * @param entryPointFile The entrypoint file to bundle dependencies for
-    * @param libraryModuleName The library module name to assign the webpack bundle to
-    * @param extraArgs Extra arguments passed to webpack
-    * @param mode Mode for webpack 5
-    * @param log Logger
-    * @return The generated bundle
+    * @param emitSourceMaps
+    *   Are source maps enabled?
+    * @param generatedWebpackConfigFile
+    *   Webpack config file generated by scalajs-bundler
+    * @param customWebpackConfigFile
+    *   User supplied config file
+    * @param webpackResources
+    *   Additional webpack resources to include in the working directory
+    * @param entryPointFile
+    *   The entrypoint file to bundle dependencies for
+    * @param libraryModuleName
+    *   The library module name to assign the webpack bundle to
+    * @param extraArgs
+    *   Extra arguments passed to webpack
+    * @param mode
+    *   Mode for webpack 5
+    * @param log
+    *   Logger
+    * @return
+    *   The generated bundle
     */
   def bundleLibraries(
-    emitSourceMaps: Boolean,
-    generatedWebpackConfigFile: BundlerFile.WebpackConfig,
-    customWebpackConfigFile: Option[File],
-    webpackResources: Seq[File],
-    entryPointFile: BundlerFile.EntryPoint,
-    libraryModuleName: String,
-    extraArgs: Seq[String],
-    nodeArgs: Seq[String],
-    mode: WebpackMode,
-    devServerPort: Int,
-    log: Logger
+      emitSourceMaps: Boolean,
+      generatedWebpackConfigFile: BundlerFile.WebpackConfig,
+      customWebpackConfigFile: Option[File],
+      webpackResources: Seq[File],
+      entryPointFile: BundlerFile.EntryPoint,
+      libraryModuleName: String,
+      extraArgs: Seq[String],
+      nodeArgs: Seq[String],
+      mode: WebpackMode,
+      devServerPort: Int,
+      log: Logger
   ): BundlerFile.Library = {
     writeConfigFile(
       emitSourceMaps,
@@ -235,8 +268,8 @@ object Webpack {
         case JsError(e) =>
           logger.error("Error parsing webpack stats output")
           // In case of error print the result and return None. it will be ignored upstream
-          e.foreach {
-            case (p, v) => logger.error(s"$p: ${v.mkString(",")}")
+          e.foreach { case (p, v) =>
+            logger.error(s"$p: ${v.mkString(",")}")
           }
           None
         case JsSuccess(p, _) =>
@@ -271,13 +304,16 @@ object Webpack {
     }
   }
 
-  /**
-    * Runs the webpack command.
+  /** Runs the webpack command.
     *
-    * @param nodeArgs node.js cli flags
-    * @param args Arguments to pass to the webpack command
-    * @param workingDir Working directory in which the Nodejs will be run (where there is the `node_modules` subdirectory)
-    * @param log Logger
+    * @param nodeArgs
+    *   node.js cli flags
+    * @param args
+    *   Arguments to pass to the webpack command
+    * @param workingDir
+    *   Working directory in which the Nodejs will be run (where there is the `node_modules` subdirectory)
+    * @param log
+    *   Logger
     */
   def run(nodeArgs: String*)(args: String*)(workingDir: File, log: Logger): Option[WebpackStats] = {
     val webpackBin = workingDir / "node_modules" / "webpack" / "bin" / "webpack"

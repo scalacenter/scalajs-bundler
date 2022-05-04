@@ -11,26 +11,26 @@ import scalajsbundler.util.{Caching, JSBundler}
 
 object LibraryTasks {
 
-  private[sbtplugin] def entryPoint(stage: TaskKey[Attributed[File]])
-    : Def.Initialize[Task[BundlerFile.EntryPoint]] =
-    Def.task {
-      val s = streams.value
-      val importedModules = (scalaJSBundlerImportedModules in stage).value
-      val entry = WebpackTasks.entry(stage).value
-      val cacheLocation = streams.value.cacheDirectory / s"${stage.key.label}-webpack-entrypoint"
-      val entryPointFile = entry.asEntryPoint
+  private[sbtplugin] def entryPoint(stage: TaskKey[Attributed[File]]): Def.Initialize[Task[BundlerFile.EntryPoint]] =
+    Def
+      .task {
+        val s = streams.value
+        val importedModules = (scalaJSBundlerImportedModules in stage).value
+        val entry = WebpackTasks.entry(stage).value
+        val cacheLocation = streams.value.cacheDirectory / s"${stage.key.label}-webpack-entrypoint"
+        val entryPointFile = entry.asEntryPoint
 
-      // Avoid re-writing the entrypoint file if the list of modules hasn't changed
-      // allowing downstream caching to detect change reliably
-      Caching.cached(entryPointFile.file, importedModules.mkString(","), cacheLocation)(
-        () =>
+        // Avoid re-writing the entrypoint file if the list of modules hasn't changed
+        // allowing downstream caching to detect change reliably
+        Caching.cached(entryPointFile.file, importedModules.mkString(","), cacheLocation)(() =>
           WebpackEntryPoint.writeEntryPoint(
             importedModules,
             entryPointFile,
             s.log
-        ))
-      entryPointFile
-    }.dependsOn(npmUpdate in stage)
+          ))
+        entryPointFile
+      }
+      .dependsOn(npmUpdate in stage)
 
   private[sbtplugin] def bundle(
       stage: TaskKey[Attributed[File]],
@@ -62,19 +62,21 @@ object LibraryTasks {
         ) { _ =>
           log.info(s"Building webpack library bundles for ${entryPointFile.project} in $cacheLocation")
 
-          Webpack.bundleLibraries(
-            emitSourceMaps,
-            generatedWebpackConfigFile,
-            customWebpackConfigFile,
-            webpackResourceFiles,
-            entryPointFile,
-            mode.exportedName,
-            extraArgs,
-            nodeArgs,
-            webpackMode,
-            devServerPort,
-            log
-          ).cached
+          Webpack
+            .bundleLibraries(
+              emitSourceMaps,
+              generatedWebpackConfigFile,
+              customWebpackConfigFile,
+              webpackResourceFiles,
+              entryPointFile,
+              mode.exportedName,
+              extraArgs,
+              nodeArgs,
+              webpackMode,
+              devServerPort,
+              log
+            )
+            .cached
         }
       val cached = cachedActionFunction(monitoredFiles.to[Set])
       generatedWebpackConfigFile.asLibraryFromCached(cached)
@@ -95,9 +97,9 @@ object LibraryTasks {
       loaderFile
     }
 
-  private[sbtplugin] def bundleAll(stage: TaskKey[Attributed[File]],
-                                   mode: BundlingMode.LibraryAndApplication)
-    : Def.Initialize[Task[Seq[BundlerFile.Public]]] =
+  private[sbtplugin] def bundleAll(
+      stage: TaskKey[Attributed[File]],
+      mode: BundlingMode.LibraryAndApplication): Def.Initialize[Task[Seq[BundlerFile.Public]]] =
     Def.task {
       assert(ensureModuleKindIsCommonJSModule.value)
       val cacheLocation = streams.value.cacheDirectory / s"${stage.key.label}-webpack-bundle-all"
@@ -113,32 +115,32 @@ object LibraryTasks {
           cacheLocation,
           inStyle = FilesInfo.hash
         ) { _ =>
-          JSBundler.bundle(
-            targetDir = targetDir,
-            entry,
-            library,
-            emitSourceMaps,
-            mode.exportedName,
-            log
-          ).cached
+          JSBundler
+            .bundle(
+              targetDir = targetDir,
+              entry,
+              library,
+              emitSourceMaps,
+              mode.exportedName,
+              log
+            )
+            .cached
         }
       val cached = cachedActionFunction(filesToMonitor.toSet)
       Seq(entry.asApplicationBundleFromCached(cached), entry.asLoader, library, entry)
     }
 
-  private[sbtplugin] def librariesAndLoaders(stage: TaskKey[Attributed[File]],
-                                             mode: BundlingMode.LibraryOnly)
-    : Def.Initialize[Task[Seq[Attributed[File]]]] =
+  private[sbtplugin] def librariesAndLoaders(
+      stage: TaskKey[Attributed[File]],
+      mode: BundlingMode.LibraryOnly): Def.Initialize[Task[Seq[Attributed[File]]]] =
     Def.task {
-      Seq(WebpackTasks.entry(stage).value,
-        loader(stage, mode).value,
-        bundle(stage, mode).value).flatMap(_.asAttributedFiles)
+      Seq(WebpackTasks.entry(stage).value, loader(stage, mode).value, bundle(stage, mode).value)
+        .flatMap(_.asAttributedFiles)
     }
 
   private[sbtplugin] def libraryAndLoadersBundle(
       stage: TaskKey[Attributed[File]],
-      mode: BundlingMode.LibraryAndApplication)
-    : Def.Initialize[Task[Seq[Attributed[File]]]] =
+      mode: BundlingMode.LibraryAndApplication): Def.Initialize[Task[Seq[Attributed[File]]]] =
     Def.task {
       bundleAll(stage, mode).value.flatMap(_.asAttributedFiles)
     }
