@@ -10,6 +10,7 @@ import scalajsbundler.util.Commands
   *
   * @param name Name of the command to run
   */
+@deprecated("Use jsPackageManager instead.")
 class ExternalCommand(name: String) {
 
   /**
@@ -32,6 +33,7 @@ object Npm extends ExternalCommand("npm")
 
 object Yarn extends ExternalCommand("yarn")
 
+@deprecated("Use jsPackageManager instead.")
 object ExternalCommand {
   private val yarnOptions = List("--non-interactive", "--mutex", "network")
 
@@ -89,6 +91,7 @@ object ExternalCommand {
     * @param npmExtraArgs Additional arguments to pass to npm
     * @param npmPackages Packages to install (e.g. "webpack", "webpack@2.2.1")
     */
+  @deprecated("Use jsPackageManager instead.")
   def addPackages(baseDir: File,
                   installDir: File,
                   useYarn: Boolean,
@@ -107,6 +110,7 @@ object ExternalCommand {
       }
     }
 
+  @deprecated("Use jsPackageManager instead.")
   def install(baseDir: File,
               installDir: File,
               useYarn: Boolean,

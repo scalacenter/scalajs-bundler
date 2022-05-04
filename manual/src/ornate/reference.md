@@ -55,18 +55,24 @@ their execution so that they can be loaded by jsdom.
 You can find an example of project requiring the DOM for its tests
 [here](https://github.com/scalacenter/scalajs-bundler/blob/main/sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler/static/).
 
-### Yarn {#yarn}
+### Package managers
 
-By default, `npm` is used to fetch the dependencies but you can use [Yarn](https://yarnpkg.com/) by setting the
-`useYarn` key to `true`:
+By default, `npm` is used to fetch the dependencies, but you can use [Yarn](https://yarnpkg.com/) by setting the 
+`jsPackageManager` key to `Yarn()`:
 
-~~~ scala
-useYarn := true
-~~~
+``` scala
+jsPackageManager := Yarn()
+```
 
-If your sbt (sub-)project directory contains a `yarn.lock`, it will be used. Else, a new one will be created. You should check `yarn.lock` into source control.
+If your sbt (sub-)project directory contains a lockfile (`package-lock.json` for `npm` or `yarn.lock` for `yarn`), it will be used. Else, a new one will be created. 
+You should check the lockfile into source control.
 
-Yarn 0.22.0+ must be available on your machine.
+Package manager behavior can be customized by passing your own [PackageManager](api:scalajsbundler.PackageManager) to the key. 
+You can use it to modify commands and their arguments for `npm` or `yarn`, or to set up new package managers like 
+[pnpm](https://pnpm.io/) (see example [here](https://github.com/scalacenter/scalajs-bundler/blob/main/sbt-scalajs-bundler/src/sbt-test/sbt-scalajs-bundler/pnpm/)).
+
+Scalajs-bundler does not install your chosen package manager, it must be available on your machine. However, [Corepack](https://nodejs.org/api/corepack.html)
+is supported - setting `Yarn.withVersion(Some("1.22.19"))` will modify underlying `package.json` with field `"packageManager": "yarn@1.22.19"`. 
 
 ### Bundling Mode {#bundling-mode}
 

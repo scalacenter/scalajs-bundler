@@ -4,9 +4,9 @@ import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
 import org.scalajs.sbtplugin.{ScalaJSPlugin, Stage}
 import sbt.Keys._
 import sbt.{Def, _}
+import scalajsbundler.PackageManager.AddPackagesSupport
 import scalajsbundler.{BundlerFile, NpmDependencies, Webpack, WebpackDevServer}
-
-import scalajsbundler.ExternalCommand.addPackages
+import scalajsbundler.PackageManager
 import scalajsbundler.util.{JSON, ScalaJSNativeLibraries}
 
 
@@ -212,6 +212,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       *
       * @group settings
       */
+    @deprecated("Use jsPackageManager instead.")
     val npmExtraArgs = SettingKey[Seq[String]](
       "npmExtraArgs",
       "Custom arguments for npm"
@@ -405,8 +406,21 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       *
       * @group settings
       */
+    @deprecated("Use jsPackageManager instead.")
     val useYarn: SettingKey[Boolean] =
       settingKey[Boolean]("Whether to use yarn for updates")
+
+    /**
+      * Sets package manager to be used for installation of npm dependencies.
+      *
+      * Defaults to `Npm`.
+      *
+      * @group settings
+      */
+    val jsPackageManager = SettingKey[PackageManager](
+      "packageManager",
+      "Package manager which will be used for fetching dependencies. Constructor also allows definition of extra arguments."
+    )
 
     /**
       * Port, on which webpack-dev-server will be launched.
@@ -428,6 +442,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       *
       * @group settings
       */
+    @deprecated("Use jsPackageManager instead.")
     val yarnExtraArgs = SettingKey[Seq[String]](
       "yarnExtraArgs",
       "Custom arguments for yarn"
@@ -570,6 +585,14 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
 
     useYarn := false,
 
+    jsPackageManager := (
+      if (useYarn.value){
+        PackageManager.Yarn().withInstallArgs(yarnExtraArgs.value).withAddPackagesArgs(yarnExtraArgs.value)
+      } else {
+        PackageManager.Npm().withInstallArgs(npmExtraArgs.value).withAddPackagesArgs(npmExtraArgs.value)
+      }
+    ),
+
     ensureModuleKindIsCommonJSModule := {
       if (scalaJSLinkerConfig.value.moduleKind == ModuleKind.CommonJSModule) true
       else sys.error(s"scalaJSModuleKind must be set to ModuleKind.CommonJSModule in projects where ScalaJSBundler plugin is enabled")
@@ -612,7 +635,12 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
       if (!jsdomDir.exists()) {
         log.info(s"Installing jsdom in ${installDir.absolutePath}")
         IO.createDirectory(installDir)
-        addPackages(baseDir, installDir, useYarn.value, log, npmExtraArgs.value, yarnExtraArgs.value)(s"jsdom@$jsdomVersion")
+        jsPackageManager.value match {
+          case aps: AddPackagesSupport =>
+            aps.addPackages(baseDir, installDir, log)(s"jsdom@$jsdomVersion")
+          case unsupported =>
+            throw new RuntimeException(s"Package manager (${unsupported.name}) used by this module does not support adding of packages")
+        }
       }
       installDir
     }
@@ -644,10 +672,7 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
         baseDirectory.value,
         (crossTarget in npmUpdate).value,
         scalaJSBundlerPackageJson.value.file,
-        useYarn.value,
-        streams.value,
-        npmExtraArgs.value,
-        yarnExtraArgs.value),
+        streams.value, jsPackageManager.value),
 
       npmInstallJSResources := NpmUpdateTasks.npmInstallJSResources(
         (crossTarget in npmUpdate).value,
@@ -667,7 +692,8 @@ object ScalaJSBundlerPlugin extends AutoPlugin {
           (version in webpack).value,
           (version in startWebpackDevServer).value,
           webpackCliVersion.value,
-          streams.value
+          streams.value,
+          jsPackageManager.value
         ),
 
 

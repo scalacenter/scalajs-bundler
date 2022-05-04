@@ -31,7 +31,8 @@ object PackageJson {
     currentConfiguration: Configuration,
     webpackVersion: String,
     webpackDevServerVersion: String,
-    webpackCliVersion: String
+    webpackCliVersion: String,
+    packageManager: PackageManager
   ): Unit = {
     val npmManifestDependencies = NpmDependencies.collectFromClasspath(fullClasspath)
     val dependencies =
@@ -62,7 +63,7 @@ object PackageJson {
     val packageJson =
       JSON.obj(
         (
-          additionalNpmConfig.toSeq :+
+          (additionalNpmConfig.toSeq ++ packageManager.packageJsonContents.toSeq) :+
           "dependencies" -> JSON.objStr(resolveDependencies(dependencies, npmResolutions, log)) :+
           "devDependencies" -> JSON.objStr(resolveDependencies(devDependencies, npmResolutions, log))
         ): _*
