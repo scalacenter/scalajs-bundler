@@ -6,7 +6,7 @@ yarnExtraArgs in Compile := Seq("--silent")
 
 scalaJSUseMainModuleInitializer := true
 
-npmDependencies in Compile += "neat" -> "1.1.2"
+npmDependencies in Compile += "neat" -> "2.1.0"
 
 enablePlugins(ScalaJSBundlerPlugin)
 
