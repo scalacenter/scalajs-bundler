@@ -14,6 +14,8 @@ webpackConfigFile := Some(baseDirectory.value / "webpack.config.js")
 
 (npmDevDependencies in Compile) += ("html-webpack-plugin" -> "5.2.0")
 
+webpackCliVersion := "4.9.0"
+
 webpackDevServerPort := 7357
 
 // HtmlUnit does not support ECMAScript 2015

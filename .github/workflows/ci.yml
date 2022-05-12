@@ -15,6 +15,11 @@ jobs:
         with:
           java-version: "adopt@1.11"
       - uses: coursier/cache-action@v5
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16.14.2
+      - name: Setup yarn
+        run: npm install -g yarn@1.22.15
       - name: Unit tests
         run: sbt test
       - name: Scripted tests
