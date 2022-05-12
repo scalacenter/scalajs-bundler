@@ -121,8 +121,8 @@ lazy val commonSettings = List(
     "-Dsbt.execute.extrachecks=true" // Avoid any deadlocks.
   ),
   scriptedBufferLog := false,
-  crossSbtVersions := List("1.6.2"),
-  sbtVersion in pluginCrossBuild := "1.6.2",
+  crossSbtVersions := List("1.2.8"),
+  sbtVersion in pluginCrossBuild := "1.2.8",
 )
 
 lazy val noPublishSettings =
