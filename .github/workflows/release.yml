@@ -8,6 +8,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+        with:
+          # fetches all tags, required to correctly set the version
+          fetch-depth: 0
       - uses: olafurpg/setup-scala@v12
       - uses: olafurpg/setup-gpg@v3
       - uses: coursier/cache-action@v5
