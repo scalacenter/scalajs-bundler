@@ -50,9 +50,9 @@ object Stats {
 
   }
 
-  final case class WebpackError(moduleName: String, message: String, loc: String)
+  final case class WebpackError(moduleName: Option[String], message: String, loc: String)
 
-  final case class WebpackWarning(moduleName: String, message: String)
+  final case class WebpackWarning(moduleName: Option[String], message: String)
 
   final case class WebpackStats(
     version: String,
@@ -115,13 +115,13 @@ object Stats {
   )(Asset.apply _)
 
   implicit val errorReads: Reads[WebpackError] = (
-    (JsPath \ "moduleName").read[String] and
+    (JsPath \ "moduleName").readNullable[String] and
       (JsPath \ "message").read[String] and
       (JsPath \ "loc").read[String]
     )(WebpackError.apply _)
 
   implicit val warningReads: Reads[WebpackWarning] = (
-    (JsPath \ "moduleName").read[String] and
+    (JsPath \ "moduleName").readNullable[String] and
       (JsPath \ "message").read[String]
     )(WebpackWarning.apply _)
 

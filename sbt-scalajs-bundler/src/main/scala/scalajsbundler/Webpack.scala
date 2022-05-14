@@ -249,12 +249,12 @@ object Webpack {
                 logger.info("")
                 // Filtering is a workaround for #111
                 p.warnings.filterNot(_.message.contains("https://raw.githubusercontent.com")).foreach { warning =>
-                  logger.warn(s"WARNING in ${warning.moduleName}")
+                  logger.warn(s"WARNING${warning.moduleName.map("in "+_).getOrElse("")}")
                   logger.warn(warning.message)
                   logger.warn("\n")
                 }
                 p.errors.foreach { error =>
-                  logger.error(s"ERROR in ${error.moduleName} ${error.loc}")
+                  logger.error(s"ERROR${error.moduleName.map("in "+_).getOrElse("")} ${error.loc}")
                   logger.error(error.message)
                   logger.error("\n")
                 }
@@ -277,6 +277,7 @@ object Webpack {
     val webpackBin = workingDir / "node_modules" / "webpack" / "bin" / "webpack"
     val params = nodeArgs ++ Seq(webpackBin.absolutePath, "--profile", "--json") ++ args
     val cmd = "node" +: params
+    log.debug(s"Running command [${cmd.mkString(" ")}]")
     Commands.run(cmd, workingDir, log, jsonOutput(cmd, log))
       .fold(
         sys.error,
