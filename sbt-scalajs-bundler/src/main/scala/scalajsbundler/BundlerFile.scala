@@ -65,15 +65,12 @@ object BundlerFile {
     /**
       * Returns the Library identifying the asset produced by scala.js through webpack stats
       */
-    def asLibrary(stats: Option[WebpackStats]): Library =
-      Library(project,
-              stats.flatMap { s =>
-                s.resolveAsset(targetDir, project)
-              }.getOrElse(targetDir.resolve(Library.fileName(project)).toFile),
-              stats.map { s =>
-                s.resolveAllAssets(targetDir)
-              }.getOrElse(Nil)
-            )
+    def asLibrary(stats: WebpackStats): Library =
+      Library(
+        project,
+        resolveApplicationBundleFile(stats),
+        resolveApplicationAssets(stats)
+      )
 
     /**
       * Returns library from a set of cached files
@@ -88,14 +85,36 @@ object BundlerFile {
     /**
       * Returns the Application for this configuration identifying the asset produced by scala.js through webpack stats
       */
-    def asApplicationBundle(stats: Option[WebpackStats]): ApplicationBundle =
-      ApplicationBundle(project,
-                        stats.flatMap { s =>
-                          s.resolveAsset(targetDir, project)
-                        }.getOrElse(targetDir.resolve(ApplicationBundle.fileName(project)).toFile),
-                        stats.map { s =>
-                          s.resolveAllAssets(targetDir)
-                        }.getOrElse(Nil))
+    def asApplicationBundle(stats: WebpackStats): ApplicationBundle =
+      ApplicationBundle(
+        project,
+        resolveApplicationBundleFile(stats),
+        resolveApplicationAssets(stats)
+      )
+
+    private def resolveApplicationBundleFile(stats: WebpackStats) = {
+      stats.resolveAsset(targetDir, project)
+        .getOrElse(throw new RuntimeException("Webpack failed to create application bundle"))
+    }
+
+    private def resolveApplicationAssets(stats: WebpackStats) = {
+      val (notExisting, existing) = stats.resolveAllAssets(targetDir)
+        .foldLeft((List.empty[File], List.empty[File])) {
+          case ((notExisting, existing), asset) =>
+            if (asset.exists()) {
+              (notExisting, existing :+ asset)
+            } else {
+              (notExisting :+ asset, existing)
+            }
+        }
+      if (notExisting.nonEmpty) {
+        throw new RuntimeException(
+          s"Webpack failed to create application assets:\n" +
+            s"${notExisting.map(asset => s"${asset.getAbsolutePath}").mkString("\n")}")
+      } else {
+        existing
+      }
+    }
 
     /**
       * Returns an application bundle from a set of cached files
