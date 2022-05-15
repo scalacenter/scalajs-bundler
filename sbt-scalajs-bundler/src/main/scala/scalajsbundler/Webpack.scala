@@ -249,13 +249,13 @@ object Webpack {
                 logger.info("")
                 // Filtering is a workaround for #111
                 p.warnings.filterNot(_.message.contains("https://raw.githubusercontent.com")).foreach { warning =>
-                  logger.warn(s"WARNING${warning.moduleName.map("in "+_).getOrElse("")}")
-                  logger.warn(warning.message)
+                  logger.warn(s"WARNING")
+                  logger.warn(warning.format())
                   logger.warn("\n")
                 }
                 p.errors.foreach { error =>
-                  logger.error(s"ERROR${error.moduleName.map("in "+_).getOrElse("")} ${error.loc}")
-                  logger.error(error.message)
+                  logger.error(s"ERROR")
+                  logger.error(error.format())
                   logger.error("\n")
                 }
               }

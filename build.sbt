@@ -87,7 +87,7 @@ val manual =
 val `scalajs-bundler` =
   project.in(file("."))
     .settings(noPublishSettings: _*)
-    .aggregate(`sbt-scalajs-bundler`, `sbt-web-scalajs-bundler`)
+    .aggregate(`sbt-scalajs-bundler`, `sbt-web-scalajs-bundler`, `scalajs-bundler-linker`)
 
 inThisBuild(List(
   scalacOptions ++= Seq(
