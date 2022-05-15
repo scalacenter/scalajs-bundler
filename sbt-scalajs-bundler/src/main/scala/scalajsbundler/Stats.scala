@@ -2,7 +2,6 @@
 package scalajsbundler
 
 import play.api.libs.json._
-import play.api.libs.functional.syntax._
 import sbt.Logger
 import scala.math.max
 import java.io.File
@@ -60,7 +59,7 @@ object Stats {
     def format(): String = {
       List(
         moduleName.map("in "+_),
-        Some("Message: "+_),
+        Some("Message: "+message),
         loc.map("Loc: "+_),
         stack.map("Stack: "+_),
         details.map("Details: "+_)
