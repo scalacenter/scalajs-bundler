@@ -2,7 +2,8 @@ val client =
   project.in(file("client"))
     .enablePlugins(ScalaJSBundlerPlugin)
     .settings(
-      scalaVersion := "2.13.2",
+      // Required to solve https://github.com/scala/bug/issues/11955
+      scalaVersion := "2.13.4",
       scalaJSUseMainModuleInitializer := true,
       libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "1.0.0",
       npmDependencies in Compile ++= Seq(
@@ -18,7 +19,8 @@ val server =
     .enablePlugins(PlayScala, WebScalaJSBundlerPlugin)
     .disablePlugins(PlayLayoutPlugin)
     .settings(
-      scalaVersion := "2.13.2",
+      // Required to solve https://github.com/scala/bug/issues/11955
+      scalaVersion := "2.13.4",
       libraryDependencies ++= Seq(
         "com.vmunier" %% "scalajs-scripts" % "1.1.4",
         "org.scalatestplus.play" %% "scalatestplus-play" % "5.1.0" % Test
