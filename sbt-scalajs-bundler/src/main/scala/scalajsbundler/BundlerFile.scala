@@ -98,22 +98,14 @@ object BundlerFile {
     }
 
     private def resolveApplicationAssets(stats: WebpackStats) = {
-      val (notExisting, existing) = stats.resolveAllAssets(targetDir)
-        .foldLeft((List.empty[File], List.empty[File])) {
-          case ((notExisting, existing), asset) =>
-            if (asset.exists()) {
-              (notExisting, existing :+ asset)
-            } else {
-              (notExisting :+ asset, existing)
-            }
-        }
-      if (notExisting.nonEmpty) {
+      val assets = stats.resolveAllAssets(targetDir)
+      val nonExisting = assets.filter(!_.exists())
+      if (nonExisting.nonEmpty) {
         throw new RuntimeException(
           s"Webpack failed to create application assets:\n" +
-            s"${notExisting.map(asset => s"${asset.getAbsolutePath}").mkString("\n")}")
-      } else {
-        existing
+            s"${nonExisting.map(asset => s"${asset.getAbsolutePath}").mkString("\n")}")
       }
+      assets
     }
 
     /**
