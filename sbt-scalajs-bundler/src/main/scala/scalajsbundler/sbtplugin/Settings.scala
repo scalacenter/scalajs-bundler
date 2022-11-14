@@ -41,7 +41,7 @@ private[sbtplugin] object Settings {
         val retrieveDir = s.cacheDirectory / "scalajs-bundler-linker"
         val lm = (dependencyResolution in scalaJSLinkerImpl).value
         val dummyModuleID =
-          "ch.epfl.scala" % "scalajs-bundler-linker-and-scalajs-linker_2.12" % s"${BuildInfo.version}/$scalaJSVersion"
+          "ch.epfl.scala" % "scalajs-bundler-linker-and-scalajs-linker_2.12" % s"${BuildInfo.version}-$scalaJSVersion"
         val dependencies = Vector(
             // Load our linker back-end
             "ch.epfl.scala" % "scalajs-bundler-linker_2.12" % BuildInfo.version,
