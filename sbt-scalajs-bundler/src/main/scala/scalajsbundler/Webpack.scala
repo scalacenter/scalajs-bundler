@@ -231,36 +231,37 @@ object Webpack {
   private def jsonOutput(cmd: Seq[String], logger: Logger)(in: InputStream): Option[WebpackStats] = {
     Try {
       val parsed = Json.parse(in)
-      parsed.validate[WebpackStats] match {
-        case JsError(e) =>
-          logger.error("Error parsing webpack stats output")
-          // In case of error print the result and return None. it will be ignored upstream
-          e.foreach {
-            case (p, v) => logger.error(s"$p: ${v.mkString(",")}")
+      val p = parsed.as[WebpackStats]
+      if (p.warnings.nonEmpty || p.errors.nonEmpty) {
+        logger.info("")
+        // Filtering is a workaround for #111
+        p.warnings.filterNot(_.message.contains("https://raw.githubusercontent.com")).foreach { warning =>
+          warning.moduleName match {
+            case Some(moduleName) =>
+              logger.warn(s"WARNING in $moduleName")
+            case None =>
+              logger.warn("WARNING")
           }
-          None
-        case JsSuccess(p, _) =>
-          if (p.warnings.nonEmpty || p.errors.nonEmpty) {
-            logger.info("")
-            // Filtering is a workaround for #111
-            p.warnings.filterNot(_.message.contains("https://raw.githubusercontent.com")).foreach { warning =>
-              logger.warn(s"WARNING in ${warning.moduleName}")
-              logger.warn(warning.message)
-              logger.warn("\n")
-            }
-            p.errors.foreach { error =>
-              logger.error(s"ERROR in ${error.moduleName} ${error.loc}")
-              logger.error(error.message)
-              logger.error("\n")
-            }
+          logger.warn(warning.message)
+          logger.warn("\n")
+        }
+        p.errors.foreach { error =>
+          error.moduleName match {
+            case Some(moduleName) =>
+              logger.error(s"ERROR in $moduleName ${error.loc.getOrElse("")}")
+            case None =>
+              logger.error("ERROR")
           }
-          Some(p)
+          logger.error(error.message)
+          logger.error("\n")
+        }
       }
+      p
     } match {
       case Success(x) =>
-        x
+        Some(x)
       case Failure(e) =>
-        // In same cases errors are not reported on the json output but comes on stdout
+        // In some cases errors are not reported on the json output but comes on stdout
         // where they cannot be parsed as json. The best we can do here is to suggest
         // running the command manually
         logger.error(s"Failure on parsing the output of webpack: ${e.getMessage}")
