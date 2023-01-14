@@ -2,7 +2,6 @@
 package scalajsbundler
 
 import play.api.libs.json._
-import play.api.libs.functional.syntax._
 import sbt.Logger
 import scala.math.max
 import java.io.File
@@ -50,18 +49,18 @@ object Stats {
 
   }
 
-  final case class WebpackError(moduleName: String, message: String, loc: String)
+  final case class WebpackError(moduleName: Option[String], message: String, loc: String)
 
-  final case class WebpackWarning(moduleName: String, message: String)
+  final case class WebpackWarning(moduleName: Option[String], message: String)
 
   final case class WebpackStats(
     version: String,
     hash: String,
-    time: Long,
+    time: Option[Long],
     outputPath: Option[Path],
-    errors: List[WebpackError],
-    warnings: List[WebpackWarning],
-    assets: List[Asset]
+    errors: List[WebpackError] = Nil,
+    warnings: List[WebpackWarning] = Nil,
+    assets: List[Asset] = Nil
   ) {
 
     /**
@@ -70,7 +69,12 @@ object Stats {
     def print(log: Logger): Unit = {
       import formatting._
       // Print base info
-      List(s"Version: $version", s"Hash: $hash", s"Time: ${time}ms", s"Path: ${outputPath.getOrElse("<default>")}").foreach(x => log.info(x))
+      List(
+        s"Version: $version",
+        s"Hash: $hash",
+        s"Time: ${time.getOrElse(-1)}ms",
+        s"Path: ${outputPath.getOrElse("<default>")}"
+      ).foreach(x => log.info(x))
       log.info("")
       // Print the assets
       assets.map { a =>
@@ -107,32 +111,9 @@ object Stats {
       assets.map(a => outputPath.getOrElse(altDir).resolve(a.name).toFile)
   }
 
-  implicit val assetsReads: Reads[Asset] = (
-    (JsPath \ "name").read[String] and
-    (JsPath \ "size").read[Long] and
-    (JsPath \ "emitted").read[Boolean] and
-    (JsPath \ "chunkNames").read[List[String]]
-  )(Asset.apply _)
-
-  implicit val errorReads: Reads[WebpackError] = (
-    (JsPath \ "moduleName").read[String] and
-      (JsPath \ "message").read[String] and
-      (JsPath \ "loc").read[String]
-    )(WebpackError.apply _)
-
-  implicit val warningReads: Reads[WebpackWarning] = (
-    (JsPath \ "moduleName").read[String] and
-      (JsPath \ "message").read[String]
-    )(WebpackWarning.apply _)
-
-  implicit val statsReads: Reads[WebpackStats] = (
-    (JsPath \ "version").read[String] and
-    (JsPath \ "hash").read[String] and
-    (JsPath \ "time").read[Long] and
-    (JsPath \ "outputPath").readNullable[String].map(x => x.map(new File(_).toPath)) and // It seems webpack 2 doesn't produce outputPath
-    (JsPath \ "errors").read[List[WebpackError]] and
-    (JsPath \ "warnings").read[List[WebpackWarning]] and
-    (JsPath \ "assets").read[List[Asset]]
-  )(WebpackStats.apply _)
-
+  implicit val assetsReads: Reads[Asset] = Json.reads[Asset]
+  implicit val errorReads: Reads[WebpackError] = Json.reads[WebpackError]
+  implicit val warningReads: Reads[WebpackWarning] = Json.reads[WebpackWarning]
+  implicit val pathReads: Reads[Path] = Reads.StringReads.map(new File(_).toPath)
+  implicit val statsReads: Reads[WebpackStats] = Json.using[Json.WithDefaultValues].reads[WebpackStats]
 }

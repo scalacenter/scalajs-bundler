@@ -33,6 +33,12 @@ object PackageJson {
     webpackDevServerVersion: String,
     webpackCliVersion: String
   ): Unit = {
+    NpmPackage(webpackVersion).major match {
+      case Some(5) => // ok
+      case Some(x) => sys.error(s"Unsupported webpack major version $x")
+      case None    => sys.error("No webpack version defined")
+    }
+
     val npmManifestDependencies = NpmDependencies.collectFromClasspath(fullClasspath)
     val dependencies =
       npmDependencies ++ (
@@ -40,12 +46,18 @@ object PackageJson {
         else npmManifestDependencies.testDependencies
       )
 
-    val sourceMapLoaderVersion =
-      NpmPackage(webpackVersion).major match {
-        case Some(5) => "2.0.0"
-        case Some(x) => sys.error(s"Unsupported webpack major version $x")
-        case None    => sys.error("No webpack version defined")
-      }
+    // @return package `pkgName` defined in `npmDevDependencies`
+    // or `name -> defaultVersion` if not defined
+    val devDependency = (pkgName: String, defaultVersion: String) =>
+      npmDevDependencies.collectFirst {
+        case (`pkgName`, v) =>
+          if (NpmPackage(v).major == NpmPackage(defaultVersion).major) {
+            pkgName -> v
+          } else {
+            sys.error(s"Unsupported $pkgName major version $v")
+          }
+      }.getOrElse(pkgName -> defaultVersion)
+
 
     val devDependencies =
       npmDevDependencies ++ (
@@ -55,9 +67,9 @@ object PackageJson {
         "webpack" -> webpackVersion,
         "webpack-cli" -> webpackCliVersion,
         "webpack-dev-server" -> webpackDevServerVersion,
-        "concat-with-sourcemaps" -> "1.0.7", // Used by the reload workflow
-        "source-map-loader" -> sourceMapLoaderVersion // Used by webpack when emitSourceMaps is enabled
-      )
+        "concat-with-sourcemaps" -> "1.1.0", // Used by the reload workflow
+        "source-map-loader" -> "3.0.0" // Used by webpack when emitSourceMaps is enabled
+      ).map(devDependency.tupled)
 
     val packageJson =
       JSON.obj(

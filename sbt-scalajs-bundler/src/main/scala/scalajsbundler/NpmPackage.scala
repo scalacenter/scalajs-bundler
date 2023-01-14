@@ -1,6 +1,6 @@
 package scalajsbundler
 
-import play.api.libs.json.{JsPath, Json, Reads}
+import play.api.libs.json.{Json, Reads}
 import sbt._
 
 import scala.util.Try
@@ -16,8 +16,7 @@ case class NpmPackage(version: String) {
 }
 
 object NpmPackage {
-  implicit val npmPackageDeserializer: Reads[NpmPackage] =
-    (JsPath \ "version").read[String].map(NpmPackage.apply)
+  implicit val npmPackageDeserializer: Reads[NpmPackage] = Json.reads[NpmPackage]
 
   def getForModule(targetDir: File, module: String): Option[NpmPackage] = {
     val webpackPackageJsonFilePath = targetDir / "node_modules" / module / "package.json"

@@ -22,7 +22,7 @@ object Commands {
       ()
     }
 
-    logger.debug(s"Command: ${cmd.mkString(" ")}")
+    logger.info(s"Command: ${cmd.mkString(" ")}")
     val process = Process(cmd, cwd)
     val processIO = BasicIO.standard(false).withOutput(outputCapture).withError(toErrorLog)
     val code: Int = process.run(processIO).exitValue()
