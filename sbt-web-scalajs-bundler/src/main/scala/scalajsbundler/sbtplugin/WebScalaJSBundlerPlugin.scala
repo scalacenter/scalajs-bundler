@@ -70,8 +70,8 @@ object WebScalaJSBundlerPlugin extends AutoPlugin {
             .map { project =>
               Def.settingDyn {
                 val sjsStage = (scalaJSStage in project).value match {
-                  case Stage.FastOpt => fastOptJS
-                  case Stage.FullOpt => fullOptJS
+                  case Stage.FastOpt => fastLinkJS
+                  case Stage.FullOpt => fullLinkJS
                 }
                 Def.task {
                   val files = (webpack in (project, Compile, sjsStage)).value
