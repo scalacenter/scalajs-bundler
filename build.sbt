@@ -22,7 +22,7 @@ val `sbt-scalajs-bundler` =
       scriptedDependencies := {
         val () = scriptedDependencies.value
         val () = publishLocal.value
-        val () = (publishLocal in `scalajs-bundler-linker`).value
+        val () = (`scalajs-bundler-linker` / publishLocal).value
       },
     )
 
@@ -35,8 +35,8 @@ val `sbt-web-scalajs-bundler` =
       scriptedDependencies := {
         val () = scriptedDependencies.value
         val () = publishLocal.value
-        val () = (publishLocal in `sbt-scalajs-bundler`).value
-        val () = (publishLocal in `scalajs-bundler-linker`).value
+        val () = (`sbt-scalajs-bundler` / publishLocal).value
+        val () = (`scalajs-bundler-linker` / publishLocal).value
       },
       description := "Module bundler for Scala.js projects (integration with sbt-web-scalajs)",
       addSbtPlugin("com.vmunier" % "sbt-web-scalajs" % "1.1.0")
@@ -51,12 +51,12 @@ val apiDoc =
     .enablePlugins(ScalaUnidocPlugin)
     .settings(noPublishSettings: _*)
     .settings(
-      scalacOptions in (ScalaUnidoc, unidoc) ++= Seq(
+      (ScalaUnidoc / unidoc / scalacOptions) ++= Seq(
         "-groups",
         "-doc-source-url", s"https://github.com/scalacenter/scalajs-bundler/blob/v${version.value}€{FILE_PATH}.scala",
-        "-sourcepath", (baseDirectory in ThisBuild).value.absolutePath
+        "-sourcepath", (ThisBuild / baseDirectory).value.absolutePath
       ),
-      unidocProjectFilter in (ScalaUnidoc, unidoc) := inAnyProject -- inProjects(`scalajs-bundler-linker`)
+      (ScalaUnidoc / unidoc / unidocProjectFilter) := inAnyProject -- inProjects(`scalajs-bundler-linker`)
     )
     .aggregate(`sbt-scalajs-bundler`, `sbt-web-scalajs-bundler`)
 
@@ -71,15 +71,15 @@ val manual =
       ornateSourceDir := Some(sourceDirectory.value / "ornate"),
       ornateTargetDir := Some(ornateTarget.value),
       ornateSettings := Map("version" -> version.value),
-      siteSubdirName in ornate := "",
-      addMappingsToSiteDir(mappings in ornate, siteSubdirName in ornate),
-      mappings in ornate := {
+      ornate / siteSubdirName := "",
+      addMappingsToSiteDir(ornate / mappings, ornate / siteSubdirName),
+      ornate / mappings := {
         val _ = ornate.value
         val output = ornateTarget.value
         output ** AllPassFilter --- output pair Path.relativeTo(output)
       },
-      siteSubdirName in packageDoc := "api/latest",
-      addMappingsToSiteDir(mappings in ScalaUnidoc in packageDoc in apiDoc, siteSubdirName in packageDoc)
+      packageDoc / siteSubdirName := "api/latest",
+      addMappingsToSiteDir(mappings in ScalaUnidoc in packageDoc in apiDoc, packageDoc / siteSubdirName)
     )
 
 val `scalajs-bundler` =
@@ -128,4 +128,4 @@ lazy val noPublishSettings =
     publishLocal := {}
   )
 
-ivyLoggingLevel in ThisBuild := UpdateLogging.Quiet
+ThisBuild / ivyLoggingLevel := UpdateLogging.Quiet
