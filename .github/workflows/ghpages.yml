@@ -17,7 +17,7 @@ jobs:
         with:
           java-version: "11"
           distribution: "adopt"
-      - uses: coursier/cache-action@v5
+      - uses: coursier/cache-action@v6
       - name: Build
         run: sbt manual/makeSite
       - name: Deploy
