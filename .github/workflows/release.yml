@@ -16,7 +16,7 @@ jobs:
           java-version: "8"
           distribution: "adopt"
       - uses: olafurpg/setup-gpg@v3
-      - uses: coursier/cache-action@v5
+      - uses: coursier/cache-action@v6
       - name: Publish
         run: sbt clean ci-release
         env:
