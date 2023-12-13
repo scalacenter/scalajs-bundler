@@ -168,12 +168,10 @@ object Webpack {
     log.info("Bundling the application with its NPM dependencies")
     val args = extraArgs ++: Seq("--config", configFile.absolutePath)
     val stats = Webpack.run(nodeArgs: _*)(args: _*)(targetDir, log)
-    stats.foreach(_.print(log))
+    stats.print(log)
 
     // Attempt to discover the actual name produced by webpack indexing by chunk name and discarding maps
     val bundle = generatedWebpackConfigFile.asApplicationBundle(stats)
-    assert(bundle.file.exists(), "Webpack failed to create application bundle")
-    assert(bundle.assets.forall(_.exists()), "Webpack failed to create application assets")
     bundle
   }
 
@@ -220,55 +218,51 @@ object Webpack {
 
     val args = extraArgs ++: Seq("--config", configFile.absolutePath)
     val stats = Webpack.run(nodeArgs: _*)(args: _*)(generatedWebpackConfigFile.targetDir.toFile, log)
-    stats.foreach(_.print(log))
+    stats.print(log)
 
     val library = generatedWebpackConfigFile.asLibrary(stats)
-    assert(library.file.exists, "Webpack failed to create library file")
-    assert(library.assets.forall(_.exists), "Webpack failed to create library assets")
     library
   }
 
-  private def jsonOutput(cmd: Seq[String], logger: Logger)(in: InputStream): Option[WebpackStats] = {
-    Try {
-      val parsed = Json.parse(in)
-      parsed.validate[WebpackStats] match {
-        case JsError(e) =>
-          logger.error("Error parsing webpack stats output")
-          // In case of error print the result and return None. it will be ignored upstream
-          e.foreach {
-            case (p, v) => logger.error(s"$p: ${v.mkString(",")}")
+  private def jsonOutput(cmd: Seq[String], logger: Logger)(in: InputStream): Try[WebpackStats] = {
+    Try(Json.parse(in))
+      .fold(
+        e => Failure(
+          new RuntimeException(
+            "Failure on parsing the output of webpack\n" +
+            "You can try to manually execute the command\n" +
+            s"${cmd.mkString(" ")}",
+            e
+          )
+        ),
+        parsed => {
+          parsed.validate[WebpackStats] match {
+            case JsError(e) =>
+              Failure(
+                new RuntimeException(
+                  "Error parsing webpack stats output\n" +
+                  s"${e.map { case (p, v) => s"$p: ${v.mkString(",")}"}.mkString("\n")}"
+                )
+              )
+            case JsSuccess(p, _) =>
+              if (p.warnings.nonEmpty || p.errors.nonEmpty) {
+                logger.info("")
+                // Filtering is a workaround for #111
+                p.warnings.filterNot(_.message.contains("https://raw.githubusercontent.com")).foreach { warning =>
+                  logger.warn(s"WARNING")
+                  logger.warn(warning.format())
+                  logger.warn("\n")
+                }
+                p.errors.foreach { error =>
+                  logger.error(s"ERROR")
+                  logger.error(error.format())
+                  logger.error("\n")
+                }
+              }
+              Success(p)
           }
-          None
-        case JsSuccess(p, _) =>
-          if (p.warnings.nonEmpty || p.errors.nonEmpty) {
-            logger.info("")
-            // Filtering is a workaround for #111
-            p.warnings.filterNot(_.message.contains("https://raw.githubusercontent.com")).foreach { warning =>
-              logger.warn(s"WARNING in ${warning.moduleName}")
-              logger.warn(warning.message)
-              logger.warn("\n")
-            }
-            p.errors.foreach { error =>
-              logger.error(s"ERROR in ${error.moduleName} ${error.loc}")
-              logger.error(error.message)
-              logger.error("\n")
-            }
-          }
-          Some(p)
-      }
-    } match {
-      case Success(x) =>
-        x
-      case Failure(e) =>
-        // In same cases errors are not reported on the json output but comes on stdout
-        // where they cannot be parsed as json. The best we can do here is to suggest
-        // running the command manually
-        logger.error(s"Failure on parsing the output of webpack: ${e.getMessage}")
-        logger.error(s"You can try to manually execute the command")
-        logger.error(cmd.mkString(" "))
-        logger.error("\n")
-        None
-    }
+        }
+      )
   }
 
   /**
@@ -279,11 +273,16 @@ object Webpack {
     * @param workingDir Working directory in which the Nodejs will be run (where there is the `node_modules` subdirectory)
     * @param log Logger
     */
-  def run(nodeArgs: String*)(args: String*)(workingDir: File, log: Logger): Option[WebpackStats] = {
+  def run(nodeArgs: String*)(args: String*)(workingDir: File, log: Logger): WebpackStats = {
     val webpackBin = workingDir / "node_modules" / "webpack" / "bin" / "webpack"
     val params = nodeArgs ++ Seq(webpackBin.absolutePath, "--profile", "--json") ++ args
     val cmd = "node" +: params
-    Commands.run(cmd, workingDir, log, jsonOutput(cmd, log)).fold(sys.error, _.flatten)
+    log.debug(s"Running command [${cmd.mkString(" ")}]")
+    Commands.run(cmd, workingDir, log, jsonOutput(cmd, log))
+      .fold(
+        sys.error,
+        _.map(_.get).getOrElse(throw new RuntimeException("Failure on returning webpack stats from command output"))
+      )
   }
 
 }

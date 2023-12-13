@@ -1,21 +1,23 @@
 package scalajsbundler.util
 
 import sbt.Logger
-import java.io.{InputStream, File}
+import java.io.{File, InputStream}
+
 import scala.sys.process.Process
 import scala.sys.process.BasicIO
 import scala.sys.process.ProcessLogger
+import scala.util.Try
 
 object Commands {
 
-  def run[A](cmd: Seq[String], cwd: File, logger: Logger, outputProcess: InputStream => A): Either[String, Option[A]] = {
+  def run[A](cmd: Seq[String], cwd: File, logger: Logger, outputProcess: InputStream => Try[A]): Either[String, Option[Try[A]]] = {
     val toErrorLog = (is: InputStream) => {
       scala.io.Source.fromInputStream(is).getLines.foreach(msg => logger.error(msg))
       is.close()
     }
 
     // Unfortunately a var is the only way to capture the result
-    var result: Option[A] = None
+    var result: Option[Try[A]] = None
     def outputCapture(o: InputStream): Unit = {
       result = Some(outputProcess(o))
       o.close()
@@ -34,7 +36,7 @@ object Commands {
   }
 
   def run(cmd: Seq[String], cwd: File, logger: Logger): Unit = {
-    val toInfoLog = (is: InputStream) => scala.io.Source.fromInputStream(is).getLines.foreach(msg => logger.info(msg))
+    val toInfoLog = (is: InputStream) => Try(scala.io.Source.fromInputStream(is).getLines.foreach(msg => logger.info(msg)))
     run(cmd, cwd, logger, toInfoLog).fold(sys.error, _ => ())
   }
 
