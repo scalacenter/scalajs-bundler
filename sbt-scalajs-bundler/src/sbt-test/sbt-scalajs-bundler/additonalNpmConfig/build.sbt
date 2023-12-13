@@ -1,4 +1,5 @@
 import scalajsbundler.util.JSON._
+import scalajsbundler.Npm
 
 val checkPackageJson = taskKey[Unit]("Check that the package.json file does not contain duplicate entries for the 'react' dependency")
 

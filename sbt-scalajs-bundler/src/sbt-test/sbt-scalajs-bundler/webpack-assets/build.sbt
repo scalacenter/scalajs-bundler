@@ -31,7 +31,7 @@ npmDevDependencies in Compile += "mini-css-extract-plugin" -> "1.3.4"
 
 webpackDevServerPort := 7357
 
-useYarn := true
+jsPackageManager := scalajsbundler.PackageManager.Yarn()
 
 // HtmlUnit does not support ECMAScript 2015
 scalaJSLinkerConfig ~= { _.withESFeatures(_.withUseECMAScript2015(false)) }

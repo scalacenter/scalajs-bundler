@@ -33,7 +33,7 @@ requireJsDomEnv in Test := true
 
 webpackBundlingMode in fastOptJS := BundlingMode.LibraryAndApplication()
 
-useYarn := true
+jsPackageManager := scalajsbundler.PackageManager.Yarn()
 
 // HtmlUnit does not support ECMAScript 2015
 scalaJSLinkerConfig ~= { _.withESFeatures(_.withUseECMAScript2015(false)) }

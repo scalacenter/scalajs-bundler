@@ -1,8 +1,9 @@
 package scalajsbundler.sbtplugin
 
 import java.nio.file.Path
-import scalajsbundler.ExternalCommand
+
 import sbt._
+import scalajsbundler.PackageManager
 
 object NpmUpdateTasks {
 
@@ -18,6 +19,7 @@ object NpmUpdateTasks {
     * @param yarnExtraArgs Additional arguments to pass to yarn
     * @return The written npm directory
     */
+  @deprecated("Use overload with packageManager instead.")
   def npmUpdate(baseDir: File,
                 targetDir: File,
                 packageJsonFile: File,
@@ -26,7 +28,37 @@ object NpmUpdateTasks {
                 streams: Keys.TaskStreams,
                 npmExtraArgs: Seq[String],
                 yarnExtraArgs: Seq[String]): File = {
-    val dir = npmInstallDependencies(baseDir, targetDir, packageJsonFile, useYarn, streams, npmExtraArgs, yarnExtraArgs)
+    npmUpdate(
+      baseDir,
+      targetDir,
+      packageJsonFile,
+      jsResources,
+      streams,
+      if (useYarn){
+        PackageManager.Yarn().withInstallArgs(yarnExtraArgs).withAddPackagesArgs(yarnExtraArgs)
+      } else {
+        PackageManager.Npm().withInstallArgs(npmExtraArgs).withAddPackagesArgs(npmExtraArgs)
+      }
+    )
+  }
+
+  /**
+    * Uses package manager to install JavaScript resources as node packages.
+    *
+    * @param targetDir npm directory
+    * @param packageJsonFile Json file containing NPM dependencies
+    * @param jsResources A sequence of JavaScript resources
+    * @param streams A sbt TaskStream
+    * @param packageManager package manager
+    * @return The written npm directory
+    */
+  def npmUpdate(baseDir: File,
+                targetDir: File,
+                packageJsonFile: File,
+                jsResources: Seq[(String, Path)],
+                streams: Keys.TaskStreams,
+                packageManager: PackageManager): File = {
+    val dir = npmInstallDependencies(baseDir, targetDir, packageJsonFile, streams, packageManager)
     npmInstallJSResources(targetDir, jsResources, Seq.empty, streams)
     dir
   }
@@ -42,6 +74,7 @@ object NpmUpdateTasks {
     * @param yarnExtraArgs Additional arguments to pass to yarn
     * @return The written npm directory
     */
+  @deprecated("Use overload with packageManager instead.")
   def npmInstallDependencies(baseDir: File,
                              targetDir: File,
                              packageJsonFile: File,
@@ -49,6 +82,33 @@ object NpmUpdateTasks {
                              streams: Keys.TaskStreams,
                              npmExtraArgs: Seq[String],
                              yarnExtraArgs: Seq[String]): File = {
+    npmInstallDependencies(
+      baseDir,
+      targetDir,
+      packageJsonFile,
+      streams,
+      if (useYarn){
+        PackageManager.Yarn().withInstallArgs(yarnExtraArgs).withAddPackagesArgs(yarnExtraArgs)
+      } else {
+        PackageManager.Npm().withInstallArgs(npmExtraArgs).withAddPackagesArgs(npmExtraArgs)
+      }
+    )
+  }
+
+  /**
+    * Runs install command of package manager.
+    *
+    * @param targetDir npm directory
+    * @param packageJsonFile Json file containing NPM dependencies
+    * @param streams A sbt TaskStream
+    * @param packageManager package manager
+    * @return The written npm directory
+    */
+  def npmInstallDependencies(baseDir: File,
+                             targetDir: File,
+                             packageJsonFile: File,
+                             streams: Keys.TaskStreams,
+                             packageManager: PackageManager): File = {
     val log = streams.log
     val cachedActionFunction =
       FileFunction.cached(
@@ -56,7 +116,7 @@ object NpmUpdateTasks {
         inStyle = FilesInfo.hash
       ) { _ =>
         log.info("Updating NPM dependencies")
-        ExternalCommand.install(baseDir, targetDir, useYarn, log, npmExtraArgs, yarnExtraArgs)
+        packageManager.install(baseDir, targetDir, log)
         Set.empty
       }
     cachedActionFunction(Set(packageJsonFile))

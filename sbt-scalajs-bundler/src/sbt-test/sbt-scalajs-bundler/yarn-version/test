@@ -1,0 +1,3 @@
+> fastOptJS::webpack
+> checkYarnVersion
+$ exists yarn.lock

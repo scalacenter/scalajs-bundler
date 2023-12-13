@@ -22,8 +22,12 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 16.14.2
+      - name: Enable Corepack
+        run: corepack enable
       - name: Setup yarn
-        run: npm install -g yarn@1.22.15
+        run: corepack prepare yarn@1.22.15 --activate
+      - name: Setup pnpm
+        run: corepack prepare pnpm@7.0.1 --activate
       - name: Unit tests
         run: sbt test
       - name: Scripted tests

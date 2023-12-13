@@ -1,7 +1,7 @@
 package scalajsbundler.sbtplugin
 
 import sbt._
-
+import scalajsbundler.PackageManager
 import scalajsbundler.{BundlerFile, PackageJson}
 import scalajsbundler.util.{Caching, JSON}
 
@@ -31,7 +31,8 @@ object PackageJsonTasks {
     webpackVersion: String,
     webpackDevServerVersion: String,
     webpackCliVersion: String,
-    streams: Keys.TaskStreams
+    streams: Keys.TaskStreams,
+    packageManager: PackageManager
   ): BundlerFile.PackageJson = {
 
     val hash = Seq(
@@ -42,7 +43,8 @@ object PackageJsonTasks {
       fullClasspath.map(_.data.name).toString,
       webpackVersion,
       webpackDevServerVersion,
-      webpackCliVersion
+      webpackCliVersion,
+      packageManager.toString
     ).mkString(",")
 
     val packageJsonFile = targetDir / "package.json"
@@ -63,7 +65,8 @@ object PackageJsonTasks {
         configuration,
         webpackVersion,
         webpackDevServerVersion,
-        webpackCliVersion
+        webpackCliVersion,
+        packageManager
       )
       ()
     }
